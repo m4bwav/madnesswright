@@ -1,0 +1,8 @@
+{
+  "name": "madnesswright",
+  "owner": { "name": "Mark Rogers" },
+  "metadata": { "description": "Skills that let AI agents mod MADNESS: Project Nexus: MadCards, SceneTools levels and ModTools assets and code, checked before they reach the game" },
+  "plugins": [
+    { "name": "madnesswright", "source": "./", "description": "Three evergreen skills for MADNESS: Project Nexus: mods and MadCards on the releasebeta branch, SceneTools levels, stages and campaigns, and ModTools assets with Harmony code, plus a helper that lints mods and scenes and reads the mod log" }
+  ]
+}

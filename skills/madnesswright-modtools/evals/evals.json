@@ -1,0 +1,73 @@
+{
+  "skill": "madnesswright-modtools",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+  "evals": [
+    {
+      "id": "trigger-1",
+      "kind": "trigger",
+      "prompt": "I made a machete in Blender, how do I get it into Madness Project Nexus as a new weapon?",
+      "runs": 3,
+      "expectations": [
+        "the madnesswright-modtools skill is invoked"
+      ]
+    },
+    {
+      "id": "trigger-2",
+      "kind": "trigger",
+      "prompt": "can you write me a harmony patch for project nexus so enemies drop their guns more often",
+      "runs": 3,
+      "expectations": [
+        "the madnesswright-modtools skill is invoked"
+      ]
+    },
+    {
+      "id": "decoy-1",
+      "kind": "trigger",
+      "prompt": "Make a Project Nexus level with a boss room.",
+      "runs": 3,
+      "decoy": true,
+      "expectations": [
+        "the madnesswright-modtools skill is not invoked (madnesswright-scenes' job)"
+      ]
+    },
+    {
+      "id": "decoy-2",
+      "kind": "trigger",
+      "prompt": "Write a Harmony patch for RimWorld that doubles crop yield.",
+      "runs": 3,
+      "decoy": true,
+      "expectations": [
+        "the madnesswright-modtools skill is not invoked (a different game)"
+      ]
+    },
+    {
+      "id": "action-1",
+      "kind": "action",
+      "prompt": "Write a Harmony mod for Madness Project Nexus that makes reloads twice as fast. My game is installed at the usual Steam path.",
+      "expectations": [
+        "before any [HarmonyPatch] target is written, the agent locates or decompiles Assembly-CSharp.dll (ilspycmd, ILSpy, mcilspy) or states the target is unverified and asks for a decompile",
+        "the info.txt it writes has AssemblyPath, HarmonyID and EntryType"
+      ],
+      "evidence": {
+        "type": "trace",
+        "tool": "Bash|PowerShell|Glob|mcp__ilspy.*",
+        "input_match": "Assembly-CSharp|ilspycmd|Managed"
+      },
+      "baseline": "not yet run",
+      "runs": 3
+    },
+    {
+      "id": "outcome-1",
+      "kind": "outcome",
+      "prompt": "Set up a Project Nexus code mod skeleton in a folder FastReload: the csproj, the entry class and info.txt. Don't guess any game method names.",
+      "files": [],
+      "expectations": [
+        "FastReload/info.txt parses, has AssemblyPath pointing at the built DLL path, HarmonyID and EntryType Namespace.Class",
+        "the entry class implements IModEntrypoint with Initialize() and Unload(), and logs a line with the HarmonyID",
+        "the csproj references Assembly-CSharp and 0Harmony from the game's Managed folder with Private false, and the TargetFramework is justified from Managed/ or marked to be checked",
+        "no [HarmonyPatch] names a game method as fact; any placeholder is marked as such"
+      ],
+      "runs": 3
+    }
+  ]
+}

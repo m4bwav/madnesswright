@@ -1,0 +1,61 @@
+{
+  "evergreen": "1.0",
+  "name": "madnesswright",
+  "kind": "skill",
+  "main": "SKILL.md",
+  "files": {
+    "research": "RESEARCH.md",
+    "changelog": "CHANGELOG.md",
+    "learnings": "LEARNINGS.md",
+    "tests": "TESTS.md"
+  },
+  "protocol": "plugin",
+  "source": null,
+  "topic": "MADNESS: Project Nexus official modding: releasebeta branch, mod folders, info.txt, MadCards, enabling, mods.txt, Steam Workshop sharing, legacy routes",
+  "tier": "moderate",
+  "interval_days": 30,
+  "last_checked": "2026-10-17",
+  "next_due": "2026-11-16",
+  "verify_at_use": true,
+  "volatile_claims": [
+    {
+      "claim": "Official modding (Workshop, SceneTools, ModTools, Harmony) runs only on the releasebeta Steam branch; release v1.10.a (2026-02-16) excludes it; newest numbered beta v2.19.a (2026-04-15) (R-20261017-2)",
+      "checked": "2026-10-17",
+      "recheck_days": 14.0
+    }
+  ],
+  "contradiction": null,
+  "events": [],
+  "streak": {
+    "quiet": 0,
+    "pinned_min": 0,
+    "pinned_max": 0,
+    "vau_quiet": 0
+  },
+  "history": [
+    {
+      "date": "2026-10-17",
+      "m": null,
+      "interval_after": 30,
+      "note": "created"
+    }
+  ],
+  "counts": {
+    "learnings": 0,
+    "changes": 1,
+    "research": 0,
+    "tests": 2
+  },
+  "consolidate_every": 25,
+  "tests": {
+    "last_run": "2026-10-17T20:02",
+    "harness": "evergreen-tester subagents, value cases run 1 only; triggers not run (plugin not installed)",
+    "env": "dev-machine",
+    "cases": 2,
+    "passed": 2,
+    "failed": 0,
+    "failing": [],
+    "last_failure": null,
+    "research_after_days": null
+  }
+}

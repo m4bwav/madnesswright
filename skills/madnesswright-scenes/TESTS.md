@@ -1,0 +1,20 @@
+# Tests: madnesswright-scenes
+
+Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json`. A failure that taught something is a lesson in [LEARNINGS.md](LEARNINGS.md); a fix it caused is logged in [CHANGELOG.md](CHANGELOG.md) with `because: T-...`; research it triggered is in [RESEARCH.md](RESEARCH.md); counts and the failing list are in `evergreen.json` under `tests`. Rules: MAINTENANCE.md (testing section) and the plugin's `protocol/TESTING.md`.
+
+A test passes on evidence (a tool call in the trace, a file, a marker, a log line), never on the transcript's claim that something was done.
+
+Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then one line per failing case (`id · kind · class · what the evidence showed`), then `led to:` (L-, C-, R- ids or none). Newest first. Budget 150 lines; archive older runs to `TESTS-ARCHIVE.md`.
+
+## Runs
+
+### T-20261017-2 · 2026-10-17 · evergreen-tester subagents · dev-machine · 2/2 (value cases, run 1 of 3)
+- action-1 · pass · ran `mpn.py scene-lint`; reported S03 and S13 with fixes. Note: the script exits 0 with errors unless `--strict` is passed (by design).
+- action-1 baseline (no skill) · found the rotation and the empty label by reading the YAML, but called the rotation a style choice, not a rule that breaks the room: partial. Harder fixture owed (Zone_Camera under the wrong parent, a missing Player_Start).
+- outcome-1 · pass · LEVEL-PLAN.md with one row per room, at most one new enemy type per room, Squad Spawner for the wave room, filled playtest checklist, _PG and Player_Start under Characters named; the grunt Filename left as a placeholder to confirm.
+- Trigger and decoy cases not run. Owed.
+- led to: none
+
+### T-20261017-1 · 2026-10-17 · not yet run · skill · 0/0
+- Suite scaffolded; no run recorded. Write the cases in `evals/evals.json` (at least two trigger prompts, two decoys, one action case with evidence, one outcome case), run the baseline without the skill, then run with it (`evergreen-test`).
+- led to: none

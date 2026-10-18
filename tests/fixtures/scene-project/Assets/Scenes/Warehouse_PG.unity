@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &500
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 101, guid: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.38
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, type: 3}
+--- !u!4 &501 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 201, guid: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+    type: 3}
+  m_PrefabInstance: {fileID: 500}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &502 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 301, guid: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,
+    type: 3}
+  m_PrefabInstance: {fileID: 500}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &600
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 501}
+    m_Modifications:
+    - target: {fileID: 11, guid: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, type: 3}
+--- !u!1001 &700
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 502}
+    m_Modifications:
+    - target: {fileID: 11, guid: cccccccccccccccccccccccccccccccc,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cccccccccccccccccccccccccccccccc, type: 3}
+--- !u!1001 &800
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 11, guid: dddddddddddddddddddddddddddddddd,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dddddddddddddddddddddddddddddddd, type: 3}
+--- !u!1 &900
+GameObject:
+  m_Name: floor
+  m_TagString: Floor
+  m_Layer: 8
+  m_StaticEditorFlags: 4294967295

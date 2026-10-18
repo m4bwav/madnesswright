@@ -1,0 +1,55 @@
+{
+  "evergreen": "1.0",
+  "name": "madnesswright-scenes",
+  "kind": "skill",
+  "main": "SKILL.md",
+  "files": {
+    "research": "RESEARCH.md",
+    "changelog": "CHANGELOG.md",
+    "learnings": "LEARNINGS.md",
+    "tests": "TESTS.md"
+  },
+  "protocol": "plugin",
+  "source": null,
+  "topic": "MADNESS: Project Nexus level editing with the SceneTools Unity project: rooms, markers, proxies, Event System, stages, campaigns, arena stages, .sobj builds, encounter design and playtesting",
+  "tier": "moderate",
+  "interval_days": 30,
+  "last_checked": "2026-10-17",
+  "next_due": "2026-11-16",
+  "verify_at_use": false,
+  "volatile_claims": [],
+  "contradiction": null,
+  "events": [],
+  "streak": {
+    "quiet": 0,
+    "pinned_min": 0,
+    "pinned_max": 0,
+    "vau_quiet": 0
+  },
+  "history": [
+    {
+      "date": "2026-10-17",
+      "m": null,
+      "interval_after": 30,
+      "note": "created"
+    }
+  ],
+  "counts": {
+    "learnings": 0,
+    "changes": 0,
+    "research": 0,
+    "tests": 2
+  },
+  "consolidate_every": 25,
+  "tests": {
+    "last_run": "2026-10-17T20:02",
+    "harness": "evergreen-tester subagents, value cases run 1 only; triggers not run (plugin not installed)",
+    "env": "dev-machine",
+    "cases": 2,
+    "passed": 2,
+    "failed": 0,
+    "failing": [],
+    "last_failure": null,
+    "research_after_days": null
+  }
+}

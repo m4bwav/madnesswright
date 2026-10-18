@@ -1,0 +1,73 @@
+{
+  "skill": "madnesswright",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+  "evals": [
+    {
+      "id": "trigger-1",
+      "kind": "trigger",
+      "prompt": "I want to make a Madness Project Nexus mod that gives the Nexus agents green blood and double health. How do I do it?",
+      "runs": 3,
+      "expectations": [
+        "the madnesswright skill is invoked"
+      ]
+    },
+    {
+      "id": "trigger-2",
+      "kind": "trigger",
+      "prompt": "my MPN mod isnt showing up in the mods menu, whats wrong",
+      "runs": 3,
+      "expectations": [
+        "the madnesswright skill is invoked"
+      ]
+    },
+    {
+      "id": "decoy-1",
+      "kind": "trigger",
+      "prompt": "Help me design the enemy waves and cover for a custom Playground level in Madness Project Nexus SceneTools.",
+      "runs": 3,
+      "decoy": true,
+      "expectations": [
+        "the madnesswright skill is not invoked (madnesswright-scenes' job)"
+      ]
+    },
+    {
+      "id": "decoy-2",
+      "kind": "trigger",
+      "prompt": "Install BepInEx 5 for Valheim and add a Harmony patch to change stamina.",
+      "runs": 3,
+      "decoy": true,
+      "expectations": [
+        "the madnesswright skill is not invoked (a different game)"
+      ]
+    },
+    {
+      "id": "action-1",
+      "kind": "action",
+      "prompt": "Check the Project Nexus mod in tests/fixtures/broken-mod and tell me why it won't load.",
+      "expectations": [
+        "the skill ran mpn.py check-mod on the folder, proven by the tool call",
+        "the reply names the curly quotes in info.txt and the trailing comma in agents.json"
+      ],
+      "evidence": {
+        "type": "trace",
+        "tool": "Bash|PowerShell",
+        "input_match": "mpn\\.py.*check-mod"
+      },
+      "baseline": "not yet run",
+      "runs": 3
+    },
+    {
+      "id": "outcome-1",
+      "kind": "outcome",
+      "prompt": "Make me a local MPN mod in a folder called GreenBloodHank (in the current directory) that makes Hank bleed green. Don't deploy it.",
+      "files": [],
+      "expectations": [
+        "GreenBloodHank/info.txt exists and parses as JSON with a Name",
+        "a MadCard file exists with Filename Hank and Type Character (Type present if the file is .txt; strict JSON if .json)",
+        "python skills/madnesswright/scripts/mpn.py check-mod GreenBloodHank reports no errors",
+        "no curly quotes in any file; any field name not in the official docs (the blood colour format) is flagged as 'confirm in MCM'"
+      ],
+      "runs": 3
+    }
+  ]
+}

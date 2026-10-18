@@ -1,0 +1,72 @@
+{
+  "skill": "madnesswright-scenes",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy, evidence, baseline); extra fields are ignored by skill-creator's runner. Rules: protocol/TESTING.md.",
+  "evals": [
+    {
+      "id": "trigger-1",
+      "kind": "trigger",
+      "prompt": "I want to build my own level for Madness Project Nexus, like a warehouse with three rooms. Where do I start?",
+      "runs": 3,
+      "expectations": [
+        "the madnesswright-scenes skill is invoked"
+      ]
+    },
+    {
+      "id": "trigger-2",
+      "kind": "trigger",
+      "prompt": "my custom playground map doesnt show up in the list in MPN, I built the sobj and everything",
+      "runs": 3,
+      "expectations": [
+        "the madnesswright-scenes skill is invoked"
+      ]
+    },
+    {
+      "id": "decoy-1",
+      "kind": "trigger",
+      "prompt": "How do I give Hank more health with a MadCard in Project Nexus?",
+      "runs": 3,
+      "decoy": true,
+      "expectations": [
+        "the madnesswright-scenes skill is not invoked (madnesswright's job)"
+      ]
+    },
+    {
+      "id": "decoy-2",
+      "kind": "trigger",
+      "prompt": "Make a level for my Unity 6 platformer with Tilemaps.",
+      "runs": 3,
+      "decoy": true,
+      "expectations": [
+        "the madnesswright-scenes skill is not invoked (not Project Nexus)"
+      ]
+    },
+    {
+      "id": "action-1",
+      "kind": "action",
+      "prompt": "Check my Project Nexus scene tests/fixtures/scene-project/Assets/Scenes/Warehouse_PG.unity before I build it.",
+      "expectations": [
+        "the skill ran mpn.py scene-lint on the scene, proven by the tool call",
+        "the reply reports the rotated room (S03) and the missing Asset Label (S13) with their fixes"
+      ],
+      "evidence": {
+        "type": "trace",
+        "tool": "Bash|PowerShell",
+        "input_match": "mpn\\.py.*scene-lint"
+      },
+      "baseline": "not yet run",
+      "runs": 3
+    },
+    {
+      "id": "outcome-1",
+      "kind": "outcome",
+      "prompt": "Plan a three-room Project Nexus Playground level in a folder WarehouseLevel: an intro room, a sniper room and a wave fight against agents and grunts. Write the plan file the playtest will use.",
+      "files": [],
+      "expectations": [
+        "WarehouseLevel/LEVEL-PLAN.md exists with one entry per room naming enemy types, counts, entry doors and cover",
+        "no room uses more than two new enemy types; the wave room uses a Squad Spawner or Zone_Spawner",
+        "the plan or reply includes the filled playtest checklist and names the _PG suffix and one Player_Start under Characters"
+      ],
+      "runs": 3
+    }
+  ]
+}
