@@ -1,6 +1,13 @@
 # Handoff
 
-State on 2026-10-17, end of session 2 (real game, evals, install, public launch).
+State on 2026-10-18, session 3 (first beta launch, the swap-and-unaware mod, 0.1.3 merged; not tagged).
+
+## Session 3
+
+- Beta launch done: build 25615196, Beta v2.20.a, GreenBloodHank loaded and the owner saw green blood. Notes: [notes/2026-10-18-beta-launch.md](notes/2026-10-18-beta-launch.md). Owed 1 is closed except the release-vs-beta loader diff (decompile both, compare Mod_Manager, ModItem, Converter_JSON, Game_Manager).
+- Swap-and-unaware mod (Owed 9): built, deployed, played. 0.1.0 crashed in the game's KillMe when a taken-over squadless Playground spawn died, and could not swap back out of a locked arena. 0.2.0 (one Prefix, screen-space pick, F8 home) is deployed and waits for the owner's playtest. Source lives outside this repo.
+- 0.1.3 merged (PR #1): lessons in modtools L-001 and harmony.md, `mpn.py log` stack frames and card lines. Not tagged: tagging is the owner's call.
+- Still owed from the list below: 3, 4, 5 (eval fixes) and the size budget (mpn.py now about 9,500 tokens).
 
 ## Done
 
@@ -13,7 +20,7 @@ State on 2026-10-17, end of session 2 (real game, evals, install, public launch)
 
 ## Owed
 
-1. **Beta launch check (waits on the owner).** A save backup exists (`~/mpn-backups/mpn-data-20261017-202940.zip`, 5 files with the career). The owner switches Steam to `releasebeta`, launches, enables `GreenBloodHank` (already deployed to `Mods/`) in the gear-icon menu, hits Hank, and reports the blood colour. Then run `mpn.py log`: confirm `game_version.mods_allowed: true`, record the real `mods.log` lines, check `loaded`, `applied_harmony` and the problem patterns against them, and log R-, C- and T- entries.
+1. **Beta launch check: done 2026-10-18 (see Session 3).** Was: A save backup exists (`~/mpn-backups/mpn-data-20261017-202940.zip`, 5 files with the career). The owner switches Steam to `releasebeta`, launches, enables `GreenBloodHank` (already deployed to `Mods/`) in the gear-icon menu, hits Hank, and reports the blood colour. Then run `mpn.py log`: confirm `game_version.mods_allowed: true`, record the real `mods.log` lines, check `loaded`, `applied_harmony` and the problem patterns against them, and log R-, C- and T- entries.
 2. **Listings on hold** by the owner's ruling (2026-10-17): no Claude directory submission, and never awesome-copilot. Do not submit.
 3. Scenes action-1 still does not separate skill from baseline: the baseline matched GUIDs against `Warehouse_PG`, which sits beside `Arena_PG`. Move `Arena_PG` into its own fixture project with no reference scene.
 4. With the game on disk, modtools outcome-1 separates only weakly (the baseline read the metadata itself but double-patched by calling PatchAll in Initialize). Add an expectation on that.
