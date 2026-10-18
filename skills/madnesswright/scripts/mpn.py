@@ -3,7 +3,7 @@
 
 Standard library only, Python 3.9+, Windows, macOS and Linux (Steam Deck via Proton).
 Every command prints exactly one JSON object and exits 0 unless --strict is given
-and the result has errors.
+(before the command name) and the result has errors.
 
 Commands
   where                          install, branch (BetaKey), build id, data, Mods and save folders, tool build outputs

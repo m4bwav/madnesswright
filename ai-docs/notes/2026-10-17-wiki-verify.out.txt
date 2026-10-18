@@ -1,0 +1,721 @@
+## installed
+madnesswright 0.1.1 from https://github.com/m4bwav/madnesswright/releases/download/v0.1.1/madnesswright-0.1.1.zip
+zip sha256 b1e39ad38029055bc78a828c58b2e53622f79c792ce409da8b2d0e04c4bbb117
+fixtures and development commands from a depth-1 clone of tag v0.1.1
+Python 3.14.6 on Windows
+
+## help
+$ python mpn.py --help
+usage: mpn.py [-h] [--strict] [--data-dir DATA_DIR] [--steam STEAM]
+              {where,backup,check-mod,deploy,log,scene-lint} ...
+
+MADNESS: Project Nexus modding helper (one JSON object out)
+
+positional arguments:
+  {where,backup,check-mod,deploy,log,scene-lint}
+
+options:
+  -h, --help            show this help message and exit
+  --strict              exit 1 when the result has errors
+  --data-dir DATA_DIR   the game's LocalLow data folder (holds Mods/)
+  --steam STEAM         Steam root folder
+[exit 0]
+
+## strict-after-command
+$ python mpn.py check-mod broken-mod --strict
+usage: mpn.py [-h] [--strict] [--data-dir DATA_DIR] [--steam STEAM]
+              {where,backup,check-mod,deploy,log,scene-lint} ...
+mpn.py: error: unrecognized arguments: --strict
+[exit 2]
+
+## check-mod-subtle
+$ python mpn.py check-mod subtle-mod
+{
+  "mod": "subtle-mod",
+  "errors": [
+    "hank.json: a bare card in a .json file; the game reads .json only as {\"<Type>\": [cards]} and silently ignores this card. Wrap it, or save it as .txt"
+  ],
+  "warnings": [
+    "agents.txt: Character card Nexus1_Agent has Root \"Nexsu1_Agent\", which looks like a misspelling of Nexus1_Agent; a Root the game cannot find gives no inheritance and no error"
+  ],
+  "info": {
+    "name": "Tough Agents, Green Hank",
+    "cards": 1,
+    "card_files": 2,
+    "card_list": [
+      {
+        "file": "agents.txt",
+        "type": "Character",
+        "filename": "Nexus1_Agent",
+        "root": "Nexsu1_Agent"
+      }
+    ],
+    "bundles": [],
+    "preview": false
+  }
+}
+[exit 0]
+
+## check-mod-broken
+$ python mpn.py check-mod broken-mod
+{
+  "mod": "broken-mod",
+  "errors": [
+    "info.txt: curly quotes found; the game parses this file as strict JSON, so use straight quotes (examples pasted from the Google Docs carry curly ones)",
+    "info.txt does not parse: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+    "agents.json: not valid JSON (Illegal trailing comma before end of object: line 1 column 82 (char 81)). Standard .json must be strict; save shorthand as .txt",
+    "the mod has no MadCards, no .mobj/.sobj bundles and no assembly; it would do nothing"
+  ],
+  "warnings": [],
+  "info": {
+    "cards": 0,
+    "card_files": 1,
+    "card_list": [],
+    "bundles": [],
+    "preview": false
+  }
+}
+[exit 0]
+
+## check-mod-broken-strict
+$ python mpn.py --strict check-mod broken-mod
+{
+  "mod": "broken-mod",
+  "errors": [
+    "info.txt: curly quotes found; the game parses this file as strict JSON, so use straight quotes (examples pasted from the Google Docs carry curly ones)",
+    "info.txt does not parse: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+    "agents.json: not valid JSON (Illegal trailing comma before end of object: line 1 column 82 (char 81)). Standard .json must be strict; save shorthand as .txt",
+    "the mod has no MadCards, no .mobj/.sobj bundles and no assembly; it would do nothing"
+  ],
+  "warnings": [],
+  "info": {
+    "cards": 0,
+    "card_files": 1,
+    "card_list": [],
+    "bundles": [],
+    "preview": false
+  }
+}
+[exit 1]
+
+## green-hank/hank.json (file)
+{ "Character": [ { "Filename": "Hank", "Root": "Hank", "Blood": {"r": 0, "g": 1, "b": 0, "a": 1} } ] }
+
+## check-mod-fixed
+$ python mpn.py check-mod green-hank
+{
+  "mod": "green-hank",
+  "errors": [],
+  "warnings": [],
+  "info": {
+    "name": "Tough Agents, Green Hank",
+    "cards": 2,
+    "card_files": 2,
+    "card_list": [
+      {
+        "file": "agents.txt",
+        "type": "Character",
+        "filename": "Nexus1_Agent",
+        "root": "Nexus1_Agent"
+      },
+      {
+        "file": "hank.json",
+        "type": "Character",
+        "filename": "Hank",
+        "root": "Hank"
+      }
+    ],
+    "bundles": [],
+    "preview": false
+  }
+}
+[exit 0]
+
+## check-mod-types
+$ python mpn.py check-mod type-mod
+{
+  "mod": "type-mod",
+  "errors": [
+    "hank.txt: Type \"character\" is not a card type the game knows (it logs 'TYPE ERROR! Type Doesn't Exist'); Types are case-sensitive, did you mean Character?"
+  ],
+  "warnings": [
+    "quotes.txt: curly double quotes found; the game straightens them in .txt cards, but other tools will choke, so use straight quotes",
+    "chars.json: \"Characters\" is not a card list the game reads; its cards are ignored (did you mean Character?)",
+    "notes.txt: no {...} cards found"
+  ],
+  "info": {
+    "name": "Type checks",
+    "cards": 3,
+    "card_files": 5,
+    "card_list": [
+      {
+        "file": "event.txt",
+        "type": "EVENT",
+        "filename": "TypeMod_Heal_01",
+        "root": null
+      },
+      {
+        "file": "hank.txt",
+        "type": "character",
+        "filename": "Hank",
+        "root": "Hank"
+      },
+      {
+        "file": "quotes.txt",
+        "type": "Melee",
+        "filename": "M_ModSword",
+        "root": "M_SwordLong"
+      }
+    ],
+    "bundles": [],
+    "preview": false
+  }
+}
+[exit 0]
+
+## check-mod-root-unseen
+$ python mpn.py check-mod root-mod
+{
+  "mod": "root-mod",
+  "errors": [],
+  "warnings": [],
+  "info": {
+    "name": "Tough agent",
+    "cards": 1,
+    "card_files": 1,
+    "card_list": [
+      {
+        "file": "agent.txt",
+        "type": "Character",
+        "filename": "Tough_Agent",
+        "root": "Nexsu1_Agent"
+      }
+    ],
+    "bundles": [],
+    "preview": false
+  }
+}
+[exit 0]
+
+## check-mod-harmony-missing-dll
+$ python mpn.py check-mod harmony-mod
+{
+  "mod": "harmony-mod",
+  "errors": [
+    "AssemblyPath Managed/FasterReload.dll not found relative to the mod folder (the game logs 'HARMONY FAIL: Path ... not found.')"
+  ],
+  "warnings": [
+    "EntryType ModEntry has no namespace: fine only if the class sits in the global namespace; otherwise write Namespace.Class",
+    "no HarmonyID: the game makes up local.<random guid> each launch, so other mods cannot order against yours"
+  ],
+  "info": {
+    "name": "Faster Reload",
+    "cards": 0,
+    "card_files": 0,
+    "card_list": [],
+    "bundles": [],
+    "preview": false
+  }
+}
+[exit 0]
+
+## check-mod-harmony
+$ python mpn.py check-mod harmony-mod
+{
+  "mod": "harmony-mod",
+  "errors": [],
+  "warnings": [],
+  "info": {
+    "name": "Faster Reload",
+    "cards": 0,
+    "card_files": 0,
+    "card_list": [],
+    "bundles": [],
+    "preview": false
+  }
+}
+[exit 0]
+
+## scene-lint-arena
+$ python mpn.py scene-lint scene-project/Assets/Scenes/Arena_PG.unity
+{
+  "scene": "scene-project\\Assets\\Scenes\\Arena_PG.unity",
+  "project": "scene-project",
+  "errors": [
+    "S01 every scene needs exactly one Player_Start; found 0",
+    "S05 Zone_Camera must be parented to its room's Waypoints object or it is not detected; parent is Characters"
+  ],
+  "warnings": [],
+  "info": {
+    "prefab_counts": {
+      "Room_Layout": 1,
+      "SceneRules": 1,
+      "Zone_Camera": 1
+    },
+    "rooms": 1,
+    "floors_tagged": 1,
+    "lights_in_scene_file": 0,
+    "asset_label": "arena_pg",
+    "playground_listed": true
+  }
+}
+[exit 0]
+
+## scene-lint-warehouse
+$ python mpn.py scene-lint scene-project/Assets/Scenes/Warehouse_PG.unity
+{
+  "scene": "scene-project\\Assets\\Scenes\\Warehouse_PG.unity",
+  "project": "scene-project",
+  "errors": [
+    "S03 room Room_Layout is rotated; rooms must never be rotated",
+    "S13 the scene has no Asset Label (AssetBundle name); >> Build will not export it"
+  ],
+  "warnings": [],
+  "info": {
+    "prefab_counts": {
+      "Player_Start": 1,
+      "Room_Layout": 1,
+      "SceneRules": 1,
+      "Zone_Camera": 1
+    },
+    "rooms": 1,
+    "floors_tagged": 1,
+    "lights_in_scene_file": 0,
+    "asset_label": null,
+    "playground_listed": true
+  }
+}
+[exit 0]
+
+## scene-lint-warehouse-strict
+$ python mpn.py --strict scene-lint scene-project/Assets/Scenes/Warehouse_PG.unity
+{
+  "scene": "scene-project\\Assets\\Scenes\\Warehouse_PG.unity",
+  "project": "scene-project",
+  "errors": [
+    "S03 room Room_Layout is rotated; rooms must never be rotated",
+    "S13 the scene has no Asset Label (AssetBundle name); >> Build will not export it"
+  ],
+  "warnings": [],
+  "info": {
+    "prefab_counts": {
+      "Player_Start": 1,
+      "Room_Layout": 1,
+      "SceneRules": 1,
+      "Zone_Camera": 1
+    },
+    "rooms": 1,
+    "floors_tagged": 1,
+    "lights_in_scene_file": 0,
+    "asset_label": null,
+    "playground_listed": true
+  }
+}
+[exit 1]
+
+## scene-lint-binary
+$ python mpn.py scene-lint Binary.unity
+{
+  "scene": "Binary.unity",
+  "errors": [
+    "scene is binary; set Edit > Project Settings > Editor > Asset Serialization to Force Text"
+  ],
+  "warnings": [],
+  "info": {}
+}
+[exit 0]
+
+## where-release
+$ python mpn.py --steam steam --data-dir game-data where
+{
+  "steam_roots": [
+    "steam"
+  ],
+  "install": {
+    "fully_installed": true,
+    "download": null,
+    "library": "steam",
+    "manifest": "steam\\steamapps\\appmanifest_488860.acf",
+    "install_dir": "steam\\steamapps\\common\\Madness Project Nexus 2",
+    "build_id": "25615280",
+    "beta_key": "",
+    "last_updated": "2026-10-17",
+    "branch": "public (release)"
+  },
+  "data_dir": "game-data",
+  "data_dir_exists": true,
+  "mods_dir": "game-data\\Mods",
+  "mods": [],
+  "mods_log": null,
+  "enabled": null,
+  "player_log": "game-data\\Player.log",
+  "game_version": {
+    "status": "Release",
+    "version": "1.11.a",
+    "mods_allowed": false
+  },
+  "tool_outputs": {
+    "scenetools": {
+      "folder": "Madness Project Nexus SceneTools\\SceneObjs",
+      "exists": true,
+      "newest": [
+        {
+          "file": "arena_pg.sobj",
+          "modified": "2026-10-17T18:30:00"
+        }
+      ]
+    },
+    "modtools": {
+      "folder": "Madness Project Nexus ModTools\\MadObjs",
+      "exists": false,
+      "newest": []
+    }
+  },
+  "notes": [
+    "Not on the releasebeta branch. As of 2026-10 official modding (Workshop, SceneTools, ModTools, Harmony) runs only on releasebeta; back up first (mpn.py backup), then Steam > Properties > Betas.",
+    "Player.log says the last launch ran a Release build (v1.11.a): the game loads mods only when this reads Beta. Relaunch after switching branch."
+  ],
+  "errors": []
+}
+[exit 0]
+
+## log-release
+$ python mpn.py --data-dir game-data log
+{
+  "data_dir": "game-data",
+  "game_version": {
+    "status": "Release",
+    "version": "1.11.a",
+    "mods_allowed": false
+  },
+  "notes": [
+    "The last launch ran a Release build (v1.11.a): the game loads no mods unless this reads Beta (the releasebeta branch). Nothing below is about your mod.",
+    "no Mods/mods.log yet: the game writes it when it applies mods, which happens only on a Beta build with -nomods absent"
+  ],
+  "errors": [],
+  "enabled": null,
+  "mods_log": null,
+  "player_log": {
+    "file": "game-data\\Player.log",
+    "modified": "2026-10-17T18:30:00",
+    "lines": 5,
+    "problems": [],
+    "problem_count": 0,
+    "tail": [
+      "Initialize engine version: 2019.2.6f1 (fe82a0e88406)",
+      "Launch Parameters (0 found)",
+      "ERROR: Shader Shader is not supported on this GPU",
+      "GAME INITIALIZED: Release v1.11.a",
+      "TRANSITION SQUAD FAIL: NO ONE TRANSITIONING"
+    ]
+  }
+}
+[exit 0]
+
+## backup
+$ python mpn.py --data-dir game-data backup --out backups
+{
+  "ok": true,
+  "zip": "backups\\mpn-data-<stamp>.zip",
+  "files": 1,
+  "bytes": 156,
+  "source": "game-data",
+  "errors": []
+}
+[exit 0]
+
+## deploy
+$ python mpn.py --data-dir game-data deploy green-hank
+{
+  "mod": "<scratch>\\green-hank",
+  "errors": [],
+  "warnings": [],
+  "info": {
+    "name": "Tough Agents, Green Hank",
+    "cards": 2,
+    "card_files": 2,
+    "card_list": [
+      {
+        "file": "agents.txt",
+        "type": "Character",
+        "filename": "Nexus1_Agent",
+        "root": "Nexus1_Agent"
+      },
+      {
+        "file": "hank.json",
+        "type": "Character",
+        "filename": "Hank",
+        "root": "Hank"
+      }
+    ],
+    "bundles": [],
+    "preview": false
+  },
+  "deployed": true,
+  "dest": "game-data\\Mods\\green-hank",
+  "next": "In game: gear icon (main menu, bottom left) > select the mod > ENABLED > Apply. Then run mpn.py log."
+}
+[exit 0]
+
+## deploy-again
+$ python mpn.py --data-dir game-data deploy green-hank
+{
+  "mod": "<scratch>\\green-hank",
+  "errors": [
+    "game-data\\Mods\\green-hank exists; pass --force to replace it"
+  ],
+  "warnings": [],
+  "info": {
+    "name": "Tough Agents, Green Hank",
+    "cards": 2,
+    "card_files": 2,
+    "card_list": [
+      {
+        "file": "agents.txt",
+        "type": "Character",
+        "filename": "Nexus1_Agent",
+        "root": "Nexus1_Agent"
+      },
+      {
+        "file": "hank.json",
+        "type": "Character",
+        "filename": "Hank",
+        "root": "Hank"
+      }
+    ],
+    "bundles": [],
+    "preview": false
+  },
+  "deployed": false
+}
+[exit 0]
+
+## deploy-force
+$ python mpn.py --data-dir game-data deploy green-hank --force
+{
+  "mod": "<scratch>\\green-hank",
+  "errors": [],
+  "warnings": [],
+  "info": {
+    "name": "Tough Agents, Green Hank",
+    "cards": 2,
+    "card_files": 2,
+    "card_list": [
+      {
+        "file": "agents.txt",
+        "type": "Character",
+        "filename": "Nexus1_Agent",
+        "root": "Nexus1_Agent"
+      },
+      {
+        "file": "hank.json",
+        "type": "Character",
+        "filename": "Hank",
+        "root": "Hank"
+      }
+    ],
+    "bundles": [],
+    "preview": false
+  },
+  "deployed": true,
+  "dest": "game-data\\Mods\\green-hank",
+  "next": "In game: gear icon (main menu, bottom left) > select the mod > ENABLED > Apply. Then run mpn.py log."
+}
+[exit 0]
+
+## deploy-broken
+$ python mpn.py --data-dir game-data deploy broken-mod
+{
+  "mod": "<scratch>\\broken-mod",
+  "errors": [
+    "info.txt: curly quotes found; the game parses this file as strict JSON, so use straight quotes (examples pasted from the Google Docs carry curly ones)",
+    "info.txt does not parse: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+    "agents.json: not valid JSON (Illegal trailing comma before end of object: line 1 column 82 (char 81)). Standard .json must be strict; save shorthand as .txt",
+    "the mod has no MadCards, no .mobj/.sobj bundles and no assembly; it would do nothing",
+    "not deployed: fix the errors or pass --force"
+  ],
+  "warnings": [],
+  "info": {
+    "cards": 0,
+    "card_files": 1,
+    "card_list": [],
+    "bundles": [],
+    "preview": false
+  },
+  "deployed": false
+}
+[exit 0]
+
+## where-beta
+$ python mpn.py --steam steam --data-dir game-data where
+{
+  "steam_roots": [
+    "steam"
+  ],
+  "install": {
+    "fully_installed": true,
+    "download": null,
+    "library": "steam",
+    "manifest": "steam\\steamapps\\appmanifest_488860.acf",
+    "install_dir": "steam\\steamapps\\common\\Madness Project Nexus 2",
+    "build_id": "25615280",
+    "beta_key": "releasebeta",
+    "last_updated": "2026-10-17",
+    "branch": "releasebeta"
+  },
+  "data_dir": "game-data",
+  "data_dir_exists": true,
+  "mods_dir": "game-data\\Mods",
+  "mods": [
+    "faster-reload",
+    "green-hank",
+    "old-mod"
+  ],
+  "mods_log": "game-data\\Mods\\mods.log",
+  "enabled": {
+    "file": "game-data\\Mods\\enabled.txt",
+    "enabled": [
+      "green-hank",
+      "faster-reload"
+    ]
+  },
+  "player_log": "game-data\\Player.log",
+  "game_version": {
+    "status": "Beta",
+    "version": "2.20.a",
+    "mods_allowed": true
+  },
+  "tool_outputs": {
+    "scenetools": {
+      "folder": "Madness Project Nexus SceneTools\\SceneObjs",
+      "exists": true,
+      "newest": [
+        {
+          "file": "arena_pg.sobj",
+          "modified": "2026-10-17T18:30:00"
+        }
+      ]
+    },
+    "modtools": {
+      "folder": "Madness Project Nexus ModTools\\MadObjs",
+      "exists": false,
+      "newest": []
+    }
+  },
+  "notes": [],
+  "errors": []
+}
+[exit 0]
+
+## log-beta
+$ python mpn.py --data-dir game-data log --lines 3
+{
+  "data_dir": "game-data",
+  "game_version": {
+    "status": "Beta",
+    "version": "2.20.a",
+    "mods_allowed": true
+  },
+  "notes": [
+    "Not in enabled.txt, so off at launch: old-mod. Enable in the gear-icon menu and Apply."
+  ],
+  "errors": [],
+  "enabled": {
+    "file": "game-data\\Mods\\enabled.txt",
+    "enabled": [
+      "green-hank",
+      "faster-reload"
+    ]
+  },
+  "mods_log": {
+    "file": "game-data\\Mods\\mods.log",
+    "modified": "2026-10-17T18:30:00",
+    "lines": 15,
+    "problems": [
+      {
+        "line": 13,
+        "text": " > FAILED: Hank (Character)"
+      }
+    ],
+    "problem_count": 1,
+    "tail": [
+      " > FAILED: Hank (Character)",
+      "",
+      "\t=== END OF LOG ==="
+    ],
+    "loaded": [
+      {
+        "n": 1,
+        "source": "LOCAL",
+        "dir": "C:/Users/<you>/AppData/LocalLow/Gibbing Tree/Madness Project Nexus/Mods/faster-reload"
+      },
+      {
+        "n": 2,
+        "source": "LOCAL",
+        "dir": "C:/Users/<you>/AppData/LocalLow/Gibbing Tree/Madness Project Nexus/Mods/green-hank"
+      }
+    ],
+    "applied_harmony": [
+      "com.example.fasterreload"
+    ]
+  },
+  "player_log": {
+    "file": "game-data\\Player.log",
+    "modified": "2026-10-17T18:30:00",
+    "lines": 6,
+    "problems": [
+      {
+        "line": 5,
+        "text": "info.txt contains no data"
+      }
+    ],
+    "problem_count": 1,
+    "tail": [
+      "GAME INITIALIZED: Beta v2.20.a",
+      "info.txt contains no data",
+      "TRANSITION SQUAD FAIL: NO ONE TRANSITIONING"
+    ]
+  }
+}
+[exit 0]
+
+## log-nothing
+$ python mpn.py --data-dir empty-folder log
+{
+  "data_dir": "empty-folder",
+  "game_version": null,
+  "notes": [],
+  "errors": [
+    "no Mods/mods.log or Player.log found; launch the game once with the mod enabled"
+  ],
+  "enabled": null,
+  "mods_log": null,
+  "player_log": null
+}
+[exit 0]
+
+## dev-check-skills
+$ python tests/check_skills.py
+ok: 3 skills, companions, manifests, links and text guards
+[exit 0]
+
+## dev-test-mpn
+$ python tests/test_mpn.py
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in <s>s
+
+OK
+[exit 0]
+
+## dev-budget
+$ python scripts/budget.py
+largest description characters (always loaded; spec limit 1,024)       1000  green<=950   yellow<=1024  yellow madnesswright
+all descriptions tokens together (always loaded)                        737  green<=1200  yellow<=1600  green  3 skills
+largest SKILL.md tokens (loaded on every use)                          2281  green<=2500  yellow<=3500  green  madnesswright
+largest reference tokens (loaded on demand)                            1593  green<=3500  yellow<=5000  green  madnesswright-modtools/harmony.md
+largest script tokens (run, read only when debugging)                  9331  green<=9000  yellow<=12000 yellow madnesswright/mpn.py
+installed skills folder KB                                              174  green<=200   yellow<=400   green  
+tracked repository KB                                                  1117  green<=512   yellow<=1536  yellow 
+budget: YELLOW
+[exit 0]

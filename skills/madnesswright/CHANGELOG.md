@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261017-5 · 2026-10-17 · Doc corrections found by the wiki run
+- because: the wiki verification run of 2026-10-17 (ai-docs/notes/2026-10-17-github-wiki.md, inaccuracies 1, 3, 4)
+- files: scripts/mpn.py (docstring), references/troubleshooting.md (item 2), references/madcards.md (What a card is)
+- `--strict` goes before the command name; check-mod does not detect a nested folder; the loader also accepts Stage_CAMPAIGN and an Item list.
+
 ### C-20261017-4 · 2026-10-17 · Route level and map requests to madnesswright-scenes
 - because: T-20261017-4 (madnesswright-scenes 0/6 on its trigger runs; the hub and modtools took them)
 - files: SKILL.md (description)

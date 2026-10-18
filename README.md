@@ -24,7 +24,7 @@ Project Nexus (GIBBING TREE, LLC, Steam app 488860) has real mod support. There 
 
 ## The helper
 
-`skills/madnesswright/scripts/mpn.py` uses only the Python standard library (3.9+). It runs on Windows, and on Linux or Steam Deck through Proton. Each command prints one JSON object; add `--strict` to exit 1 when the result has errors.
+`skills/madnesswright/scripts/mpn.py` uses only the Python standard library (3.9+). It runs on Windows, macOS and Linux; the game itself runs on Windows, or on Linux and Steam Deck through Proton. Each command prints one JSON object and exits 0; put `--strict` before the command name (`mpn.py --strict check-mod <dir>`) to exit 1 when the result has errors. `--data-dir` and `--steam` also go before the command.
 
 | Command | Does |
 |---|---|

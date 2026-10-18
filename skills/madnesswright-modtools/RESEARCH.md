@@ -9,7 +9,7 @@ Topic: MADNESS: Project Nexus ModTools MadObjects (.mobj) and Harmony 2.4.2 asse
 - Settled: new art goes through the developer's ModTools project (Unity 2019.2.6f1) as MadObjects in `.mobj` bundles, referenced by MadCards through ObjRef (prefab name, not bundle name); output folder `LocalLow/Gibbing Tree/Madness Project Nexus ModTools/MadObjs/` (R-20261017-1).
 - Settled: since beta v2.19.a (2026-04-15) mods can ship Harmony 2.4.2 assemblies through info.txt (AssemblyPath, HarmonyID, EntryType implementing IModEntrypoint, PatchOrder, ManualPatch); BepInEx is no longer needed (R-20261017-2).
 - Settled practice: decompile before patching; pick the framework from the Managed folder (BepInEx's rule); re-check targets after updates (R-20261017-3).
-- Settled for build 25615280: `IModEntrypoint` is in the global namespace; `Managed/0Harmony.dll` is Harmony 2.4.2.0; no `netstandard.dll`, so net472; Mono (MonoBleedingEdge, managed DLLs on disk) (R-20261017-6).
+- Settled for build 25615280: `IModEntrypoint` is in the global namespace; `Managed/0Harmony.dll` is Harmony 2.4.2.0; no `netstandard.dll`, and the shipped Harmony targets net48, so mods target net48 (net472 fails to build, T-20261017-3); Mono (MonoBleedingEdge, managed DLLs on disk) (R-20261017-6).
 
 ## Open questions
 

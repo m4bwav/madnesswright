@@ -1,4 +1,4 @@
-"""Structure checks for the madnesswright skills (stdlib only, Python 3.8+).
+"""Structure checks for the madnesswright skills (stdlib only, Python 3.9+).
 
 Run from the repository root: python tests/check_skills.py
 Exits 1 and prints every problem when a check fails; prints one summary line when all pass.
