@@ -2,6 +2,13 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.3 · 2026-10-18
+
+- First beta launch (v2.20.a, build 25615196) and the first live Harmony mod built with madnesswright-modtools.
+- madnesswright: no gear icon means not on the beta (the release build deletes the button); `MPN deploy --force` works while the game runs.
+- `mpn.py log`: exception lines carry their `stack` frames, `mods_log.cards` lists OVERRIDE and FAILED card lines, and the from-bytes assembly line is no longer flagged.
+- madnesswright-modtools: patch-free mods (a MonoBehaviour host), grep the callers of every game method a mod leans on and guard states the game never reaches, room-scoped game queries; first LEARNINGS entry.
+
 ## 0.1.2 · 2026-10-17
 
 - Root `plugin.json` (Agent Plugins 1.0 shape) for Copilot CLI installs; kept equal to `.claude-plugin/plugin.json`.

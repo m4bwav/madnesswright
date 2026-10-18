@@ -80,6 +80,16 @@ Other DLLs your mod needs go beside it: the game resolves a missing reference fi
 - Unity version: the first lines of Player.log (`Initialize engine version: 2019.2.6f1 (fe82a0e88406)` on build 25615280, matching the tool projects).
 - Seen on build 25615280: no `netstandard.dll`, `mscorlib.dll` present (the Unity 2019.2 .NET 4.x profile); the decompiler reports `net40` for `Assembly-CSharp` and `net48` for `0Harmony`, both of which load into that runtime. A test build at `net472` failed with MSB3274/MSB3275 against that Harmony; `net48` built clean (T-20261017-3).
 
+## A mod with no patch
+
+A mod that only adds input or behaviour needs no Harmony patch: `Initialize()` creates a `GameObject`, calls `DontDestroyOnLoad` on it and adds a `MonoBehaviour` whose `Update()` polls keys and calls the game's public members; `Unload()` destroys it. Wrap `Update()` in try/catch and log with the HarmonyID, or one exception per frame floods Player.log. Pick keys the game never reads: grep the decompile for `KeyCode.` and `UI_Options.key_` (F5 to F8 were free on beta 2.20.a). The mod's DLL is loaded from bytes (Player.log shows `Fallback handler could not load library ... data-<hex>.dll`), so it is never locked: redeploy with the game running and restart to load it.
+
+## Doing what the game never does
+
+A mod that puts the game in a state the developer never reached (the player in an enemy's body, a character with no squad) trips the game's own follow-up code. Before shipping, grep the decompile for every caller of each game method the mod calls, and of the methods those reach on death, room change and squad change; read each for unguarded fields. Guard the ones that break with a Prefix that handles the new state and returns false only for it. Seen 2026-10-18: `Combatant_Base.KillMe` calls `Controller_Player.SwapControllersWithSquadmate(true)`, which reads `myData.mySquad` without a null check; Playground spawns can have no squad, so dying in one threw inside `KillMe` and left the death half-done.
+
+Game queries are often scoped to the caller's room: `Combat_Manager.ReturnClosestTarget` rejects targets in another room. To pick a character under the mouse anywhere on screen, compare `Camera.WorldToScreenPoint` of each `Combatant_Base` (from `Cam_Main.gameCam.myCamera`) with `Input.mousePosition`.
+
 ## Failure modes
 
 - "Could not find method" or "No target method specified": the name or signature is wrong for this build. Re-decompile; check overloads and argument types.
@@ -87,6 +97,7 @@ Other DLLs your mod needs go beside it: the game resolves a missing reference fi
 - Mod loads but nothing happens: `EntryType` misspelt (mods.log: `FAIL: Entrypoint "<type>" Not Found`), the class does not implement the interface (`does not implement IModEntrypoint`), or `ManualPatch` true without patching in `Initialize()`. A blank `EntryType` is allowed: `PatchAll()` runs and no entry class is created.
 - What the log says: `Mods/mods.log` gets `> APPLIED HARMONY PATCH: <HarmonyID>` on success and `! ERROR: Harmony Patch <HarmonyID> Failed!` on failure, with the exception in Player.log. A missing DLL logs `HARMONY FAIL: Path <path> not found.`
 - An exception in `Initialize()` counts as a failure: the game calls `Unload()`, unpatches everything under your HarmonyID and marks the mod inactive. Disabling the mod (Apply) also calls `Unload()` and `UnpatchAll(HarmonyID)`, so `Unload()` must undo anything `Initialize()` started.
+- An exception in game code after the mod ran (for example `ERROR: HitApplicator Failed ...` then `NullReferenceException`): `MPN log` lists the `at ...` frames under `stack`. The top frame names the game method that met a state it did not expect; see "Doing what the game never does".
 - Two mods patch the same method: use `PatchOrder`, Harmony priorities, or a Postfix instead of a Prefix that skips the original.
 
 ## Tools

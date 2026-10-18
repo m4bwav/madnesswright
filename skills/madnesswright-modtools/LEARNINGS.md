@@ -6,6 +6,15 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-001 · 2026-10-18 · Grep the callers before a mod changes game state
+- Trigger: the first live mod (swap control to any character) threw a NullReferenceException inside the game's own `KillMe` when a taken-over Playground spawn died: the game's death-swap read a squad the spawn did not have. The owner reported "when they die I can't swap". 2026-10-18.
+- Hypothesis: game code is written for the states the game itself reaches; a mod that reaches new ones (no squad, enemy body, another room) meets unguarded fields in follow-up code it never calls directly.
+- Rule: before deploying, grep the decompile for callers of every game method the mod uses and of the death, room and squad paths; add a Prefix guard where the new state breaks them; ask for an edge-case playtest.
+- Evidence: C-20261018-1, T-20261018-1, confirmed 2026-10-18
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-18
+
+
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts

@@ -8,6 +8,12 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261018-1 · 2026-10-18 · live use by the owner · owner's PC, beta 2.20.a · 1/2
+- First live use: a swap-control and make-everyone-unaware mod built with this skill (Step 5). Build, check-mod, deploy, enable and load passed (`applied_harmony` listed the id; the mod's Initialize line in Player.log; swaps worked).
+- live-1 · edge case · fail · taking over a Playground spawn and dying threw NullReferenceException in `Controller_Player.SwapControllersWithSquadmate` from `KillMe`; and swapping into a locked arena from outside left no way back (room-scoped target pick). Fixed in mod 0.2.0 with a Prefix and a screen-space pick; the fix's playtest is owed.
+- led to: L-001, C-20261018-1, R-20261018-1
+
+
 ### T-20261017-4 · 2026-10-17 · headless `claude -p` per run, plugin installed as madnesswright@mark-local · dev-machine · 12/12 (trigger and decoy, 3 runs each)
 - First pass on 0.1.0: 30/36 across the plugin. Every miss was madnesswright-scenes: its four trigger runs went to the hub ("Start here") or to madnesswright-modtools ("my mobj doesn't load" caught "I built the sobj"). The runner also stopped at the first Skill call.
 - After C-20261017-6 (routing lines in all three descriptions) and a runner that records up to three Skill calls: 36/36; the scenes skill fired first on all six of its runs; every decoy went to its sibling or to no skill.

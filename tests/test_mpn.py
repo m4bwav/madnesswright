@@ -292,11 +292,21 @@ class Deploy(unittest.TestCase):
             (data / "Mods" / "mods.log").write_text(
                 "\t=== MOD LOG ===\n\nScanning for Local Mods...\n  > FOUND: C:/x/Mods/MyMod\n\nMods Enabled:\n"
                 "  > (1) [LOCAL] C:/x/Mods/MyMod\n  > APPLIED HARMONY PATCH: me.mymod\n\nScanning for MadCards...\n"
+                " > OVERRIDE: Hank (Character)  >> Priority (10/0) \n"
                 " > FAILED: Hank_Green (Character)\n\n\t=== END OF LOG ===", encoding="utf-8")
             (data / "Mods" / "enabled.txt").write_text('{"Enabled":["MyMod"]}', encoding="utf-8")
-            (data / "Player.log").write_text("Initialize engine version: 2019.2.6f1\nGAME INITIALIZED: Beta v2.20.a\n", encoding="utf-8")
+            # Shapes from a real beta 2.20.a Player.log (2026-10-18).
+            (data / "Player.log").write_text(
+                "Initialize engine version: 2019.2.6f1\nGAME INITIALIZED: Beta v2.20.a\n"
+                "Fallback handler could not load library D:/G/Madness Project Nexus_Data/Mono/data-000001FF4DDC45D0.dll\n"
+                " System.NullReferenceException: Object reference not set to an instance of an object\n"
+                "  at Controller_Player.SwapControllersWithSquadmate (System.Boolean overrideChecks) [0x00052] in <x>:0 \n"
+                "  at Combatant_Base.KillMe (Target_Object inKiller, KillSource inSource) [0x001ea] in <x>:0 \n", encoding="utf-8")
             r = run(["--data-dir", str(data), "log"])
             self.assertEqual(r["mods_log"]["problem_count"], 1, r)
+            self.assertEqual([(c["kind"], c["card"]) for c in r["mods_log"]["cards"]], [("OVERRIDE", "Hank"), ("FAILED", "Hank_Green")])
+            self.assertEqual(r["player_log"]["problem_count"], 1, r)
+            self.assertTrue(r["player_log"]["problems"][0]["stack"][0].startswith("at Controller_Player.SwapControllersWithSquadmate"), r)
             self.assertEqual(r["mods_log"]["loaded"][0]["source"], "LOCAL")
             self.assertEqual(r["mods_log"]["applied_harmony"], ["me.mymod"])
             self.assertTrue(r["game_version"]["mods_allowed"])

@@ -47,7 +47,7 @@ A mod is one folder inside `Mods/`: `info.txt` (or `info.json`) with a non-empty
 
 ## Step 5: enable and verify
 
-1. The user enables it: main menu, gear icon at the bottom left, select the mod, tick ENABLED, then Apply. Once `Mods/enabled.txt` exists, a newly deployed folder starts disabled until enabled here. Mods are read at launch; restart the game after changing files.
+1. The user enables it: main menu, gear icon at the bottom left, select the mod, tick ENABLED, then Apply. No gear icon means the build is not Beta (the release build deletes the button); the main-menu version text should start with Beta. Once `Mods/enabled.txt` exists, a newly deployed folder starts disabled until enabled here. Mods are read at launch: `MPN deploy --force` can replace a mod while the game runs, and the change loads on the next restart.
 2. After the user has started a mode that uses the mod, run `MPN log`. `mods_log` is the game's own mod log, `Mods/mods.log` (the official doc calls it `mods.txt`; the game writes `.log`): `loaded` lists the enabled mods, `applied_harmony` the patches, `problems` the `FAILED` and `ERROR` lines. `player_log` is Unity's. Report the problem lines for this mod by name, or say plainly that none appeared.
 3. Tell the user exactly what to look for in game (the new weapon in the Playground spawner, the agent's health bar, the blood colour) and ask them to report it. Done means a clean log plus the user's confirmation.
 
