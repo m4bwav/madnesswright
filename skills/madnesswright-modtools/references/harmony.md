@@ -56,7 +56,7 @@ namespace MyMpnMod
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework> <!-- build 25615280 has no Managed/netstandard.dll; re-check Managed/ -->
+    <TargetFramework>net48</TargetFramework> <!-- matches the game's 0Harmony.dll on build 25615280; net472 fails with MSB3274 -->
     <LangVersion>latest</LangVersion>
     <GameManaged>$(MPN_MANAGED)</GameManaged> <!-- path to Madness Project Nexus_Data/Managed -->
   </PropertyGroup>
@@ -75,10 +75,10 @@ Other DLLs your mod needs go beside it: the game resolves a missing reference fi
 ## Framework rule (BepInEx's, applies to any Unity Mono mod)
 
 - `Managed/netstandard.dll` exists: `netstandard2.0`.
-- Otherwise `mscorlib.dll` version 4.0.0.0 or later: `net46` (net472 also works with the 4.x reference assemblies).
+- Otherwise `mscorlib.dll` version 4.0.0.0 or later: a .NET Framework 4.x target no lower than the references you compile against. The game's `0Harmony.dll` targets net48, so a mod that references it needs `net48`.
 - Older (2.0.0.0): `net35` (not expected for Unity 2019.2).
 - Unity version: the first lines of Player.log (`Initialize engine version: 2019.2.6f1 (fe82a0e88406)` on build 25615280, matching the tool projects).
-- Seen on build 25615280: no `netstandard.dll`, `mscorlib.dll` present, so `net472` (the Unity 2019.2 .NET 4.x profile); the decompiler reports `net40` for `Assembly-CSharp` and `net48` for `0Harmony`, both of which load into that runtime.
+- Seen on build 25615280: no `netstandard.dll`, `mscorlib.dll` present (the Unity 2019.2 .NET 4.x profile); the decompiler reports `net40` for `Assembly-CSharp` and `net48` for `0Harmony`, both of which load into that runtime. A test build at `net472` failed with MSB3274/MSB3275 against that Harmony; `net48` built clean (T-20261017-3).
 
 ## Failure modes
 

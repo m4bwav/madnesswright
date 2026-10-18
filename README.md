@@ -1,6 +1,8 @@
 # madnesswright
 
-Three self-maintaining ("evergreen") skills that let an AI coding agent (Claude Code, Codex, Cursor, Copilot) mod **MADNESS: Project Nexus** and build levels for it, the way the developer intends. They also check the work before it reaches the game. Written 2026-10-17 from a research pass over the game's Steam announcements, the developer's modding docs and tool projects, and the community's tools. Every claim is dated and sourced in each skill's `RESEARCH.md`, and each skill re-checks itself on a schedule.
+![A faceless grey stick-figure grunt in a black suit and tie ragdolls mid-fall against a cartoon spray of red in a bare grey concrete room under one hanging lamp, while a workbench in the foreground holds a laptop showing lines of code and a monitor with a grey-box level blockout](https://raw.githubusercontent.com/m4bwav/madnesswright/main/.github/images/banner.jpg)
+
+Three self-maintaining ("evergreen") skills that let an AI coding agent (Claude Code, Codex, Cursor, Copilot) mod **MADNESS: Project Nexus** and build levels for it, the way the developer intends. They also check the work before it reaches the game. Written 2026-10-17 from a research pass over the game's Steam announcements, the developer's modding docs and tool projects, and the community's tools, then checked against an installed copy of the game and its own mod loader. Every claim is dated and sourced in each skill's `RESEARCH.md`, and each skill re-checks itself on a schedule.
 
 ## What the game offers (October 2026)
 

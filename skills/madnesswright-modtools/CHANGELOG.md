@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261017-4 · 2026-10-17 · Target net48, not net472; build outside the mod folder
+- because: T-20261017-3 (outcome-1 run 2: net472 failed MSB3274 against the game's net48 0Harmony.dll; net48 built; the build's obj/ folder landed in the mod)
+- files: SKILL.md (Step 5.3), references/harmony.md (Project file, Framework rule)
+- The framework follows the shipped Harmony's target; the project folder stays outside the mod so obj/*.json is never read as cards.
+
 ### C-20261017-3 · 2026-10-17 · Harmony loader facts from the real game
 - because: R-20261017-6
 - files: SKILL.md (Step 5), references/harmony.md (Source, info.txt keys, Entry class, Project file, Framework rule, Failure modes)
