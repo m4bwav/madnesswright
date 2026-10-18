@@ -8,9 +8,16 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261018-2 · 2026-10-18 · live use by the owner · owner's PC and a second PC, beta 2.20.a · 4/4
+- Mod 0.2.0 playtest: F8 worked; F5 failed on characters mid-fight (NullReferenceException in `AI_TargetClaimer.SetPriority` from `Controller_Base.LostConnection`), so dying in a taken body could not be tried. Cause: duplicate claimants left by F6's hand-written `myKillTarget = null` (L-002).
+- Mod 0.3.0 (claims released through the game before every swap, claimants pruned): the owner reports everything worked; Player.log shows 7 swaps (one back home) and no exception or problem line; `applied_harmony` lists the id. Installed from the public Workshop item 3822329165 on a second PC and worked there too.
+- live-1 · edge case · pass · mid-fight take-over; live-2 · pass · arena and F8; live-3 · pass · squadless spawn dying returns home; live-4 · pass · Workshop install on another PC.
+- Open, not fixed: the owner thinks one of two grunts added to the player's own team turned on the player once (unconfirmed, no log signal; the owner chose to leave it).
+- led to: L-002, C-20261018-2
+
 ### T-20261018-1 · 2026-10-18 · live use by the owner · owner's PC, beta 2.20.a · 1/2
 - First live use: a swap-control and make-everyone-unaware mod built with this skill (Step 5). Build, check-mod, deploy, enable and load passed (`applied_harmony` listed the id; the mod's Initialize line in Player.log; swaps worked).
-- live-1 · edge case · fail · taking over a Playground spawn and dying threw NullReferenceException in `Controller_Player.SwapControllersWithSquadmate` from `KillMe`; and swapping into a locked arena from outside left no way back (room-scoped target pick). Fixed in mod 0.2.0 with a Prefix and a screen-space pick; the fix's playtest is owed.
+- live-1 · edge case · fail · taking over a Playground spawn and dying threw NullReferenceException in `Controller_Player.SwapControllersWithSquadmate` from `KillMe`; and swapping into a locked arena from outside left no way back (room-scoped target pick). Fixed in mod 0.2.0 with a Prefix and a screen-space pick; confirmed in T-20261018-2.
 - led to: L-001, C-20261018-1, R-20261018-1
 
 

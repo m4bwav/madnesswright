@@ -10,15 +10,15 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Trigger: the first live mod (swap control to any character) threw a NullReferenceException inside the game's own `KillMe` when a taken-over Playground spawn died: the game's death-swap read a squad the spawn did not have. The owner reported "when they die I can't swap". 2026-10-18.
 - Hypothesis: game code is written for the states the game itself reaches; a mod that reaches new ones (no squad, enemy body, another room) meets unguarded fields in follow-up code it never calls directly.
 - Rule: before deploying, grep the decompile for callers of every game method the mod uses and of the death, room and squad paths; add a Prefix guard where the new state breaks them; ask for an edge-case playtest.
-- Evidence: C-20261018-1, T-20261018-1, confirmed 2026-10-18
+- Evidence: C-20261018-1, T-20261018-1, T-20261018-2 (the 0.2.0 guard held), confirmed 2026-10-18
 - Scope: skill
-- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-18
+- Status: active · helpful 2 · harmful 0 · last_confirmed 2026-10-18
 
 ### L-002 · 2026-10-18 · Change AI state through the game's calls, not its fields
 - Trigger: the swap mod's F5 failed on characters mid-fight after F6 had set `myKillTarget = null` by hand; `Player.log` showed a NullReferenceException in `AI_TargetClaimer.SetPriority` from `Controller_Base.LostConnection` on every failed swap (beta v2.20.a, 2026-10-18).
 - Hypothesis: game state is often stored twice (a field and a registry list); writing one side leaves the other stale, and the game's own code later trips over the mismatch.
 - Rule: when a mod changes targets, controllers, squads or rooms, find the game method that does it (grep where the game itself does the same change, e.g. `KillMe`) and call that; release a controller's claims before moving it.
-- Evidence: C-20261018-2, T-20261018-2
+- Evidence: C-20261018-2, T-20261018-2 (0.3.0: no exception in 7 swaps), confirmed 2026-10-18
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-18
 

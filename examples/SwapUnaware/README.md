@@ -11,7 +11,7 @@ Take control of any character and make everyone else stop noticing you. A reques
 
 On the Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165 (Subscribe, then enable it from the gear icon).
 
-The F keys were picked because no game code reads them (checked in the decompile). Needs the `releasebeta` branch: the normal release build does not load mods. Tested in the Playground; not in the story career, so back up your saves before using it there.
+The F keys were picked because no game code reads them (checked in the decompile). Needs the `releasebeta` branch: the normal release build does not load mods. Playtested in the Playground on two PCs (0.3.0, 2026-10-18); not in the story career, so back up your saves before using it there.
 
 ## Install
 
@@ -27,6 +27,8 @@ Copying the `SwapUnaware` folder (`info.txt` and `Managed/SwapUnaware.dll`) into
 ## Build
 
 Needs the .NET SDK and the game installed. `pwsh ./pack.ps1 -Version 0.3.0` builds `src/` against the game's own `Managed` DLLs (net48, `Private=false`, nothing copied from the game) and writes `dist/SwapUnaware-<version>.zip`. It finds the game with the hub skill's `mpn.py where`; pass `-GameManaged <...\Madness Project Nexus_Data\Managed>` or set `MPN_MANAGED` to point elsewhere. Then deploy with `python -I ../../skills/madnesswright/scripts/mpn.py deploy dist/stage/SwapUnaware --force` and read `mpn.py log` after playing.
+
+To update the Workshop item after a new build: `../WorkshopUpload/out/wsup.exe dist/stage/SwapUnaware preview.jpg "Swap And Unaware" workshop-description.txt "Scripts,Playground" 3822329165` (see [WorkshopUpload](../WorkshopUpload/README.md)).
 
 `build/`, `dist/`, `bin/` and `obj/` stay out of git. Never commit game DLLs or decompiled code.
 
@@ -46,3 +48,4 @@ Members checked against beta v2.20.a (build 25615196, 2026-10-18); re-check them
 | 0.1.0 | Dying in a taken-over Playground spawn threw inside `KillMe` | `SwapControllersWithSquadmate(bool)` reads `myData.mySquad` without a null check; Playground spawns can have no squad | The prefix sends you home, or skips the game's code |
 | 0.1.0 | Stuck inside a locked arena | `ReturnClosestTarget` filters by room | Screen-space pick, F8 home |
 | 0.2.0 | F5 failed on characters mid-fight (`NullReferenceException` in `AI_TargetClaimer.SetPriority` from `Controller_Base.LostConnection`) | F6 set `myKillTarget = null` by hand, leaving the controller in its target's claimant list; the AI claimed again and `ClaimTarget` does not check for duplicates. `LostConnection` nulls `myOwner`, removes one copy and re-scores the rest, which reads the null owner | Release both controllers' claims before the swap, as `KillMe` does; prune dead and duplicate claimants; F6 unclaims through the game; a swap that still throws reconnects any orphaned controller |
+| 0.3.0 | None found; one report of a grunt on your own team turning on you, unconfirmed | | |
