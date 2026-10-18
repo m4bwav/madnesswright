@@ -1,6 +1,14 @@
 # Handoff
 
-State on 2026-10-18, session 3 (first beta launch, the swap-and-unaware mod, 0.1.3 merged; not tagged).
+State on 2026-10-18, session 4 (swap mod 0.3.0, example in the repo, on the Workshop; 0.1.4 merged, not tagged).
+
+## Session 4
+
+- Swap mod 0.3.0 fixes the mid-fight take-over failure (duplicate AI target claimants; see log and L-002). Deployed; the owner's playtest is still owed (F5 mid-fight after F6, arena take-over then F8, a squadless spawn dying, F5 while dead), then T- entries in modtools TESTS.md (T-20261018-2 is cited by L-002 and C-20261018-2 but not yet written).
+- Source now lives in [examples/SwapUnaware](../examples/SwapUnaware/README.md) (PR #2) and builds from there with `pwsh ./pack.ps1 -Version X`.
+- Public Steam Workshop item 3822329165 (https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165), uploaded 2026-10-18 with a small Facepunch.Steamworks program through the owner's logged-in Steam (no credentials handled). Visibility public by the owner's ruling. Still owed: Subscribe on the second computer and check `mods.log` lists it as `[WORKSHOP]` (do not subscribe on the dev PC: the local copy would load twice).
+- Loader diff (release vs beta): not possible now, the install is on the beta and the release DLL is gone; the release notes from session 2 stand alone.
+- Still owed: 3, 4, 5 (eval fixes) and the size budget. Tagging 0.1.3/0.1.4 waits for the owner.
 
 ## Session 3
 
