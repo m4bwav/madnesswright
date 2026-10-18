@@ -1,26 +1,27 @@
 # Handoff
 
-State on 2026-10-17, end of the creation session.
+State on 2026-10-17, end of session 2 (real game, evals, install, public launch).
 
 ## Done
 
-- Plugin built: three skills, `mpn.py` (where, backup, check-mod, deploy, log, scene-lint), 18 unit tests, structure checker, size budget, CI workflow, README, AGENTS.md, SECURITY.md, LICENSE.
-- Creation pass research logged in each skill's RESEARCH.md (R-20261017-*). Official docs read in full: Modding Overview, SceneTools Overview, Event System Overview.
-- `scene-lint` verified on both official sample scenes (clean) and a mutated copy (caught S03 and S13).
-- Eval suites written. Run 1 of the six action and outcome cases passed with the skill; three action baselines run (see each TESTS.md, T-20261017-2).
+- Public: https://github.com/m4bwav/madnesswright (topics set, private vulnerability reporting on, CI green on Windows, macOS and Linux with Python 3.9 and 3.14). Releases v0.1.1 and v0.1.2 (https://github.com/m4bwav/madnesswright/releases/tag/v0.1.2) from `.github/workflows/release.yml`. 0.1.0 was never tagged.
+- Wiki live at https://github.com/m4bwav/madnesswright/wiki (10 pages, names 0.1.2): how it was made and how to update it in [notes/2026-10-17-github-wiki.md](notes/2026-10-17-github-wiki.md).
+- Real-game check on the owner's install (release v1.11.a, build 25615280) and a decompile of its mod loader: [notes/2026-10-17-real-game-loader.md](notes/2026-10-17-real-game-loader.md). Facts folded into the skills (hub R-20261017-9, C-20261017-3; modtools R-20261017-6, C-20261017-3 to -5). The big ones: the log is `Mods/mods.log` (the doc says mods.txt), `Mods/enabled.txt`, info.json allowed, `.json` cards only as a container, `IModEntrypoint` in the global namespace, mods target net48.
+- Installed locally as `madnesswright@mark-local` (entry in the Ai folder's `.claude-plugin/marketplace.json`).
+- Tests: 26 unit tests; value cases 3 of 3 runs on all six (one fail on run 2 of modtools outcome-1 fixed the net48 rule); baselines for all six; triggers and decoys 36/36 headless after a routing fix (first pass 30/36: the scenes skill never fired). Each TESTS.md has T-20261017-3 and -4.
+- Banner `.github/images/banner.jpg` (Z-Image Turbo, seed 37, prompt beside it) and listing icon `.claude-plugin/icon.png` (a crop of the banner).
 
 ## Owed
 
-1. Trigger and decoy cases have not been run: they need the plugin installed and a fresh session (or headless `claude -p` runs).
-2. Runs 2 and 3 of each value case; the hub and scenes action fixtures are too easy (baselines found the faults by plain reading). Make harder fixtures: a card with a misspelt Root, a Zone_Camera under the wrong parent, a scene with two Player_Starts inside a nested room.
-3. Real-game verification once the install finishes (Steam had queued it on 2026-10-17, 0 of 2.26 GB): run `mpn.py where`, confirm the Player.log path, list `Managed/` (netstandard.dll? 0Harmony.dll?), decompile and record IModEntrypoint's namespace, look at a real `mods.txt`, switch to releasebeta after `mpn.py backup`.
-4. Launch set before going public: README banner (ComfyUI, 1536x640, `.github/images/banner.jpg`), GitHub repository, wiki (wikiwright), topics, release v0.1.0. Waiting for the owner's go-ahead to publish.
-5. Headless SceneTools build route is untested (needs Unity 2019.2.6f1).
-
-## Mark's rulings (2026-10-17, after the session)
-
-Keep the name; keep the moderate tier; publish fully (repo, banner, wiki, v0.1.0 release, listings); install the plugin locally; the game is now installed and he has loaded the campaign; skip the evergreen refresh for now.
+1. **Beta launch check (waits on the owner).** A save backup exists (`~/mpn-backups/mpn-data-20261017-202940.zip`, 5 files with the career). The owner switches Steam to `releasebeta`, launches, enables `GreenBloodHank` (already deployed to `Mods/`) in the gear-icon menu, hits Hank, and reports the blood colour. Then run `mpn.py log`: confirm `game_version.mods_allowed: true`, record the real `mods.log` lines, check `loaded`, `applied_harmony` and the problem patterns against them, and log R-, C- and T- entries.
+2. **Listings on hold** by the owner's ruling (2026-10-17): no Claude directory submission, and never awesome-copilot. Do not submit.
+3. Scenes action-1 still does not separate skill from baseline: the baseline matched GUIDs against `Warehouse_PG`, which sits beside `Arena_PG`. Move `Arena_PG` into its own fixture project with no reference scene.
+4. With the game on disk, modtools outcome-1 separates only weakly (the baseline read the metadata itself but double-patched by calling PatchAll in Initialize). Add an expectation on that.
+5. The A/B verdict (`claude plugin eval` + `evergreen.py worth --record`) was not run: the evals are in evals.json, not plugin-eval case files. Try `evergreen.py eval-export` first.
+6. Size budget is yellow: `mpn.py` is about 9,300 tokens (green up to 9,000), the hub description is 1,000 characters.
+7. Headless SceneTools build route is untested (needs Unity 2019.2.6f1).
+8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
 
 ## Next step
 
-The owner keeps the session-2 prompt (real-game checks, harder evals, local install, public launch) in their private notes, because it names local paths. Without it: do the Owed list in order 3, 2, 1, 4.
+The owner keeps the session-3 prompt in their private notes, since it names local paths. Without it: do Owed 1 once the owner has switched branch, then 3, 4 and 5.

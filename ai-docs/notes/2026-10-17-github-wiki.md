@@ -1,18 +1,20 @@
 ---
-title: GitHub wiki written for 0.1.1 (draft, not yet published)
+title: GitHub wiki written for 0.1.1, published for 0.1.2
 kind: note
 date: 2026-10-17
 verified: 2026-10-17
 stale_after: 2027-04-17
-tags: [wiki, docs, 0.1.1, github]
+tags: [wiki, docs, 0.1.1, 0.1.2, github]
 summary: "the wiki's pages, where the draft is and where its git working copy will be, how every example was verified against the published 0.1.1 release zip, the facts found on the way, the inaccuracies in the shipped docs, and how to publish and update the wiki; read before touching the wiki or the README sentences listed under inaccuracies"
 ---
 
-# GitHub wiki for 0.1.1
+# GitHub wiki for 0.1.1 and 0.1.2
+
+Published 2026-10-17 as wiki commit eb1bedf (https://github.com/m4bwav/madnesswright/wiki), naming 0.1.2 in the footer, Home, Getting-Started and Versions. `live`: 10 pages, 0 failures, sidebar 13 of 13 probes, footer 1 of 1, anchors 13 links to 7 pages, 0 broken. 0.1.2 changed one docstring line of `mpn.py` against 0.1.1 (`git diff v0.1.1 v0.1.2 -- skills/madnesswright/scripts/mpn.py`), so the outputs printed by the 0.1.1 zip stand for 0.1.2; the 0.1.2 zip is 88,282 bytes, SHA-256 c851db83b706c2d6670bfa5bf532ba2a56ddc609c87b9723a0b2eedc706bfba5. Inaccuracies 1 to 6 below were fixed in 0.1.2; 7 and 8 were the session's own unfinished files, since committed.
 
 ## Summary
 
-Wrote the GitHub wiki for m4bwav/madnesswright with the wikiwright skill (0.9.2): ten pages plus a sidebar and footer, written from the README, CHANGELOG, AGENTS.md, ai-docs, the three SKILL.md files with their references, RESEARCH.md (R-20261017-9 hub, R-20261017-6 modtools), TESTS.md, `mpn.py`, the tests, both workflows and the GitHub release. Every output on the pages was printed by the `mpn.py` inside the published `madnesswright-0.1.1.zip` and filled into the pages by script from the saved output. Not published: the wiki repository does not exist yet (see below). Gates: `check` 0 errors, `outputs` 27 checked 0 missing 1 skipped, `snippets` 0 missing (0 blocks of a checked language, 27 commands), everwrite `tells.py --wiki` 0 strong, 11 weak.
+Wrote the GitHub wiki for m4bwav/madnesswright with the wikiwright skill (0.9.2): ten pages plus a sidebar and footer, written from the README, CHANGELOG, AGENTS.md, ai-docs, the three SKILL.md files with their references, RESEARCH.md (R-20261017-9 hub, R-20261017-6 modtools), TESTS.md, `mpn.py`, the tests, both workflows and the GitHub release. Every output on the pages was printed by the `mpn.py` inside the published `madnesswright-0.1.1.zip` and filled into the pages by script from the saved output. Gates: `check` 0 errors, `outputs` 27 checked 0 missing 1 skipped, `snippets` 0 missing (0 blocks of a checked language, 27 commands), everwrite `tells.py --wiki` 0 strong, 11 weak.
 
 Pages: Home, Getting-Started, Mods-and-MadCards, Levels-with-SceneTools, Assets-and-Harmony, The-Helper, Troubleshooting, FAQ, Versions, Development, _Sidebar, _Footer.
 

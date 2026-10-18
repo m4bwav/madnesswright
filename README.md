@@ -4,6 +4,8 @@
 
 Three self-maintaining ("evergreen") skills that let an AI coding agent (Claude Code, Codex, Cursor, Copilot) mod **MADNESS: Project Nexus** and build levels for it, the way the developer intends. They also check the work before it reaches the game. Written 2026-10-17 from a research pass over the game's Steam announcements, the developer's modding docs and tool projects, and the community's tools, then checked against an installed copy of the game and its own mod loader. Every claim is dated and sourced in each skill's `RESEARCH.md`, and each skill re-checks itself on a schedule.
 
+Full documentation, with every helper command's real output: the [wiki](https://github.com/m4bwav/madnesswright/wiki).
+
 ## What the game offers (October 2026)
 
 Project Nexus (GIBBING TREE, LLC, Steam app 488860) has real mod support. There is no level editor inside the game. Instead:
