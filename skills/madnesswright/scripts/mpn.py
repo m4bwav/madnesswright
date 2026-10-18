@@ -10,7 +10,7 @@ Commands
   backup [--out DIR]             zip the game's data folder (saves, Mods, settings) before a branch switch or mod removal
   check-mod <mod-dir>            lint a mod folder: info.txt, MadCards (.json strict, .txt shorthand), bundles, assembly
   deploy <mod-dir> [--force]     check, then copy the mod folder into the game's Mods folder
-  log [--lines N]                problem lines and tail of Mods/mods.txt and Player.log
+  log [--lines N]                game version, enabled list, problem lines and tail of Mods/mods.log and Player.log
   scene-lint <scene.unity> [--project DIR]
                                  check a SceneTools scene against the official stage rules
 
@@ -34,6 +34,19 @@ TOOL_OUTPUTS = {
     "modtools": ("Madness Project Nexus ModTools", "MadObjs", ".mobj"),
 }
 CURLY = "\u201c\u201d\u2018\u2019"
+CURLY_DOUBLE = "\u201c\u201d"
+# What the game's loader accepts, read from its Assembly-CSharp (build 25615280, loader of beta 2.2.a):
+# info.txt or info.json; Name and Description both required; .json cards only as a container keyed by these names;
+# a .txt card's Type names a MadCard_<Type> class (case-sensitive) or Event/Mission/Cutscene/Driver (any case).
+INFO_NAMES = ("info.txt", "info.json")
+INFO_KEYS = {"Name", "Author", "Description", "Tags", "Dependencies", "AssemblyPath", "HarmonyID", "EntryType", "PatchOrder", "ManualPatch"}
+CARD_TYPES = {"Addon", "AddonGroup", "Ammo", "AnimationProfile", "Animations", "Armor", "Campaign", "Character", "Chatter",
+              "Corpus", "DoT", "Dungeon", "Execution", "Explosion", "Gang", "Keycard", "Loadout", "Melee", "Origin", "Ranged",
+              "Skill", "SkillGroup", "Skin", "SoundPack", "Stage_Arena", "Stage_CAMPAIGN", "Stage_Custom", "Stage_Dungeon",
+              "Stage_Story", "Swatch", "Thrown", "VisualStockpile", "VoiceSet", "Wardrobe"}
+SCRIPT_TYPES = {"event", "mission", "cutscene", "driver"}
+JSON_KEYS = (CARD_TYPES - {"Stage_CAMPAIGN"}) | {"Item", "Event", "Mission", "Cutscene", "Driver"}
+GAME_VERSION = re.compile(r"GAME INITIALIZED: (\w+) v([\w.]+)")
 
 
 def emit(obj, strict=False):
@@ -145,6 +158,45 @@ def tool_outputs(ddir):
     return out
 
 
+def mod_log_path(mods):
+    """The loader writes Mods/mods.log; the official doc calls it mods.txt, so accept both."""
+    if not mods:
+        return None
+    for name in ("mods.log", "mods.txt"):
+        if (mods / name).is_file():
+            return str(mods / name)
+    return None
+
+
+def read_enabled(mods):
+    """Mods/enabled.txt is {"Enabled": [folder names]}; once it exists, a mod folder not listed starts disabled."""
+    p = mods / "enabled.txt" if mods else None
+    if not p or not p.is_file():
+        return None
+    try:
+        data = json.loads(p.read_text(encoding="utf-8-sig", errors="replace"))
+        return {"file": str(p), "enabled": list(data.get("Enabled") or [])}
+    except (ValueError, AttributeError) as e:
+        return {"file": str(p), "enabled": None, "error": "does not parse: %s" % e}
+
+
+def game_version(ddir):
+    p = ddir / "Player.log" if ddir else None
+    if not p or not p.is_file():
+        return None
+    try:
+        with open(p, encoding="utf-8", errors="replace") as fh:
+            for i, line in enumerate(fh):
+                m = GAME_VERSION.search(line)
+                if m:
+                    return {"status": m.group(1), "version": m.group(2), "mods_allowed": m.group(1) == "Beta"}
+                if i > 2000:
+                    break
+    except OSError:
+        pass
+    return None
+
+
 def cmd_where(args):
     roots = steam_roots(args.steam)
     install = find_install(libraries(roots))
@@ -160,6 +212,9 @@ def cmd_where(args):
         install["branch"] = bk or "public (release)"
         if bk.lower() != "releasebeta":
             notes.append("Not on the releasebeta branch. As of 2026-10 official modding (Workshop, SceneTools, ModTools, Harmony) runs only on releasebeta; back up first (mpn.py backup), then Steam > Properties > Betas.")
+    gv = game_version(ddir)
+    if gv and gv["status"] != "Beta":
+        notes.append("Player.log says the last launch ran a %s build (v%s): the game loads mods only when this reads Beta. Relaunch after switching branch." % (gv["status"], gv["version"]))
     mods = ddir / "Mods" if ddir else None
     res = {
         "steam_roots": [str(r) for r in roots],
@@ -168,8 +223,10 @@ def cmd_where(args):
         "data_dir_exists": bool(ddir and ddir.is_dir()),
         "mods_dir": str(mods) if mods else None,
         "mods": sorted(p.name for p in mods.iterdir() if p.is_dir()) if mods and mods.is_dir() else [],
-        "mods_txt": str(mods / "mods.txt") if mods and (mods / "mods.txt").is_file() else None,
+        "mods_log": mod_log_path(mods),
+        "enabled": read_enabled(mods),
         "player_log": str(ddir / "Player.log") if ddir and (ddir / "Player.log").is_file() else None,
+        "game_version": game_version(ddir),
         "tool_outputs": tool_outputs(ddir),
         "notes": notes,
         "errors": errors,
@@ -267,60 +324,93 @@ def lenient_json(text):
         return None, str(e)
 
 
+def near_miss(a, b):
+    """True when a and b differ only by case or by at most two edits (a swap counts as one)."""
+    if a.lower() == b.lower():
+        return True
+    a, b = a.lower(), b.lower()
+    if re.sub(r"\d", "", a) == re.sub(r"\d", "", b):
+        return False  # Nexus1_Agent and Nexus2_Agent are siblings, not typos
+    if abs(len(a) - len(b)) > 2 or min(len(a), len(b)) < 4:
+        return False
+    d = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]
+    for i in range(len(a) + 1):
+        d[i][0] = i
+    for j in range(len(b) + 1):
+        d[0][j] = j
+    for i in range(1, len(a) + 1):
+        for j in range(1, len(b) + 1):
+            cost = 0 if a[i - 1] == b[j - 1] else 1
+            d[i][j] = min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost)
+            if i > 1 and j > 1 and a[i - 1] == b[j - 2] and a[i - 2] == b[j - 1]:
+                d[i][j] = min(d[i][j], d[i - 2][j - 2] + 1)
+    return d[len(a)][len(b)] <= 2
+
+
 def check_mod(mod):
     errors, warnings, info = [], [], {}
     if not mod.is_dir():
         return {"mod": str(mod), "errors": ["not a folder"], "warnings": [], "info": {}}
     files = [p for p in mod.rglob("*") if p.is_file()]
+    top = {f.name.lower(): f for f in mod.iterdir() if f.is_file()}
+    infos = [top[n] for n in INFO_NAMES if n in top]
+    infop = infos[0] if infos else None
     for f in files:
         if f.suffix.lower() in (".txt", ".json"):
             t = f.read_text(encoding="utf-8-sig", errors="replace")
-            if any(c in t for c in CURLY):
-                errors.append("%s: curly quotes found; MadCards and info.txt need straight quotes (examples pasted from the Google Docs carry curly ones)" % f.relative_to(mod))
-    infop = mod / "info.txt"
+            if not any(c in t for c in CURLY):
+                continue
+            rel = f.relative_to(mod)
+            if f == infop or f.suffix.lower() == ".json":
+                errors.append("%s: curly quotes found; the game parses this file as strict JSON, so use straight quotes (examples pasted from the Google Docs carry curly ones)" % rel)
+            elif any(c in t for c in "‘’"):
+                warnings.append("%s: curly single quotes found; the game straightens only curly double quotes in .txt cards" % rel)
+            else:
+                warnings.append("%s: curly double quotes found; the game straightens them in .txt cards, but other tools will choke, so use straight quotes" % rel)
     meta = None
-    if not infop.is_file():
-        warnings.append("no info.txt: a local mod is not recognised without it (Workshop items do not need one)")
+    if len(infos) > 1:
+        warnings.append("both info.txt and info.json: the game uses whichever it finds first; keep one")
+    if not infop:
+        warnings.append("no info.txt or info.json: a local mod is not recognised without one (Workshop items do not need one)")
     else:
         meta, note = lenient_json(infop.read_text(encoding="utf-8-sig", errors="replace"))
         if meta is None:
-            errors.append("info.txt does not parse: %s" % note)
+            errors.append("%s does not parse: %s" % (infop.name, note))
         else:
             if note:
                 info["info_txt_note"] = note
             if not isinstance(meta, dict):
-                errors.append("info.txt must be one {...} object")
+                errors.append("%s must be one {...} object" % infop.name)
                 meta = None
     if meta:
         info["name"] = meta.get("Name")
-        if not meta.get("Name"):
-            errors.append("info.txt has no Name")
-        for k in ("Author", "Description"):
+        for k in ("Name", "Description"):
             if not meta.get(k):
-                warnings.append("info.txt has no %s" % k)
+                errors.append("info has no %s: the game skips a mod whose Name or Description is empty (\"info.txt contains no data\")" % k)
+        if not meta.get("Author"):
+            warnings.append("info has no Author")
         deps = meta.get("Dependencies", [])
         if deps and not all(str(d).isdigit() for d in deps):
             errors.append("Dependencies must be Steam Workshop item ids (numbers); local mods cannot depend on local mods")
-        known = {"Name", "Author", "Description", "Tags", "Dependencies", "AssemblyPath", "HarmonyID", "EntryType", "PatchOrder", "ManualPatch"}
-        extra = sorted(set(meta) - known)
+        extra = sorted(set(meta) - INFO_KEYS)
         if extra:
-            warnings.append("info.txt keys not in the official docs: %s" % ", ".join(extra))
+            warnings.append("info keys the game ignores: %s (keys are case-sensitive)" % ", ".join(extra))
         ap = meta.get("AssemblyPath")
         if ap:
             if not (mod / ap).is_file():
-                errors.append("AssemblyPath %s not found relative to the mod folder" % ap)
+                errors.append("AssemblyPath %s not found relative to the mod folder (the game logs 'HARMONY FAIL: Path ... not found.')" % ap)
             et = meta.get("EntryType")
             if et and "." not in et:
-                warnings.append("EntryType should be the full Namespace.Class of the IModEntrypoint class")
+                warnings.append("EntryType %s has no namespace: fine only if the class sits in the global namespace; otherwise write Namespace.Class" % et)
             if not meta.get("HarmonyID"):
-                warnings.append("no HarmonyID: the game derives one from the Workshop id, which a local test mod does not have")
+                warnings.append("no HarmonyID: the game makes up local.<random guid> each launch, so other mods cannot order against yours")
         elif any(k in meta for k in ("EntryType", "HarmonyID", "ManualPatch")):
             errors.append("Harmony keys set but no AssemblyPath")
     cards, card_files = [], 0
     for f in files:
         rel = str(f.relative_to(mod))
         low = f.name.lower()
-        if low == "info.txt" or low == "mods.txt":
+        if low in INFO_NAMES or low in ("mods.txt", "mods.log", "enabled.txt"):
             continue
         if f.suffix.lower() == ".json":
             card_files += 1
@@ -329,13 +419,17 @@ def check_mod(mod):
             except ValueError as e:
                 errors.append("%s: not valid JSON (%s). Standard .json must be strict; save shorthand as .txt" % (rel, e))
                 continue
-            if isinstance(data, dict) and "Filename" in data:
-                warnings.append("%s: a single card object in a .json file; standard format is {\"<Type>\": [cards]}, shorthand belongs in .txt" % rel)
-                data = {data.get("Type", "?"): [data]}
             if not isinstance(data, dict):
                 errors.append("%s: top level must be an object of Type arrays" % rel)
                 continue
+            if "Filename" in data or "Type" in data:
+                errors.append("%s: a bare card in a .json file; the game reads .json only as {\"<Type>\": [cards]} and silently ignores this card. Wrap it, or save it as .txt" % rel)
+                continue
             for typ, arr in data.items():
+                if typ not in JSON_KEYS:
+                    near = sorted(k for k in JSON_KEYS if near_miss(typ, k))
+                    warnings.append("%s: \"%s\" is not a card list the game reads; its cards are ignored%s" % (rel, typ, " (did you mean %s?)" % near[0] if near else ""))
+                    continue
                 if not isinstance(arr, list):
                     errors.append("%s: %s should be an array of cards" % (rel, typ))
                     continue
@@ -347,6 +441,8 @@ def check_mod(mod):
         elif f.suffix.lower() == ".txt":
             card_files += 1
             text = f.read_text(encoding="utf-8-sig", errors="replace")
+            for a, b in (("“", '"'), ("”", '"')):
+                text = text.replace(a, b)
             blocks, err = split_objects(text)
             if err:
                 errors.append("%s: %s" % (rel, err))
@@ -356,10 +452,20 @@ def check_mod(mod):
                 typ, fn = top_value(b, "Type"), top_value(b, "Filename")
                 if not typ:
                     errors.append("%s: a shorthand card has no Type (required in .txt)" % rel)
-                if not fn:
+                elif typ not in CARD_TYPES and typ.lower() not in SCRIPT_TYPES:
+                    near = [k for k in CARD_TYPES if k.lower() == typ.lower()]
+                    errors.append("%s: Type \"%s\" is not a card type the game knows (it logs 'TYPE ERROR! Type Doesn't Exist')%s" % (rel, typ, "; Types are case-sensitive, did you mean %s?" % near[0] if near else ""))
+                if not fn and (typ or "").lower() not in SCRIPT_TYPES:
                     errors.append("%s: a card has no Filename" % rel)
                 if fn:
                     cards.append({"file": rel, "type": typ, "filename": fn, "root": top_value(b, "Root")})
+    names = {c["filename"] for c in cards}
+    for c in cards:
+        r = c["root"]
+        if r and r not in names and r != c["filename"]:
+            close = [n for n in names | {c["filename"]} if n != r and near_miss(r, n)]
+            if close:
+                warnings.append("%s: %s card %s has Root \"%s\", which looks like a misspelling of %s; a Root the game cannot find gives no inheritance and no error" % (c["file"], c["type"], c["filename"], r, close[0]))
     seen = {}
     for c in cards:
         k = (c["type"], c["filename"])
@@ -414,14 +520,17 @@ def cmd_deploy(args):
     emit(res, args.strict)
 
 
-PROBLEM = re.compile(r"error|exception|fail|could not|couldn't|invalid|missing|not found|null ?reference", re.IGNORECASE)
+PROBLEM = re.compile(r"error|exception|fail|could not|couldn't|invalid|missing|not found|null ?reference|contains no data|already exists", re.IGNORECASE)
+# Player.log noise seen on a clean launch of build 25615280 (no mods): not mod problems.
+NOISE = re.compile(r"Shader is not supported on this GPU|TRANSITION SQUAD FAIL|Launch Parameters|\[FAILED\].*\.exe$|Debug\.bindings\.h", re.IGNORECASE)
+MOD_LINE = re.compile(r"^\s*> \((\d+)\) \[(LOCAL|WORKSHOP)\] (.+)$")
 
 
 def scan_log(p, lines):
     if not p or not Path(p).is_file():
         return None
     t = Path(p).read_text(encoding="utf-8", errors="replace").splitlines()
-    probs = [{"line": i + 1, "text": l[:300]} for i, l in enumerate(t) if PROBLEM.search(l)]
+    probs = [{"line": i + 1, "text": l[:300]} for i, l in enumerate(t) if PROBLEM.search(l) and not NOISE.search(l)]
     return {"file": str(p), "modified": datetime.datetime.fromtimestamp(Path(p).stat().st_mtime).isoformat(timespec="seconds"),
             "lines": len(t), "problems": probs[-60:], "problem_count": len(probs), "tail": [l[:300] for l in t[-lines:]]}
 
@@ -429,11 +538,28 @@ def scan_log(p, lines):
 def cmd_log(args):
     install = find_install(libraries(steam_roots(args.steam)))
     ddir = data_dir(args, install)
-    res = {"data_dir": str(ddir) if ddir else None, "errors": []}
-    res["mods_txt"] = scan_log(ddir / "Mods" / "mods.txt" if ddir else None, args.lines)
+    mods = ddir / "Mods" if ddir else None
+    res = {"data_dir": str(ddir) if ddir else None, "game_version": game_version(ddir), "notes": [], "errors": []}
+    res["enabled"] = read_enabled(mods)
+    res["mods_log"] = scan_log(mod_log_path(mods), args.lines)
+    if res["mods_log"]:
+        t = Path(res["mods_log"]["file"]).read_text(encoding="utf-8", errors="replace").splitlines()
+        res["mods_log"]["loaded"] = [{"n": int(m.group(1)), "source": m.group(2), "dir": m.group(3)} for m in map(MOD_LINE.match, t) if m]
+        res["mods_log"]["applied_harmony"] = [l.split("APPLIED HARMONY PATCH:", 1)[1].strip() for l in t if "APPLIED HARMONY PATCH:" in l]
     res["player_log"] = scan_log(ddir / "Player.log" if ddir else None, args.lines)
-    if not res["mods_txt"] and not res["player_log"]:
-        res["errors"].append("no mods.txt or Player.log found; launch the game once with the mod enabled")
+    gv = res["game_version"]
+    if gv and not gv["mods_allowed"]:
+        res["notes"].append("The last launch ran a %s build (v%s): the game loads no mods unless this reads Beta (the releasebeta branch). Nothing below is about your mod." % (gv["status"], gv["version"]))
+    folders = sorted(p.name for p in mods.iterdir() if p.is_dir()) if mods and mods.is_dir() else []
+    en = (res["enabled"] or {}).get("enabled")
+    if en is not None:
+        off = [f for f in folders if f not in en]
+        if off:
+            res["notes"].append("Not in enabled.txt, so off at launch: %s. Enable in the gear-icon menu and Apply." % ", ".join(off))
+    if not res["mods_log"] and not res["player_log"]:
+        res["errors"].append("no Mods/mods.log or Player.log found; launch the game once with the mod enabled")
+    elif not res["mods_log"]:
+        res["notes"].append("no Mods/mods.log yet: the game writes it when it applies mods, which happens only on a Beta build with -nomods absent")
     emit(res, args.strict)
 
 

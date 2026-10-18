@@ -9,13 +9,13 @@ Topic: MADNESS: Project Nexus ModTools MadObjects (.mobj) and Harmony 2.4.2 asse
 - Settled: new art goes through the developer's ModTools project (Unity 2019.2.6f1) as MadObjects in `.mobj` bundles, referenced by MadCards through ObjRef (prefab name, not bundle name); output folder `LocalLow/Gibbing Tree/Madness Project Nexus ModTools/MadObjs/` (R-20261017-1).
 - Settled: since beta v2.19.a (2026-04-15) mods can ship Harmony 2.4.2 assemblies through info.txt (AssemblyPath, HarmonyID, EntryType implementing IModEntrypoint, PatchOrder, ManualPatch); BepInEx is no longer needed (R-20261017-2).
 - Settled practice: decompile before patching; pick the framework from the Managed folder (BepInEx's rule); re-check targets after updates (R-20261017-3).
-- Unverified: the namespace of IModEntrypoint; whether `0Harmony.dll` ships in Managed; the game's scripting backend (Mono is inferred from DLL-replacement mods).
+- Settled for build 25615280: `IModEntrypoint` is in the global namespace; `Managed/0Harmony.dll` is Harmony 2.4.2.0; no `netstandard.dll`, so net472; Mono (MonoBleedingEdge, managed DLLs on disk) (R-20261017-6).
 
 ## Open questions
 
-- IModEntrypoint namespace and whether the game ships 0Harmony.dll (needs a decompile of a current install).
+- Resolved 2026-10-17 (R-20261017-6): global namespace; 0Harmony.dll 2.4.2 ships.
 - Are Automatons moddable yet?
-- Does a Harmony load failure appear in mods.txt, Player.log, or both?
+- Resolved 2026-10-17 (R-20261017-6): both. `Mods/mods.log` gets `! ERROR: Harmony Patch <id> Failed!` and Player.log the exception.
 
 ## Search plan
 
@@ -53,6 +53,13 @@ Best sources (primary first): Steam News API; the official Google Docs; github.c
 ## Findings log
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
+
+### R-20261017-6 · 2026-10-17 · The game's Harmony loader, read from its code
+- Summary: `IModEntrypoint` (global namespace: `Initialize()`, `Unload()`); mods patched in ascending PatchOrder; the DLL is loaded from bytes at `<mod>/<AssemblyPath>`; `PatchAll` unless ManualPatch; EntryType resolved with `Assembly.GetType` and created with a parameterless constructor; an Initialize exception unloads and unpatches; HarmonyID blank becomes `workshop.<id>` or `local.<guid>` (new every launch), spaces become `_`; extra DLLs resolved from the AssemblyPath folder. Log strings: `APPLIED HARMONY PATCH:`, `! ERROR: Harmony Patch <id> Failed!`, `HARMONY FAIL: Path <p> not found.`, `FAIL: Entrypoint "<t>" Not Found`, `does not implement IModEntrypoint`. `Managed/` holds `0Harmony.dll` 2.4.2.0 and `mscorlib.dll`, no `netstandard.dll`; Unity 2019.2.6f1 per Player.log.
+- Track: subject
+- Sources: the user's own install (Steam build 25615280, release v1.11.a, Unity 2019.2.6f1), read 2026-10-17: `mpn.py where`, Player.log, a listing of `Madness Project Nexus_Data/Managed/`, and a decompile of `Assembly-CSharp.dll` with ilspycmd 11.1 (classes Mod_Manager, ModItem, WorkshopItem, Steam_WorkshopIntegration, Converter_JSON, AssetBundle_Handler, Game_Manager, Saves_Manager; output kept out of the repository); the official Modding Overview as text, https://docs.google.com/document/d/1f_RbQGE45CY8no6mFuVGTaOTF7XnaK7yq5tJXty_JSA/export?format=txt
+- Magnitude: moderate
+- Applied: C-20261017-3
 
 ### R-20261017-5 · 2026-10-17 · Load evidence
 - Summary: Evidence that a mod loaded is a log line naming it (Debug.Log from Initialize with the HarmonyID) plus mods.txt; Surity (a BepInEx test runner) does not apply to the built-in loader.

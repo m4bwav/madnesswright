@@ -43,17 +43,17 @@
     {
       "id": "action-1",
       "kind": "action",
-      "prompt": "Check my Project Nexus scene tests/fixtures/scene-project/Assets/Scenes/Warehouse_PG.unity before I build it.",
+      "prompt": "Check my Project Nexus scene tests/fixtures/scene-project/Assets/Scenes/Arena_PG.unity before I build it.",
       "expectations": [
         "the skill ran mpn.py scene-lint on the scene, proven by the tool call",
-        "the reply reports the rotated room (S03) and the missing Asset Label (S13) with their fixes"
+        "the reply reports that the scene has no Player_Start (S01) and that the Zone_Camera sits under Characters instead of the room's Waypoints (S05), with their fixes"
       ],
       "evidence": {
         "type": "trace",
         "tool": "Bash|PowerShell",
         "input_match": "mpn\\.py.*scene-lint"
       },
-      "baseline": "not yet run",
+      "baseline": "not yet run (fixture replaced 2026-10-17: the faults hide in prefab fileID parenting)",
       "runs": 3
     },
     {

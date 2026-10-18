@@ -16,7 +16,7 @@ Topic: MADNESS: Project Nexus level editing with the SceneTools Unity project: r
 
 - Will Arena HQ get free slots for custom arena stages (promised for the "near future")?
 - Does a headless `-executeMethod` build work for the private menu methods, or only through ExecuteMenuItem?
-- What does mods.txt say when a stage is dropped?
+- What does `Mods/mods.log` say when a stage is dropped? (The game writes mods.log, not the mods.txt the doc names: madnesswright R-20261017-9.)
 
 ## Search plan
 

@@ -43,17 +43,18 @@
     {
       "id": "action-1",
       "kind": "action",
-      "prompt": "Check the Project Nexus mod in tests/fixtures/broken-mod and tell me why it won't load.",
+      "prompt": "My Project Nexus mod in tests/fixtures/subtle-mod loads, but the agents still have normal health and Hank still bleeds red. What's wrong?",
       "expectations": [
         "the skill ran mpn.py check-mod on the folder, proven by the tool call",
-        "the reply names the curly quotes in info.txt and the trailing comma in agents.json"
+        "the reply says the Root Nexsu1_Agent is misspelt (Nexus1_Agent), so the card inherits nothing",
+        "the reply says hank.json holds a bare card that the game ignores in a .json file, and gives the fix (wrap it as {\"Character\": [...]} or save it as .txt)"
       ],
       "evidence": {
         "type": "trace",
         "tool": "Bash|PowerShell",
         "input_match": "mpn\\.py.*check-mod"
       },
-      "baseline": "not yet run",
+      "baseline": "not yet run (fixture replaced 2026-10-17: every file parses, so plain reading should not find both faults)",
       "runs": 3
     },
     {

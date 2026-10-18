@@ -206,15 +206,54 @@ class CheckMod(unittest.TestCase):
         self.assertEqual(r["info"]["bundles"], ["weapons.mobj"])
 
     def test_curly_quotes(self):
-        r = self.mod({"info.txt": "{“Name”: “X”}", "a.txt": '{"Type": "Melee", "Filename": "A"}'})
+        r = self.mod({"info.txt": "{“Name”: “X”, “Description”: “d”}", "a.txt": '{"Type": "Melee", "Filename": "A"}'})
         self.assertTrue(any("curly quotes" in e for e in r["errors"]))
 
+    def test_curly_quotes_in_txt_card_only_warn(self):
+        r = self.mod({"info.txt": '{"Name": "X", "Description": "d"}', "a.txt": "{“Type”: “Melee”, “Filename”: “A”}"})
+        self.assertEqual(r["errors"], [], r)
+        self.assertTrue(any("straightens" in w for w in r["warnings"]))
+        self.assertEqual(r["info"]["cards"], 1)
+
+    def test_info_needs_description(self):
+        r = self.mod({"info.txt": '{"Name": "X"}', "a.txt": '{"Type": "Melee", "Filename": "A"}'})
+        self.assertTrue(any("no Description" in e for e in r["errors"]))
+
+    def test_info_json_accepted(self):
+        r = self.mod({"info.json": '{"Name": "X", "Description": "d"}', "a.txt": '{"Type": "Melee", "Filename": "A"}'})
+        self.assertEqual(r["errors"], [], r)
+        self.assertEqual(r["info"]["cards"], 1)
+
+    def test_bare_card_in_json_is_ignored_by_game(self):
+        r = self.mod({"info.txt": '{"Name": "X", "Description": "d"}',
+                      "hank.json": '{"Type": "Character", "Filename": "Hank", "Root": "Hank"}'})
+        self.assertTrue(any("silently ignores" in e for e in r["errors"]), r)
+
+    def test_unknown_json_list_and_txt_type(self):
+        r = self.mod({"info.txt": '{"Name": "X", "Description": "d"}',
+                      "a.json": '{"Characters": [{"Filename": "Hank"}]}',
+                      "b.txt": '{"Type": "character", "Filename": "Hank"}'})
+        self.assertTrue(any("did you mean Character" in w for w in r["warnings"]), r)
+        self.assertTrue(any("case-sensitive" in e for e in r["errors"]), r)
+
+    def test_event_type_any_case(self):
+        r = self.mod({"info.txt": '{"Name": "X", "Description": "d"}', "e.txt": '{"Type": "EVENT", "Filename": "Ev1"}'})
+        self.assertEqual(r["errors"], [], r)
+
+    def test_misspelt_root(self):
+        r = self.mod({"info.txt": '{"Name": "X", "Description": "d"}',
+                      "a.txt": '{"Type": "Character", "Filename": "Hank", "Root": "Hnak"}\n'
+                               '{"Type": "Character", "Filename": "Nexus1_Agent", "Root": "Nexus2_Agent"}'})
+        ws = [w for w in r["warnings"] if "misspelling" in w]
+        self.assertEqual(len(ws), 1, r)
+        self.assertIn("Hnak", ws[0])
+
     def test_shorthand_needs_type(self):
-        r = self.mod({"info.txt": '{"Name": "X"}', "a.txt": '{"Filename": "A"}'})
+        r = self.mod({"info.txt": '{"Name": "X", "Description": "d"}', "a.txt": '{"Filename": "A"}'})
         self.assertTrue(any("no Type" in e for e in r["errors"]))
 
     def test_strict_json(self):
-        r = self.mod({"info.txt": '{"Name": "X"}', "a.json": '{"Melee": [{"Filename": "A",}]}'})
+        r = self.mod({"info.txt": '{"Name": "X", "Description": "d"}', "a.json": '{"Melee": [{"Filename": "A",}]}'})
         self.assertTrue(any("not valid JSON" in e for e in r["errors"]))
 
     def test_assembly_path(self):
@@ -244,13 +283,33 @@ class Deploy(unittest.TestCase):
             r2 = run(["--data-dir", str(data), "deploy", str(src)])
             self.assertFalse(r2["deployed"])
 
-    def test_log_reads_mods_txt(self):
+    def test_log_reads_mods_log(self):
+        # Line shapes follow the game's own mod log writer (build 25615280).
         with tempfile.TemporaryDirectory() as t:
             data = Path(t)
-            (data / "Mods").mkdir()
-            (data / "Mods" / "mods.txt").write_text("Loaded MyMod\nERROR: could not find ObjRef Machete_Sword\n", encoding="utf-8")
+            (data / "Mods" / "MyMod").mkdir(parents=True)
+            (data / "Mods" / "Other").mkdir()
+            (data / "Mods" / "mods.log").write_text(
+                "\t=== MOD LOG ===\n\nScanning for Local Mods...\n  > FOUND: C:/x/Mods/MyMod\n\nMods Enabled:\n"
+                "  > (1) [LOCAL] C:/x/Mods/MyMod\n  > APPLIED HARMONY PATCH: me.mymod\n\nScanning for MadCards...\n"
+                " > FAILED: Hank_Green (Character)\n\n\t=== END OF LOG ===", encoding="utf-8")
+            (data / "Mods" / "enabled.txt").write_text('{"Enabled":["MyMod"]}', encoding="utf-8")
+            (data / "Player.log").write_text("Initialize engine version: 2019.2.6f1\nGAME INITIALIZED: Beta v2.20.a\n", encoding="utf-8")
             r = run(["--data-dir", str(data), "log"])
-            self.assertEqual(r["mods_txt"]["problem_count"], 1)
+            self.assertEqual(r["mods_log"]["problem_count"], 1, r)
+            self.assertEqual(r["mods_log"]["loaded"][0]["source"], "LOCAL")
+            self.assertEqual(r["mods_log"]["applied_harmony"], ["me.mymod"])
+            self.assertTrue(r["game_version"]["mods_allowed"])
+            self.assertTrue(any("Other" in n for n in r["notes"]), r)
+
+    def test_log_flags_release_build(self):
+        with tempfile.TemporaryDirectory() as t:
+            data = Path(t)
+            (data / "Player.log").write_text("GAME INITIALIZED: Release v1.11.a\nERROR: Shader Shader is not supported on this GPU\n", encoding="utf-8")
+            r = run(["--data-dir", str(data), "log"])
+            self.assertFalse(r["game_version"]["mods_allowed"])
+            self.assertEqual(r["player_log"]["problem_count"], 0, r)
+            self.assertTrue(any("Release build" in n for n in r["notes"]), r)
 
 
 class Backup(unittest.TestCase):

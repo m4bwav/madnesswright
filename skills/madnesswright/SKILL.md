@@ -1,6 +1,6 @@
 ---
 name: madnesswright
-description: "Mod MADNESS: Project Nexus (the 2021 Steam game, not the Flash classic) the official way: releasebeta branch with a save backup first, a mod folder under LocalLow/Gibbing Tree/Madness Project Nexus/Mods with info.txt, MadCards (.json strict or .txt shorthand) and .mobj/.sobj bundles, enabling it from the gear icon, proving it loaded from mods.txt, and sharing it on the Steam Workshop. Bundled mpn.py finds the install and branch, backs up saves, lints and deploys a mod, and reads the logs. Use whenever the user asks to mod Project Nexus or MPN, 'make a MadCard', 'give Hank more health', 'green blood mod', 'why isn't my mod loading', 'install this mod', 'upload to the Workshop', 'which branch do I need', or mentions MadCards or Madness Combat modding. Levels, stages, arenas and campaigns are madnesswright-scenes; 3D weapons, armor, characters and Harmony code are madnesswright-modtools. Windows; Linux and Steam Deck through Proton."
+description: "Mod MADNESS: Project Nexus (the 2021 Steam game, not the Flash classic) the official way: releasebeta branch with a save backup first, a mod folder under LocalLow/Gibbing Tree/Madness Project Nexus/Mods with info.txt, MadCards (.json container or .txt shorthand) and .mobj/.sobj bundles, enabling it from the gear icon, proving it loaded from Mods/mods.log, and sharing it on the Steam Workshop. Bundled mpn.py finds the install and branch, backs up saves, lints and deploys a mod, and reads the logs. Use whenever the user asks to mod Project Nexus or MPN, 'make a MadCard', 'give Hank more health', 'green blood mod', 'why isn't my mod loading', 'install this mod', 'upload to the Workshop', 'which branch do I need', or mentions MadCards or Madness Combat modding. Levels, stages, arenas and campaigns are madnesswright-scenes; 3D weapons, armor, characters and Harmony code are madnesswright-modtools. Windows; Linux and Steam Deck through Proton."
 ---
 
 # MADNESS: Project Nexus modding
@@ -25,17 +25,17 @@ Read `evergreen.json` next to this file. If `contradiction` is set or today is o
 
 ## Step 2: check the setup
 
-1. Run `MPN where`. It reports the install, `build_id`, `branch` (Steam `BetaKey`), the data folder, the Mods folder, `mods.txt`, `Player.log`, and the SceneTools and ModTools build output folders. Quote the branch and the Mods path back to the user.
-2. Official modding runs on the `releasebeta` branch only (every release-branch post through v1.10.a, 2026-02-16, says "EXCEPT FOR MODDING"; beta was v2.19.a on 2026-04-15). If `branch` is not `releasebeta`: first run `MPN backup` and confirm the zip path it prints, then have the user switch in Steam (Library, right-click the game, Properties, Betas, `releasebeta`, no password).
+1. Run `MPN where`. It reports the install, `build_id`, `branch` (Steam `BetaKey`), the data folder, the Mods folder, `mods_log`, `enabled` (the game's enabled list), `Player.log`, `game_version` (from the log's `GAME INITIALIZED:` line), and the SceneTools and ModTools build output folders. Quote the branch and the Mods path back to the user.
+2. Official modding runs on the `releasebeta` branch only. The release build carries the mod loader but switches it off unless the build reports itself as Beta (release v1.11.a, build 25615280, read 2026-10-17); `game_version.mods_allowed` says which build ran last. If `branch` is not `releasebeta`: first run `MPN backup` and confirm the zip path it prints, then have the user switch in Steam (Library, right-click the game, Properties, Betas, `releasebeta`, no password) and launch once.
 3. Before switching branches, removing or renaming a mod that adds items, or replacing any game file, run `MPN backup` again. Removing a mod once wiped modded weapon inventories (fixed in beta 2.13.l, 2024-12-19); saves are cheap to keep.
 4. No install found: pass `--steam <root>` or `--data-dir <folder>`. On Linux and Steam Deck the data folder is inside the Proton prefix (`steamapps/compatdata/488860/pfx/drive_c/users/steamuser/AppData/LocalLow/Gibbing Tree/Madness Project Nexus`). There is no native macOS or Linux build.
 
 ## Step 3: write the mod
 
-A mod is one folder inside `Mods/`: `info.txt`, an optional image named `preview`, any number of MadCard files, any `.mobj` or `.sobj` bundles, and an optional assembly. Read [references/madcards.md](references/madcards.md) before writing cards; it has the formats, the inheritance rules and working examples.
+A mod is one folder inside `Mods/`: `info.txt` (or `info.json`) with a non-empty `Name` and `Description` (the game skips the mod otherwise), an optional image named `preview`, any number of MadCard files, any `.mobj` or `.sobj` bundles, and an optional assembly. Read [references/madcards.md](references/madcards.md) before writing cards; it has the formats, the inheritance rules and working examples.
 
-- Write straight ASCII quotes. The official Google Docs examples carry curly quotes; copied as-is they break the file. `check-mod` flags them.
-- `.json` files are strict JSON in the standard layout `{"<Type>": [cards]}`. Shorthand (cards at top level, each with `"Type"`) must be saved as `.txt`.
+- Write straight ASCII quotes. The official Google Docs examples carry curly quotes; the game straightens curly double quotes in `.txt` cards only, so in `info.txt` and `.json` they break the file. `check-mod` flags them.
+- `.json` files are strict JSON in the container layout `{"<Type>": [cards]}`. The game silently ignores a bare card in a `.json` file and any list name it does not know (`Characters` for `Character`). Shorthand (cards at top level, each with `"Type"`) must be saved as `.txt`; there `Type` is case-sensitive.
 - Every card needs `Filename` and `Type`. A Filename the game or another mod already uses overrides that entity; a new Filename adds one. Use `Root` to inherit everything you do not change.
 - Never invent a Filename, Type or field name. The authoritative glossary is the MadCard Maker app (MCM, by DarkSignal, linked from the Modding Resources Master Doc) and Gibbing Tree's official asset dumps. When the user has neither open, write the card with the names you are sure of from the docs and mark every other name as "confirm in MCM". A misspelt Root or Filename does not crash anything: the card silently does nothing or makes a new entity.
 - `Dependencies` in info.txt are Steam Workshop item ids only; local mods cannot depend on other local mods.
@@ -47,8 +47,8 @@ A mod is one folder inside `Mods/`: `info.txt`, an optional image named `preview
 
 ## Step 5: enable and verify
 
-1. The user enables it: main menu, gear icon at the bottom left, select the mod, tick ENABLED, then Apply. Mods are read at launch; restart the game after changing files.
-2. After the user has started a mode that uses the mod, run `MPN log`. `mods_txt` is the game's own mod log (the official troubleshooting source); `player_log` is Unity's. Report the problem lines for this mod by name, or say plainly that none appeared.
+1. The user enables it: main menu, gear icon at the bottom left, select the mod, tick ENABLED, then Apply. Once `Mods/enabled.txt` exists, a newly deployed folder starts disabled until enabled here. Mods are read at launch; restart the game after changing files.
+2. After the user has started a mode that uses the mod, run `MPN log`. `mods_log` is the game's own mod log, `Mods/mods.log` (the official doc calls it `mods.txt`; the game writes `.log`): `loaded` lists the enabled mods, `applied_harmony` the patches, `problems` the `FAILED` and `ERROR` lines. `player_log` is Unity's. Report the problem lines for this mod by name, or say plainly that none appeared.
 3. Tell the user exactly what to look for in game (the new weapon in the Playground spawner, the agent's health bar, the blood colour) and ask them to report it. Done means a clean log plus the user's confirmation.
 
 Troubleshooting order is in [references/troubleshooting.md](references/troubleshooting.md).
@@ -56,7 +56,7 @@ Troubleshooting order is in [references/troubleshooting.md](references/troublesh
 ## Step 6: share it
 
 - There is no uploader inside the game (2026-10). The Modding Resources Master Doc lists two community uploaders: MPN-Workshop-Uploader (Twingamerdudes, MIT) and Soup-o-Stat's GUI Workshop Uploader (itch.io). The user runs the upload with their own Steam account; the agent never handles Steam credentials.
-- Workshop items need no `info.txt`; set "Required Items" for every dependency on the Workshop page, and pick the Workshop's own tags (arena, characters, weapons, armor, enemies, playground, custom-stage, story, scripts, QOL and others).
+- Workshop items take their title and description from the Workshop page, so a card-only item needs no `info.txt`; an item with an assembly still ships one for `AssemblyPath`. Set "Required Items" for every dependency on the Workshop page, and pick the Workshop's own tags (arena, characters, weapons, armor, enemies, playground, custom-stage, story, scripts, QOL and others).
 
 ## Safety
 

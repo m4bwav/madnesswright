@@ -6,19 +6,20 @@ Topic: MADNESS: Project Nexus official modding: releasebeta branch, mod folders,
 
 ## Current understanding
 
-- Settled: MADNESS: Project Nexus (Steam 488860, GIBBING TREE, LLC, 2021, Windows only, Steam Deck Playable) has official modding: mod folders in `%USERPROFILE%/AppData/LocalLow/Gibbing Tree/Madness Project Nexus/Mods/<Mod>/` with `info.txt`, MadCards (`.json` standard, `.txt` shorthand), `.mobj` and `.sobj` bundles, enabled from the gear icon, debugged from `Mods/mods.txt` (R-20261017-2, R-20261017-3). High confidence: from the developer's own docs.
-- Moving: modding runs only on the `releasebeta` branch; release v1.10.a (2026-02-16) still excludes it, beta v2.19.a (2026-04-15) is the newest numbered beta (R-20261017-2). Medium confidence the split still holds; a volatile claim, re-checked at use.
+- Settled: MADNESS: Project Nexus (Steam 488860, GIBBING TREE, LLC, 2021, Windows only, Steam Deck Playable) has official modding: mod folders in `%USERPROFILE%/AppData/LocalLow/Gibbing Tree/Madness Project Nexus/Mods/<Mod>/` with `info.txt`, MadCards (`.json` standard, `.txt` shorthand), `.mobj` and `.sobj` bundles, enabled from the gear icon, debugged from the game's mod log (R-20261017-2, R-20261017-3). High confidence: from the developer's own docs. The game writes that log as `Mods/mods.log`, not the `mods.txt` the doc names, plus `Mods/directories.log` and `Mods/enabled.txt` (R-20261017-9, from the game's code).
+- Moving: modding runs only on the `releasebeta` branch. Release v1.11.a (build 25615280, 2026-10) carries the loader but runs it only when the build reports Beta; its beta version table reads 2.2 (v2.20.a), past the newest announced beta v2.19.a (R-20261017-2, R-20261017-9). High confidence for this build; a volatile claim, re-checked at use.
 - Settled: the Steam install folder is `Madness Project Nexus 2`; the Flash "Classic" is a different game (R-20261017-5).
-- Unverified: `Player.log` location (Unity convention, not seen); the Proton prefix data path on Linux and Deck; the colour value syntax in MadCards (the doc's example is not valid JSON).
+- Settled for build 25615280: `Player.log` sits in the data folder; info.txt or info.json with non-empty Name and Description; `.json` cards only as a container; `.txt` card Types case-sensitive; curly double quotes straightened only in `.txt` cards; colours are `{"r","g","b","a"}` objects (R-20261017-9).
+- Unverified: the Proton prefix data path on Linux and Deck; how a releasebeta build differs from the decompiled release build.
 - Tooling: nothing agent-facing exists for this game (R-20261017-6). The community has MCM (MadCard Maker), two Workshop uploaders and the official asset dumps; no in-game uploader.
-- The bundled `mpn.py` is ours; tested on synthetic fixtures and on the developer's sample scenes, not yet on a machine with the game installed.
+- The bundled `mpn.py` is ours; tested on synthetic fixtures, the developer's sample scenes, and a real install on the release branch (2026-10-17). Not yet run against a real `mods.log`.
 
 ## Open questions
 
 - Is modding still releasebeta-only after v1.10.a? (Steam thread "Are mods allowed outside of beta yet?", 2026-10-11, unread)
-- Exact Player.log path and whether the game ships `0Harmony.dll` in Managed (needs an install).
+- Resolved 2026-10-17 (R-20261017-9): Player.log path; the game ships `0Harmony.dll` 2.4.2.
 - Data path inside the Proton prefix on Steam Deck.
-- Does `mods.txt` name each mod and its errors in a parseable form? (`mpn.py log` scans keywords until a real file is seen)
+- Resolved 2026-10-17 (R-20261017-9): the log is `Mods/mods.log` with fixed line shapes (`> (n) [LOCAL] <dir>`, `> FAILED:`, `APPLIED HARMONY PATCH:`); `mpn.py log` parses them. Still to see one written by a real Beta launch.
 
 ## Search plan
 
@@ -56,6 +57,13 @@ Best sources (primary first): Steam News API; the official Google Docs; github.c
 ## Findings log
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
+
+### R-20261017-9 · 2026-10-17 · Real install and the game's own loader
+- Summary: On the user's install the loader reads `Mods/<folder>/info.txt` or `info.json` (JsonUtility; Name and Description must be non-empty or the mod is skipped with "info.txt contains no data"); every other `.txt` is split into top-level `{}` cards whose `Type` maps to a `MadCard_<Type>` class (case-sensitive; Event, Mission, Cutscene, Driver any case) after curly double quotes are straightened; every `.json` is read only as a container keyed by type names (bare cards and unknown keys silently ignored, no quote cleaning); `.mobj` and `.sobj` are found in all subfolders. The enabled list is `Mods/enabled.txt` (`{"Enabled": [folder names]}`; folders not listed start disabled once it exists); the log is `Mods/mods.log` (doc says mods.txt) and `Mods/directories.log`. The loader runs only when `Game_Manager.currentReleaseStatus` is Beta and `-nomods` is absent; release v1.11.a has it off. Player.log is `<data>/Player.log` and prints `GAME INITIALIZED: Release v1.11.a`. Workshop items read info.* too (title from Steam). `Blood` on a Character card is a Unity `Color`.
+- Track: subject
+- Sources: the user's own install (Steam build 25615280, release v1.11.a, Unity 2019.2.6f1), read 2026-10-17: `mpn.py where`, Player.log, a listing of `Madness Project Nexus_Data/Managed/`, and a decompile of `Assembly-CSharp.dll` with ilspycmd 11.1 (classes Mod_Manager, ModItem, WorkshopItem, Steam_WorkshopIntegration, Converter_JSON, AssetBundle_Handler, Game_Manager, Saves_Manager; output kept out of the repository); the official Modding Overview as text, https://docs.google.com/document/d/1f_RbQGE45CY8no6mFuVGTaOTF7XnaK7yq5tJXty_JSA/export?format=txt
+- Magnitude: moderate
+- Applied: C-20261017-3
 
 ### R-20261017-8 · 2026-10-17 · No checker exists
 - Summary: No checker exists for MPN mods; the evidence available is mods.txt, the in-game Mods list and the user's report. mpn.py check-mod and log were written to fill the gap.

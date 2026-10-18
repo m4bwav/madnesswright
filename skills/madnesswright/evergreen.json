@@ -11,7 +11,7 @@
   },
   "protocol": "plugin",
   "source": null,
-  "topic": "MADNESS: Project Nexus official modding: releasebeta branch, mod folders, info.txt, MadCards, enabling, mods.txt, Steam Workshop sharing, legacy routes",
+  "topic": "MADNESS: Project Nexus official modding: releasebeta branch, mod folders, info.txt, MadCards, enabling, mods.log, Steam Workshop sharing, legacy routes",
   "tier": "moderate",
   "interval_days": 30,
   "last_checked": "2026-10-17",
@@ -19,7 +19,7 @@
   "verify_at_use": true,
   "volatile_claims": [
     {
-      "claim": "Official modding (Workshop, SceneTools, ModTools, Harmony) runs only on the releasebeta Steam branch; release v1.10.a (2026-02-16) excludes it; newest numbered beta v2.19.a (2026-04-15) (R-20261017-2)",
+      "claim": "Official modding (Workshop, SceneTools, ModTools, Harmony) runs only on the releasebeta Steam branch; release v1.11.a (build 25615280) carries the loader but runs it only when the build reports Beta; newest announced beta v2.19.a (2026-04-15), the code's beta table reads 2.20.a (R-20261017-2, R-20261017-9)",
       "checked": "2026-10-17",
       "recheck_days": 14.0
     }
@@ -42,7 +42,7 @@
   ],
   "counts": {
     "learnings": 0,
-    "changes": 1,
+    "changes": 3,
     "research": 0,
     "tests": 2
   },

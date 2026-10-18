@@ -1,0 +1,6 @@
+{
+  "Name": "Tough Agents, Green Hank",
+  "Author": "fixture",
+  "Description": "Agents get 400 health; Hank bleeds green.",
+  "Tags": ["Characters"]
+}

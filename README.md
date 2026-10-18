@@ -6,7 +6,7 @@ Three self-maintaining ("evergreen") skills that let an AI coding agent (Claude 
 
 Project Nexus (GIBBING TREE, LLC, Steam app 488860) has real mod support. There is no level editor inside the game. Instead:
 
-- **Mods** are folders under `%USERPROFILE%\AppData\LocalLow\Gibbing Tree\Madness Project Nexus\Mods\`. Each holds an `info.txt`, **MadCards** (JSON data for characters, weapons, waves, stages and more), and asset bundles. You turn them on from the gear icon on the main menu. The game logs mod problems to `Mods\mods.txt`.
+- **Mods** are folders under `%USERPROFILE%\AppData\LocalLow\Gibbing Tree\Madness Project Nexus\Mods\`. Each holds an `info.txt`, **MadCards** (JSON data for characters, weapons, waves, stages and more), and asset bundles. You turn them on from the gear icon on the main menu. The game logs mod problems to `Mods\mods.log` (the official doc calls it `mods.txt`).
 - **Levels** are Unity scenes made in the developer's **SceneTools** project, on Unity 2019.2.6f1, and exported as `.sobj`. They can be Playground rooms, multi-stage campaigns with cutscenes, or Arena Siege and Infiltration maps.
 - **New art** (weapons, armor, characters with custom rigs) goes through the **ModTools** project and is exported as `.mobj`.
 - **Code**: since beta v2.19.a (April 2026) the game loads Harmony 2.4.2 assemblies named in `info.txt`. No BepInEx is needed.
@@ -16,7 +16,7 @@ Project Nexus (GIBBING TREE, LLC, Steam app 488860) has real mod support. There 
 
 | Skill | Job |
 |---|---|
-| [`madnesswright`](skills/madnesswright/SKILL.md) | Start here. Checks the branch and backs up saves. Writes `info.txt` and MadCards in either format. Lints, deploys and enables the mod, reads `mods.txt`, and shares it on the Workshop. Also tells this game apart from the Flash classic and warns off the legacy DLL-swap routes. |
+| [`madnesswright`](skills/madnesswright/SKILL.md) | Start here. Checks the branch and backs up saves. Writes `info.txt` and MadCards in either format. Lints, deploys and enables the mod, reads the game's mod log, and shares it on the Workshop. Also tells this game apart from the Flash classic and warns off the legacy DLL-swap routes. |
 | [`madnesswright-scenes`](skills/madnesswright-scenes/SKILL.md) | Levels. Covers SceneTools setup and the room, waypoint, door, spawner, zone and blocker rules. Handles the Event System, stages, campaigns and arena maps. Plans encounters from level design practice, lints the scene, then runs the build, deploy and playtest loop. |
 | [`madnesswright-modtools`](skills/madnesswright-modtools/SKILL.md) | MadObjects in ModTools: axes, grip points, Weapon Animator, Character_Ref. Also Harmony assemblies, which are written only after decompiling the game's own `Assembly-CSharp.dll`, with the target framework read from its `Managed` folder. |
 
@@ -26,11 +26,11 @@ Project Nexus (GIBBING TREE, LLC, Steam app 488860) has real mod support. There 
 
 | Command | Does |
 |---|---|
-| `where` | Finds the Steam install, build, branch, download state, data and Mods folders, `mods.txt`, `Player.log`, and the newest SceneTools and ModTools builds |
+| `where` | Finds the Steam install, build, branch, download state, data and Mods folders, `mods.log`, the enabled list, `Player.log` and the build it ran, and the newest SceneTools and ModTools builds |
 | `backup [--out DIR]` | Zips the game's data folder (careers, Mods, settings) |
 | `check-mod <dir>` | Lints a mod folder: `info.txt`, curly quotes, strict `.json` against `.txt` shorthand, Filename and Type on every card, the assembly path, Workshop-id dependencies |
 | `deploy <dir> [--force]` | Checks the mod, then copies it into the game's Mods folder |
-| `log` | Lists problem lines and the tail of `mods.txt` and `Player.log` |
+| `log` | Reports the build, the enabled list, loaded mods and applied Harmony patches, and the problem lines and tail of `mods.log` and `Player.log` |
 | `scene-lint <Scene.unity>` | Checks a SceneTools scene against 13 rules from the official docs |
 
 ## Install

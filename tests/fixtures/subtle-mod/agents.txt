@@ -1,0 +1,1 @@
+{ "Type": "Character", "Filename": "Nexus1_Agent", "Root": "Nexsu1_Agent", "Health": 400 }
