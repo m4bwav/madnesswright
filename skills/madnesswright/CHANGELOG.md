@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261017-4 · 2026-10-17 · Route level and map requests to madnesswright-scenes
+- because: T-20261017-4 (madnesswright-scenes 0/6 on its trigger runs; the hub and modtools took them)
+- files: SKILL.md (description)
+- The routing sentence now sends any level, map, Playground scene, .sobj, stage, arena or campaign request to madnesswright-scenes; `.json` cards are described as the container format and the log as Mods/mods.log.
+
 ### C-20261017-3 · 2026-10-17 · Loader facts from the real game: mods.log, enabled.txt, info.json, card formats
 - because: R-20261017-9
 - files: SKILL.md (description, Step 2, Step 3, Step 5, Step 6), references/troubleshooting.md (rewritten), references/madcards.md (What a card is, Two file formats, info.txt), scripts/mpn.py (where, check-mod, log), tests/test_mpn.py

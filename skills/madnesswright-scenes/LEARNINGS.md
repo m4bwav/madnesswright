@@ -6,6 +6,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## Active
 
+### L-001 · 2026-10-17 · A sibling hub that says "start here" eats the specialist's triggers
+- Trigger: T-20261017-4, all six scenes trigger runs went to madnesswright or madnesswright-modtools on 0.1.0
+- Hypothesis: the hub's broad "mod Project Nexus" and "Start here" outrank a specialist description that opens with tool names; ".sobj" read as close to ".mobj"
+- Rule: open the description with the user's words (level, map, stage) and say "requests start here"; give each sibling an explicit sentence routing levels here; re-run every sibling's triggers after any description edit, with a runner that records more than the first Skill call
+- Evidence: C-20261017-2, T-20261017-4 (36/36 after), confirmed 2026-10-17
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17
+
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts

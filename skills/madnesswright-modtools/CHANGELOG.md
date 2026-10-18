@@ -4,6 +4,16 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261017-6 · 2026-10-17 · Route level and map requests to madnesswright-scenes
+- because: T-20261017-4 (madnesswright-scenes 0/6 on its trigger runs; the hub and modtools took them)
+- files: SKILL.md (description)
+- Says levels, maps and .sobj scenes belong to madnesswright-scenes, so a .sobj question no longer lands here.
+
+### C-20261017-5 · 2026-10-17 · Name the install folder in Step 5.1
+- because: T-20261017-3 (action-1 runs 2 and 3 both first tried `common/Madness Project Nexus/` and failed)
+- files: SKILL.md (Step 5.1)
+- Points at `install.install_dir` from `MPN where` and names the `Madness Project Nexus 2` folder.
+
 ### C-20261017-4 · 2026-10-17 · Target net48, not net472; build outside the mod folder
 - because: T-20261017-3 (outcome-1 run 2: net472 failed MSB3274 against the game's net48 0Harmony.dll; net48 built; the build's obj/ folder landed in the mod)
 - files: SKILL.md (Step 5.3), references/harmony.md (Project file, Framework rule)

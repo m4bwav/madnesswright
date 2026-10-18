@@ -8,6 +8,19 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261017-4 · 2026-10-17 · headless `claude -p` per run, plugin installed as madnesswright@mark-local · dev-machine · 12/12 (trigger and decoy, 3 runs each)
+- First pass on 0.1.0: 30/36 across the plugin. Every miss was madnesswright-scenes: its four trigger runs went to the hub ("Start here") or to madnesswright-modtools ("my mobj doesn't load" caught "I built the sobj"). The runner also stopped at the first Skill call.
+- After C-20261017-2 (routing lines in all three descriptions) and a runner that records up to three Skill calls: 36/36; the scenes skill fired first on all six of its runs; every decoy went to its sibling or to no skill.
+- This skill: trigger-1, trigger-2 0/3 each before the fix, 3/3 each after; decoy-1 (Hank's health) went to madnesswright or modtools 3/3; decoy-2 (Unity 6 platformer) no skill 3/3.
+- led to: C-20261017-2, L-001
+
+### T-20261017-3 · 2026-10-17 · evergreen-tester subagents · dev-machine · 4/4 (value cases, runs 2 and 3)
+- action-1 (new fixture Arena_PG.unity: no Player_Start, Zone_Camera under Characters) · pass ×2 · `mpn.py scene-lint` in the trace; S01 and S05 reported with fixes.
+- action-1 baseline (no skill) · also found both, by matching prefab GUIDs to .meta files and comparing with Warehouse_PG. The case still does not separate skill from baseline while a correct sibling scene sits beside it; the skill's edge is two tool calls against a dozen. Next fixture: no reference scene in the folder.
+- outcome-1 · pass ×2 · LEVEL-PLAN.md with one entry per room, at most one new enemy type per room, Squad Spawner (run 3 with a Zone_Spawner trigger), filled playtest checklist, `_PG` and one Player_Start under Characters.
+- outcome-1 baseline (no skill) · fail · plan had rooms and waves but no Squad Spawner or Zone_Spawner by name, an unfilled checklist, no `_PG`, no Characters parent, no SceneTools.
+- led to: none
+
 ### T-20261017-2 · 2026-10-17 · evergreen-tester subagents · dev-machine · 2/2 (value cases, run 1 of 3)
 - action-1 · pass · ran `mpn.py scene-lint`; reported S03 and S13 with fixes. Note: the script exits 0 with errors unless `--strict` is passed (by design).
 - action-1 baseline (no skill) · found the rotation and the empty label by reading the YAML, but called the rotation a style choice, not a rule that breaks the room: partial. Harder fixture owed (Zone_Camera under the wrong parent, a missing Player_Start).
