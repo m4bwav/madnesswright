@@ -90,6 +90,8 @@ A mod that puts the game in a state the developer never reached (the player in a
 
 Game queries are often scoped to the caller's room: `Combat_Manager.ReturnClosestTarget` rejects targets in another room. To pick a character under the mouse anywhere on screen, compare `Camera.WorldToScreenPoint` of each `Combatant_Base` (from `Cam_Main.gameCam.myCamera`) with `Input.mousePosition`.
 
+Changing who controls a character, or what an NPC is fighting, goes through the game's own bookkeeping, not field writes. An NPC's kill target lives in two places: `Controller_Base.myKillTarget` and the target's `AI_TargetClaimer.myClaimants` list. Release it with `AI_TargetClaimer.UnclaimMyTarget(controller)`; never set `myKillTarget = null` by hand, which leaves a stale claimant that the AI then adds a second time (`ClaimTarget` does not check for duplicates). Before moving a controller (`Combatant_Base.AssignController`), release the claims of both controllers involved, as the game's `KillMe` does. Seen 2026-10-18 (beta v2.20.a): `Controller_Base.LostConnection` nulls `myOwner`, removes one copy of itself and re-scores the rest; the duplicate copy threw a `NullReferenceException` in `AI_TargetClaimer.SetPriority` halfway through the swap, leaving a frozen NPC. Worked example: [examples/SwapUnaware](../../../examples/SwapUnaware/README.md).
+
 ## Failure modes
 
 - "Could not find method" or "No target method specified": the name or signature is wrong for this build. Re-decompile; check overloads and argument types.

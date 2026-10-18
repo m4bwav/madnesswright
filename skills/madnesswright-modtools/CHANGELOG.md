@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261018-2 · 2026-10-18 · Release AI target claims through the game; link the example mod
+- because: L-002, T-20261018-2, user request (the mod goes in the repo as an example)
+- files: references/harmony.md ("Doing what the game never does"), SKILL.md (Step 5.5)
+- The reference says to release kill targets with `AI_TargetClaimer.UnclaimMyTarget` before moving a controller and never to null `myKillTarget` by hand, with the duplicate-claimant crash as evidence; Step 5 links examples/SwapUnaware as the worked example.
+
 ### C-20261018-1 · 2026-10-18 · Mods without patches, guarding states the game never reaches, crash stacks
 - because: L-001, T-20261018-1, R-20261018-1
 - files: SKILL.md (Step 5, Prove it), references/harmony.md (new sections "A mod with no patch" and "Doing what the game never does"; Failure modes)
