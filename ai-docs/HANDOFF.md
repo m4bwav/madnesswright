@@ -17,6 +17,10 @@ State on 2026-10-17, end of the creation session.
 4. Launch set before going public: README banner (ComfyUI, 1536x640, `.github/images/banner.jpg`), GitHub repository, wiki (wikiwright), topics, release v0.1.0. Waiting for the owner's go-ahead to publish.
 5. Headless SceneTools build route is untested (needs Unity 2019.2.6f1).
 
+## Mark's rulings (2026-10-17, after the session)
+
+Keep the name; keep the moderate tier; publish fully (repo, banner, wiki, v0.1.0 release, listings); install the plugin locally; the game is now installed and he has loaded the campaign; skip the evergreen refresh for now.
+
 ## Next step
 
-Read [log.md](log.md), then do Owed 3 if the game is installed, else Owed 1.
+The owner keeps the session-2 prompt (real-game checks, harder evals, local install, public launch) in their private notes, because it names local paths. Without it: do the Owed list in order 3, 2, 1, 4.
