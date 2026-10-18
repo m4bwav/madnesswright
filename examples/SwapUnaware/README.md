@@ -9,6 +9,8 @@ Take control of any character and make everyone else stop noticing you. A reques
 | F6 | Every other character goes back to unaware and forgets who it was fighting. They can notice you again. |
 | F7 | Keep everyone unaware (re-applied twice a second) until you press F7 again. |
 
+On the Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165 (Subscribe, then enable it from the gear icon).
+
 The F keys were picked because no game code reads them (checked in the decompile). Needs the `releasebeta` branch: the normal release build does not load mods. Tested in the Playground; not in the story career, so back up your saves before using it there.
 
 ## Install

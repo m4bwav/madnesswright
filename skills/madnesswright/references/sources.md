@@ -18,7 +18,7 @@ Checked 2026-10-17. Primary sources first.
 - Steam discussions: https://steamcommunity.com/app/488860/discussions/0/ and Workshop discussions https://steamcommunity.com/workshop/discussions/?appid=488860
 - Announcements and comments: https://steamcommunity.com/app/488860/eventcomments/
 - Discord: https://discord.com/invite/projectnexus (the Modding Discord is linked from the master doc)
-- Uploaders: https://github.com/Twingamerdudes/MPN-Workshop-Uploader and https://soup-o-stat.itch.io/mpn-gui-workshop-uploader
+- Uploaders: https://github.com/placenamehereig/MPN-Workshop-Uploader (moved from Twingamerdudes) and https://soup-o-stat.itch.io/mpn-gui-workshop-uploader
 - Nexus Mods has a handful of legacy files: https://www.nexusmods.com/madnessprojectnexus
 
 ## Not sources
