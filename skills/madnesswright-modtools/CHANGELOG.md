@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261018-1 · 2026-10-18 · Mods without patches, guarding states the game never reaches, crash stacks
+- because: L-001, T-20261018-1, R-20261018-1
+- files: SKILL.md (Step 5, Prove it), references/harmony.md (new sections "A mod with no patch" and "Doing what the game never does"; Failure modes)
+- Step 5 now has the agent grep callers and ask for an edge-case playtest before calling a mod done; the reference shows a patch-free MonoBehaviour host, free keys, from-bytes loading (redeploy while running), room-scoped game queries and the KillMe example; Failure modes reads the new `stack` field of `MPN log`.
+
+
 ### C-20261017-6 · 2026-10-17 · Route level and map requests to madnesswright-scenes
 - because: T-20261017-4 (madnesswright-scenes 0/6 on its trigger runs; the hub and modtools took them)
 - files: SKILL.md (description)

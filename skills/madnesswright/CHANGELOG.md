@@ -4,6 +4,12 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261018-1 · 2026-10-18 · Gear-icon check, redeploy while running, log stacks and card lines
+- because: R-20261018-1 (first beta launch), T-20261018-1 in madnesswright-modtools (a crash whose cause was in the stack frames `log` did not show)
+- files: SKILL.md (Step 5, enabling), scripts/mpn.py (log: `stack` on exception lines, `mods_log.cards` from OVERRIDE/FAILED lines, the from-bytes assembly line is noise), tests/test_mpn.py (real beta 2.20.a log shapes)
+- The owner looked for the gear icon on the release build, which deletes it; the skill now says so. `log` shows the frames that name the method that threw and which cards the game applied.
+
+
 ### C-20261017-5 · 2026-10-17 · Doc corrections found by the wiki run
 - because: the wiki verification run of 2026-10-17 (ai-docs/notes/2026-10-17-github-wiki.md, inaccuracies 1, 3, 4)
 - files: scripts/mpn.py (docstring), references/troubleshooting.md (item 2), references/madcards.md (What a card is)

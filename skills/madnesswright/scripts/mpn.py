@@ -522,15 +522,23 @@ def cmd_deploy(args):
 
 PROBLEM = re.compile(r"error|exception|fail|could not|couldn't|invalid|missing|not found|null ?reference|contains no data|already exists", re.IGNORECASE)
 # Player.log noise seen on a clean launch of build 25615280 (no mods): not mod problems.
-NOISE = re.compile(r"Shader is not supported on this GPU|TRANSITION SQUAD FAIL|Launch Parameters|\[FAILED\].*\.exe$|Debug\.bindings\.h", re.IGNORECASE)
+# The data-*.dll line is Mono loading a mod assembly from bytes (beta 2.20.a), not a failure.
+NOISE = re.compile(r"Shader is not supported on this GPU|TRANSITION SQUAD FAIL|Launch Parameters|\[FAILED\].*\.exe$|Debug\.bindings\.h|Fallback handler could not load library .*data-[0-9A-F]+\.dll", re.IGNORECASE)
 MOD_LINE = re.compile(r"^\s*> \((\d+)\) \[(LOCAL|WORKSHOP)\] (.+)$")
+CARD_LINE = re.compile(r"^\s*> (?!FOUND:)([A-Z]+): (.+?) \((\w+)\)")
 
 
 def scan_log(p, lines):
     if not p or not Path(p).is_file():
         return None
     t = Path(p).read_text(encoding="utf-8", errors="replace").splitlines()
-    probs = [{"line": i + 1, "text": l[:300]} for i, l in enumerate(t) if PROBLEM.search(l) and not NOISE.search(l)]
+    probs = []
+    for i, l in enumerate(t):
+        if PROBLEM.search(l) and not NOISE.search(l):
+            pr = {"line": i + 1, "text": l[:300]}
+            if "Exception" in l:  # the frames name the method that threw: a mod's class or the game code it upset
+                pr["stack"] = [s.strip()[:200] for s in t[i + 1:i + 6] if s.lstrip().startswith("at ")][:4]
+            probs.append(pr)
     return {"file": str(p), "modified": datetime.datetime.fromtimestamp(Path(p).stat().st_mtime).isoformat(timespec="seconds"),
             "lines": len(t), "problems": probs[-60:], "problem_count": len(probs), "tail": [l[:300] for l in t[-lines:]]}
 
@@ -546,6 +554,7 @@ def cmd_log(args):
         t = Path(res["mods_log"]["file"]).read_text(encoding="utf-8", errors="replace").splitlines()
         res["mods_log"]["loaded"] = [{"n": int(m.group(1)), "source": m.group(2), "dir": m.group(3)} for m in map(MOD_LINE.match, t) if m]
         res["mods_log"]["applied_harmony"] = [l.split("APPLIED HARMONY PATCH:", 1)[1].strip() for l in t if "APPLIED HARMONY PATCH:" in l]
+        res["mods_log"]["cards"] = [{"kind": m.group(1), "card": m.group(2), "type": m.group(3)} for m in map(CARD_LINE.match, t) if m][:100]
     res["player_log"] = scan_log(ddir / "Player.log" if ddir else None, args.lines)
     gv = res["game_version"]
     if gv and not gv["mods_allowed"]:

@@ -54,6 +54,14 @@ Best sources (primary first): Steam News API; the official Google Docs; github.c
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
+### R-20261018-1 · 2026-10-18 · Beta 2.20.a and a live Harmony mod
+- Summary: Beta build 25615196 (`GAME INITIALIZED: Beta v2.20.a`), still Unity 2019.2.6f1 with `0Harmony.dll` and no `netstandard.dll`: net48 built clean first try. `IModEntrypoint` unchanged (global namespace). A mod with one Prefix and a MonoBehaviour host loaded (`APPLIED HARMONY PATCH: <id>` in mods.log). Mod DLLs load from bytes (`Fallback handler could not load library ... data-<hex>.dll` in Player.log) and are not locked. `Combatant_Base.KillMe` and `Squad_Main.RemoveMember` call `Controller_Player.SwapControllersWithSquadmate(true)`, which dereferences `myData.mySquad`; Playground spawns can have none. `Combat_Manager.ReturnClosestTarget` rejects targets in another room. `CanBePlayerControlled` holds the core-roster gate; the `(Combatant_Base)` overload of the swap does not check it. F5 to F8 are read nowhere in the game code.
+- Track: subject
+- Sources: the user's own install (Steam build 25615196, releasebeta), read 2026-10-18: Player.log, Mods/mods.log, and a decompile of Assembly-CSharp.dll with ilspycmd (Controller_Player, Combatant_Base, Combat_Manager, Squad_Main, Controller_Base, AI_Wakeup, Cam_Main; output kept out of the repository)
+- Magnitude: moderate
+- Applied: C-20261018-1
+
+
 ### R-20261017-6 · 2026-10-17 · The game's Harmony loader, read from its code
 - Summary: `IModEntrypoint` (global namespace: `Initialize()`, `Unload()`); mods patched in ascending PatchOrder; the DLL is loaded from bytes at `<mod>/<AssemblyPath>`; `PatchAll` unless ManualPatch; EntryType resolved with `Assembly.GetType` and created with a parameterless constructor; an Initialize exception unloads and unpatches; HarmonyID blank becomes `workshop.<id>` or `local.<guid>` (new every launch), spaces become `_`; extra DLLs resolved from the AssemblyPath folder. Log strings: `APPLIED HARMONY PATCH:`, `! ERROR: Harmony Patch <id> Failed!`, `HARMONY FAIL: Path <p> not found.`, `FAIL: Entrypoint "<t>" Not Found`, `does not implement IModEntrypoint`. `Managed/` holds `0Harmony.dll` 2.4.2.0 and `mscorlib.dll`, no `netstandard.dll`; Unity 2019.2.6f1 per Player.log.
 - Track: subject

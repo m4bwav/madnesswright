@@ -58,6 +58,14 @@ Best sources (primary first): Steam News API; the official Google Docs; github.c
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
+### R-20261018-1 · 2026-10-18 · First beta launch on the owner's install
+- Summary: Switching Steam to `releasebeta` gave build 25615196 and `GAME INITIALIZED: Beta v2.20.a`; `mods_allowed` true. The main-menu mod button has `Object_Modding_Remover`, which destroys it when mods are disabled, so on the release build there is no gear icon at all. A one-card container mod (Hank, Blood green) loaded: `mods.log` listed `> (1) [LOCAL] <path>` and ` > OVERRIDE: Hank (Character)  >> Priority (10/0) `, `enabled.txt` was `{"Enabled":["GreenBloodHank"]}`, `directories.log` was empty, and the owner saw green blood in the Playground. Mod DLLs load from bytes, so a deployed mod can be replaced while the game runs.
+- Track: subject
+- Sources: the owner's install, 2026-10-18: Steam app manifest, Player.log, Mods/mods.log, Mods/enabled.txt, Mods/directories.log, the owner's in-game report, and a decompile of the beta Assembly-CSharp.dll (Object_Modding_Remover, Game_Manager; output kept out of the repository)
+- Magnitude: minor
+- Applied: C-20261018-1
+
+
 ### R-20261017-9 · 2026-10-17 · Real install and the game's own loader
 - Summary: On the user's install the loader reads `Mods/<folder>/info.txt` or `info.json` (JsonUtility; Name and Description must be non-empty or the mod is skipped with "info.txt contains no data"); every other `.txt` is split into top-level `{}` cards whose `Type` maps to a `MadCard_<Type>` class (case-sensitive; Event, Mission, Cutscene, Driver any case) after curly double quotes are straightened; every `.json` is read only as a container keyed by type names (bare cards and unknown keys silently ignored, no quote cleaning); `.mobj` and `.sobj` are found in all subfolders. The enabled list is `Mods/enabled.txt` (`{"Enabled": [folder names]}`; folders not listed start disabled once it exists); the log is `Mods/mods.log` (doc says mods.txt) and `Mods/directories.log`. The loader runs only when `Game_Manager.currentReleaseStatus` is Beta and `-nomods` is absent; release v1.11.a has it off. Player.log is `<data>/Player.log` and prints `GAME INITIALIZED: Release v1.11.a`. Workshop items read info.* too (title from Steam). `Blood` on a Character card is a Unity `Color`.
 - Track: subject
