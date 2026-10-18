@@ -4,6 +4,8 @@ Plugin versions. Skill-level changes and their reasons are in each skill's own C
 
 ## 0.1.4 · 2026-10-18
 
+- madnesswright: the Workshop uploader moved to placenamehereig/MPN-Workshop-Uploader; content folder needs a dot in its name; the example mod is on the Workshop (item 3822329165).
+
 - New `examples/SwapUnaware`: a complete Harmony mod (take control of any character, everyone else unaware) with its build and pack scripts and the bugs its playtests found; linked from the README and madnesswright-modtools.
 - madnesswright-modtools: release an AI's target claims through `AI_TargetClaimer.UnclaimMyTarget` before moving a controller; never null `myKillTarget` by hand (L-002).
 

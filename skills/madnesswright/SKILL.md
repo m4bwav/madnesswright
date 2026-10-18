@@ -55,7 +55,7 @@ Troubleshooting order is in [references/troubleshooting.md](references/troublesh
 
 ## Step 6: share it
 
-- There is no uploader inside the game (2026-10). The Modding Resources Master Doc lists two community uploaders: MPN-Workshop-Uploader (Twingamerdudes, MIT) and Soup-o-Stat's GUI Workshop Uploader (itch.io). The user runs the upload with their own Steam account; the agent never handles Steam credentials.
+- There is no uploader inside the game (2026-10; the beta's code only reads Workshop items). Community uploaders: MPN-Workshop-Uploader (github.com/placenamehereig/MPN-Workshop-Uploader, MIT, interactive console on Facepunch.Steamworks; its content path must contain a dot, so name the folder like `MyMod.content`) and Soup-o-Stat's GUI uploader (no license). They upload through the Steam client the user is logged into, so no password is typed; visibility is set by the tool or on the item page. The user runs or approves the upload with their own account; the agent never handles Steam credentials.
 - Workshop items take their title and description from the Workshop page, so a card-only item needs no `info.txt`; an item with an assembly still ships one for `AssemblyPath`. Set "Required Items" for every dependency on the Workshop page, and pick the Workshop's own tags (arena, characters, weapons, armor, enemies, playground, custom-stage, story, scripts, QOL and others).
 
 ## Safety

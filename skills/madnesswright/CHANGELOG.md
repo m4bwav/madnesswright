@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261018-2 · 2026-10-18 · Workshop uploader's new home and its quirks
+- because: R-20261018-2
+- files: SKILL.md (Workshop), references/sources.md
+- The uploader repo moved; the skill names the dotted content-folder quirk and that uploads go through the logged-in Steam client.
+
 ### C-20261018-1 · 2026-10-18 · Gear-icon check, redeploy while running, log stacks and card lines
 - because: R-20261018-1 (first beta launch), T-20261018-1 in madnesswright-modtools (a crash whose cause was in the stack frames `log` did not show)
 - files: SKILL.md (Step 5, enabling), scripts/mpn.py (log: `stack` on exception lines, `mods_log.cards` from OVERRIDE/FAILED lines, the from-bytes assembly line is noise), tests/test_mpn.py (real beta 2.20.a log shapes)

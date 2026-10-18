@@ -58,6 +58,13 @@ Best sources (primary first): Steam News API; the official Google Docs; github.c
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
+### R-20261018-2 · 2026-10-18 · Workshop upload route checked by a real upload
+- Summary: The beta's `Steam_WorkshopIntegration` only queries items (tags, visibility); no in-game uploader. MPN-Workshop-Uploader now lives at github.com/placenamehereig/MPN-Workshop-Uploader (MIT, release 1.1.0 of 2025-02-28, C# console, Facepunch.Steamworks, `SteamClient.Init(488860)`), asks its questions on the console, calls `Console.Clear()` (fails with redirected input) and rejects a content path without an extension. A Facepunch `Ugc.Editor` upload (`NewCommunityFile`, `WithContent(folder)`, `WithPreviewFile`, `WithTag`, `WithPublicVisibility`) through the logged-in Steam client published a Harmony mod as item 3822329165, visibility public, tags `scripts` and `playground` (lower-cased by Steam), with no Workshop agreement prompt.
+- Track: tooling
+- Sources: github.com/placenamehereig/MPN-Workshop-Uploader (README, Program.cs, release 1.1.0); the beta decompile (output kept out of the repository); ISteamRemoteStorage/GetPublishedFileDetails for item 3822329165, 2026-10-18
+- Magnitude: minor
+- Applied: C-20261018-2
+
 ### R-20261018-1 · 2026-10-18 · First beta launch on the owner's install
 - Summary: Switching Steam to `releasebeta` gave build 25615196 and `GAME INITIALIZED: Beta v2.20.a`; `mods_allowed` true. The main-menu mod button has `Object_Modding_Remover`, which destroys it when mods are disabled, so on the release build there is no gear icon at all. A one-card container mod (Hank, Blood green) loaded: `mods.log` listed `> (1) [LOCAL] <path>` and ` > OVERRIDE: Hank (Character)  >> Priority (10/0) `, `enabled.txt` was `{"Enabled":["GreenBloodHank"]}`, `directories.log` was empty, and the owner saw green blood in the Playground. Mod DLLs load from bytes, so a deployed mod can be replaced while the game runs.
 - Track: subject
