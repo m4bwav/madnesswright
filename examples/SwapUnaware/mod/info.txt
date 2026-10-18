@@ -1,0 +1,11 @@
+{
+  "Name": "Swap And Unaware",
+  "Author": "m4bwav",
+  "Description": "F5: take control of the character under the mouse, ally or enemy. F6: everyone else forgets you (unaware). F7: keep everyone unaware until pressed again. F8: back to your own body (also automatic when the body you took dies).",
+  "Tags": ["Scripts", "Playground"],
+  "AssemblyPath": "Managed/SwapUnaware.dll",
+  "HarmonyID": "com.m4bwav.mpn.swapunaware",
+  "EntryType": "SwapUnaware.ModEntry",
+  "PatchOrder": 0,
+  "ManualPatch": false
+}

@@ -14,7 +14,7 @@ COMPANIONS = ["SKILL.md", "RESEARCH.md", "CHANGELOG.md", "LEARNINGS.md", "TESTS.
               "MAINTENANCE.md", "evergreen.json", os.path.join("evals", "evals.json")]
 MAX_SKILL_LINES = 200          # AGENTS.md: skills stay under 200 lines
 MAX_DESCRIPTION = 1024         # Agent Skills spec limit for the description field
-SKIP_DIRS = {".git", "__pycache__", "dist", "node_modules"}
+SKIP_DIRS = {".git", "__pycache__", "dist", "node_modules", "bin", "obj", "build"}
 LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
 # Public-safety guards that name nothing private: an absolute path into someone's home folder
 # (placeholders such as C:\Users\<you> are allowed) and AI attribution lines.

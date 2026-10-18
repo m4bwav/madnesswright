@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.4 · 2026-10-18
+
+- New `examples/SwapUnaware`: a complete Harmony mod (take control of any character, everyone else unaware) with its build and pack scripts and the bugs its playtests found; linked from the README and madnesswright-modtools.
+- madnesswright-modtools: release an AI's target claims through `AI_TargetClaimer.UnclaimMyTarget` before moving a controller; never null `myKillTarget` by hand (L-002).
+
 ## 0.1.3 · 2026-10-18
 
 - First beta launch (v2.20.a, build 25615196) and the first live Harmony mod built with madnesswright-modtools.

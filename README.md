@@ -24,6 +24,10 @@ Project Nexus (GIBBING TREE, LLC, Steam app 488860) has real mod support. There 
 | [`madnesswright-scenes`](skills/madnesswright-scenes/SKILL.md) | Levels. Covers SceneTools setup and the room, waypoint, door, spawner, zone and blocker rules. Handles the Event System, stages, campaigns and arena maps. Plans encounters from level design practice, lints the scene, then runs the build, deploy and playtest loop. |
 | [`madnesswright-modtools`](skills/madnesswright-modtools/SKILL.md) | MadObjects in ModTools: axes, grip points, Weapon Animator, Character_Ref. Also Harmony assemblies, which are written only after decompiling the game's own `Assembly-CSharp.dll`, with the target framework read from its `Managed` folder. |
 
+## Example mod
+
+[examples/SwapUnaware](examples/SwapUnaware/README.md) is a complete Harmony mod built with `madnesswright-modtools`: take control of any character (F5), make everyone else unaware (F6, F7), go back to your own body (F8). It shows the net48 project against the player's own game files, an `IModEntrypoint`, one Harmony prefix, a pack script that makes an install zip, and a table of the bugs each playtest found and their causes in the game's code. Needs the `releasebeta` branch.
+
 ## The helper
 
 `skills/madnesswright/scripts/mpn.py` uses only the Python standard library (3.9+). It runs on Windows, macOS and Linux; the game itself runs on Windows, or on Linux and Steam Deck through Proton. Each command prints one JSON object and exits 0; put `--strict` before the command name (`mpn.py --strict check-mod <dir>`) to exit 1 when the result has errors. `--data-dir` and `--steam` also go before the command.

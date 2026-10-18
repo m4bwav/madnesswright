@@ -14,6 +14,13 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-18
 
+### L-002 · 2026-10-18 · Change AI state through the game's calls, not its fields
+- Trigger: the swap mod's F5 failed on characters mid-fight after F6 had set `myKillTarget = null` by hand; `Player.log` showed a NullReferenceException in `AI_TargetClaimer.SetPriority` from `Controller_Base.LostConnection` on every failed swap (beta v2.20.a, 2026-10-18).
+- Hypothesis: game state is often stored twice (a field and a registry list); writing one side leaves the other stale, and the game's own code later trips over the mismatch.
+- Rule: when a mod changes targets, controllers, squads or rooms, find the game method that does it (grep where the game itself does the same change, e.g. `KillMe`) and call that; release a controller's claims before moving it.
+- Evidence: C-20261018-2, T-20261018-2
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-18
 
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
