@@ -8,8 +8,7 @@ State on 2026-10-21, session 5 (Playground Director 0.4.0 built and deployed, pl
 - No key moved: none of the requested keys is read in normal play (CapsLock is autowalk; read only while paused).
 - Built, deployed to `Mods/SwapUnaware` (backup `mpn-data-20261021-180914.zip` in the owner's backup folder). **Not launched or playtested yet.** After the owner's report: `mpn.py log`, fix, then the Workshop update of item 3822329165 (title "Playground Director (was Swap And Unaware)", new preview image, `workshop-description.txt`), check visibility stays public, and update the wiki's worked example.
 - Plugin 0.1.5 merged (PR #5), installed: `scripts/decomp.py` (decompile, keys, find, callers; 5 tests in CI), `references/game-recipes.md`, L-003, L-004. Not tagged.
-- Likely cause of the 0.3.0 "teammate turned on me" report: Playground spawns are `Factions.None` squads, hostile to everyone outside their squad.
-- Budget: still yellow (mpn.py 9,500 tokens; installed skills folder 205 KB, green up to 200).
+- Likely cause of the 0.3.0 "teammate turned on me" report: Playground spawns are `Factions.None` squads, hostile to everyone outside their squad. Budget: still yellow (mpn.py 9,500 tokens; installed skills folder 205 KB, green up to 200).
 
 ## Session 4
 
@@ -35,7 +34,7 @@ State on 2026-10-21, session 5 (Playground Director 0.4.0 built and deployed, pl
 
 ## Owed
 
-1. **Beta launch check: done 2026-10-18 (see Session 3).** Was: A save backup exists (`~/mpn-backups/mpn-data-20261017-202940.zip`, 5 files with the career). The owner switches Steam to `releasebeta`, launches, enables `GreenBloodHank` (already deployed to `Mods/`) in the gear-icon menu, hits Hank, and reports the blood colour. Then run `mpn.py log`: confirm `game_version.mods_allowed: true`, record the real `mods.log` lines, check `loaded`, `applied_harmony` and the problem patterns against them, and log R-, C- and T- entries.
+1. Beta launch check: done 2026-10-18 (Session 3).
 2. **Listings on hold** by the owner's ruling (2026-10-17): no Claude directory submission, and never awesome-copilot. Do not submit.
 3. Scenes action-1 still does not separate skill from baseline: the baseline matched GUIDs against `Warehouse_PG`, which sits beside `Arena_PG`. Move `Arena_PG` into its own fixture project with no reference scene.
 4. With the game on disk, modtools outcome-1 separates only weakly (the baseline read the metadata itself but double-patched by calling PatchAll in Initialize). Add an expectation on that.
