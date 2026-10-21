@@ -18,7 +18,7 @@ Take control of any character, freeze the room, set patrols and guards, pose ene
 
 On the Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165 (Subscribe, then enable it from the gear icon).
 
-Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 waits for its playtest. Not tested in the story career, so back up your saves before using it there.
+Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21 (F9 and F11 not yet exercised) and is on the Workshop. Not tested in the story career, so back up your saves before using it there.
 
 ## Key choices
 
@@ -66,4 +66,4 @@ Members checked against beta v2.20.a (build 25615196, 2026-10-18 and 2026-10-21)
 | 0.1.0 | Stuck inside a locked arena | `ReturnClosestTarget` filters by room | Screen-space pick, F8 home |
 | 0.2.0 | F5 failed on characters mid-fight (`NullReferenceException` in `AI_TargetClaimer.SetPriority` from `Controller_Base.LostConnection`) | F6 set `myKillTarget = null` by hand, leaving the controller in its target's claimant list; the AI claimed again and `ClaimTarget` does not check for duplicates. `LostConnection` nulls `myOwner`, removes one copy and re-scores the rest, which reads the null owner | Release both controllers' claims before the swap, as `KillMe` does; prune dead and duplicate claimants; F6 unclaims through the game; a swap that still throws reconnects any orphaned controller |
 | 0.3.0 | None found; one report of a grunt on your own team turning on you, unconfirmed | Likely the game's Playground spawn: each batch is a squad of `Factions.None`, and a None attacker counts everyone outside its own squad as a foe, you included | Not fixed in the mod: putting a spawn in your squad (the game's `Squad_Main.AddMember`) makes it a real teammate |
-| 0.4.0 | Waiting for the playtest | | |
+| 0.4.0 | None found (owner's PC, 2026-10-21). Player.log showed F1, F2, F3, F4, F10 and F5 to F8 in use, 369 animations listed, no exception; F9 and F11 left no log line and no scene file, so they are not confirmed yet | | |

@@ -5,7 +5,7 @@ Plugin versions. Skill-level changes and their reasons are in each skill's own C
 ## 0.1.5 · 2026-10-21
 
 - madnesswright-modtools: new `scripts/decomp.py` (decompile, `keys` for which keys the game reads in play, `find` and `callers` for one-line member lookups) with `tests/test_decomp.py` in CI; new `references/game-recipes.md` (freeze, remove, playable roster, teams, AI states, idle poses, walking to a point, blocking the attack click, IMGUI windows, saving a scene); lessons L-003 (a key is a clash only if read in play) and L-004 (mod data outside `Mods/`).
-- `examples/SwapUnaware` 0.4.0, now Playground Director: F1 clear, F2 freeze, F3 patrols, F4 idle animations, F9 guard, F10 alert cycle, F11 saved scenes, one component per feature. Deployed; playtest pending.
+- `examples/SwapUnaware` 0.4.0, now Playground Director: F1 clear, F2 freeze, F3 patrols, F4 idle animations, F9 guard, F10 alert cycle, F11 saved scenes, one component per feature. Playtested on the owner's PC (F9 and F11 not yet exercised) and published as an update of Workshop item 3822329165, which stayed public; `examples/WorkshopUpload`'s update path now proven.
 
 ## 0.1.4 · 2026-10-18
 

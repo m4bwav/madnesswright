@@ -1,6 +1,6 @@
 # Game recipes for Harmony and behaviour mods
 
-Members of MADNESS: Project Nexus that mods change characters with, found in a decompile of beta v2.20.a (build 25615196) on 2026-10-21 for the Playground Director mod ([examples/SwapUnaware](../../../examples/SwapUnaware/README.md)). Names only. Re-check each with `decomp.py find <decompile> <Name>` after a game update. Status: built and deployed; **not playtested yet** unless a line says so.
+Members of MADNESS: Project Nexus that mods change characters with, found in a decompile of beta v2.20.a (build 25615196) on 2026-10-21 for the Playground Director mod ([examples/SwapUnaware](../../../examples/SwapUnaware/README.md)). Names only. Re-check each with `decomp.py find <decompile> <Name>` after a game update. Status: playtested on the owner's PC on 2026-10-21 (no exception in Player.log) for the key check, freezing, removing, AI states, idle poses, patrol walking and the attack block; guard (FixedInPlace) and saving a scene are built but not yet exercised in play.
 
 ## Look things up without reading whole files
 

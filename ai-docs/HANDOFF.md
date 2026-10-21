@@ -1,13 +1,13 @@
 # Handoff
 
-State on 2026-10-21, session 5 (Playground Director 0.4.0 built and deployed, playtest pending; plugin 0.1.5 merged, not tagged).
+State on 2026-10-21, session 5 (Playground Director 0.4.0 playtested and on the Workshop; plugin v0.1.5 tagged and released).
 
 ## Session 5
 
 - Request: eight new keys for the swap mod's player (F1 clear, F2 freeze, F3 patrols, F4 idle animations, F9 guard, F10 alert cycle, F11 saved scenes). Decision: grow the existing mod, renamed Playground Director, one component per feature ([decisions/2026-10-21-update-swap-mod-not-new.md](decisions/2026-10-21-update-swap-mod-not-new.md)). Plan with rulings and the player's checklist: [plans/2026-10-21-playground-director.md](plans/2026-10-21-playground-director.md). Game hooks: [notes/2026-10-21-director-mod-research.md](notes/2026-10-21-director-mod-research.md).
 - No key moved: none of the requested keys is read in normal play (CapsLock is autowalk; read only while paused).
-- Built, deployed to `Mods/SwapUnaware` (backup `mpn-data-20261021-180914.zip` in the owner's backup folder). **Not launched or playtested yet.** After the owner's report: `mpn.py log`, fix, then the Workshop update of item 3822329165 (title "Playground Director (was Swap And Unaware)", new preview image, `workshop-description.txt`), check visibility stays public, and update the wiki's worked example.
-- Plugin 0.1.5 merged (PR #5), installed: `scripts/decomp.py` (decompile, keys, find, callers; 5 tests in CI), `references/game-recipes.md`, L-003, L-004. Not tagged.
+- Playtested on the owner's PC (modtools T-20261021-1: F1 to F4, F10 and F5 to F8 seen in Player.log, no exception; F9 guard and F11 scenes not yet exercised, confirm next report). Published as an update of public item 3822329165 (title "Playground Director (was Swap And Unaware)", new preview), still public, 28 subscribers. Wiki worked example updated.
+- Plugin v0.1.5 tagged and released (the owner's go-ahead; 0.1.3 and 0.1.4 are folded into it): `scripts/decomp.py` (decompile, keys, find, callers; 5 tests in CI), `references/game-recipes.md`, L-003, L-004.
 - Likely cause of the 0.3.0 "teammate turned on me" report: Playground spawns are `Factions.None` squads, hostile to everyone outside their squad. Budget: still yellow (mpn.py 9,500 tokens; installed skills folder 205 KB, green up to 200).
 
 ## Session 4
@@ -44,7 +44,7 @@ State on 2026-10-21, session 5 (Playground Director 0.4.0 built and deployed, pl
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
 9. **Requested mod:** swap characters and make everyone else unaware, as a Harmony mod and a live test of madnesswright-modtools. Plan and the game's hooks: [plans/2026-10-17-swap-and-unaware-mod.md](plans/2026-10-17-swap-and-unaware-mod.md). Needs `releasebeta`.
 
-10. **Playground Director 0.4.0 playtest** (session 5): the checklist is in the plan; then release as above.
+10. Playground Director: confirm F9 guard and F11 scenes in the next play report.
 
 ## Next step
 
