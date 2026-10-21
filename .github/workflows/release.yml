@@ -22,6 +22,7 @@ jobs:
         run: |
           python tests/check_skills.py
           python tests/test_mpn.py
+          python tests/test_decomp.py
           python scripts/budget.py
       - name: pack the skills
         run: |

@@ -1,7 +1,7 @@
 {
-  "Name": "Swap And Unaware",
+  "Name": "Playground Director (Swap And Unaware)",
   "Author": "m4bwav",
-  "Description": "F5: take control of the character under the mouse, ally or enemy. F6: everyone else forgets you (unaware). F7: keep everyone unaware until pressed again. F8: back to your own body (also automatic when the body you took dies).",
+  "Description": "F1: remove everyone but you and the playable characters. F2: freeze everyone but you (again: unfreeze). F3: patrol squares (click drops, U new, P stop, Delete remove). F4: idle animation list for the character under the mouse. F5: take control of the character under the mouse. F6: everyone else unaware. F7: keep everyone unaware. F8: back to your own body. F9: guard. F10: search, attack, unaware. F11 while paused: save a scene; CAPS LOCK while paused: load one.",
   "Tags": ["Scripts", "Playground"],
   "AssemblyPath": "Managed/SwapUnaware.dll",
   "HarmonyID": "com.m4bwav.mpn.swapunaware",

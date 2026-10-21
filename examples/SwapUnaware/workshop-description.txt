@@ -1,14 +1,21 @@
-[b]Take control of any character and make everyone else stop noticing you.[/b]
+[b]Run the Playground like a director: take over anyone, freeze the room, set patrols and guards, pose enemies, and save scenes to play again.[/b] (Formerly Swap And Unaware: F5 to F8 work as before.)
 
 [list]
-[*][b]F5[/b]: take control of the character nearest the mouse pointer: a squadmate or an enemy, in any room (through locked arena doors too). Your old body becomes an NPC. Works while you are dead.
-[*][b]F8[/b]: back to your own body. Happens by itself when the body you took dies, if your own body is still alive.
+[*][b]F1[/b]: remove every living character except you and the playable characters (Sanford, Deimos, Hank and the rest).
+[*][b]F2[/b]: freeze everyone except the character you are playing. F2 again: unfreeze them. Frozen characters still die when shot.
+[*][b]F3[/b]: patrol squares, like Ancient Warfare 3's patrol mode. A black square follows the mouse; left click drops it (no shot); [b]U[/b] starts another; click a square to select it, then [b]P[/b] turns it red (the unit stops there) and [b]Delete[/b] removes it. F3 hides and shows them. The squares belong to the character you are playing when you place them and only show while you play that character; whenever someone else controls it and it has not spotted an enemy, it walks them.
+[*][b]F4[/b]: point at a character: a list of idle animations (typing, leaning, smoking and the rest). Click one and it plays it. F4 or ESC closes the list.
+[*][b]F5[/b]: take control of the character nearest the mouse pointer: a squadmate or an enemy, in any room. Your old body becomes an NPC. Works while you are dead.
 [*][b]F6[/b]: every other character goes back to unaware and forgets who it was fighting.
 [*][b]F7[/b]: keep everyone unaware until you press F7 again.
+[*][b]F8[/b]: back to your own body. Happens by itself when the body you took dies.
+[*][b]F9[/b]: point at a character: it stands guard, never moves, and attacks anyone not on its team once it sees them. F9 again: back to normal.
+[*][b]F10[/b]: point at a character: first press it searches, second it attacks you, third it loses track of you, then round again.
+[*][b]F11[/b] while paused (Playground): type a scene name, [b]ENTER[/b] saves it. [b]CAPS LOCK[/b] while paused lists your saved scenes; click one to load it. A scene keeps every character, where they stand, their team, weapons, damage, and frozen, guard and patrol settings.
 [/list]
 
 [b]Needs the releasebeta branch[/b] (Steam: Properties, Betas, releasebeta): the normal release build does not load mods. Enable it from the gear icon on the main menu and restart.
 
-Made for the Playground; not tested in the story career, so back up your saves before using it there.
+Made for the Playground; F1 in an arena counts as kills and moves the waves on. Not tested in the story career, so back up your saves before using it there.
 
 This mod runs code (a Harmony DLL). Source, build steps and the bugs each playtest found: https://github.com/m4bwav/madnesswright/tree/main/examples/SwapUnaware

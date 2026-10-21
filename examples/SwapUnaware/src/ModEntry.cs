@@ -7,6 +7,7 @@ namespace SwapUnaware
     public class ModEntry : IModEntrypoint
     {
         public const string Id = "com.m4bwav.mpn.swapunaware";
+        public const string Version = "0.4.0";
         static GameObject host;
 
         public void Initialize()
@@ -14,8 +15,17 @@ namespace SwapUnaware
             if (host != null) return;
             host = new GameObject("SwapUnaware");
             Object.DontDestroyOnLoad(host);
+            // One component per feature: one that keeps throwing switches itself off, the rest go on.
+            host.AddComponent<Hud>();
             host.AddComponent<SwapUnawareBehaviour>();
-            Debug.Log("[" + Id + "] loaded: F5 swap to the character under the mouse, F6 everyone else unaware, F7 keep them unaware, F8 back to your own body");
+            host.AddComponent<FreezeFeature>();
+            host.AddComponent<ClearFeature>();
+            host.AddComponent<AlertFeature>();
+            host.AddComponent<GuardFeature>();
+            host.AddComponent<IdleAnimFeature>();
+            host.AddComponent<PatrolFeature>();
+            host.AddComponent<SceneFeature>();
+            Debug.Log("[" + Id + "] Playground Director " + Version + " loaded: F1 clear, F2 freeze, F3 patrol, F4 idle animations, F5 take over, F6 unaware, F7 keep unaware, F8 home, F9 guard, F10 alert cycle, F11 scenes (paused)");
         }
 
         public void Unload()
