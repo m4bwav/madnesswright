@@ -26,9 +26,9 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Trigger: the second mod's key check (2026-10-21) found F1 to F4, F9 to F11, P and Delete all read somewhere in the game's code, which looked like seven forced key moves; reading each caller showed they run only in debug builds (`Dev_Control`), with the `-devtools` launch option (`ModTestTools`), or inside the profile window while it is open. Only CapsLock (autowalk, a rebindable default) is read in normal play.
 - Hypothesis: shipped games keep their developer consoles and menu shortcuts in the build; a grep counts them all, so the answer depends on when each caller runs, not on whether the key appears.
 - Rule: check keys with `decomp.py keys` and treat only its `clashes` as candidates; open each listed file and ask when it runs before moving a key the user asked for. Keep the requester's keys where nothing in play reads them.
-- Evidence: C-20261021-1; playtest pending (T- entry after the owner's report)
+- Evidence: C-20261021-1, T-20261021-1 (all eight keys kept; no clash seen in play)
 - Scope: skill
-- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-21
+- Status: active · helpful 2 · harmful 0 · last_confirmed 2026-10-21
 
 ### L-004 · 2026-10-21 · Mod data files go outside the mod folder
 - Trigger: the research pass for saving Playground scenes suggested `Mods/<mod>/Scenes/*.json`; the game's loader (session 2 notes) reads every `.json` and `.txt` in a mod folder as a MadCard, so each saved scene would load as a broken card (2026-10-21).

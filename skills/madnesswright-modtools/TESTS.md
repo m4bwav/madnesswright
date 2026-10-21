@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261021-1 · 2026-10-21 · live use by the owner's family · owner's PC, beta 2.20.a · 6/6 exercised
+- Playground Director 0.4.0 (second mod built with this skill, recipes in references/game-recipes.md). The owner reports "everything worked". Player.log evidence: the 0.4.0 load line; `applied_harmony` lists the id (the new `RunControls_Attacks` prefix applied); F1 "7 characters removed"; F2 freeze and unfreeze three times; F3 squares shown and hidden 8 times; F4 listed 369 animations (8 own, 361 library) and played typing, mopping and talking loops; F10 search, attack, unaware; F5 to F8 swaps; no exception or problem line.
+- Not exercised: F9 guard and F11 scenes (no log line, no scene file). Released anyway at the owner's request; confirm in the next report.
+- led to: L-003 and L-004 confirmed (helpful +1 each)
+
 ### T-20261018-2 · 2026-10-18 · live use by the owner · owner's PC and a second PC, beta 2.20.a · 4/4
 - Mod 0.2.0 playtest: F8 worked; F5 failed on characters mid-fight (NullReferenceException in `AI_TargetClaimer.SetPriority` from `Controller_Base.LostConnection`), so dying in a taken body could not be tried. Cause: duplicate claimants left by F6's hand-written `myKillTarget = null` (L-002).
 - Mod 0.3.0 (claims released through the game before every swap, claimants pruned): the owner reports everything worked; Player.log shows 7 swaps (one back home) and no exception or problem line; `applied_harmony` lists the id. Installed from the public Workshop item 3822329165 on a second PC and worked there too.
