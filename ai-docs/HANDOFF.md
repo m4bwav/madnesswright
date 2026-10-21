@@ -22,10 +22,7 @@ State on 2026-10-21, session 5 (Playground Director 0.4.0 built and deployed, pl
 
 ## Session 3
 
-- Beta launch done: build 25615196, Beta v2.20.a, GreenBloodHank loaded and the owner saw green blood. Notes: [notes/2026-10-18-beta-launch.md](notes/2026-10-18-beta-launch.md). Owed 1 is closed except the release-vs-beta loader diff (decompile both, compare Mod_Manager, ModItem, Converter_JSON, Game_Manager).
-- Swap-and-unaware mod (Owed 9): built, deployed, played. 0.1.0 crashed in the game's KillMe when a taken-over squadless Playground spawn died, and could not swap back out of a locked arena. 0.2.0 (one Prefix, screen-space pick, F8 home) is deployed and waits for the owner's playtest. Source lives outside this repo.
-- 0.1.3 merged (PR #1): lessons in modtools L-001 and harmony.md, `mpn.py log` stack frames and card lines. Not tagged: tagging is the owner's call.
-- Still owed from the list below: 3, 4, 5 (eval fixes) and the size budget (mpn.py now about 9,500 tokens).
+- First beta launch passed (build 25615196, green blood: [notes/2026-10-18-beta-launch.md](notes/2026-10-18-beta-launch.md)); swap mod 0.1.0 and 0.2.0 built and fixed (details in [log.md](log.md)); 0.1.3 merged (PR #1). Loader diff release vs beta not possible while on the beta.
 
 ## Done
 
