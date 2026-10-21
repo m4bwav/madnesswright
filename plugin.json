@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "madnesswright",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Mod MADNESS: Project Nexus with an AI agent the official way: mod folders, info.txt and MadCards on the releasebeta branch, SceneTools levels, stages and campaigns, ModTools weapons, armor and characters, and Harmony code loaded by the game itself. A stdlib Python helper finds the install and branch, backs up saves, lints mods and scenes against the game's own rules, deploys mods and reads the mod log. Evergreen.",
   "author": {
     "name": "Mark Rogers",

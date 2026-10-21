@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261021-1 · 2026-10-21 · decomp.py lookups, game recipes, key and data-file rules
+- because: L-003, L-004, user request (the Playground Director mod; make the plugin cheaper in tokens and mistakes)
+- files: scripts/decomp.py (new: decompile, keys, find, callers), SKILL.md (Step 5.1), references/game-recipes.md (new), references/harmony.md ("A mod with no patch")
+- Step 5.1 points at decomp.py so an agent looks members up by line instead of reading whole decompiled files, and at the recipes found for freezing, killing, AI states, idle poses, walking to a point, blocking the attack click and saving a scene (deployed, not yet playtested). The reference picks keys by what runs in play and gives each feature its own component.
+
 ### C-20261018-2 · 2026-10-18 · Release AI target claims through the game; link the example mod
 - because: L-002, T-20261018-2, user request (the mod goes in the repo as an example)
 - files: references/harmony.md ("Doing what the game never does"), SKILL.md (Step 5.5)
