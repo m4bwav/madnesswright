@@ -2,7 +2,9 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
-## 0.1.6 · unreleased
+## 0.1.6 · 2026-10-22
+
+- `examples/SwapUnaware` 0.5.1: scene files keep their rooms and characters (`JsonUtility` had dropped the mod's own nested classes, so 0.4.0 and 0.5.0 saved empty scenes); `Game.Alive` no longer throws on a combatant the game has not set up. Playtested in a story level (The Industrial Sector): saves of 12 and 14 characters loaded back, with the dead respawned. madnesswright-modtools L-005 and a corrected game-recipes note.
 
 - `examples/SwapUnaware` 0.5.0: F11 scenes in story levels, arenas, custom stages and hubs, not only the Playground. Loading matches the characters already in the level to the saved ones and puts them back, respawns the missing (serial numbers re-registered, wave units back in the wave), removes only unscripted extras, and moves you back to your saved room. Playground scenes from another Playground stage load that stage first. Scene files version 2; 0.4.0 files still load. Deployed, playtest pending.
 - madnesswright-modtools: `references/game-recipes.md` gains "Levels, rooms and the career save".

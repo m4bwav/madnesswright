@@ -1,6 +1,6 @@
 # Handoff
 
-State on 2026-10-22, session 7 (Playground Director 0.5.1 deployed: fixes 0.5.0's story-mode load; in-game recheck pending; plugin 0.1.6 merged, not tagged).
+State on 2026-10-22, session 7 (Playground Director 0.5.1: fixes 0.5.0's story-mode load, playtested in a story level; plugin v0.1.6 tagged and released on the owner's go-ahead).
 
 ## Session 7
 
