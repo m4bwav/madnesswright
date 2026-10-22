@@ -22,12 +22,20 @@ namespace SwapUnaware
 
         protected override string Name { get { return "swap (F5-F8)"; } }
 
+        protected override void Register()
+        {
+            Menu("Take control of a character", SwapKey, true);
+            Menu("Everyone else unaware", UnawareKey);
+            Menu("Keep everyone unaware: on / off", KeepUnawareKey);
+            Menu("Back to your own body", HomeKey);
+        }
+
         protected override void Tick()
         {
-            if (Input.GetKeyDown(SwapKey)) SwapToCharacterUnderMouse();
-            if (Input.GetKeyDown(HomeKey)) GoHome();
-            if (Input.GetKeyDown(UnawareKey)) MakeOthersUnaware(true);
-            if (Input.GetKeyDown(KeepUnawareKey))
+            if (Pressed(SwapKey)) SwapToCharacterUnderMouse();
+            if (Pressed(HomeKey)) GoHome();
+            if (Pressed(UnawareKey)) MakeOthersUnaware(true);
+            if (Pressed(KeepUnawareKey))
             {
                 keepUnaware = !keepUnaware;
                 Game.Say("keep unaware " + (keepUnaware ? "ON" : "OFF"));

@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261022-1 · 2026-10-22 · Game recipe for clearing corpses
+- because: user request (Playground Director 0.6.0: clear corpses and a Director menu)
+- files: references/game-recipes.md ("Characters")
+- One line on removing dead bodies the way the game's own developer console does, which bodies to keep, and the four calls that clear blood and debris. Deployed, playtest pending.
+
 ### C-20261021-2 · 2026-10-21 · Game recipes for levels, rooms and the career save
 - because: user request (the requester's scenes in every level; Playground Director 0.5.0)
 - files: references/game-recipes.md (status line; new section "Levels, rooms and the career save")

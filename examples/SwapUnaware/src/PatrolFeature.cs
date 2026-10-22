@@ -32,6 +32,7 @@ namespace SwapUnaware
         Texture2D white;
 
         protected override string Name { get { return "patrol (F3)"; } }
+        protected override void Register() { Menu("Patrol squares: show / hide", ToggleKey); }
 
         internal static bool HasRoute(Combatant_Base c)
         {
@@ -62,7 +63,7 @@ namespace SwapUnaware
 
         void Edit(Combatant_Base me)
         {
-            if (Input.GetKeyDown(ToggleKey))
+            if (Pressed(ToggleKey))
             {
                 shown = !shown;
                 placing = shown && !HasRoute(me);

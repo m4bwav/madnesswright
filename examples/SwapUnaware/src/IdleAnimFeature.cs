@@ -21,10 +21,11 @@ namespace SwapUnaware
         static readonly Dictionary<Combatant_Base, bool> posing = new Dictionary<Combatant_Base, bool>();
 
         protected override string Name { get { return "idle animations (F4)"; } }
+        protected override void Register() { Menu("Idle animations", Key, true); }
 
         protected override void Tick()
         {
-            if (Input.GetKeyDown(Key))
+            if (Pressed(Key))
             {
                 if (open) Close();
                 else Open();

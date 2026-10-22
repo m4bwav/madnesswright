@@ -14,6 +14,7 @@ namespace SwapUnaware
         static FreezeFeature instance;
 
         protected override string Name { get { return "freeze (F2)"; } }
+        protected override void Register() { Menu("Freeze everyone but you / unfreeze", Key); }
 
         void Awake() { instance = this; }
 
@@ -21,7 +22,7 @@ namespace SwapUnaware
 
         protected override void Tick()
         {
-            if (Input.GetKeyDown(Key))
+            if (Pressed(Key))
             {
                 if (frozen.Count > 0) { int n = frozen.Count; ReleaseAll(); Game.Say(n + " characters unfrozen"); }
                 else Game.Say(FreezeAll() + " characters frozen; F2 to unfreeze");
@@ -85,10 +86,11 @@ namespace SwapUnaware
         public KeyCode Key = KeyCode.F1;
 
         protected override string Name { get { return "clear (F1)"; } }
+        protected override void Register() { Menu("Remove every living character but you and the playable ones", Key); }
 
         protected override void Tick()
         {
-            if (!Input.GetKeyDown(Key)) return;
+            if (!Pressed(Key)) return;
             var me = Game.Me();
             var doomed = FindObjectsOfType<Combatant_Base>()
                 .Where(c => Game.Alive(c) && c != me && c != SwapUnawareBehaviour.Home && !Game.Playable(c)).ToList();
@@ -114,10 +116,11 @@ namespace SwapUnaware
         public KeyCode Key = KeyCode.F10;
 
         protected override string Name { get { return "alert cycle (F10)"; } }
+        protected override void Register() { Menu("Alert cycle: unaware, searching, attacking you", Key, true); }
 
         protected override void Tick()
         {
-            if (!Input.GetKeyDown(Key)) return;
+            if (!Pressed(Key)) return;
             var c = Game.NpcUnderMouse();
             if (c == null) { Game.Say("no character under the mouse"); return; }
             if (FreezeFeature.IsFrozen(c)) { Game.Say(c.name + " is frozen; F2 to unfreeze"); return; }
@@ -156,12 +159,13 @@ namespace SwapUnaware
         static readonly Dictionary<Combatant_Base, bool> guards = new Dictionary<Combatant_Base, bool>();
 
         protected override string Name { get { return "guard (F9)"; } }
+        protected override void Register() { Menu("Stand guard / stop guarding", Key, true); }
 
         internal static bool IsGuard(Combatant_Base c) { return c != null && guards.ContainsKey(c); }
 
         protected override void Tick()
         {
-            if (Input.GetKeyDown(Key))
+            if (Pressed(Key))
             {
                 var c = Game.NpcUnderMouse();
                 if (c == null) Game.Say("no character under the mouse");

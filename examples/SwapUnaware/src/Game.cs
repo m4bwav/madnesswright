@@ -29,6 +29,14 @@ namespace SwapUnaware
             return track != null && track.Length > 0 && !c.AmDead();
         }
 
+        // A body the game has finished killing and not yet despawned (the developer console's test).
+        internal static bool Corpse(Combatant_Base c)
+        {
+            if (c == null || c.myData == null || c.AmDespawning) return false;
+            var track = c.MyCorpusTrack;
+            return track != null && track.Length > 0 && c.HaveRunKillMe;
+        }
+
         internal static bool IsNpc(Combatant_Base c)
         {
             return Alive(c) && c.myController != null && c.myController.AmType_NPC();
@@ -107,6 +115,11 @@ namespace SwapUnaware
         {
             Debug.Log("[" + ModEntry.Id + "] " + msg);
             Hud.Show(msg);
+        }
+
+        internal static void Log(string msg)
+        {
+            Debug.Log("[" + ModEntry.Id + "] " + msg);
         }
 
         internal static void Error(string where, Exception e)

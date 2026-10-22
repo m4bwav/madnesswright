@@ -43,6 +43,13 @@ namespace SwapUnaware
 
         void Awake() { SceneManager.sceneLoaded += OnSceneLoaded; }
 
+        // Opened straight from the paused menu: a queued key would arrive unpaused.
+        protected override void Register()
+        {
+            DirectorMenu.Add(new MenuEntry { Label = "Save a scene", Key = SaveKey, Run = () => Open(Mode.Name) });
+            DirectorMenu.Add(new MenuEntry { Label = "Saved scenes: load one", Key = ListKey, Run = () => Open(Mode.List) });
+        }
+
         // A stage load clears every pause source; the window goes with it.
         void OnSceneLoaded(Scene s, LoadSceneMode m)
         {

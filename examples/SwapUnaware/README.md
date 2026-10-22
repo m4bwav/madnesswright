@@ -4,6 +4,7 @@ Take control of any character, freeze the room, set patrols and guards, pose ene
 
 | Key | What it does |
 |---|---|
+| INSERT | The Director menu: pauses the game and lists every action below as a button with its key, plus **Clear corpses** and **Clear blood, bullet holes, casings and debris**, which have no key. Actions aimed at one character ask you to click it after the menu closes (right click cancels). INSERT or ESC closes the menu. |
 | F1 | Remove every living character except you, your F8 home body and the playable characters (player controlled, the career's core roster, or a Player-faction card such as Sanford, Deimos or Hank), the way the Playground's Clear All removes them. |
 | F2 | Freeze everyone but you (AI, movement, animation). F2 again unfreezes the ones it froze. A frozen character still dies when shot. |
 | F3 | Patrol squares (Ancient Warfare 3 style). A black square follows the mouse; left click drops it; U starts another; click a square to select it (yellow outline), then P makes it red (a stop) or black again and Delete removes it. F3 hides and shows them. They belong to the body you control when you place them and only show while you control it. Whenever that body is an NPC, unaware and not frozen or guarding, it walks them in a loop and halts at a red one. While a square is being placed or the mouse is on one, left click does not attack. |
@@ -18,13 +19,21 @@ Take control of any character, freeze the room, set patrols and guards, pose ene
 
 On the Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165 (Subscribe, then enable it from the gear icon).
 
-Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21, in the Playground and then the story mode (F9 and F11 not yet exercised), and is on the Workshop. 0.5.0 (scenes in every level) failed its first story playtest (scene files lost the characters); 0.5.1 fixes it and was playtested in a story level on the owner's PC on 2026-10-22 (arenas, Playground scenes and F9 not yet exercised); not on the Workshop yet, not on the Workshop yet. Back up your saves before using it in a story career.
+Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21, in the Playground and then the story mode (F9 and F11 not yet exercised), and is on the Workshop. 0.5.0 (scenes in every level) failed its first story playtest (scene files lost the characters); 0.5.1 fixes it and was playtested in a story level on the owner's PC on 2026-10-22 (arenas, Playground scenes and F9 not yet exercised); not on the Workshop yet. 0.6.0 adds the Director menu and clear corpses; built and deployed 2026-10-22, playtest pending. Back up your saves before using it in a story career.
 
 ## Key choices
+
+- The Director menu opens with INSERT (0.6.0). A fresh decompile lists INSERT only in the `-devtools` mod-test tools, so it is free in play; F12 (Steam's screenshot key) and CAPS LOCK (the scene list) were ruled out. INSERT works paused or not: the menu holds its own pause. Clear corpses and clear debris got no key: no free key was obvious, and the menu is one press away.
+- Clear corpses keeps bodies a level may still need: your squad and the playable characters (a story squadmate can be revived), bosses, cutscene actors, the level's scripted characters (serial numbers) and anything the game marks essential. Bodies dead under a second are left too. Clearing blood and debris was the same four calls as the Playground's Clear All, so it is a second button.
 
 - The requester asked for F1 to F4 and F9 to F11 and to leave F5 to F8 and F12 alone ("Do not make a button that is not F5, F6, F7, F8, and F12" read as "do not take those"). F12 is Steam's screenshot key.
 - No key moved. In a fresh decompile (`decomp.py keys`), F1 to F4, F9 to F11, P and Delete are read only by the developer console (debug builds), the `-devtools` mod-test tools, and the profile window's tab keys while it is open; U and Return are unread in play. CapsLock is the game's autowalk key; the mod reads it only while paused, but the game may still toggle autowalk (any move key turns it off).
 - Scenes are files in `AppData/LocalLow/Gibbing Tree/Madness Project Nexus/PlaygroundDirector/Scenes` under the user's profile, outside `Mods/`, because the game reads every `.json` in a mod folder as a MadCard. 0.4.0 scene files still load.
+
+## Clear corpses (0.6.0)
+
+- Removes dead bodies in every room of the level the way the game's own developer console does (`HaveRunKillMe`, then `Decay_Manager.DestroyMe_Character`, which the arenas also use), and writes `cleared N corpses in room X and M in other rooms; kept K` to Player.log. The living, you, and kill counts are not touched: kills were counted when they died.
+- A scene saved with a character who has since died still respawns it on load; the corpse is not needed.
 
 ## Scenes (0.5.0)
 
@@ -52,7 +61,7 @@ Copying the `SwapUnaware` folder (`info.txt` and `Managed/SwapUnaware.dll`) into
 
 ## Build
 
-Needs the .NET SDK and the game installed. `pwsh ./pack.ps1 -Version 0.4.0` builds `src/` against the game's own `Managed` DLLs (net48, `Private=false`, nothing copied from the game) and writes `dist/SwapUnaware-<version>.zip`. It finds the game with the hub skill's `mpn.py where`; pass `-GameManaged <...\Madness Project Nexus_Data\Managed>` or set `MPN_MANAGED` to point elsewhere. Then deploy with `python -I ../../skills/madnesswright/scripts/mpn.py deploy dist/stage/SwapUnaware --force` and read `mpn.py log` after playing.
+Needs the .NET SDK and the game installed. `pwsh ./pack.ps1 -Version 0.6.0` builds `src/` against the game's own `Managed` DLLs (net48, `Private=false`, nothing copied from the game) and writes `dist/SwapUnaware-<version>.zip`. It finds the game with the hub skill's `mpn.py where`; pass `-GameManaged <...\Madness Project Nexus_Data\Managed>` or set `MPN_MANAGED` to point elsewhere. Then deploy with `python -I ../../skills/madnesswright/scripts/mpn.py deploy dist/stage/SwapUnaware --force` and read `mpn.py log` after playing.
 
 To update the Workshop item after a new build: `../WorkshopUpload/out/wsup.exe dist/stage/SwapUnaware preview.jpg "Swap And Unaware" workshop-description.txt "Scripts,Playground" 3822329165` (see [WorkshopUpload](../WorkshopUpload/README.md)).
 
@@ -60,6 +69,7 @@ To update the Workshop item after a new build: `../WorkshopUpload/out/wsup.exe d
 
 ## How it works
 
+- `DirectorMenu` (INSERT) holds a list of `MenuEntry` (label, key, modes, pick a character first, or an action). Each `Feature` adds its own lines in `Register()`; a keyed line with no action presses that key for the feature for one frame (`Feature.Pressed`), so a new feature needs one `Menu(...)` call and no new button code. Scenes open straight from the menu because they need the pause.
 - `ModEntry.Initialize()` adds one component per feature to a host object (`Feature` base class: skips while paused, logs exceptions, switches only itself off after five in a row) plus a one-line on-screen message (`Hud`). Shared helpers (pick under the mouse, playable check, claim release) live in `Game`.
 - F2 locks each controller the way cutscenes do (`Controller_Base.LockController`), clears waypoints, pins the rigidbody (`SetFrozen`) and sets the animator speed to 0; all four are undone on F2, on death and when the player takes the body.
 - F1 calls `Combatant_Base.RemoveFromGame()` after releasing claims. F10 uses `Controller_Base.SetAlertStatus` and `AI_Manager.SetKillTarget`. F9 copies the spawner's FixedInPlace (`wanderingDisabled`, `SetFrozen(true)`). F4 plays `Combatant_Base.PlayAsEmote(clip, true, false)` with clips from `myAnimSet.IdleEmotes` and `LibraryStorageList.Library.AnimClips`. F3 walks with `AI_Manager.AssignWalkToPosition` and checks arrival by distance. F11 writes each flat record with `JsonUtility` and joins the nesting itself (`JsonUtility` drops the mod's own nested classes), holds its own pause source, closes the game's pause menu, and loads through `InteractiveMode.ClearAll_DoIt()`, `Char_Data.CreateCharacter`, `Combatant_Base.CreateCombatant`, `Squad_Main.AddMember` and `Char_DataAssigner.GiveItemToCharacter`.

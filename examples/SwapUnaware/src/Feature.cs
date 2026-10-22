@@ -18,6 +18,26 @@ namespace SwapUnaware
         // only the scene window runs then.
         protected virtual bool RunWhilePaused { get { return false; } }
 
+        // Each feature adds its lines to the Director menu here (DirectorMenu.Add).
+        protected virtual void Register() { }
+
+        // The key, pressed on the keyboard or from the Director menu.
+        protected static bool Pressed(KeyCode k)
+        {
+            return Input.GetKeyDown(k) || DirectorMenu.TakeQueued(k);
+        }
+
+        protected static void Menu(string label, KeyCode key, bool pick = false)
+        {
+            DirectorMenu.Add(new MenuEntry { Label = label, Key = key, Pick = pick });
+        }
+
+        void Start()
+        {
+            try { Register(); }
+            catch (Exception e) { Game.Error(Name + " menu", e); }
+        }
+
         void Update()
         {
             try
