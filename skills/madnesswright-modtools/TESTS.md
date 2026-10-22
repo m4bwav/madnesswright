@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-4 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 0/1 (F11 load resets weapons)
+- live-f11-weapons · fail · Director 0.6.1: the player reported that loading a scene "doesn't reset the weapons, just the people". Cause: scenes saved only the hands and grenade of living NPCs, matched characters kept whatever they held ("weapons stay"), loose weapons were never saved, and the Playground's Clear All despawned floor weapons without putting any back.
+- Fix in 0.7.0 (scene files version 3, `SceneItems.cs`): holsters, ammo, loose weapons and the Playground player's loadout saved and restored; career (`amRegistered`) and quest items skipped. Built clean, deployed, game loads it with no exception; not yet played.
+- led to: modtools game-recipes line on loose weapons and loadouts.
+
 ### T-20261022-3 · 2026-10-22 · evergreen-tester subagents · dev-machine, game installed (build 25615196) · 1/1 (outcome-1 run 1, plus baseline)
 - New expectation in outcome-1: patches applied once (the loader runs `PatchAll()` under the HarmonyID unless `ManualPatch` is true, so `Initialize()` must not call it).
 - outcome-1 · pass · info.txt with AssemblyPath, HarmonyID, EntryType, `ManualPatch: false`; `ModEntry : IModEntrypoint` logs the HarmonyID and does not patch (comment cites the decompiled loader); csproj net48 with Private=false references from Managed, justified from 0Harmony's target; placeholder patch only; built clean first try; `mpn.py check-mod` clean.

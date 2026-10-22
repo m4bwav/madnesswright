@@ -7,11 +7,12 @@ using UnityEngine.SceneManagement;
 namespace SwapUnaware
 {
     // A saved scene. Version 1 (0.4.0) was Playground-only and keyed by the Unity scene name;
-    // version 2 adds the stage key, each character's room and serial number, and your place.
+    // version 2 adds the stage key, each character's room and serial number, and your place;
+    // version 3 adds holsters, ammo, your loadout and loose weapons (SceneItems.cs).
     [Serializable]
-    public class SceneData
+    public partial class SceneData
     {
-        public const int CurrentVersion = 2;
+        public const int CurrentVersion = 3;
 
         public int version = CurrentVersion;
         public string stage;        // Unity scene name (version 1's only key)
@@ -51,7 +52,17 @@ namespace SwapUnaware
         }
 
         [Serializable]
-        public class ItemRecord { public string card; public int hand; public bool thrown; }
+        public class ItemRecord
+        {
+            public string card;
+            public int hand;
+            public bool thrown;
+            // Version 3
+            public int slot;        // 0 hands, 1 holsters
+            public bool hasAmmo;
+            public int ammo;
+            public float mags;
+        }
 
         [Serializable]
         public class PointRecord { public Vector3 pos; public bool stop; }
@@ -68,8 +79,10 @@ namespace SwapUnaware
         {
             var cs = chars.Select(c => With(JsonUtility.ToJson(c),
                 "room", JsonUtility.ToJson(c.room ?? new RoomRef()), "items", Arr(c.items), "patrol", Arr(c.patrol)));
+            var fs = (floor ?? new List<FloorRecord>()).Select(f => With(JsonUtility.ToJson(f), "room", JsonUtility.ToJson(f.room ?? new RoomRef())));
             return With(JsonUtility.ToJson(this),
-                "playerRoom", JsonUtility.ToJson(playerRoom ?? new RoomRef()), "chars", "[" + string.Join(",\n", cs) + "]");
+                "playerRoom", JsonUtility.ToJson(playerRoom ?? new RoomRef()), "chars", "[" + string.Join(",\n", cs) + "]",
+                "playerItems", Arr(playerItems), "floor", "[" + string.Join(",\n", fs) + "]");
         }
 
         internal static SceneData FromJson(string json)
@@ -86,6 +99,15 @@ namespace SwapUnaware
                 c.items = Elements(Field(cj, "items")).Select(JsonUtility.FromJson<ItemRecord>).Where(x => x != null).ToList();
                 c.patrol = Elements(Field(cj, "patrol")).Select(JsonUtility.FromJson<PointRecord>).Where(x => x != null).ToList();
                 d.chars.Add(c);
+            }
+            d.playerItems = Elements(Field(json, "playerItems")).Select(JsonUtility.FromJson<ItemRecord>).Where(x => x != null).ToList();
+            d.floor = new List<FloorRecord>();
+            foreach (var fj in Elements(Field(json, "floor")))
+            {
+                var f = JsonUtility.FromJson<FloorRecord>(fj);
+                if (f == null) continue;
+                f.room = Obj<RoomRef>(Field(fj, "room")) ?? new RoomRef();
+                d.floor.Add(f);
             }
             return d;
         }
@@ -268,6 +290,7 @@ namespace SwapUnaware
                 d.playerPos = me.Position;
                 d.playerFacing = me.transform.eulerAngles.y;
                 d.playerRoom = Ref(me.myRoom);
+                if (pg) d.playerItems = Loadout(me);
             }
             var mySquad = me != null && me.myData != null ? me.myData.mySquad : null;
             var squads = new List<Squad_Main>();
@@ -296,25 +319,21 @@ namespace SwapUnaware
                     essential = Essential(c),
                     wave = c.myWave != null,
                 };
-                for (int hand = 0; hand < c.myItemsHeld.Length; hand++)
-                {
-                    var it = c.myItemsHeld[hand];
-                    if (it != null && it.myData != null && it.myData.myCard != null) r.items.Add(new ItemRecord { card = it.myData.myCard.name, hand = hand });
-                }
-                var cc = c as Combatant_Character;
-                if (cc != null && cc.myItemThrown != null && cc.myItemThrown.myData != null && cc.myItemThrown.myData.myCard != null)
-                    r.items.Add(new ItemRecord { card = cc.myItemThrown.myData.myCard.name, thrown = true });
+                r.items = Loadout(c);
                 PatrolFeature.Route route;
                 if (PatrolFeature.routes.TryGetValue(c, out route))
                     foreach (var p in route.points) r.patrol.Add(new PointRecord { pos = p.pos, stop = p.stop });
                 d.chars.Add(r);
             }
+            d.floor = CaptureFloor();
             return d;
         }
 
         // ---- loading in the Playground: clear the room, spawn everyone (0.4.0 behaviour) ----
 
-        internal int RestorePlayground()
+        internal class PlaygroundResult { public int chars; public bool yours; public FloorResult floor; }
+
+        internal PlaygroundResult RestorePlayground()
         {
             FreezeFeature.ReleaseAll();
             InteractiveMode.ClearAll_DoIt();
@@ -326,14 +345,15 @@ namespace SwapUnaware
                 var room = FindRoom(r.room);
                 if (!Usable(room)) room = Cam_Main.currentRoom;
                 Squad_Main mine = r.squad == -1 && me != null && me.myData != null ? me.myData.mySquad : null;
-                if (Spawn(r, room, squads, mine) != null) n++;
+                if (Spawn(r, room, squads, mine, HasItems) != null) n++;
             }
-            return n;
+            bool yours = HasItems && hasPlayer && ResetLoadout(me, playerItems);
+            return new PlaygroundResult { chars = n, yours = yours, floor = HasItems ? RestoreFloor() : new FloorResult() };
         }
 
         // ---- loading in a story level, arena or custom stage ----
 
-        internal class Result { public int moved, respawned, removed, skipped; }
+        internal class Result { public int moved, respawned, removed, skipped; public FloorResult floor = new FloorResult(); }
 
         // Called once you stand in your saved room (its own characters have spawned by then).
         // Matches the characters already there to the saved ones, puts them back, respawns the
@@ -359,12 +379,12 @@ namespace SwapUnaware
                     if (match.TryGetValue(r, out c))
                     {
                         live.Remove(c);
-                        Put(c, r, Usable(room) ? room : null);
+                        Put(c, r, Usable(room) ? room : null, HasItems);
                         res.moved++;
                         continue;
                     }
                     if (r.essential || !Usable(room)) { res.skipped++; continue; }
-                    c = Spawn(r, room, squads, null);
+                    c = Spawn(r, room, squads, null, HasItems);
                     if (c == null) { res.skipped++; continue; }
                     if (!string.IsNullOrEmpty(r.serial)) c.SetSerialNumber(r.serial);
                     if (r.wave) JoinWave(c);
@@ -387,6 +407,8 @@ namespace SwapUnaware
                 }
                 catch (Exception e) { Game.Error("scene: remove " + c.name, e); }
             }
+            // Last, so weapons dropped by the bodies removed above go too.
+            if (HasItems) res.floor = RestoreFloor();
             return res;
         }
 
@@ -422,9 +444,9 @@ namespace SwapUnaware
             return m;
         }
 
-        // Puts a character that is already in the level back the way it was saved. Weapons stay
-        // as they are. room null: its saved room is closed now, so it stays where it is.
-        static void Put(Combatant_Base c, CharRecord r, Room_Main room)
+        // Puts a character that is already in the level back the way it was saved, weapons and ammo
+        // too (items: a version 3 file). room null: its saved room is closed now, so it stays where it is.
+        static void Put(Combatant_Base c, CharRecord r, Room_Main room, bool items)
         {
             if (GuardFeature.IsGuard(c)) GuardFeature.Unguard(c);
             PatrolFeature.DropRoute(c);
@@ -432,6 +454,7 @@ namespace SwapUnaware
             if (room != null) c.TeleportTo(r.pos, Facing(r.facing) * Vector3.forward, room);
             c.myTrauma = r.damage;
             Controller_Base.SetAlertStatus(c.myController, (AI_Wakeup.AlertStatus)r.alert);
+            if (items) ResetLoadout(c, r.items);
             Extras(c, r);
         }
 
@@ -443,8 +466,9 @@ namespace SwapUnaware
         }
 
         // mine: the squad that "your squad" (-1) records join; null gives them a squad of their own,
-        // so story careers never store them.
-        static Combatant_Base Spawn(CharRecord r, Room_Main room, Dictionary<int, Squad_Main> squads, Squad_Main mine)
+        // so story careers never store them. items: a version 3 file, whose loadout replaces any
+        // weapons the card hands out (older files only add theirs).
+        static Combatant_Base Spawn(CharRecord r, Room_Main room, Dictionary<int, Squad_Main> squads, Squad_Main mine, bool items)
         {
             try
             {
@@ -456,7 +480,8 @@ namespace SwapUnaware
                 Squad_Main sq = r.squad == -1 ? mine : null;
                 if (sq == null && !squads.TryGetValue(r.squad, out sq)) { sq = Squad_Main.CreateSquad((Factions)r.team); squads[r.squad] = sq; }
                 sq.AddMember(c.myData);
-                foreach (var it in r.items) Give(c, it);
+                if (items) ResetLoadout(c, r.items);
+                else foreach (var it in r.items) Give(c, it);
                 c.myTrauma = r.damage;
                 Controller_Base.SetAlertStatus(c.myController, (AI_Wakeup.AlertStatus)r.alert);
                 Extras(c, r);
@@ -476,16 +501,5 @@ namespace SwapUnaware
             if (w != null) w.AddUnit(c);
         }
 
-        static void Give(Combatant_Base c, ItemRecord it)
-        {
-            var card = StatCard_Base.ReturnCardByName<StatCard_Weapon>(it.card);
-            if (card == null) return;
-            var item = Catalog_Weapons.GenerateWeapon(card);
-            if (item == null) return;
-            if (item.AmType_Thrown() && item is Item_Data_RangedWeapon && ((Item_Data_RangedWeapon)item).amGrenadeSlot)
-                Char_DataAssigner.GiveThrownToCharacter((Item_Data_RangedWeapon)item, c);
-            else
-                Char_DataAssigner.GiveItemToCharacter(item, c, 0, it.hand);
-        }
     }
 }

@@ -1,19 +1,20 @@
 # Handoff
 
-State on 2026-10-22, session 8: Playground Director 0.6.0 (Director menu on INSERT, clear corpses) merged, released as plugin v0.1.7 on the owner's go-ahead and published to Workshop item 3822329165 before its playtest (the owner chose that); wiki at 0.1.7; eval fixes (Owed 3 to 5). Details: [log.md](log.md).
+State on 2026-10-22, session 9: Director 0.7.0 (scene loads reset weapons and items) built and deployed, not yet played or on the Workshop. Before that, session 8: Playground Director 0.6.0 (Director menu on INSERT, clear corpses) merged, released as plugin v0.1.7 on the owner's go-ahead and published to Workshop item 3822329165 before its playtest (the owner chose that); wiki at 0.1.7; eval fixes (Owed 3 to 5). Details: [log.md](log.md).
+
+## Session 9
+
+- Request: scene loads reset weapons and items too, not only characters. Director 0.7.0 on branch `director-reset-weapons` (details in [log.md](log.md)): scene files version 3 save loadouts with ammo, loose weapons and the Playground player's weapons. Loads cleanly; needs a play (Owed 12) before a Workshop update.
 
 ## Session 8
 
 - Menu design: each `Feature` adds `MenuEntry` lines in `Register()`; a keyed line presses its key for one frame (`Feature.Pressed`), character-aimed lines ask for a click first. Clear corpses uses the dev console's route (`HaveRunKillMe`, `Decay_Manager.DestroyMe_Character`) and keeps squad, scripted, boss and essential bodies. Only a load smoke test so far: the playtest checklist is in the owner's private prompt.
 - WorkshopUpload: the csproj now copies `steam_api64.dll` beside the exe, and the uploader needs absolute paths (relative ones end in `result FileNotFound` after 100%).
 
-## Session 7
+## Earlier sessions
 
-- 0.5.0's first story playtest: loads always said "room , closed" because `JsonUtility` dropped the scene's room and characters (the mod's own nested classes; 0.4.0 too), and one save crashed in `AmDead()` on an unset corpus track. 0.5.1 fixes both (modtools L-005, T-20261022-1; [log.md](log.md)). Second play passed (T-20261022-2).
-
-## Session 6
-
-- Request: F11 scenes in story levels and arenas. Decision and limits: [decisions/2026-10-21-scenes-in-every-level.md](decisions/2026-10-21-scenes-in-every-level.md); hooks: [notes/2026-10-21-scenes-in-levels-research.md](notes/2026-10-21-scenes-in-levels-research.md).
+- Session 7, 0.5.0's first story playtest: loads always said "room , closed" because `JsonUtility` dropped the scene's room and characters (the mod's own nested classes; 0.4.0 too), and one save crashed in `AmDead()` on an unset corpus track. 0.5.1 fixes both (modtools L-005, T-20261022-1; [log.md](log.md)). Second play passed (T-20261022-2).
+- Session 6, F11 scenes in story levels and arenas. Decision and limits: [decisions/2026-10-21-scenes-in-every-level.md](decisions/2026-10-21-scenes-in-every-level.md); hooks: [notes/2026-10-21-scenes-in-levels-research.md](notes/2026-10-21-scenes-in-levels-research.md).
 
 ## Session 5
 
@@ -22,10 +23,7 @@ State on 2026-10-22, session 8: Playground Director 0.6.0 (Director menu on INSE
 - Playtested on the owner's PC (modtools T-20261021-1: F1 to F4, F10 and F5 to F8 seen in Player.log, no exception; F9 guard and F11 scenes not yet exercised, confirm next report). Published as an update of public item 3822329165 (title "Playground Director (was Swap And Unaware)", new preview), still public, 28 subscribers. Wiki worked example updated.
 - Plugin v0.1.5 tagged and released (the owner's go-ahead; 0.1.3 and 0.1.4 are folded into it): `scripts/decomp.py` (decompile, keys, find, callers; 5 tests in CI), `references/game-recipes.md`, L-003, L-004.
 - Likely cause of the 0.3.0 "teammate turned on me" report: Playground spawns are `Factions.None` squads, hostile to everyone outside their squad. Budget: still yellow (mpn.py 9,500 tokens; installed skills folder 205 KB, green up to 200).
-
-## Sessions 3 and 4
-
-- Beta launch passed (build 25615196: [notes/2026-10-18-beta-launch.md](notes/2026-10-18-beta-launch.md)); swap mod 0.1.0 to 0.3.0 built and fixed (L-002, T-20261018-2; details in [log.md](log.md)). Source and build in [examples/SwapUnaware](../examples/SwapUnaware/README.md); public Workshop item 3822329165 uploaded and updated with [examples/WorkshopUpload](../examples/WorkshopUpload/README.md) (needs the uploader zip's Facepunch DLLs in `lib/`; auto mode asks the owner once). Loader diff release vs beta impossible while on the beta.
+- Sessions 3 and 4: beta launch passed (build 25615196: [notes/2026-10-18-beta-launch.md](notes/2026-10-18-beta-launch.md)); swap mod 0.1.0 to 0.3.0 built and fixed (L-002, T-20261018-2; details in [log.md](log.md)). Source and build in [examples/SwapUnaware](../examples/SwapUnaware/README.md); public Workshop item 3822329165 uploaded and updated with [examples/WorkshopUpload](../examples/WorkshopUpload/README.md) (needs the uploader zip's Facepunch DLLs in `lib/`; auto mode asks the owner once). Loader diff release vs beta impossible while on the beta.
 
 ## Done
 
@@ -46,5 +44,6 @@ State on 2026-10-22, session 8: Playground Director 0.6.0 (Director menu on INSE
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
 10. Director 0.6.1 playtest (renamed from Playground Director 2026-10-22; on the Workshop): Director menu, clear corpses (story room, arena between waves, Playground), arena mid-wave scenes, Playground scenes (also from another map), story room-closed path, die-Retry-load, F9 guard (never logged yet). Already on the Workshop, so fix fast if it fails.
 11. Done 2026-10-22: Director menu and clear corpses (0.6.0, plugin v0.1.7).
+12. Director 0.7.0 playtest (weapons reset on scene load): in the Playground and a story level, save a scene, drop or throw weapons, kill someone, empty a magazine, then load: everyone holds what they held with the same ammo, floor weapons are back where they lay and new ones are gone; Player.log's load line counts them. Then a Workshop update (owner's OK).
 
-Next step: the owner keeps session prompts in private notes (they name local paths). Without one: Owed 10 (read Player.log after the next play), then Owed 5 via `evergreen.py worth --ab`.
+Next step: the owner keeps session prompts in private notes (they name local paths). Without one: Owed 12 and 10 (read Player.log and the newest scene file after the next play), then Owed 5 via `evergreen.py worth --ab`.
