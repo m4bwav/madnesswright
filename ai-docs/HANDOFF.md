@@ -1,15 +1,19 @@
 # Handoff
 
-State on 2026-10-22, session 8 (eval fixes, Owed 3 to 5; [log.md](log.md)). Session 7: Playground Director 0.5.1 fixed 0.5.0's story-mode load, playtested in a story level; plugin v0.1.6 released.
+State on 2026-10-22, session 8: Playground Director 0.6.0 (Director menu on INSERT, clear corpses) merged, released as plugin v0.1.7 on the owner's go-ahead and published to Workshop item 3822329165 before its playtest (the owner chose that); wiki at 0.1.7; eval fixes (Owed 3 to 5). Details: [log.md](log.md).
+
+## Session 8
+
+- Menu design: each `Feature` adds `MenuEntry` lines in `Register()`; a keyed line presses its key for one frame (`Feature.Pressed`), character-aimed lines ask for a click first. Clear corpses uses the dev console's route (`HaveRunKillMe`, `Decay_Manager.DestroyMe_Character`) and keeps squad, scripted, boss and essential bodies. Only a load smoke test so far: the playtest checklist is in the owner's private prompt.
+- WorkshopUpload: the csproj now copies `steam_api64.dll` beside the exe, and the uploader needs absolute paths (relative ones end in `result FileNotFound` after 100%).
 
 ## Session 7
 
-- 0.5.0's first story playtest: loads always said "room , closed" because `JsonUtility` dropped the scene's room and characters (the mod's own nested classes; 0.4.0 too), and one save crashed in `AmDead()` on an unset corpus track. 0.5.1 fixes both (modtools L-005, T-20261022-1; [log.md](log.md)). Next: the checklist again with 0.5.1, then open a new scene file to see `chars` filled.
+- 0.5.0's first story playtest: loads always said "room , closed" because `JsonUtility` dropped the scene's room and characters (the mod's own nested classes; 0.4.0 too), and one save crashed in `AmDead()` on an unset corpus track. 0.5.1 fixes both (modtools L-005, T-20261022-1; [log.md](log.md)). Second play passed (T-20261022-2).
 
 ## Session 6
 
 - Request: F11 scenes in story levels and arenas. Decision and limits: [decisions/2026-10-21-scenes-in-every-level.md](decisions/2026-10-21-scenes-in-every-level.md); hooks: [notes/2026-10-21-scenes-in-levels-research.md](notes/2026-10-21-scenes-in-levels-research.md).
-- Next: the requester's playtest (checklist in the owner's private next-session prompt), read Player.log `saved scene` / `loaded scene` lines, fix until it passes. After the owner's OK: `workshop-description.txt` (the README already describes 0.5.0), then update item 3822329165 and check it stays public.
 
 ## Session 5
 
@@ -26,24 +30,21 @@ State on 2026-10-22, session 8 (eval fixes, Owed 3 to 5; [log.md](log.md)). Sess
 ## Done
 
 - Public: https://github.com/m4bwav/madnesswright (topics set, private vulnerability reporting on, CI green on Windows, macOS and Linux with Python 3.9 and 3.14). Releases v0.1.1 and v0.1.2 (https://github.com/m4bwav/madnesswright/releases/tag/v0.1.2) from `.github/workflows/release.yml`. 0.1.0 was never tagged.
-- Wiki live at https://github.com/m4bwav/madnesswright/wiki (10 pages, names 0.1.2): how it was made and how to update it in [notes/2026-10-17-github-wiki.md](notes/2026-10-17-github-wiki.md).
+- Wiki live at https://github.com/m4bwav/madnesswright/wiki (10 pages, names 0.1.7 since 2026-10-22): how it was made and how to update it in [notes/2026-10-17-github-wiki.md](notes/2026-10-17-github-wiki.md).
 - Real-game check on the owner's install (release v1.11.a, build 25615280) and a decompile of its mod loader: [notes/2026-10-17-real-game-loader.md](notes/2026-10-17-real-game-loader.md). Facts folded into the skills (hub R-20261017-9, C-20261017-3; modtools R-20261017-6, C-20261017-3 to -5). The big ones: the log is `Mods/mods.log` (the doc says mods.txt), `Mods/enabled.txt`, info.json allowed, `.json` cards only as a container, `IModEntrypoint` in the global namespace, mods target net48.
 - Installed locally as `madnesswright@mark-local` (entry in the Ai folder's `.claude-plugin/marketplace.json`).
 - Tests: 26 unit tests; value cases 3 of 3 runs on all six (one fail on run 2 of modtools outcome-1 fixed the net48 rule); baselines for all six; triggers and decoys 36/36 headless after a routing fix (first pass 30/36: the scenes skill never fired). Each TESTS.md has T-20261017-3 and -4.
-- Banner `.github/images/banner.jpg` (Z-Image Turbo, seed 37, prompt beside it) and listing icon `.claude-plugin/icon.png` (a crop of the banner).
 
 ## Owed
 
-1. Beta launch check: done 2026-10-18 (Session 3).
 2. **Listings on hold** by the owner's ruling (2026-10-17): no Claude directory submission, and never awesome-copilot. Do not submit.
 3. Done 2026-10-22: `Arena_PG` lives in `tests/fixtures/arena-project` (no reference scene). Skill pass, but the baseline still found both faults from the prefab Library (scenes T-20261022-1): the case separates on cost, not correctness.
 4. Done 2026-10-22: outcome-1 expects one PatchAll (the loader's). Skill and baseline both passed (modtools T-20261022-3); the baseline needed a second build (net472 first).
 5. Partly done 2026-10-22 (scenes T-20261022-2): `eval-export --out evals/<skill>` works (the default `skills/<x>/evals/cases` is refused as `--eval-dir`); triggers +1, decoys quiet; value cases cannot run on native Windows (no sandbox for Bash; outcome exported read-only). `worth --record`: UNPROVEN. Next: `worth --ab` or WSL2.
-6. Size budget is yellow: `mpn.py` is about 9,300 tokens (green up to 9,000), the hub description is 1,000 characters.
+6. Size budget is yellow (2026-10-22): `mpn.py` about 9,500 tokens (green up to 9,000; comments and docstrings are only 2.6K characters, so a trim means refactoring tested code), the hub description 1,000 characters (trim needs the 36-run trigger eval), installed skills folder 211 KB.
 7. Headless SceneTools build route is untested (needs Unity 2019.2.6f1).
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
-9. **Requested mod:** swap characters and make everyone else unaware, as a Harmony mod and a live test of madnesswright-modtools. Plan and the game's hooks: [plans/2026-10-17-swap-and-unaware-mod.md](plans/2026-10-17-swap-and-unaware-mod.md). Needs `releasebeta`.
-10. Playground Director: F11 confirmed in a story level (0.5.1); still confirm F9 guard, arena and Playground scenes.
-11. Requested: a Director menu (pause-time window listing every feature, easy to add to) with a clear-corpses action; hooks to check: `Decay_Manager` (`ClearAll_Character`, `DestroyMe_Character`) and `InteractiveMode.ClearAll_DoIt()`.
+10. Playground Director 0.6.0 playtest: Director menu, clear corpses (story room, arena between waves, Playground), arena mid-wave scenes, Playground scenes (also from another map), story room-closed path, die-Retry-load, F9 guard (never logged yet). Already on the Workshop, so fix fast if it fails.
+11. Done 2026-10-22: Director menu and clear corpses (0.6.0, plugin v0.1.7).
 
-Next step: the owner keeps session prompts in private notes (they name local paths). Without one: Owed 5's value cases via `evergreen.py worth --ab`, then 10.
+Next step: the owner keeps session prompts in private notes (they name local paths). Without one: Owed 10 (read Player.log after the next play), then Owed 5 via `evergreen.py worth --ab`.
