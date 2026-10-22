@@ -1,6 +1,6 @@
 # Game recipes for Harmony and behaviour mods
 
-Members of MADNESS: Project Nexus that mods change characters with, found in a decompile of beta v2.20.a (build 25615196) on 2026-10-21 for the Playground Director mod ([examples/SwapUnaware](../../../examples/SwapUnaware/README.md)). Names only. Re-check each with `decomp.py find <decompile> <Name>` after a game update. Status: playtested on the owner's PC on 2026-10-21 (no exception in Player.log) for the key check, freezing, removing, AI states, idle poses, patrol walking and the attack block; guard (FixedInPlace) and saving a scene are built but not yet exercised in play.
+Members of MADNESS: Project Nexus that mods change characters with, found in a decompile of beta v2.20.a (build 25615196) on 2026-10-21 for the Playground Director mod ([examples/SwapUnaware](../../../examples/SwapUnaware/README.md)). Names only. Re-check each with `decomp.py find <decompile> <Name>` after a game update. Status: playtested on the owner's PC on 2026-10-21 (no exception in Player.log) for the key check, freezing, removing, AI states, idle poses, patrol walking and the attack block; guard (FixedInPlace) and saving a scene are built but not yet exercised in play. Scenes in story levels and arenas (Playground Director 0.5.0, same build) are deployed, playtest pending.
 
 ## Look things up without reading whole files
 
@@ -43,3 +43,15 @@ Members of MADNESS: Project Nexus that mods change characters with, found in a d
 - No Playground save exists. Spawn with `Char_Data.CreateCharacter(StatCard_Base.ReturnCardByName<StatCard_Character>(card))`, `Combatant_Base.CreateCombatant(data, Cam_Main.currentRoom, ControllerType.NPC, pos, rot, false)`, `Squad_Main.CreateSquad(faction)` and `AddMember`. Weapons: `Catalog_Weapons.GenerateWeapon` then `Char_DataAssigner.GiveItemToCharacter` (grenades: `GiveThrownToCharacter`). Damage is `myTrauma`. Clear first with `InteractiveMode.ClearAll_DoIt()`.
 - Write mod data outside `Mods/`: the loader reads every `.json` and `.txt` in a mod folder as a MadCard. `Application.persistentDataPath/<ModName>/` works; `UnityEngine.JsonUtility` (needs `UnityEngine.JSONSerializeModule`) handles `[Serializable]` classes with `List<T>` and `Vector3`.
 - Mode check: `Game_Manager.currentGameMode == GameModes.Playground`.
+
+## Levels, rooms and the career save
+
+- Which level: `Game_Manager.currentGameMode`, `Stage_Manager.currentStage` (a card; null in some hubs; `FullName` to show) and `Game_Manager.GameTransitions.NameOrPathOfCurrentScene()` (path for .sobj scenes). There is no level index.
+- Rooms have no id: match `name` plus `SerialNumber`, then nearest position, over `Room_Main.allRooms`. Save each character's `myRoom`; no lookup from a position exists.
+- Story, arena and custom stages lock a room you leave (`amLockedOut`, GameObject off, temporary squads cleared). A room's own characters spawn when the player first enters it (`RoomBecomesFocus`). `TeleportTo(pos, forward, room)` on the player's body enters the room the same way.
+- Never call `InteractiveMode.ClearAll_DoIt()` outside the Playground: it removes squadmates, bosses and scripted characters in the room.
+- `RemoveFromGame()` fires every death callback: kill counters, `CharacterDies` events, wave kills, and `FactionDead` when the last of a faction goes (it latches). Spawn replacements before removing.
+- Scripts find characters by serial number; a spawned character has none until `SetSerialNumber`. Leave characters with a serial, `amEssential`, the player squad (`Squad_Main.AmPlayerSquad`), bosses (`AmType_Boss()`) and cutscene actors (`myCutscene`) alone.
+- Arena waves count squad rosters; a spawned unit joins the running wave with `WaveContainer.AddUnit(c)`. Pause is blocked between waves.
+- `Game_Manager.SaveCareer()` runs on every stage start (`Stage_Manager.StageSelectedFromMenu`) and wave start and end, not on death or restart. Starting a story stage by code writes the career; switching Playground stages with `GameTransitions.LoadScene` does not. Keep spawned characters out of the player's squad outside the Playground (their ids would go into `IDs_Squad`).
+- Every scene load clears all pause sources (`ClearPauseGame`) and every spawned character.

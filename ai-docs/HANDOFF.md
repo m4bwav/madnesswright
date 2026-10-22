@@ -1,6 +1,11 @@
 # Handoff
 
-State on 2026-10-21, session 5 (Playground Director 0.4.0 playtested and on the Workshop; plugin v0.1.5 tagged and released).
+State on 2026-10-21, session 6 (Playground Director 0.5.0, scenes in every level, built and deployed; playtest pending; plugin 0.1.6 merged, not tagged).
+
+## Session 6
+
+- Request: F11 scenes in story levels and arenas. Decision and limits: [decisions/2026-10-21-scenes-in-every-level.md](decisions/2026-10-21-scenes-in-every-level.md); hooks: [notes/2026-10-21-scenes-in-levels-research.md](notes/2026-10-21-scenes-in-levels-research.md).
+- Next: the requester's playtest (checklist in the owner's private next-session prompt), read Player.log `saved scene` / `loaded scene` lines, fix until it passes. After the owner's OK: `workshop-description.txt` (the README already describes 0.5.0), then update item 3822329165 and check it stays public.
 
 ## Session 5
 
@@ -10,18 +15,9 @@ State on 2026-10-21, session 5 (Playground Director 0.4.0 playtested and on the 
 - Plugin v0.1.5 tagged and released (the owner's go-ahead; 0.1.3 and 0.1.4 are folded into it): `scripts/decomp.py` (decompile, keys, find, callers; 5 tests in CI), `references/game-recipes.md`, L-003, L-004.
 - Likely cause of the 0.3.0 "teammate turned on me" report: Playground spawns are `Factions.None` squads, hostile to everyone outside their squad. Budget: still yellow (mpn.py 9,500 tokens; installed skills folder 205 KB, green up to 200).
 
-## Session 4
+## Sessions 3 and 4
 
-- Swap mod 0.3.0 fixed the mid-fight take-over failure (duplicate AI target claimants, L-002). The owner's playtest passed on two PCs, the second installed from the Workshop (modtools T-20261018-2). One unconfirmed report: a grunt added to the player's own team turned on the player once; the owner chose to leave it.
-- Source lives in [examples/SwapUnaware](../examples/SwapUnaware/README.md) and builds there (`pwsh ./pack.ps1 -Version X`); `mpn-mods/SwapUnaware` outside the repo holds old zips only.
-- Public Workshop item 3822329165 (https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165), uploaded with [examples/WorkshopUpload](../examples/WorkshopUpload/README.md) through the owner's logged-in Steam. Its update path is untested. Building it needs the uploader zip's Facepunch DLLs in `lib/`; Claude Code's auto mode refused that build until the owner approved it.
-- Loader diff (release vs beta) cannot be done: the install is on the beta.
-- Plugin 0.1.4 merged (PRs #2, #3, #4), not tagged. Tagging waits for the owner.
-- Still owed: 3, 4, 5 below (eval fixes) and the size budget (mpn.py ~9,500 tokens, tracked KB yellow).
-
-## Session 3
-
-- First beta launch passed (build 25615196, green blood: [notes/2026-10-18-beta-launch.md](notes/2026-10-18-beta-launch.md)); swap mod 0.1.0 and 0.2.0 built and fixed (details in [log.md](log.md)); 0.1.3 merged (PR #1). Loader diff release vs beta not possible while on the beta.
+- Beta launch passed (build 25615196: [notes/2026-10-18-beta-launch.md](notes/2026-10-18-beta-launch.md)); swap mod 0.1.0 to 0.3.0 built and fixed (L-002, T-20261018-2; details in [log.md](log.md)). Source and build in [examples/SwapUnaware](../examples/SwapUnaware/README.md); public Workshop item 3822329165 uploaded and updated with [examples/WorkshopUpload](../examples/WorkshopUpload/README.md) (needs the uploader zip's Facepunch DLLs in `lib/`; auto mode asks the owner once). Loader diff release vs beta impossible while on the beta.
 
 ## Done
 
@@ -44,7 +40,7 @@ State on 2026-10-21, session 5 (Playground Director 0.4.0 playtested and on the 
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
 9. **Requested mod:** swap characters and make everyone else unaware, as a Harmony mod and a live test of madnesswright-modtools. Plan and the game's hooks: [plans/2026-10-17-swap-and-unaware-mod.md](plans/2026-10-17-swap-and-unaware-mod.md). Needs `releasebeta`.
 
-10. Playground Director: confirm F9 guard and F11 scenes in the next play report.
+10. Playground Director: confirm F9 guard and F11 scenes (0.5.0, every level) in the next play report.
 
 ## Next step
 

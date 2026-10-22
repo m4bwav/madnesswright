@@ -138,7 +138,7 @@ namespace SwapUnaware
             c.wanderingDisabled = true;
         }
 
-        static void DropRoute(Combatant_Base c)
+        internal static void DropRoute(Combatant_Base c)
         {
             Route r;
             if (!routes.TryGetValue(c, out r)) return;

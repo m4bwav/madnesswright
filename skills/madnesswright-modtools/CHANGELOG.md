@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261021-2 · 2026-10-21 · Game recipes for levels, rooms and the career save
+- because: user request (the requester's scenes in every level; Playground Director 0.5.0)
+- files: references/game-recipes.md (status line; new section "Levels, rooms and the career save")
+- Adds what a mod needs to touch characters outside the Playground: level and room identity, room lockout, why Clear All and RemoveFromGame are risky in story levels, serial numbers, arena waves, and which calls write the career save. Deployed, playtest pending.
+
 ### C-20261021-1 · 2026-10-21 · decomp.py lookups, game recipes, key and data-file rules
 - because: L-003, L-004, user request (the Playground Director mod; make the plugin cheaper in tokens and mistakes)
 - files: scripts/decomp.py (new: decompile, keys, find, callers), SKILL.md (Step 5.1), references/game-recipes.md (new), references/harmony.md ("A mod with no patch")

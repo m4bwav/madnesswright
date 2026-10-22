@@ -1,6 +1,6 @@
 # Playground Director (was Swap And Unaware)
 
-Take control of any character, freeze the room, set patrols and guards, pose enemies and save Playground scenes, in the story mode, the arenas and the Playground. A requested mod, kept here as the worked example for the [madnesswright-modtools](../../skills/madnesswright-modtools/SKILL.md) skill's Harmony route: an `IModEntrypoint`, two Harmony prefixes, one component per feature, a net48 build against the player's own game files, and the bugs live playtests found.
+Take control of any character, freeze the room, set patrols and guards, pose enemies and save scenes, in the story mode, the arenas and the Playground. A requested mod, kept here as the worked example for the [madnesswright-modtools](../../skills/madnesswright-modtools/SKILL.md) skill's Harmony route: an `IModEntrypoint`, two Harmony prefixes, one component per feature, a net48 build against the player's own game files, and the bugs live playtests found.
 
 | Key | What it does |
 |---|---|
@@ -14,17 +14,29 @@ Take control of any character, freeze the room, set patrols and guards, pose ene
 | F8 | Back to your own body (the one you had before the first F5). Happens by itself when the body you took dies, if your own body is still alive. |
 | F9 | On the character under the mouse: stands guard. It never moves, goes unaware, and fights anyone not on its team once it sees them (the game's own FixedInPlace spawner option). F9 again: back to normal. |
 | F10 | On the character under the mouse: unaware goes to search, search goes to attack (you are its target), attack goes to unaware. |
-| F11 | While paused, in the Playground: name the scene, ENTER saves it. CAPS LOCK while paused lists saved scenes; click one to load it; ESC closes. |
+| F11 | While paused (story, arena, custom stage or Playground): name the scene, ENTER saves it. CAPS LOCK while paused lists saved scenes, this stage's first; click one to load it; ESC closes. See "Scenes" below for what loading does where. |
 
 On the Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165 (Subscribe, then enable it from the gear icon).
 
-Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21, in the Playground and then the story mode (F9 and F11 not yet exercised), and is on the Workshop. Back up your saves before using it in a story career.
+Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21, in the Playground and then the story mode (F9 and F11 not yet exercised), and is on the Workshop. 0.5.0 (scenes in every level) is built and deployed on the owner's PC, playtest pending, not on the Workshop yet. Back up your saves before using it in a story career.
 
 ## Key choices
 
 - The requester asked for F1 to F4 and F9 to F11 and to leave F5 to F8 and F12 alone ("Do not make a button that is not F5, F6, F7, F8, and F12" read as "do not take those"). F12 is Steam's screenshot key.
 - No key moved. In a fresh decompile (`decomp.py keys`), F1 to F4, F9 to F11, P and Delete are read only by the developer console (debug builds), the `-devtools` mod-test tools, and the profile window's tab keys while it is open; U and Return are unread in play. CapsLock is the game's autowalk key; the mod reads it only while paused, but the game may still toggle autowalk (any move key turns it off).
-- Scenes are files in `AppData/LocalLow/Gibbing Tree/Madness Project Nexus/PlaygroundDirector/Scenes` under the user's profile, outside `Mods/`, because the game reads every `.json` in a mod folder as a MadCard. A scene loads only on the stage it was saved on. Loading clears the room first; you keep your body and place.
+- Scenes are files in `AppData/LocalLow/Gibbing Tree/Madness Project Nexus/PlaygroundDirector/Scenes` under the user's profile, outside `Mods/`, because the game reads every `.json` in a mod folder as a MadCard. 0.4.0 scene files still load.
+
+## Scenes (0.5.0)
+
+Why, and what was left out: [the decision](../../ai-docs/decisions/2026-10-21-scenes-in-every-level.md).
+
+- **Playground:** as in 0.4.0. Loading clears the room (the game's Clear All) and spawns the saved characters, each in its saved room if that room is still there; you keep your body and place. A scene saved on another Playground stage loads that stage first.
+- **Story levels, arenas, custom stages, hubs:** loading moves you back to the spot and room where you saved, waits a moment for that room's own characters, then puts the characters already there back the way they were (position, facing, damage, alert, frozen, guard, patrol; weapons stay), respawns the ones who have died since, and removes characters the scene does not hold. It never removes your squad, the playable characters, the level's scripted characters (the ones its triggers refer to), bosses or cutscene actors; bosses and cutscene actors are not saved at all.
+- Story levels lock each room you leave. If the scene's room is closed, restart the stage (pause, Restart) and load again: from the start, the mod takes you straight to that room.
+- A story, arena or custom scene saved on another stage is listed with that stage's name in brackets. Play that stage, then load it: starting a stage writes your career save, so the mod does not do it.
+- Removing a character counts as a kill for the level (kill counters, arena kill count). Doors, triggers and objectives are not rewound.
+- Arenas cannot be paused between waves (the game blocks it): save and load mid-wave or before the first wave.
+- Every save and load writes one line to Player.log (stage, room, counts), so a playtest can be checked from the log.
 - Folder, DLL and HarmonyID stay `SwapUnaware`, so the enabled state and the Workshop item carry over; only the display name changed.
 
 ## Install
