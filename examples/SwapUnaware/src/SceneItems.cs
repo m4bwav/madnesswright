@@ -125,23 +125,56 @@ namespace SwapUnaware
         }
 
         // Puts the saved ammo into each weapon still in the same slot with the same card; the weapon
-        // objects stay, so a career's weapons are never swapped. Returns how many it refilled.
+        // objects stay, so a career's weapons are never swapped. A slot emptied since the save (the
+        // weapon thrown or dropped) first picks that same weapon back up from wherever it lies, or
+        // gets a fresh one if it is gone. Call it before RestoreFloor, which would clear the weapon.
+        // Returns how many weapons it reset.
         internal static int RefillAmmo(Combatant_Base c, List<ItemRecord> items)
         {
             if (c == null) return 0;
-            var cc = c as Combatant_Character;
             int n = 0;
             foreach (var r in items)
             {
-                Item_Held it;
-                if (r.thrown) it = cc != null ? cc.myItemThrown : null;
-                else if (r.slot == 1) it = cc != null && r.hand < cc.myItemsStowed.Length ? cc.myItemsStowed[r.hand] : null;
-                else it = r.hand < c.myItemsHeld.Length ? c.myItemsHeld[r.hand] : null;
-                if (it == null || it.myData == null || it.myData.myCard == null || it.myData.myCard.name != r.card || !r.hasAmmo) continue;
-                try { ApplyAmmo(it, r.hasAmmo, r.ammo, r.mags); n++; }
+                try
+                {
+                    var it = InSlot(c, r);
+                    if (it == null)
+                    {
+                        var lying = FindLying(c, r.card);
+                        if (lying != null)
+                        {
+                            if (lying.myOwner != null) lying.myOwner.ClearItemFromSlot(lying);
+                            c.PickupItem(lying, r.hand, r.slot);
+                            it = InSlot(c, r);
+                        }
+                        if (it == null) { Give(c, r); n++; continue; }
+                    }
+                    if (it.myData == null || it.myData.myCard == null || it.myData.myCard.name != r.card) continue;
+                    ApplyAmmo(it, r.hasAmmo, r.ammo, r.mags);
+                    n++;
+                }
                 catch (Exception e) { Game.Error("scene: ammo " + r.card, e); }
             }
             return n;
+        }
+
+        static Item_Held InSlot(Combatant_Base c, ItemRecord r)
+        {
+            var cc = c as Combatant_Character;
+            if (r.thrown) return cc != null ? cc.myItemThrown : null;
+            if (r.slot == 1) return cc != null && r.hand < cc.myItemsStowed.Length ? cc.myItemsStowed[r.hand] : null;
+            return r.hand < c.myItemsHeld.Length ? c.myItemsHeld[r.hand] : null;
+        }
+
+        // The nearest weapon with this card that no living character holds, career weapons included.
+        static Item_Held FindLying(Combatant_Base c, string card)
+        {
+            return UnityEngine.Object.FindObjectsOfType<Item_Held>()
+                .Where(x => x != null && x.gameObject.activeInHierarchy && !x.AmDespawning && !x.AmMenuObject && !x.AmSecondaryObject
+                    && x.myData != null && x.myData.myCard != null && x.myData.myCard.name == card && !x.AmQuest()
+                    && (x.myOwner == null || !Game.Alive(x.myOwner)))
+                .OrderBy(x => (x.transform.position - c.Position).sqrMagnitude)
+                .FirstOrDefault();
         }
 
         // Item_Held.DeSpawn lets go of a held or thrown item itself; a holstered one is cleared first.

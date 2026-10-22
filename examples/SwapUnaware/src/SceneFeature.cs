@@ -253,7 +253,7 @@ namespace SwapUnaware
             var r = data.RestoreLevel();
             Game.Say("loaded scene \"" + name + "\" on " + where + ": " + r.moved + " moved back, " + r.respawned + " respawned, "
                 + r.removed + " removed, " + r.skipped + " skipped (of " + data.chars.Count + " saved)" + Items(data, r.floor)
-                + (data.HasItems ? ", ammo reset in " + r.yourAmmo + " of your " + data.playerItems.Count + " weapons" : ""));
+                + (data.HasItems ? ", " + r.yourAmmo + " of your " + data.playerItems.Count + " weapons reset" : ""));
         }
 
         static string Items(SceneData data, SceneData.FloorResult f)

@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-6 · 2026-10-22 · live use by the owner · owner's PC, beta 2.20.a · 0/1 (thrown weapon on load)
+- live-f11-thrown · fail · Director 0.7.1 in The Boom Factory: saved "test alpha" holding R_Shot_ChopPump5, threw it, loaded twice: the shotgun disappeared. Log: `13 cleared, 12 of 12 put back, ammo reset in 2 of your 3 weapons`: the thrown shotgun (not career-registered) was cleared as a loose floor weapon, and `RefillAmmo` only touched weapons still in their slot.
+- Fix in 0.7.2: `RefillAmmo` picks the same weapon back up (`ClearItemFromSlot` on a dead owner, `Combatant_Base.PickupItem(item, hand, slot)`), or gives a fresh one if none is left, and runs before `RestoreFloor`. Built clean and deployed while the game was running (takes effect on restart); not yet played.
+- led to: none
+
 ### T-20261022-5 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 0/1 (ammo reset)
 - live-f11-ammo · fail · Director 0.7.0 in The Industrial Sector and The Boom Factory: three saves and loads, no exception; floor weapons cleared and put back (5 of 5, 10 of 10, 10 of 10), but the player's shotgun ammo did not reset. Cause: the player's loadout was saved only in the Playground (`"playerItems": []` in the file) and Deimos's, though saved, was skipped as a career-weapon holder.
 - Fix in 0.7.1: player loadout saved everywhere; outside the Playground, and for career-weapon holders, `RefillAmmo` sets the saved ammo on the weapon in the same slot with the same card (`CancelReload`, `ResetAmmo`, `SetAmmo`, `SetMags`) without swapping it. Built clean, loads in game; not yet played.
