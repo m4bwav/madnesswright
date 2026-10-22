@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-2 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 1/1 (F11 in a story level)
+- live-f11-story · pass · Playground Director 0.5.1 in The Industrial Sector: saved "new save" (14 characters) and "save2" (12); loads: 13 moved back + 1 respawned, 14 moved back, 12 + 2 respawned, 12 + 1 removed; files hold `chars`; Player.log has no problem line. The owner: "it vaguely seemed to work".
+- Not exercised: arenas, Playground scenes, F9 guard.
+- led to: L-005 confirmed (helpful +1)
+
 ### T-20261022-1 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 0/1 (F11 in a story level)
 - live-f11-story · bug · fail · Playground Director 0.5.0 in Warehouse Raid: saves logged 1, 2 and 4 characters, every load said the saved room `""` was closed; the files under PlaygroundDirector/Scenes held no `playerRoom` and no `chars`. One save threw `IndexOutOfRangeException` in `Health_Manager.ReturnCharacterDead` via `Game.Alive`.
 - Fixed in 0.5.1 (built, deployed, helper test 10/10 in the scratchpad); in-game recheck pending. F9 still never logged.

@@ -42,9 +42,9 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Trigger: the first story-level playtest of Playground Director 0.5.0 (2026-10-22) saved scenes that logged "4 characters" but whose files held no `chars` and no `playerRoom`, so every load said the room was closed. 0.4.0 had the same bug; F11 had never been confirmed in play.
 - Hypothesis: Unity's serializer only knows types from the assemblies it loaded at startup; a Harmony mod's DLL is loaded later, so `JsonUtility` skips fields typed with its classes while still writing primitives and `Vector3`, with no error.
 - Rule: in a code mod, never nest the mod's own `[Serializable]` classes in a `JsonUtility` object. Serialize each flat record on its own and join them (or hand-write the JSON), and make the first playtest check open the written file, not only the log line.
-- Evidence: T-20261022-1 (0.5.1 fix; helper test 10/10; in-game check pending)
+- Evidence: T-20261022-1 (0.5.1 fix; helper test 10/10), T-20261022-2 (fix confirmed in play)
 - Scope: skill
-- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-22
+- Status: active · helpful 2 · harmful 0 · last_confirmed 2026-10-22
 
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
