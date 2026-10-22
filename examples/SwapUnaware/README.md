@@ -1,6 +1,6 @@
 # Playground Director (was Swap And Unaware)
 
-Take control of any character, freeze the room, set patrols and guards, pose enemies and save Playground scenes. A requested mod, kept here as the worked example for the [madnesswright-modtools](../../skills/madnesswright-modtools/SKILL.md) skill's Harmony route: an `IModEntrypoint`, two Harmony prefixes, one component per feature, a net48 build against the player's own game files, and the bugs live playtests found.
+Take control of any character, freeze the room, set patrols and guards, pose enemies and save Playground scenes, in the story mode, the arenas and the Playground. A requested mod, kept here as the worked example for the [madnesswright-modtools](../../skills/madnesswright-modtools/SKILL.md) skill's Harmony route: an `IModEntrypoint`, two Harmony prefixes, one component per feature, a net48 build against the player's own game files, and the bugs live playtests found.
 
 | Key | What it does |
 |---|---|
@@ -18,7 +18,7 @@ Take control of any character, freeze the room, set patrols and guards, pose ene
 
 On the Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165 (Subscribe, then enable it from the gear icon).
 
-Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21 (F9 and F11 not yet exercised) and is on the Workshop. Not tested in the story career, so back up your saves before using it there.
+Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21, in the Playground and then the story mode (F9 and F11 not yet exercised), and is on the Workshop. Back up your saves before using it in a story career.
 
 ## Key choices
 
