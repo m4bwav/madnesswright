@@ -2,6 +2,13 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 8: eval fixes
+
+- Owed 3: `Arena_PG` (and its .meta) moved from `tests/fixtures/scene-project` to a new `tests/fixtures/arena-project` with a copy of the prefab Library and TagManager and no reference scene; scenes action-1 points there. Skill pass; the baseline still found S01 and S05 by matching prefab GUIDs to the Library and reading Room_Layout's children (scenes T-20261022-1). Without the Library, scene-lint cannot resolve the prefabs either, so the case now separates on cost and next steps only.
+- Owed 4: modtools outcome-1 gained "patches applied once" (the loader runs `PatchAll()` unless `ManualPatch` is true). Skill and baseline both passed; the baseline decompiled the loader itself and needed a net472 build failure before net48 (modtools T-20261022-3).
+- Owed 5: `evergreen.py eval-export` works, but its default folder `skills/<x>/evals/cases` is refused by `claude plugin eval` ("--eval-dir must not be inside the plugin's skills/ directory"); `--out evals/<skill>` in a scratch copy of the plugin worked. Scenes suite (2.1.281, sonnet judge, $5.01): triggers 3/3 with, 0/3 without; decoys quiet; action-1 had no shell (granting Bash is refused on native Windows: "the Windows sandbox is not active ... feature gate off") and outcome-1 had no Write tool, so both failed in both arms. `worth --record`: UNPROVEN, in scenes' evergreen.json. Not tried for the hub or modtools; next is `worth --ab` (headless `claude -p`) or WSL2. The case folders were not committed.
+- Recorded with `evergreen.py tested` for scenes and modtools. No version bump, no tag.
+
 ## 2026-10-22 · session 7: story-mode load fix (Playground Director 0.5.1)
 
 - Second play (The Industrial Sector): 0.5.1 saved 14 and 12 characters and loaded them back four times (respawns and one removal), no exception (modtools T-20261022-2). v0.1.6 tagged and released on the owner's go-ahead.

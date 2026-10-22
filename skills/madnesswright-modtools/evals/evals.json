@@ -65,8 +65,10 @@
         "FastReload/info.txt parses, has AssemblyPath pointing at the built DLL path, HarmonyID and EntryType Namespace.Class",
         "the entry class implements IModEntrypoint with Initialize() and Unload(), and logs a line with the HarmonyID",
         "the csproj references Assembly-CSharp and 0Harmony from the game's Managed folder with Private false, and the TargetFramework is justified from Managed/ or marked to be checked",
-        "no [HarmonyPatch] names a game method as fact; any placeholder is marked as such"
+        "no [HarmonyPatch] names a game method as fact; any placeholder is marked as such",
+        "the patches are applied once: the game's loader already runs PatchAll() under info.txt's HarmonyID unless ManualPatch is true, so Initialize() does not call PatchAll (or new Harmony(...).PatchAll) while ManualPatch is false or absent; a mod that patches itself sets ManualPatch true"
       ],
+      "baseline": "2026-10-22 (T-20261022-3), game installed, single-PatchAll expectation added: pass, the baseline decompiled Mod_Manager itself and did not call PatchAll; it first built at net472 and failed MSB3274 before switching to net48 (the skill built net48 first try). Separates weakly on correctness, clearly on cost",
       "runs": 3
     }
   ]

@@ -113,7 +113,7 @@ show("installed", "\n".join([
 ]))
 
 # ---- fixtures from the tag, as the repository's tests use them
-for name in ("subtle-mod", "broken-mod", "scene-project"):
+for name in ("subtle-mod", "broken-mod", "scene-project", "arena-project"):
     shutil.copytree(os.path.join(REPO, "tests", "fixtures", name), os.path.join(RUN, name))
 
 # ---- The helper: help, and where --strict goes
@@ -178,7 +178,7 @@ with open(os.path.join(RUN, "harmony-mod", "Managed", "FasterReload.dll"), "wb")
 case("check-mod-harmony", "python mpn.py check-mod harmony-mod")
 
 # ---- Levels with SceneTools: the two fixture scenes
-case("scene-lint-arena", "python mpn.py scene-lint scene-project/Assets/Scenes/Arena_PG.unity")
+case("scene-lint-arena", "python mpn.py scene-lint arena-project/Assets/Scenes/Arena_PG.unity")
 case("scene-lint-warehouse", "python mpn.py scene-lint scene-project/Assets/Scenes/Warehouse_PG.unity")
 case("scene-lint-warehouse-strict", "python mpn.py --strict scene-lint scene-project/Assets/Scenes/Warehouse_PG.unity")
 write("Binary.unity", "UnityFS binary scene stand-in\n")

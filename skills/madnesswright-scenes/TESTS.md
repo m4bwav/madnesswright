@@ -8,6 +8,18 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-2 · 2026-10-22 · `claude plugin eval` 2.1.281 (cases from `evergreen.py eval-export --out evals/<skill>` in a scratch copy of the plugin), native Windows · 4/6 cases, both arms, 3 runs each
+- trigger-1, trigger-2 · pass 3/3 with the plugin, 0/3 without (delta +1); decoy-1, decoy-2 · quiet 3/3 in both arms.
+- action-1 · harness · fail in both arms · the exported case grants no shell by default (0 Bash calls); with `--allow-tools Bash Write Edit` every run was refused: "sandbox required but unavailable: the Windows sandbox is not active on this session (feature gate off)".
+- outcome-1 · harness · fail in both arms · exported with read-only tools, so no run could write LEVEL-PLAN.md (the with-plugin run wrote the plan into its reply instead).
+- `evergreen.py worth --record` on these results: UNPROVEN (every value case failed in both arms), written to evergreen.json. Value cases need WSL2 or `worth --ab` (`claude -p`) on this machine. Cost $5.01, 216 s.
+- led to: none
+
+### T-20261022-1 · 2026-10-22 · evergreen-tester subagents · dev-machine · 1/1 (action-1 run 1, plus baseline)
+- action-1 · pass · fixture moved to its own project `tests/fixtures/arena-project` (scene, prefab Library, TagManager; no reference scene). `mpn.py scene-lint` in the trace; S01 and S05 reported with fixes; 2 tool calls.
+- action-1 baseline (no skill) · pass on correctness · still found the missing Player_Start and Zone_Camera under Characters, by matching prefab GUIDs to the Library .meta files and reading Room_Layout's child names (4 reads); called Characters vs Waypoints a guess and added an unverified Event System note. The case separates on cost, rule IDs and next steps (build, check-mod, deploy), not on correctness. Untested elsewhere.
+- led to: none
+
 ### T-20261017-4 · 2026-10-17 · headless `claude -p` per run, plugin installed as madnesswright@mark-local · dev-machine · 12/12 (trigger and decoy, 3 runs each)
 - First pass on 0.1.0: 30/36 across the plugin. Every miss was madnesswright-scenes: its four trigger runs went to the hub ("Start here") or to madnesswright-modtools ("my mobj doesn't load" caught "I built the sobj"). The runner also stopped at the first Skill call.
 - After C-20261017-2 (routing lines in all three descriptions) and a runner that records up to three Skill calls: 36/36; the scenes skill fired first on all six of its runs; every decoy went to its sibling or to no skill.

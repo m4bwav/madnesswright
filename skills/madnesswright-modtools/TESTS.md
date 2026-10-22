@@ -8,6 +8,12 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-3 · 2026-10-22 · evergreen-tester subagents · dev-machine, game installed (build 25615196) · 1/1 (outcome-1 run 1, plus baseline)
+- New expectation in outcome-1: patches applied once (the loader runs `PatchAll()` under the HarmonyID unless `ManualPatch` is true, so `Initialize()` must not call it).
+- outcome-1 · pass · info.txt with AssemblyPath, HarmonyID, EntryType, `ManualPatch: false`; `ModEntry : IModEntrypoint` logs the HarmonyID and does not patch (comment cites the decompiled loader); csproj net48 with Private=false references from Managed, justified from 0Harmony's target; placeholder patch only; built clean first try; `mpn.py check-mod` clean.
+- outcome-1 baseline (no skill) · pass · decompiled the loader itself, no PatchAll in Initialize, net48 after a failed net472 build (MSB3274, CS0246). The new expectation did not separate this time; the skill's edge is one build instead of two and fewer steps.
+- led to: none
+
 ### T-20261022-2 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 1/1 (F11 in a story level)
 - live-f11-story · pass · Playground Director 0.5.1 in The Industrial Sector: saved "new save" (14 characters) and "save2" (12); loads: 13 moved back + 1 respawned, 14 moved back, 12 + 2 respawned, 12 + 1 removed; files hold `chars`; Player.log has no problem line. The owner: "it vaguely seemed to work".
 - Not exercised: arenas, Playground scenes, F9 guard.
