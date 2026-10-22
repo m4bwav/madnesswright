@@ -44,7 +44,7 @@ State on 2026-10-22, session 8: Playground Director 0.6.0 (Director menu on INSE
 6. Size budget is yellow (2026-10-22): `mpn.py` about 9,500 tokens (green up to 9,000; comments and docstrings are only 2.6K characters, so a trim means refactoring tested code), the hub description 1,000 characters (trim needs the 36-run trigger eval), installed skills folder 211 KB.
 7. Headless SceneTools build route is untested (needs Unity 2019.2.6f1).
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
-10. Playground Director 0.6.0 playtest: Director menu, clear corpses (story room, arena between waves, Playground), arena mid-wave scenes, Playground scenes (also from another map), story room-closed path, die-Retry-load, F9 guard (never logged yet). Already on the Workshop, so fix fast if it fails.
+10. Director 0.6.1 playtest (renamed from Playground Director 2026-10-22; on the Workshop): Director menu, clear corpses (story room, arena between waves, Playground), arena mid-wave scenes, Playground scenes (also from another map), story room-closed path, die-Retry-load, F9 guard (never logged yet). Already on the Workshop, so fix fast if it fails.
 11. Done 2026-10-22: Director menu and clear corpses (0.6.0, plugin v0.1.7).
 
 Next step: the owner keeps session prompts in private notes (they name local paths). Without one: Owed 10 (read Player.log after the next play), then Owed 5 via `evergreen.py worth --ab`.

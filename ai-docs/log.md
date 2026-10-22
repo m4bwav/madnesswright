@@ -2,6 +2,10 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 8b: renamed Director (0.6.1)
+
+- Request (the owner): rename to something like just Director and make clear it is not Playground-focused. Display name `Director (all game modes)`, Workshop title `Director (was Playground Director)` (kept the old name in brackets so the 32 subscribers recognise it), Playground tag dropped, descriptions and READMEs lead with "every game mode". Folder, DLL and HarmonyID unchanged. PR #18, Workshop updated (`result OK`, visibility 0, tags `scripts`), wiki commit 15ba40f.
+
 ## 2026-10-22 · session 8: Director menu and clear corpses (Playground Director 0.6.0), v0.1.7
 
 - Request (the owner, for the requester): a button to clear corpses, and a menu of options that can grow. Same build 25615196; fresh decompile in the session scratchpad.
