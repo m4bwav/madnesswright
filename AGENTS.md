@@ -13,7 +13,7 @@ Read [README.md](README.md) first. The three skills live under [skills/](skills/
 - Skills stay under 200 lines, with a description of at most 1,024 characters (Agent Skills spec) that names the sibling owning nearby requests.
 - The skills install nothing on their own: Unity, the tool projects, decompilers, MCP servers and Workshop uploaders are the user's to approve. The agent never handles Steam credentials.
 - Before committing, run `python tests/check_skills.py`, `python tests/test_mpn.py`, `python tests/test_decomp.py` and `python scripts/budget.py` from the repository root. CI runs all four.
-- This is a public repository. Nothing in it names a person other than the author credit, a machine, an absolute path on someone's machine, a private project or a credential.
+- This is a public repository. Nothing in it names a person other than the author credit, a machine, an absolute path on someone's machine, a private project or a credential. Whoever asked for a mod is "the requester" or "the player", never a family word (`tests/check_skills.py` fails on them).
 - Versions: when a packaged file changes, bump `.claude-plugin/plugin.json` and add a line to the root CHANGELOG.md; tag `vX.Y.Z`.
 - No AI attribution anywhere: no Co-Authored-By trailers and no "generated with" lines in commits, pull requests or files.
 
