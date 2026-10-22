@@ -139,7 +139,7 @@ namespace SwapUnaware
 
         static SceneData Read(string path)
         {
-            try { return JsonUtility.FromJson<SceneData>(File.ReadAllText(path)); }
+            try { return SceneData.FromJson(File.ReadAllText(path)); }
             catch (Exception ex) { Game.Error("read " + path, ex); return null; }
         }
 
@@ -156,7 +156,7 @@ namespace SwapUnaware
             if (file == null) { Game.Say("type a name first"); return; }
             var data = SceneData.Capture();
             Directory.CreateDirectory(Folder);
-            File.WriteAllText(Path.Combine(Folder, file + ".json"), JsonUtility.ToJson(data, true));
+            File.WriteAllText(Path.Combine(Folder, file + ".json"), data.ToJson());
             Game.Say("saved scene \"" + file + "\" on " + data.stageName + ", room " + data.playerRoom.name + ": " + data.chars.Count + " characters");
             Close();
         }
@@ -167,6 +167,11 @@ namespace SwapUnaware
             var data = Read(path);
             Close();
             if (data == null) { Game.Say("could not read scene \"" + name + "\""); return; }
+            if (data.chars.Count == 0 && string.IsNullOrEmpty(data.playerRoom.name))
+            {
+                Game.Say("\"" + name + "\" holds no room and no characters (0.4.0 and 0.5.0 lost them when saving); save it again");
+                return;
+            }
             if (data.SavedHere())
             {
                 if (data.IsPlayground) { Finish(data, name); return; }

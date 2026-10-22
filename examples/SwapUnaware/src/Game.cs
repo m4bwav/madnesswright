@@ -20,9 +20,13 @@ namespace SwapUnaware
             return pc != null ? pc.myCombatant : null;
         }
 
+        // A combatant the game has not set up yet has an empty corpus track, and AmDead() then
+        // throws IndexOutOfRangeException (seen during a story-level save).
         internal static bool Alive(Combatant_Base c)
         {
-            return c != null && !c.AmDead();
+            if (c == null || c.myData == null) return false;
+            var track = c.MyCorpusTrack;
+            return track != null && track.Length > 0 && !c.AmDead();
         }
 
         internal static bool IsNpc(Combatant_Base c)
