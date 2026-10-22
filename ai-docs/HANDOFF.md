@@ -4,7 +4,7 @@ State on 2026-10-22, session 9: Director 0.7.0 (scene loads reset weapons and it
 
 ## Session 9
 
-- Request: scene loads reset weapons and items too, not only characters. Director 0.7.0 on branch `director-reset-weapons` (details in [log.md](log.md)): scene files version 3 save loadouts with ammo, loose weapons and the Playground player's weapons. First play: floor weapons reset, gun ammo did not; 0.7.1 resets your ammo (and career-weapon holders') in every mode. Loads cleanly; needs a play (Owed 12) before a Workshop update.
+- Request: scene loads reset weapons and items too, not only characters. Director 0.7.0 on branch `director-reset-weapons` (details in [log.md](log.md)): scene files version 3 save loadouts with ammo, loose weapons and the Playground player's weapons. First play: floor weapons reset, gun ammo did not; 0.7.1 resets your ammo (and career-weapon holders') in every mode; its play lost a thrown shotgun on load, and 0.7.2 picks it back up. Loads cleanly; needs a play (Owed 12) before a Workshop update.
 
 ## Session 8
 
@@ -44,6 +44,6 @@ State on 2026-10-22, session 9: Director 0.7.0 (scene loads reset weapons and it
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
 10. Director 0.6.1 playtest (renamed from Playground Director 2026-10-22; on the Workshop): Director menu, clear corpses (story room, arena between waves, Playground), arena mid-wave scenes, Playground scenes (also from another map), story room-closed path, die-Retry-load, F9 guard (never logged yet). Already on the Workshop, so fix fast if it fails.
 11. Done 2026-10-22: Director menu and clear corpses (0.6.0, plugin v0.1.7).
-12. Director 0.7.1 playtest (weapons reset on scene load): in the Playground and a story level, save a scene, drop or throw weapons, kill someone, empty a magazine, then load: everyone holds what they held with the same ammo, floor weapons are back where they lay and new ones are gone; Player.log's load line counts them. Then a Workshop update (owner's OK).
+12. Director 0.7.2 playtest (weapons reset on scene load): in the Playground and a story level, save a scene, drop or throw weapons, kill someone, empty a magazine, then load: everyone holds what they held with the same ammo, floor weapons are back where they lay and new ones are gone; Player.log's load line counts them. Then a Workshop update (owner's OK).
 
 Next step: the owner keeps session prompts in private notes (they name local paths). Without one: Owed 12 and 10 (read Player.log and the newest scene file after the next play), then Owed 5 via `evergreen.py worth --ab`.

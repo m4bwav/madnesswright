@@ -407,10 +407,11 @@ namespace SwapUnaware
                 }
                 catch (Exception e) { Game.Error("scene: remove " + c.name, e); }
             }
+            // Your weapons belong to the career here: the same weapons go back in your hands with
+            // their saved ammo. Before the floor, which would clear one you threw.
+            if (HasItems && hasPlayer) res.yourAmmo = RefillAmmo(me, playerItems);
             // Last, so weapons dropped by the bodies removed above go too.
             if (HasItems) res.floor = RestoreFloor();
-            // Your weapons belong to the career here: only their ammo goes back.
-            if (HasItems && hasPlayer) res.yourAmmo = RefillAmmo(me, playerItems);
             return res;
         }
 

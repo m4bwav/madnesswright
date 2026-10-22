@@ -2,6 +2,11 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 9c: thrown weapon vanished on load (Director 0.7.2)
+
+- Report (the owner): in a story level, threw the shotgun, loaded, and the shotgun disappeared. Log: the load cleared 13 floor weapons and put back the 12 saved ones; the extra was the thrown shotgun (its file record shows it in the player's hand, so it was not on the floor list), and the ammo refill skipped the empty hand (modtools T-20261022-6).
+- 0.7.2: for an emptied slot, `RefillAmmo` takes the nearest weapon with that card that no living character holds (career weapons included), clears it from a dead owner's slot, `PickupItem`s it into the saved hand or holster, then sets the ammo; if none is left it gives a fresh one. The player's refill now runs before `RestoreFloor`. Built clean, deployed while the game ran (restart needed); not played.
+
 ## 2026-10-22 · session 9b: ammo reset (Director 0.7.1)
 
 - Report (the owner): "the ammo in the gun didn't reset". Player.log: three story saves and loads with 0.7.0, no exception, floor weapons restored; the "Shotgun" scene file had `"playerItems": []`. Session 9's ruling saved and reset the player's weapons only in the Playground, and squadmates with career weapons were skipped whole (modtools T-20261022-5).
