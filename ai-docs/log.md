@@ -2,6 +2,20 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 8: Director menu and clear corpses (Playground Director 0.6.0), v0.1.7
+
+- Request (the owner, for the requester): a button to clear corpses, and a menu of options that can grow. Same build 25615196; fresh decompile in the session scratchpad.
+- Corpses: every non-essential death is queued in `Decay_Manager` (`Condemn_Character` at the end of `KillMe`), but `ClearAll_Character` only `Object.Destroy`s that queue, with no `DeSpawn`. The developer console's clear (Dev_Control, minus key) walks each room for `HaveRunKillMe` and calls `Decay_Manager.DestroyMe_Character`, which arenas also use; the mod does the same over every combatant and keeps your body, your home body, your squad and playable characters, bosses, cutscene actors, serial-numbered (scripted) bodies, `amEssential` ones and bodies dead under 45 frames (`ReturnAppearDeadAndInert`). Blood and debris: `ClearAll_Splats`, `_Holes`, `_Casing`, `_Debris`, a second button.
+- Menu: INSERT (`decomp.py keys`: read only in `ModTestTools`, -devtools only; also free: BackQuote, Minus, Equals, M, Pause, ScrollLock). Works paused or not (own pause source). Registry of `MenuEntry` (label, key, modes, pick, action); keyed lines queue a one-frame key press that `Feature.Pressed` reads; scenes open straight from the menu because they need the pause. No key for the two clear actions.
+- Tests: clean build; deployed; launched the game: `Playground Director 0.6.0 loaded`, main menu reached, no exception. No in-game use yet.
+- Shipped on the owner's go-ahead ("release everything"): PR #15 merged, v0.1.7 tagged and released, plugin reinstalled locally (0.1.5 to 0.1.7). Workshop item 3822329165 updated to 0.6.0 after the owner chose "upload now" over waiting for the playtest: `result OK`, visibility 0, 32 subscribers.
+- Wiki updated to 0.1.7 by a subagent with wikiwright (9 pages, live check clean; verify outputs re-run on Windows and WSL and saved over the old baselines).
+- Gotchas met:
+  - Auto mode refused copying the uploader zip's DLLs into `lib/` until the owner approved in the session.
+  - `wsup.csproj` copied `steam_api64.dll` to `out/lib/`, so `SteamAPI_Init` threw `DllNotFoundException`; fixed with `Link="steam_api64.dll"`.
+  - With relative paths the upload reached 100% and then said `result FileNotFound`; absolute Windows paths worked.
+- Budget left yellow (see HANDOFF Owed 6).
+
 ## 2026-10-22 · session 8: eval fixes
 
 - Owed 3: `Arena_PG` (and its .meta) moved from `tests/fixtures/scene-project` to a new `tests/fixtures/arena-project` with a copy of the prefab Library and TagManager and no reference scene; scenes action-1 points there. Skill pass; the baseline still found S01 and S05 by matching prefab GUIDs to the Library and reading Room_Layout's children (scenes T-20261022-1). Without the Library, scene-lint cannot resolve the prefabs either, so the case now separates on cost and next steps only.

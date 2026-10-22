@@ -19,7 +19,7 @@ Take control of any character, freeze the room, set patrols and guards, pose ene
 
 On the Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165 (Subscribe, then enable it from the gear icon).
 
-Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21, in the Playground and then the story mode (F9 and F11 not yet exercised), and is on the Workshop. 0.5.0 (scenes in every level) failed its first story playtest (scene files lost the characters); 0.5.1 fixes it and was playtested in a story level on the owner's PC on 2026-10-22 (arenas, Playground scenes and F9 not yet exercised); not on the Workshop yet. 0.6.0 adds the Director menu and clear corpses; built and deployed 2026-10-22, playtest pending. Back up your saves before using it in a story career.
+Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21, in the Playground and then the story mode (F9 and F11 not yet exercised), and was on the Workshop until 0.6.0. 0.5.0 (scenes in every level) failed its first story playtest (scene files lost the characters); 0.5.1 fixes it and was playtested in a story level on the owner's PC on 2026-10-22 (arenas, Playground scenes and F9 not yet exercised); never on the Workshop. 0.6.0 adds the Director menu and clear corpses; built 2026-10-22, loads cleanly, and is on the Workshop (published at the owner's request before its playtest). Back up your saves before using it in a story career.
 
 ## Key choices
 
@@ -63,7 +63,7 @@ Copying the `SwapUnaware` folder (`info.txt` and `Managed/SwapUnaware.dll`) into
 
 Needs the .NET SDK and the game installed. `pwsh ./pack.ps1 -Version 0.6.0` builds `src/` against the game's own `Managed` DLLs (net48, `Private=false`, nothing copied from the game) and writes `dist/SwapUnaware-<version>.zip`. It finds the game with the hub skill's `mpn.py where`; pass `-GameManaged <...\Madness Project Nexus_Data\Managed>` or set `MPN_MANAGED` to point elsewhere. Then deploy with `python -I ../../skills/madnesswright/scripts/mpn.py deploy dist/stage/SwapUnaware --force` and read `mpn.py log` after playing.
 
-To update the Workshop item after a new build: `../WorkshopUpload/out/wsup.exe dist/stage/SwapUnaware preview.jpg "Swap And Unaware" workshop-description.txt "Scripts,Playground" 3822329165` (see [WorkshopUpload](../WorkshopUpload/README.md)).
+To update the Workshop item after a new build (absolute paths; relative ones end in `result FileNotFound`): `../WorkshopUpload/out/wsup.exe <abs>/dist/stage/SwapUnaware <abs>/preview.jpg "Playground Director (was Swap And Unaware)" workshop-description.txt "Scripts,Playground" 3822329165` (see [WorkshopUpload](../WorkshopUpload/README.md)).
 
 `build/`, `dist/`, `bin/` and `obj/` stay out of git. Never commit game DLLs or decompiled code.
 

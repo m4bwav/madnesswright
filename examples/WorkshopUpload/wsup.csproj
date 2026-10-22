@@ -9,6 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Facepunch.Steamworks.Win64"><HintPath>lib/Facepunch.Steamworks.Win64.dll</HintPath></Reference>
-    <None Include="lib/steam_api64.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="lib/steam_api64.dll" Link="steam_api64.dll" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

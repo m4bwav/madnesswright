@@ -1,7 +1,7 @@
 ## installed
-madnesswright 0.1.1 from https://github.com/m4bwav/madnesswright/releases/download/v0.1.1/madnesswright-0.1.1.zip
-zip sha256 b1e39ad38029055bc78a828c58b2e53622f79c792ce409da8b2d0e04c4bbb117
-fixtures and development commands from a depth-1 clone of tag v0.1.1
+madnesswright 0.1.7 from https://github.com/m4bwav/madnesswright/releases/download/v0.1.7/madnesswright-0.1.7.zip
+zip sha256 e756311ea67f9dd685d5d55bad1c14038281b8263efc880ac7b2f3e2ad7bc89e
+fixtures and development commands from a depth-1 clone of tag v0.1.7
 Python 3.14.4 on linux
 
 ## help
@@ -657,6 +657,13 @@ $ python mpn.py --data-dir game-data log --lines 3
     ],
     "applied_harmony": [
       "com.example.fasterreload"
+    ],
+    "cards": [
+      {
+        "kind": "FAILED",
+        "card": "Hank",
+        "type": "Character"
+      }
     ]
   },
   "player_log": {
@@ -712,10 +719,10 @@ OK
 $ python scripts/budget.py
 largest description characters (always loaded; spec limit 1,024)       1000  green<=950   yellow<=1024  yellow madnesswright
 all descriptions tokens together (always loaded)                        737  green<=1200  yellow<=1600  green  3 skills
-largest SKILL.md tokens (loaded on every use)                          2281  green<=2500  yellow<=3500  green  madnesswright
-largest reference tokens (loaded on demand)                            1593  green<=3500  yellow<=5000  green  madnesswright-modtools/harmony.md
-largest script tokens (run, read only when debugging)                  9331  green<=9000  yellow<=12000 yellow madnesswright/mpn.py
-installed skills folder KB                                              174  green<=200   yellow<=400   green  
-tracked repository KB                                                  1117  green<=512   yellow<=1536  yellow 
+largest SKILL.md tokens (loaded on every use)                          2429  green<=2500  yellow<=3500  green  madnesswright
+largest reference tokens (loaded on demand)                            2428  green<=3500  yellow<=5000  green  madnesswright-modtools/harmony.md
+largest script tokens (run, read only when debugging)                  9500  green<=9000  yellow<=12000 yellow madnesswright/mpn.py
+installed skills folder KB                                              211  green<=200   yellow<=400   yellow
+tracked repository KB                                                  1433  green<=512   yellow<=1536  yellow
 budget: YELLOW
 [exit 0]

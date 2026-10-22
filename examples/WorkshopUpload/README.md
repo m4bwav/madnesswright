@@ -15,7 +15,8 @@ out/wsup.exe <content-folder> <preview.jpg> "<title>" <description.txt> "<tags,c
 
 - Without `item-id` it creates a new item; with one it updates that item (title, description, content, preview, tags) and adds a change note.
 - Visibility is set to Public. Change `WithPublicVisibility()` to `WithFriendsOnlyVisibility()` or `WithPrivateVisibility()` in Program.cs for anything else.
+- Pass absolute paths: with relative ones the upload reaches 100% and then prints `result FileNotFound`.
 - The content folder holds what goes in the mod folder (`info.txt`, `Managed/`, cards, bundles). Keep the preview under 1 MB.
 - It prints `result OK id <n>`. Check the item with `ISteamRemoteStorage/GetPublishedFileDetails` (visibility 0 is public) and open `https://steamcommunity.com/sharedfiles/filedetails/?id=<n>`.
 
-Used for [SwapUnaware](../SwapUnaware/README.md) (item 3822329165): created on 2026-10-18; updated in place on 2026-10-21 (new title, description, preview and DLL), and the item stayed public (visibility 0) with its subscribers.
+Used for [SwapUnaware](../SwapUnaware/README.md) (item 3822329165): created on 2026-10-18; updated in place on 2026-10-21 (new title, description, preview and DLL), and the item stayed public (visibility 0) with its subscribers; updated again on 2026-10-22 (0.6.0, absolute paths).
