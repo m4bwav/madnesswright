@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-5 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 0/1 (ammo reset)
+- live-f11-ammo · fail · Director 0.7.0 in The Industrial Sector and The Boom Factory: three saves and loads, no exception; floor weapons cleared and put back (5 of 5, 10 of 10, 10 of 10), but the player's shotgun ammo did not reset. Cause: the player's loadout was saved only in the Playground (`"playerItems": []` in the file) and Deimos's, though saved, was skipped as a career-weapon holder.
+- Fix in 0.7.1: player loadout saved everywhere; outside the Playground, and for career-weapon holders, `RefillAmmo` sets the saved ammo on the weapon in the same slot with the same card (`CancelReload`, `ResetAmmo`, `SetAmmo`, `SetMags`) without swapping it. Built clean, loads in game; not yet played.
+- led to: none
+
 ### T-20261022-4 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 0/1 (F11 load resets weapons)
 - live-f11-weapons · fail · Director 0.6.1: the player reported that loading a scene "doesn't reset the weapons, just the people". Cause: scenes saved only the hands and grenade of living NPCs, matched characters kept whatever they held ("weapons stay"), loose weapons were never saved, and the Playground's Clear All despawned floor weapons without putting any back.
 - Fix in 0.7.0 (scene files version 3, `SceneItems.cs`): holsters, ammo, loose weapons and the Playground player's loadout saved and restored; career (`amRegistered`) and quest items skipped. Built clean, deployed, game loads it with no exception; not yet played.

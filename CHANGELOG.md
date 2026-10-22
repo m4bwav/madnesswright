@@ -4,6 +4,7 @@ Plugin versions. Skill-level changes and their reasons are in each skill's own C
 
 ## Unreleased
 
+- `examples/SwapUnaware` 0.7.1: loading a scene in a story level or arena resets the ammo in your own weapons and in squadmates' career weapons (0.7.0 skipped both, so a fired shotgun stayed empty). The weapons themselves are not swapped, so the career's weapons stay its own. A reload in progress is cancelled so it cannot load over the saved count. Scenes saved in story mode with 0.7.0 hold no player weapons: save them again.
 - `examples/SwapUnaware` 0.7.0: loading a scene resets weapons and items too, not only the characters. Scene files version 3 keep each character's hands, holsters and grenade with their ammo, every weapon lying loose in a room (put back where it lay; weapons dropped since the save are cleared), and in the Playground your own weapons. Career weapons and quest items are left alone. Older scene files load as before and say to save again. Loads cleanly in the game; playtest pending.
 - madnesswright-modtools: a game-recipes line on loose weapons, loadouts and ammo.
 - `examples/SwapUnaware` 0.6.1: renamed Director (was Playground Director), with text saying it works in every game mode; Workshop tag Playground dropped. No code change beyond the name.

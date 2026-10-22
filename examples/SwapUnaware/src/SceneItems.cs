@@ -89,7 +89,15 @@ namespace SwapUnaware
         {
             if (it == null || !has) return;
             var r = it as Item_Ranged;
-            if (r != null) { r.SetAmmo(ammo); r.SetMags(mags); }
+            if (r != null)
+            {
+                // ResetAmmo ends a reload and empties the rounds in limbo, which LoadAmmo would
+                // otherwise load over the saved count once the reload finishes.
+                if (it.myOwner != null) it.myOwner.CancelReload();
+                r.ResetAmmo();
+                r.SetAmmo(ammo);
+                r.SetMags(mags);
+            }
             else it.SetMeleeAmmo(ammo);
         }
 
@@ -105,13 +113,35 @@ namespace SwapUnaware
             return cc.myItemThrown != null && cc.myItemThrown.myData != null && cc.myItemThrown.myData.amRegistered;
         }
 
-        // Empties hands, holsters and the grenade slot, then gives the saved loadout.
+        // Empties hands, holsters and the grenade slot, then gives the saved loadout. Someone holding
+        // a career weapon keeps the weapons themselves and only gets the saved ammo back.
         internal static bool ResetLoadout(Combatant_Base c, List<ItemRecord> items)
         {
-            if (c == null || HasCareerItems(c)) return false;
+            if (c == null) return false;
+            if (HasCareerItems(c)) return RefillAmmo(c, items) > 0;
             Strip(c);
             foreach (var it in items) Give(c, it);
             return true;
+        }
+
+        // Puts the saved ammo into each weapon still in the same slot with the same card; the weapon
+        // objects stay, so a career's weapons are never swapped. Returns how many it refilled.
+        internal static int RefillAmmo(Combatant_Base c, List<ItemRecord> items)
+        {
+            if (c == null) return 0;
+            var cc = c as Combatant_Character;
+            int n = 0;
+            foreach (var r in items)
+            {
+                Item_Held it;
+                if (r.thrown) it = cc != null ? cc.myItemThrown : null;
+                else if (r.slot == 1) it = cc != null && r.hand < cc.myItemsStowed.Length ? cc.myItemsStowed[r.hand] : null;
+                else it = r.hand < c.myItemsHeld.Length ? c.myItemsHeld[r.hand] : null;
+                if (it == null || it.myData == null || it.myData.myCard == null || it.myData.myCard.name != r.card || !r.hasAmmo) continue;
+                try { ApplyAmmo(it, r.hasAmmo, r.ammo, r.mags); n++; }
+                catch (Exception e) { Game.Error("scene: ammo " + r.card, e); }
+            }
+            return n;
         }
 
         // Item_Held.DeSpawn lets go of a held or thrown item itself; a holstered one is cleared first.

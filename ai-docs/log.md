@@ -2,6 +2,11 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 9b: ammo reset (Director 0.7.1)
+
+- Report (the owner): "the ammo in the gun didn't reset". Player.log: three story saves and loads with 0.7.0, no exception, floor weapons restored; the "Shotgun" scene file had `"playerItems": []`. Session 9's ruling saved and reset the player's weapons only in the Playground, and squadmates with career weapons were skipped whole (modtools T-20261022-5).
+- 0.7.1: the player's loadout is saved in every mode; outside the Playground (and for anyone holding an `amRegistered` weapon) only the ammo goes back, onto the weapon in the same slot with the same card, so career weapons are never swapped. `ApplyAmmo` now calls the owner's `CancelReload` and `Item_Ranged.ResetAmmo` first: a reload in progress would otherwise `LoadAmmo` its limbo rounds over the saved count. Clean build, deployed, loads in game. Scenes saved with 0.7.0 in story mode must be saved again.
+
 ## 2026-10-22 · session 9: scenes reset weapons and items (Director 0.7.0)
 
 - Report (the owner, for the requester): loading a scene "doesn't reset the weapons, just the people", and they want weapons and items reset too.

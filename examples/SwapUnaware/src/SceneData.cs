@@ -290,7 +290,7 @@ namespace SwapUnaware
                 d.playerPos = me.Position;
                 d.playerFacing = me.transform.eulerAngles.y;
                 d.playerRoom = Ref(me.myRoom);
-                if (pg) d.playerItems = Loadout(me);
+                d.playerItems = Loadout(me);
             }
             var mySquad = me != null && me.myData != null ? me.myData.mySquad : null;
             var squads = new List<Squad_Main>();
@@ -353,7 +353,7 @@ namespace SwapUnaware
 
         // ---- loading in a story level, arena or custom stage ----
 
-        internal class Result { public int moved, respawned, removed, skipped; public FloorResult floor = new FloorResult(); }
+        internal class Result { public int moved, respawned, removed, skipped, yourAmmo; public FloorResult floor = new FloorResult(); }
 
         // Called once you stand in your saved room (its own characters have spawned by then).
         // Matches the characters already there to the saved ones, puts them back, respawns the
@@ -409,6 +409,8 @@ namespace SwapUnaware
             }
             // Last, so weapons dropped by the bodies removed above go too.
             if (HasItems) res.floor = RestoreFloor();
+            // Your weapons belong to the career here: only their ammo goes back.
+            if (HasItems && hasPlayer) res.yourAmmo = RefillAmmo(me, playerItems);
             return res;
         }
 

@@ -1,7 +1,7 @@
 # Builds the DLL, assembles the mod folder and makes dist/SwapUnaware-<version>.zip
 # holding SwapUnaware/ (what goes in Mods) plus install.cmd for another computer.
 # The game's Managed folder comes from -GameManaged, then MPN_MANAGED, then `mpn.py where`.
-param([string]$Version = "0.7.0", [string]$GameManaged = $env:MPN_MANAGED)
+param([string]$Version = "0.7.1", [string]$GameManaged = $env:MPN_MANAGED)
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 if (-not $GameManaged) {
