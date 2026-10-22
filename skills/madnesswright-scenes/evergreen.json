@@ -38,18 +38,41 @@
     "learnings": 0,
     "changes": 0,
     "research": 0,
-    "tests": 3
+    "tests": 4
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-10-17T20:52",
-    "harness": "evergreen-tester subagents (value runs 2-3) + headless claude -p per trigger run",
-    "env": "dev-machine",
-    "cases": 16,
-    "passed": 16,
+    "last_run": "2026-10-22T11:07",
+    "harness": "evergreen-tester",
+    "env": "windows",
+    "cases": 1,
+    "passed": 1,
     "failed": 0,
     "failing": [],
     "last_failure": null,
     "research_after_days": null
+  },
+  "worth": {
+    "checked": "2026-10-22",
+    "skills": {
+      "madnesswright-scenes": {
+        "verdict": "UNPROVEN",
+        "why": "every value case failed in both arms: the cases are broken or too hard to judge anything",
+        "body_tokens": 1793,
+        "listing_tokens": 247,
+        "specific_share": 0.88,
+        "delta": 0.0,
+        "cost_ratio": 5.43,
+        "modes": [],
+        "gaps": 0,
+        "checked": "2026-10-22",
+        "uses": {
+          "days": 60,
+          "interactive": 0,
+          "subagent": 1,
+          "headless": 0
+        }
+      }
+    }
   }
 }

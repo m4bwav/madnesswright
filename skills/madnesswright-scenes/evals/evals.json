@@ -43,7 +43,7 @@
     {
       "id": "action-1",
       "kind": "action",
-      "prompt": "Check my Project Nexus scene tests/fixtures/scene-project/Assets/Scenes/Arena_PG.unity before I build it.",
+      "prompt": "Check my Project Nexus scene tests/fixtures/arena-project/Assets/Scenes/Arena_PG.unity before I build it.",
       "expectations": [
         "the skill ran mpn.py scene-lint on the scene, proven by the tool call",
         "the reply reports that the scene has no Player_Start (S01) and that the Zone_Camera sits under Characters instead of the room's Waypoints (S05), with their fixes"
@@ -53,7 +53,7 @@
         "tool": "Bash|PowerShell",
         "input_match": "mpn\\.py.*scene-lint"
       },
-      "baseline": "not yet run (fixture replaced 2026-10-17: the faults hide in prefab fileID parenting)",
+      "baseline": "2026-10-22 (T-20261022-1), fixture in its own project arena-project with no reference scene: pass, the baseline still found S01 and S05 by matching prefab GUIDs to the Library .meta files and reading Room_Layout child names; it does not separate on correctness, only on cost (2 tool calls with the skill, 4 reads without) and on the rule IDs and next steps",
       "runs": 3
     },
     {

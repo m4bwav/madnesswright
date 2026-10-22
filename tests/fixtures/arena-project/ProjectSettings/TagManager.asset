@@ -1,0 +1,16 @@
+%YAML 1.1
+--- !u!78 &1
+TagManager:
+  tags:
+  - Floor
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Terrain
+  m_SortingLayers: []

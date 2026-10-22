@@ -1,6 +1,6 @@
 # Handoff
 
-State on 2026-10-22, session 7 (Playground Director 0.5.1: fixes 0.5.0's story-mode load, playtested in a story level; plugin v0.1.6 tagged and released on the owner's go-ahead).
+State on 2026-10-22, session 8 (eval fixes, Owed 3 to 5; [log.md](log.md)). Session 7: Playground Director 0.5.1 fixed 0.5.0's story-mode load, playtested in a story level; plugin v0.1.6 released.
 
 ## Session 7
 
@@ -36,9 +36,9 @@ State on 2026-10-22, session 7 (Playground Director 0.5.1: fixes 0.5.0's story-m
 
 1. Beta launch check: done 2026-10-18 (Session 3).
 2. **Listings on hold** by the owner's ruling (2026-10-17): no Claude directory submission, and never awesome-copilot. Do not submit.
-3. Scenes action-1 still does not separate skill from baseline: the baseline matched GUIDs against `Warehouse_PG`, which sits beside `Arena_PG`. Move `Arena_PG` into its own fixture project with no reference scene.
-4. With the game on disk, modtools outcome-1 separates only weakly (the baseline read the metadata itself but double-patched by calling PatchAll in Initialize). Add an expectation on that.
-5. The A/B verdict (`claude plugin eval` + `evergreen.py worth --record`) was not run: the evals are in evals.json, not plugin-eval case files. Try `evergreen.py eval-export` first.
+3. Done 2026-10-22: `Arena_PG` lives in `tests/fixtures/arena-project` (no reference scene). Skill pass, but the baseline still found both faults from the prefab Library (scenes T-20261022-1): the case separates on cost, not correctness.
+4. Done 2026-10-22: outcome-1 expects one PatchAll (the loader's). Skill and baseline both passed (modtools T-20261022-3); the baseline needed a second build (net472 first).
+5. Partly done 2026-10-22 (scenes T-20261022-2): `eval-export --out evals/<skill>` works (the default `skills/<x>/evals/cases` is refused as `--eval-dir`); triggers +1, decoys quiet; value cases cannot run on native Windows (no sandbox for Bash; outcome exported read-only). `worth --record`: UNPROVEN. Next: `worth --ab` or WSL2.
 6. Size budget is yellow: `mpn.py` is about 9,300 tokens (green up to 9,000), the hub description is 1,000 characters.
 7. Headless SceneTools build route is untested (needs Unity 2019.2.6f1).
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
@@ -46,6 +46,4 @@ State on 2026-10-22, session 7 (Playground Director 0.5.1: fixes 0.5.0's story-m
 10. Playground Director: F11 confirmed in a story level (0.5.1); still confirm F9 guard, arena and Playground scenes.
 11. Requested: a Director menu (pause-time window listing every feature, easy to add to) with a clear-corpses action; hooks to check: `Decay_Manager` (`ClearAll_Character`, `DestroyMe_Character`) and `InteractiveMode.ClearAll_DoIt()`.
 
-## Next step
-
-The owner keeps the session-3 prompt in their private notes, since it names local paths. Without it: do Owed 1 once the owner has switched branch, then 3, 4 and 5.
+Next step: the owner keeps session prompts in private notes (they name local paths). Without one: Owed 5's value cases via `evergreen.py worth --ab`, then 10.
