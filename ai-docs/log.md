@@ -4,6 +4,9 @@ Append-only, newest first.
 
 ## 2026-10-22 · session 7: story-mode load fix (Playground Director 0.5.1)
 
+- Second play (The Industrial Sector): 0.5.1 saved 14 and 12 characters and loaded them back four times (respawns and one removal), no exception (modtools T-20261022-2). v0.1.6 tagged and released on the owner's go-ahead.
+- New request: a menu of Director options that can grow, with a clear-corpses action (HANDOFF Owed 11).
+
 - Report: the owner said load "didn't seem to work right in story mode". Player.log (Warehouse Raid): saves logged 1, 2 and 4 characters, but every load said `"X" was saved in room , which the game has closed`; one save threw `IndexOutOfRangeException` in `Health_Manager.ReturnCharacterDead` from `Game.Alive`.
 - Cause 1: the scene files held only the flat fields; `JsonUtility` dropped `playerRoom` and `chars` (types from the runtime-loaded mod assembly). F11 never saved characters in 0.4.0 either. Fix: `SceneData.ToJson`/`FromJson` serialize each flat record with `JsonUtility` and join and split the nesting; a file with no room and no characters says "save it again".
 - Cause 2: `AmDead()` reads `myCorpusTrack[0]`; a combatant not yet set up has an empty track. `Game.Alive` checks it first.

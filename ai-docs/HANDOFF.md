@@ -43,7 +43,8 @@ State on 2026-10-22, session 7 (Playground Director 0.5.1: fixes 0.5.0's story-m
 7. Headless SceneTools build route is untested (needs Unity 2019.2.6f1).
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
 9. **Requested mod:** swap characters and make everyone else unaware, as a Harmony mod and a live test of madnesswright-modtools. Plan and the game's hooks: [plans/2026-10-17-swap-and-unaware-mod.md](plans/2026-10-17-swap-and-unaware-mod.md). Needs `releasebeta`.
-10. Playground Director: confirm F9 guard and F11 scenes (0.5.0, every level) in the next play report.
+10. Playground Director: F11 confirmed in a story level (0.5.1); still confirm F9 guard, arena and Playground scenes.
+11. Requested: a Director menu (pause-time window listing every feature, easy to add to) with a clear-corpses action; hooks to check: `Decay_Manager` (`ClearAll_Character`, `DestroyMe_Character`) and `InteractiveMode.ClearAll_DoIt()`.
 
 ## Next step
 
