@@ -2,6 +2,14 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 9: scenes reset weapons and items (Director 0.7.0)
+
+- Report (the owner, for the requester): loading a scene "doesn't reset the weapons, just the people", and they want weapons and items reset too.
+- Same build 25615196; fresh decompile in the session scratchpad. Cause: `Capture` saved only living NPCs' hands and grenade, `Put` left matched characters' weapons as they were, nothing saved loose weapons, and in the Playground `InteractiveMode.ClearAll_DoIt` despawns the room's loose `Item_Held` without putting any back (modtools T-20261022-4).
+- Built 0.7.0: scene files version 3 (`SceneItems.cs`, `SceneData` now partial). Saves each character's hands (slot 0), holsters (slot 1) and grenade with ammo (`Item_Ranged.myAmmo + myAmmoLimbo`, `myExtraMags`; melee `myMeleeAmmo`), every loose `Item_Held` (no living owner) with position, rotation and room, and the player's loadout in the Playground only. Load: characters are stripped and re-given their loadout, then loose weapons in open rooms are `DeSpawn`ed and the saved ones laid back with `Item_Held.CreateHeld` (last, so bodies removed by the load lose theirs too).
+- Rulings (small, flagged in the mod README): your own weapons reset only in the Playground (a story or arena career owns them); anyone holding an `amRegistered` career weapon keeps its loadout; quest items untouched; rooms the game has locked keep their weapons; older files load as before and the load line says to save again.
+- Tests: clean build (0 warnings), deployed, game launched: `Director 0.7.0 loaded`, no exception, closed by PID. No in-game save or load yet. Not on the Workshop.
+
 ## 2026-10-22 · session 8b: renamed Director (0.6.1)
 
 - Request (the owner): rename to something like just Director and make clear it is not Playground-focused. Display name `Director (all game modes)`, Workshop title `Director (was Playground Director)` (kept the old name in brackets so the 32 subscribers recognise it), Playground tag dropped, descriptions and READMEs lead with "every game mode". Folder, DLL and HarmonyID unchanged. PR #18, Workshop updated (`result OK`, visibility 0, tags `scripts`), wiki commit 15ba40f.

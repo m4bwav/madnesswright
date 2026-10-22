@@ -10,7 +10,8 @@ namespace SwapUnaware
     // F11 while paused: name the scene, ENTER saves it. CAPS LOCK while paused: the saved scenes;
     // click one to load it. ESC closes. Works in the Playground, story levels, arenas and custom
     // stages. A scene holds every living character but you (card, room, position, facing, squad and
-    // team, damage, weapons, alert, frozen, guard and patrol) and, since 0.5.0, your own place.
+    // team, damage, weapons, alert, frozen, guard and patrol), since 0.5.0 your own place, and since
+    // 0.7.0 ammo, holsters, loose weapons and (Playground only) your own weapons.
     // Files: <persistentDataPath>/PlaygroundDirector/Scenes/<name>.json, outside Mods/ (the loader
     // reads every .json in a mod folder as a card). What loading does where: SceneData.
     public class SceneFeature : Feature
@@ -164,7 +165,8 @@ namespace SwapUnaware
             var data = SceneData.Capture();
             Directory.CreateDirectory(Folder);
             File.WriteAllText(Path.Combine(Folder, file + ".json"), data.ToJson());
-            Game.Say("saved scene \"" + file + "\" on " + data.stageName + ", room " + data.playerRoom.name + ": " + data.chars.Count + " characters");
+            Game.Say("saved scene \"" + file + "\" on " + data.stageName + ", room " + data.playerRoom.name + ": " + data.chars.Count + " characters, "
+                + data.floor.Count + " weapons on the floor");
             Close();
         }
 
@@ -243,13 +245,20 @@ namespace SwapUnaware
             string where = data.Where + ", room " + (me != null && me.myRoom != null ? me.myRoom.name : "?");
             if (data.IsPlayground)
             {
-                int n = data.RestorePlayground();
-                Game.Say("loaded scene \"" + name + "\" on " + where + ": " + n + " of " + data.chars.Count + " characters");
+                var p = data.RestorePlayground();
+                Game.Say("loaded scene \"" + name + "\" on " + where + ": " + p.chars + " of " + data.chars.Count + " characters"
+                    + Items(data, p.floor) + (p.yours ? ", your weapons reset" : ""));
                 return;
             }
             var r = data.RestoreLevel();
             Game.Say("loaded scene \"" + name + "\" on " + where + ": " + r.moved + " moved back, " + r.respawned + " respawned, "
-                + r.removed + " removed, " + r.skipped + " skipped (of " + data.chars.Count + " saved)");
+                + r.removed + " removed, " + r.skipped + " skipped (of " + data.chars.Count + " saved)" + Items(data, r.floor));
+        }
+
+        static string Items(SceneData data, SceneData.FloorResult f)
+        {
+            if (!data.HasItems) return "; weapons not reset (saved before 0.7.0, save it again)";
+            return "; weapons on the floor: " + f.removed + " cleared, " + f.placed + " of " + data.floor.Count + " put back";
         }
 
         void OnDestroy()
