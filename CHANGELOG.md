@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.6 · unreleased
+
+- `examples/SwapUnaware` 0.5.0: F11 scenes in story levels, arenas, custom stages and hubs, not only the Playground. Loading matches the characters already in the level to the saved ones and puts them back, respawns the missing (serial numbers re-registered, wave units back in the wave), removes only unscripted extras, and moves you back to your saved room. Playground scenes from another Playground stage load that stage first. Scene files version 2; 0.4.0 files still load. Deployed, playtest pending.
+- madnesswright-modtools: `references/game-recipes.md` gains "Levels, rooms and the career save".
+
 ## 0.1.5 · 2026-10-21
 
 - madnesswright-modtools: new `scripts/decomp.py` (decompile, `keys` for which keys the game reads in play, `find` and `callers` for one-line member lookups) with `tests/test_decomp.py` in CI; new `references/game-recipes.md` (freeze, remove, playable roster, teams, AI states, idle poses, walking to a point, blocking the attack click, IMGUI windows, saving a scene); lessons L-003 (a key is a clash only if read in play) and L-004 (mod data outside `Mods/`).
