@@ -1,4 +1,4 @@
-[b]Run the Playground like a director: take over anyone, freeze the room, set patrols and guards, pose enemies, and save scenes to play again.[/b] (Formerly Swap And Unaware: F5 to F8 work as before.)
+[b]Direct any fight: take over anyone, freeze the room, set patrols and guards, pose enemies, and save scenes to play again.[/b] (Formerly Swap And Unaware: F5 to F8 work as before.)
 
 [list]
 [*][b]F1[/b]: remove every living character except you and the playable characters (Sanford, Deimos, Hank and the rest).
@@ -11,11 +11,11 @@
 [*][b]F8[/b]: back to your own body. Happens by itself when the body you took dies.
 [*][b]F9[/b]: point at a character: it stands guard, never moves, and attacks anyone not on its team once it sees them. F9 again: back to normal.
 [*][b]F10[/b]: point at a character: first press it searches, second it attacks you, third it loses track of you, then round again.
-[*][b]F11[/b] while paused (Playground): type a scene name, [b]ENTER[/b] saves it. [b]CAPS LOCK[/b] while paused lists your saved scenes; click one to load it. A scene keeps every character, where they stand, their team, weapons, damage, and frozen, guard and patrol settings.
+[*][b]F11[/b] while paused (in the Playground only): type a scene name, [b]ENTER[/b] saves it. [b]CAPS LOCK[/b] while paused lists your saved scenes; click one to load it. A scene keeps every character, where they stand, their team, weapons, damage, and frozen, guard and patrol settings.
 [/list]
 
 [b]Needs the releasebeta branch[/b] (Steam: Properties, Betas, releasebeta): the normal release build does not load mods. Enable it from the gear icon on the main menu and restart.
 
-Made for the Playground; F1 in an arena counts as kills and moves the waves on. Not tested in the story career, so back up your saves before using it there.
+Works in the story mode, the arenas and the Playground; only the scene keys (F11, CAPS LOCK) are Playground-only. In an arena, F1 counts as kills and moves the waves on. Back up your saves before using it in a story career.
 
 This mod runs code (a Harmony DLL). Source, build steps and the bugs each playtest found: https://github.com/m4bwav/madnesswright/tree/main/examples/SwapUnaware

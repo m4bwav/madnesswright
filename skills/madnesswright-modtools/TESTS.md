@@ -10,6 +10,7 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ### T-20261021-1 · 2026-10-21 · live use by the owner's family · owner's PC, beta 2.20.a · 6/6 exercised
 - Playground Director 0.4.0 (second mod built with this skill, recipes in references/game-recipes.md). The owner reports "everything worked". Player.log evidence: the 0.4.0 load line; `applied_harmony` lists the id (the new `RunControls_Attacks` prefix applied); F1 "7 characters removed"; F2 freeze and unfreeze three times; F3 squares shown and hidden 8 times; F4 listed 369 animations (8 own, 361 library) and played typing, mopping and talking loops; F10 search, attack, unaware; F5 to F8 swaps; no exception or problem line.
+- Then played in the story mode: the owner reports everything works so far (no log read for it).
 - Not exercised: F9 guard and F11 scenes (no log line, no scene file). Released anyway at the owner's request; confirm in the next report.
 - led to: L-003 and L-004 confirmed (helpful +1 each)
 
