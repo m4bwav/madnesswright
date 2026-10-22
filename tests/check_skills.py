@@ -17,8 +17,10 @@ MAX_DESCRIPTION = 1024         # Agent Skills spec limit for the description fie
 SKIP_DIRS = {".git", "__pycache__", "dist", "node_modules", "bin", "obj", "build"}
 LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
 # Public-safety guards that name nothing private: an absolute path into someone's home folder
-# (placeholders such as C:\Users\<you> are allowed) and AI attribution lines.
+# (placeholders such as C:\Users\<you> are allowed), AI attribution lines, and family words for the
+# people who ask for mods (public files say "the requester" or "the player").
 HOME_PATH = re.compile(r"(?i)\b[a-z]:[\\/]+users[\\/]+(?!<|steamuser)[a-z0-9._-]+|/home/(?!<)[a-z0-9._-]+/|/Users/(?!<|Shared|steamuser)[a-z0-9._-]+/")
+FAMILY = re.compile(r"(?i)\b(the|my|his|her|their|owner's) (son|daughter|kids?|wife|husband)\b")
 ATTRIBUTION = re.compile(r"(?i)co-authored-by:|generated with (claude|chatgpt|copilot)|written by (claude|an ai)")
 
 problems = []
@@ -127,6 +129,9 @@ def check_links_and_text():
         m = HOME_PATH.search(text)
         if m:
             problems.append(f"{rel(f)}: absolute home-folder path {m.group(0)!r}; use a placeholder")
+        k = FAMILY.search(text)
+        if k:
+            problems.append(f"{rel(f)}: family word {k.group(0)!r}; say the requester or the player")
         a = ATTRIBUTION.search(text)
         if a:
             problems.append(f"{rel(f)}: AI attribution {a.group(0)!r}")
