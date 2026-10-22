@@ -21,6 +21,7 @@ Members of MADNESS: Project Nexus that mods change characters with, found in a d
 - Freeze and unfreeze: `Controller_Base.LockController(Object)` / `ReleaseController(Object)` (the cutscene lock), `Pathfind_Main.ClearWaypointsAndTarget(Combatant_Base)` (waypoints move a locked body), `SetFrozen(bool)` (rigidbody), `myAnimator.myAnim.speed`. Undo all four on death and before a controller swap: the lock is on the controller, not the body.
 - Never swap `myUpdateFunction` and the other update delegates: `KillMe` replaces them.
 - Remove without a corpse: `Combatant_Base.RemoveFromGame()` (Clear All uses it). Killing wave units advances arena waves.
+- Clear corpses: `HaveRunKillMe` true and not `AmDespawning`, then `Decay_Manager.DestroyMe_Character(c)` (the dev console and arenas do this; it calls `DeSpawn`). `Decay_Manager.ClearAll_Character()` only `Object.Destroy`s the decay queue. Keep `amEssential`, serial-numbered, boss and player-squad bodies. Blood and debris: `ClearAll_Splats`, `_Holes`, `_Casing`, `_Debris`.
 - Playable roster: no flag; combine `amPlayer`, `Char_Data.ReturnAmPlayerCharacter()`, `Game_Manager.currentCareer.chars_Core`, and the card's `DefaultFaction == Factions.Player`.
 - Teams: change through `Squad_Main.AddMember` or `ChangeFaction`, never by writing `myTeam`. Playground spawns are `Factions.None` squads, which attack everyone outside their squad.
 

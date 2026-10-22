@@ -1,6 +1,7 @@
-[b]Direct any fight: take over anyone, freeze the room, set patrols and guards, pose enemies, and save scenes to play again.[/b] (Formerly Swap And Unaware: F5 to F8 work as before.)
+[b]Direct any fight: take over anyone, freeze the room, set patrols and guards, pose enemies, clear the bodies, and save scenes to play again, in the story, the arenas and the Playground.[/b] (Formerly Swap And Unaware: F5 to F8 work as before.)
 
 [list]
+[*][b]INSERT[/b]: the Director menu. Pauses the game and lists every action with its key, plus [b]Clear corpses[/b] (keeps your squad, bosses and bodies the level still needs) and [b]Clear blood, bullet holes, casings and debris[/b]. Actions aimed at one character ask you to click it (right click cancels). INSERT or ESC closes it.
 [*][b]F1[/b]: remove every living character except you and the playable characters (Sanford, Deimos, Hank and the rest).
 [*][b]F2[/b]: freeze everyone except the character you are playing. F2 again: unfreeze them. Frozen characters still die when shot.
 [*][b]F3[/b]: patrol squares, like Ancient Warfare 3's patrol mode. A black square follows the mouse; left click drops it (no shot); [b]U[/b] starts another; click a square to select it, then [b]P[/b] turns it red (the unit stops there) and [b]Delete[/b] removes it. F3 hides and shows them. The squares belong to the character you are playing when you place them and only show while you play that character; whenever someone else controls it and it has not spotted an enemy, it walks them.
@@ -11,11 +12,11 @@
 [*][b]F8[/b]: back to your own body. Happens by itself when the body you took dies.
 [*][b]F9[/b]: point at a character: it stands guard, never moves, and attacks anyone not on its team once it sees them. F9 again: back to normal.
 [*][b]F10[/b]: point at a character: first press it searches, second it attacks you, third it loses track of you, then round again.
-[*][b]F11[/b] while paused (in the Playground only): type a scene name, [b]ENTER[/b] saves it. [b]CAPS LOCK[/b] while paused lists your saved scenes; click one to load it. A scene keeps every character, where they stand, their team, weapons, damage, and frozen, guard and patrol settings.
+[*][b]F11[/b] while paused: type a scene name, [b]ENTER[/b] saves it. [b]CAPS LOCK[/b] while paused lists your saved scenes; click one to load it. A scene keeps every character, where they stand, their team, weapons, damage, and frozen, guard and patrol settings. In the Playground loading rebuilds the room. In story levels and arenas it moves you back to where you saved, puts the characters back and respawns the dead; if the game has locked that room, restart the stage and load again.
 [/list]
 
 [b]Needs the releasebeta branch[/b] (Steam: Properties, Betas, releasebeta): the normal release build does not load mods. Enable it from the gear icon on the main menu and restart.
 
-Works in the story mode, the arenas and the Playground; only the scene keys (F11, CAPS LOCK) are Playground-only. In an arena, F1 counts as kills and moves the waves on. Back up your saves before using it in a story career.
+Works in the story mode, the arenas, custom stages and the Playground. In an arena, F1 counts as kills and moves the waves on. Arenas cannot be paused between waves, so save scenes mid-wave or before the first. Back up your saves before using it in a story career.
 
 This mod runs code (a Harmony DLL). Source, build steps and the bugs each playtest found: https://github.com/m4bwav/madnesswright/tree/main/examples/SwapUnaware

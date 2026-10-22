@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.7 · 2026-10-22
+
+- `examples/SwapUnaware` 0.6.0: the Director menu (INSERT) lists every action with its key; features register their own lines, so new ones need no new button code. New keyless actions: clear corpses (keeps squad, scripted, boss and essential bodies) and clear blood, bullet holes, casings and debris. Loads cleanly in the game; playtest pending.
+- madnesswright-modtools: a game-recipes line on clearing corpses.
+
 ## 0.1.6 · 2026-10-22
 
 - `examples/SwapUnaware` 0.5.1: scene files keep their rooms and characters (`JsonUtility` had dropped the mod's own nested classes, so 0.4.0 and 0.5.0 saved empty scenes); `Game.Alive` no longer throws on a combatant the game has not set up. Playtested in a story level (The Industrial Sector): saves of 12 and 14 characters loaded back, with the dead respawned. madnesswright-modtools L-005 and a corrected game-recipes note.
