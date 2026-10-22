@@ -1,4 +1,4 @@
-[b]Direct any fight: take over anyone, freeze the room, set patrols and guards, pose enemies, clear the bodies, and save scenes to play again, in the story, the arenas and the Playground.[/b] (Formerly Swap And Unaware: F5 to F8 work as before.)
+[b]Direct any fight: take over anyone, freeze the room, set patrols and guards, pose enemies, clear the bodies, and save scenes to play again, in the story, the arenas and the Playground.[/b] Not just for the Playground: every key works in the story campaign too. (Formerly Playground Director and Swap And Unaware: the keys work as before.)
 
 [list]
 [*][b]INSERT[/b]: the Director menu. Pauses the game and lists every action with its key, plus [b]Clear corpses[/b] (keeps your squad, bosses and bodies the level still needs) and [b]Clear blood, bullet holes, casings and debris[/b]. Actions aimed at one character ask you to click it (right click cancels). INSERT or ESC closes it.

@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## Unreleased
+
+- `examples/SwapUnaware` 0.6.1: renamed Director (was Playground Director), with text saying it works in every game mode; Workshop tag Playground dropped. No code change beyond the name.
+
 ## 0.1.7 · 2026-10-22
 
 - `examples/SwapUnaware` 0.6.0: the Director menu (INSERT) lists every action with its key; features register their own lines, so new ones need no new button code. New keyless actions: clear corpses (keeps squad, scripted, boss and essential bodies) and clear blood, bullet holes, casings and debris. Loads cleanly in the game; playtest pending.
