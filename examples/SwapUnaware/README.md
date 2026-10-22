@@ -1,6 +1,6 @@
-# Playground Director (was Swap And Unaware)
+# Director (was Playground Director, and before that Swap And Unaware)
 
-Take control of any character, freeze the room, set patrols and guards, pose enemies and save scenes, in the story mode, the arenas and the Playground. A requested mod, kept here as the worked example for the [madnesswright-modtools](../../skills/madnesswright-modtools/SKILL.md) skill's Harmony route: an `IModEntrypoint`, two Harmony prefixes, one component per feature, a net48 build against the player's own game files, and the bugs live playtests found.
+Direct any fight, in any mode: the story campaign, the arenas, custom stages and the Playground. Take control of any character, freeze the room, set patrols and guards, pose enemies, clear the bodies and save scenes to replay. Renamed from Playground Director in 0.6.1 because it was never Playground-only. A requested mod, kept here as the worked example for the [madnesswright-modtools](../../skills/madnesswright-modtools/SKILL.md) skill's Harmony route: an `IModEntrypoint`, two Harmony prefixes, one component per feature, a net48 build against the player's own game files, and the bugs live playtests found.
 
 | Key | What it does |
 |---|---|
@@ -19,7 +19,7 @@ Take control of any character, freeze the room, set patrols and guards, pose ene
 
 On the Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165 (Subscribe, then enable it from the gear icon).
 
-Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21, in the Playground and then the story mode (F9 and F11 not yet exercised), and was on the Workshop until 0.6.0. 0.5.0 (scenes in every level) failed its first story playtest (scene files lost the characters); 0.5.1 fixes it and was playtested in a story level on the owner's PC on 2026-10-22 (arenas, Playground scenes and F9 not yet exercised); never on the Workshop. 0.6.0 adds the Director menu and clear corpses; built 2026-10-22, loads cleanly, and is on the Workshop (published at the owner's request before its playtest). Back up your saves before using it in a story career.
+Needs the `releasebeta` branch: the normal release build does not load mods. Version 0.3.0 was playtested in the Playground on two PCs; 0.4.0 on the owner's PC on 2026-10-21, in the Playground and then the story mode (F9 and F11 not yet exercised), and was on the Workshop until 0.6.0. 0.5.0 (scenes in every level) failed its first story playtest (scene files lost the characters); 0.5.1 fixes it and was playtested in a story level on the owner's PC on 2026-10-22 (arenas, Playground scenes and F9 not yet exercised); never on the Workshop. 0.6.0 adds the Director menu and clear corpses (built 2026-10-22, loads cleanly, published at the owner's request before its playtest); 0.6.1 only renames it to Director and is on the Workshop. Back up your saves before using it in a story career.
 
 ## Key choices
 
@@ -46,7 +46,7 @@ Why, and what was left out: [the decision](../../ai-docs/decisions/2026-10-21-sc
 - Removing a character counts as a kill for the level (kill counters, arena kill count). Doors, triggers and objectives are not rewound.
 - Arenas cannot be paused between waves (the game blocks it): save and load mid-wave or before the first wave.
 - Every save and load writes one line to Player.log (stage, room, counts), so a playtest can be checked from the log.
-- Folder, DLL and HarmonyID stay `SwapUnaware`, so the enabled state and the Workshop item carry over; only the display name changed.
+- Folder, DLL and HarmonyID stay `SwapUnaware`, so the enabled state and the Workshop item carry over; only the display name changed (Playground Director in 0.4.0, Director in 0.6.1). The Workshop title keeps "(was Playground Director)" so subscribers recognise it, and the Playground tag was dropped.
 
 ## Install
 
@@ -55,7 +55,7 @@ From a zip made by `pack.ps1`:
 1. Unzip it anywhere on the computer that plays.
 2. Double-click `install.cmd`. It copies the `SwapUnaware` folder into `%USERPROFILE%\AppData\LocalLow\Gibbing Tree\Madness Project Nexus\Mods`.
 3. Steam: right-click MADNESS: Project Nexus, Properties, Betas, pick `releasebeta`, and let it update.
-4. Launch, click the gear icon at the bottom left of the main menu, select Swap And Unaware, tick ENABLED, Apply, restart the game.
+4. Launch, click the gear icon at the bottom left of the main menu, select Director (all game modes), tick ENABLED, Apply, restart the game.
 
 Copying the `SwapUnaware` folder (`info.txt` and `Managed/SwapUnaware.dll`) into that Mods folder by hand does the same.
 
@@ -63,7 +63,7 @@ Copying the `SwapUnaware` folder (`info.txt` and `Managed/SwapUnaware.dll`) into
 
 Needs the .NET SDK and the game installed. `pwsh ./pack.ps1 -Version 0.6.0` builds `src/` against the game's own `Managed` DLLs (net48, `Private=false`, nothing copied from the game) and writes `dist/SwapUnaware-<version>.zip`. It finds the game with the hub skill's `mpn.py where`; pass `-GameManaged <...\Madness Project Nexus_Data\Managed>` or set `MPN_MANAGED` to point elsewhere. Then deploy with `python -I ../../skills/madnesswright/scripts/mpn.py deploy dist/stage/SwapUnaware --force` and read `mpn.py log` after playing.
 
-To update the Workshop item after a new build (absolute paths; relative ones end in `result FileNotFound`): `../WorkshopUpload/out/wsup.exe <abs>/dist/stage/SwapUnaware <abs>/preview.jpg "Playground Director (was Swap And Unaware)" workshop-description.txt "Scripts,Playground" 3822329165` (see [WorkshopUpload](../WorkshopUpload/README.md)).
+To update the Workshop item after a new build (absolute paths; relative ones end in `result FileNotFound`): `../WorkshopUpload/out/wsup.exe <abs>/dist/stage/SwapUnaware <abs>/preview.jpg "Director (was Playground Director)" workshop-description.txt "Scripts" 3822329165` (see [WorkshopUpload](../WorkshopUpload/README.md)).
 
 `build/`, `dist/`, `bin/` and `obj/` stay out of git. Never commit game DLLs or decompiled code.
 

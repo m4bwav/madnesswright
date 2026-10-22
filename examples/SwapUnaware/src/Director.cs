@@ -141,7 +141,7 @@ namespace SwapUnaware
             if (ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Escape) { Close(); ev.Use(); return; }
             float w = Mathf.Min(720f, Screen.width * 0.6f), h = Screen.height * 0.75f;
             GUILayout.BeginArea(new Rect((Screen.width - w) / 2f, (Screen.height - h) / 2f, w, h), GUI.skin.box);
-            GUILayout.Label("Playground Director " + ModEntry.Version + ": click an action.   INSERT or ESC: close.");
+            GUILayout.Label("Director " + ModEntry.Version + ": click an action.   INSERT or ESC: close.");
             scroll = GUILayout.BeginScrollView(scroll);
             var here = Here();
             foreach (var e in entries.OrderBy(x => x.Key == KeyCode.None).ThenBy(x => (int)x.Key))

@@ -26,7 +26,7 @@ Project Nexus (GIBBING TREE, LLC, Steam app 488860) has real mod support. There 
 
 ## Example mod
 
-[examples/SwapUnaware](examples/SwapUnaware/README.md) (Playground Director) is a complete Harmony mod built with `madnesswright-modtools`: take control of any character (F5 to F8), and since 0.4.0 clear the room (F1), freeze everyone (F2), patrol paths (F3), idle animations (F4), guards (F9), an alert cycle (F10) and saved Playground scenes (F11). It shows the net48 project against the player's own game files, an `IModEntrypoint`, one component per feature, two Harmony prefixes, IMGUI windows, a pack script that makes an install zip, and a table of the bugs each playtest found and their causes in the game's code. Needs the `releasebeta` branch.
+[examples/SwapUnaware](examples/SwapUnaware/README.md) (Director, for every game mode) is a complete Harmony mod built with `madnesswright-modtools`: take control of any character (F5 to F8), and since 0.4.0 clear the room (F1), freeze everyone (F2), patrol paths (F3), idle animations (F4), guards (F9), an alert cycle (F10), saved scenes in every mode (F11) and, since 0.6.0, a menu (INSERT) with clear corpses. It shows the net48 project against the player's own game files, an `IModEntrypoint`, one component per feature, two Harmony prefixes, IMGUI windows, a pack script that makes an install zip, and a table of the bugs each playtest found and their causes in the game's code. Needs the `releasebeta` branch.
 
 ## The helper
 
