@@ -1,6 +1,10 @@
 # Handoff
 
-State on 2026-10-21, session 6 (Playground Director 0.5.0, scenes in every level, built and deployed; playtest pending; plugin 0.1.6 merged, not tagged).
+State on 2026-10-22, session 7 (Playground Director 0.5.1 deployed: fixes 0.5.0's story-mode load; in-game recheck pending; plugin 0.1.6 merged, not tagged).
+
+## Session 7
+
+- 0.5.0's first story playtest: loads always said "room , closed" because `JsonUtility` dropped the scene's room and characters (the mod's own nested classes; 0.4.0 too), and one save crashed in `AmDead()` on an unset corpus track. 0.5.1 fixes both (modtools L-005, T-20261022-1; [log.md](log.md)). Next: the checklist again with 0.5.1, then open a new scene file to see `chars` filled.
 
 ## Session 6
 
@@ -39,7 +43,6 @@ State on 2026-10-21, session 6 (Playground Director 0.5.0, scenes in every level
 7. Headless SceneTools build route is untested (needs Unity 2019.2.6f1).
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
 9. **Requested mod:** swap characters and make everyone else unaware, as a Harmony mod and a live test of madnesswright-modtools. Plan and the game's hooks: [plans/2026-10-17-swap-and-unaware-mod.md](plans/2026-10-17-swap-and-unaware-mod.md). Needs `releasebeta`.
-
 10. Playground Director: confirm F9 guard and F11 scenes (0.5.0, every level) in the next play report.
 
 ## Next step

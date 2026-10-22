@@ -2,6 +2,14 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 7: story-mode load fix (Playground Director 0.5.1)
+
+- Report: the owner said load "didn't seem to work right in story mode". Player.log (Warehouse Raid): saves logged 1, 2 and 4 characters, but every load said `"X" was saved in room , which the game has closed`; one save threw `IndexOutOfRangeException` in `Health_Manager.ReturnCharacterDead` from `Game.Alive`.
+- Cause 1: the scene files held only the flat fields; `JsonUtility` dropped `playerRoom` and `chars` (types from the runtime-loaded mod assembly). F11 never saved characters in 0.4.0 either. Fix: `SceneData.ToJson`/`FromJson` serialize each flat record with `JsonUtility` and join and split the nesting; a file with no room and no characters says "save it again".
+- Cause 2: `AmDead()` reads `myCorpusTrack[0]`; a combatant not yet set up has an empty track. `Game.Alive` checks it first.
+- Tests (T-20261022-1): build clean; a scratchpad test of the join and split helpers passed 10/10, including quotes and brackets inside strings and the real broken `NEWSAVE.json`. 0.5.1 deployed to the Mods folder; in-game check pending. modtools L-005 and the game-recipes line corrected (it claimed JsonUtility handled nested classes).
+- The two old scene files (`Test.MP4`, `NEWSAVE`) are empty and stay; loading them now says to save again.
+
 ## 2026-10-21 · session 6: scenes in every level (Playground Director 0.5.0)
 
 - Request: the requester wants F11 scenes to save and load in the story levels and arenas, not only the Playground; the owner approved a deeper rework.

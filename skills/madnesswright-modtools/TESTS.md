@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-1 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 0/1 (F11 in a story level)
+- live-f11-story · bug · fail · Playground Director 0.5.0 in Warehouse Raid: saves logged 1, 2 and 4 characters, every load said the saved room `""` was closed; the files under PlaygroundDirector/Scenes held no `playerRoom` and no `chars`. One save threw `IndexOutOfRangeException` in `Health_Manager.ReturnCharacterDead` via `Game.Alive`.
+- Fixed in 0.5.1 (built, deployed, helper test 10/10 in the scratchpad); in-game recheck pending. F9 still never logged.
+- led to: L-005
+
 ### T-20261021-1 · 2026-10-21 · live use by the owner's family · owner's PC, beta 2.20.a · 6/6 exercised
 - Playground Director 0.4.0 (second mod built with this skill, recipes in references/game-recipes.md). The owner reports "everything worked". Player.log evidence: the 0.4.0 load line; `applied_harmony` lists the id (the new `RunControls_Attacks` prefix applied); F1 "7 characters removed"; F2 freeze and unfreeze three times; F3 squares shown and hidden 8 times; F4 listed 369 animations (8 own, 361 library) and played typing, mopping and talking loops; F10 search, attack, unaware; F5 to F8 swaps; no exception or problem line.
 - Then played in the story mode: the owner reports everything works so far (no log read for it).

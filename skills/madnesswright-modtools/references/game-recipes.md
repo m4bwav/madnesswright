@@ -41,7 +41,7 @@ Members of MADNESS: Project Nexus that mods change characters with, found in a d
 ## Saving a scene
 
 - No Playground save exists. Spawn with `Char_Data.CreateCharacter(StatCard_Base.ReturnCardByName<StatCard_Character>(card))`, `Combatant_Base.CreateCombatant(data, Cam_Main.currentRoom, ControllerType.NPC, pos, rot, false)`, `Squad_Main.CreateSquad(faction)` and `AddMember`. Weapons: `Catalog_Weapons.GenerateWeapon` then `Char_DataAssigner.GiveItemToCharacter` (grenades: `GiveThrownToCharacter`). Damage is `myTrauma`. Clear first with `InteractiveMode.ClearAll_DoIt()`.
-- Write mod data outside `Mods/`: the loader reads every `.json` and `.txt` in a mod folder as a MadCard. `Application.persistentDataPath/<ModName>/` works; `UnityEngine.JsonUtility` (needs `UnityEngine.JSONSerializeModule`) handles `[Serializable]` classes with `List<T>` and `Vector3`.
+- Write mod data outside `Mods/`: the loader reads every `.json` and `.txt` in a mod folder as a MadCard. `Application.persistentDataPath/<ModName>/` works; `UnityEngine.JsonUtility` (needs `UnityEngine.JSONSerializeModule`) writes strings, numbers, `Vector3` and lists of those, but silently drops every field whose type is a class from the mod's own assembly (loaded at runtime, unknown to Unity's serializer): nested records vanish with no error. Serialize each flat record on its own and join them yourself, as `SceneData.ToJson` in the SwapUnaware example does, or write the JSON by hand.
 - Mode check: `Game_Manager.currentGameMode == GameModes.Playground`.
 
 ## Levels, rooms and the career save

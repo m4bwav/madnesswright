@@ -58,6 +58,126 @@ namespace SwapUnaware
 
         internal bool IsPlayground { get { return version < 2 || mode == (int)GameModes.Playground; } }
 
+        // ---- the file ----
+
+        // JsonUtility drops every field whose type is one of this mod's own classes (the mod's
+        // assembly is loaded at runtime, so Unity's serializer does not know them): 0.4.0 and 0.5.0
+        // wrote scenes with no rooms and no characters. JsonUtility still writes and reads each flat
+        // record (strings, numbers, Vector3); these join and split the nesting around it.
+        internal string ToJson()
+        {
+            var cs = chars.Select(c => With(JsonUtility.ToJson(c),
+                "room", JsonUtility.ToJson(c.room ?? new RoomRef()), "items", Arr(c.items), "patrol", Arr(c.patrol)));
+            return With(JsonUtility.ToJson(this),
+                "playerRoom", JsonUtility.ToJson(playerRoom ?? new RoomRef()), "chars", "[" + string.Join(",\n", cs) + "]");
+        }
+
+        internal static SceneData FromJson(string json)
+        {
+            var d = JsonUtility.FromJson<SceneData>(json);
+            if (d == null) return null;
+            d.playerRoom = Obj<RoomRef>(Field(json, "playerRoom")) ?? new RoomRef();
+            d.chars = new List<CharRecord>();
+            foreach (var cj in Elements(Field(json, "chars")))
+            {
+                var c = JsonUtility.FromJson<CharRecord>(cj);
+                if (c == null) continue;
+                c.room = Obj<RoomRef>(Field(cj, "room")) ?? new RoomRef();
+                c.items = Elements(Field(cj, "items")).Select(JsonUtility.FromJson<ItemRecord>).Where(x => x != null).ToList();
+                c.patrol = Elements(Field(cj, "patrol")).Select(JsonUtility.FromJson<PointRecord>).Where(x => x != null).ToList();
+                d.chars.Add(c);
+            }
+            return d;
+        }
+
+        static string Arr<T>(List<T> list)
+        {
+            return "[" + string.Join(",", (list ?? new List<T>()).Select(x => JsonUtility.ToJson(x))) + "]";
+        }
+
+        static T Obj<T>(string json) where T : class
+        {
+            return string.IsNullOrEmpty(json) || json[0] != '{' ? null : JsonUtility.FromJson<T>(json);
+        }
+
+        // Adds "key": value pairs to the end of a JSON object.
+        static string With(string obj, params string[] pairs)
+        {
+            int end = obj.LastIndexOf('}');
+            var head = obj.Substring(0, end).TrimEnd();
+            for (int i = 0; i < pairs.Length; i += 2)
+                head += (head.EndsWith("{") ? "" : ",") + "\n\"" + pairs[i] + "\": " + pairs[i + 1];
+            return head + "\n}";
+        }
+
+        // The raw value of a top-level key of a JSON object, or null.
+        static string Field(string json, string key)
+        {
+            if (json == null) return null;
+            int i = json.IndexOf('{');
+            if (i < 0) return null;
+            i = Ws(json, i + 1);
+            while (i < json.Length && json[i] == '"')
+            {
+                int e = Skip(json, i);
+                var k = json.Substring(i + 1, e - i - 2);
+                i = Ws(json, e);
+                if (i >= json.Length || json[i] != ':') return null;
+                i = Ws(json, i + 1);
+                int ve = Skip(json, i);
+                if (k == key) return json.Substring(i, ve - i);
+                i = Ws(json, ve);
+                if (i < json.Length && json[i] == ',') i = Ws(json, i + 1);
+            }
+            return null;
+        }
+
+        // The raw elements of a JSON array (none when it is missing).
+        static IEnumerable<string> Elements(string arr)
+        {
+            if (string.IsNullOrEmpty(arr) || arr[0] != '[') yield break;
+            int i = Ws(arr, 1);
+            while (i < arr.Length && arr[i] != ']')
+            {
+                int e = Skip(arr, i);
+                yield return arr.Substring(i, e - i);
+                i = Ws(arr, e);
+                if (i < arr.Length && arr[i] == ',') i = Ws(arr, i + 1);
+            }
+        }
+
+        static int Ws(string s, int i)
+        {
+            while (i < s.Length && char.IsWhiteSpace(s[i])) i++;
+            return i;
+        }
+
+        // The index just past the JSON value that starts at i.
+        static int Skip(string s, int i)
+        {
+            if (i >= s.Length) return i;
+            if (s[i] == '"')
+            {
+                for (i++; i < s.Length && s[i] != '"'; i++) if (s[i] == '\\') i++;
+                return Math.Min(i + 1, s.Length);
+            }
+            if (s[i] == '{' || s[i] == '[')
+            {
+                int depth = 0;
+                while (i < s.Length)
+                {
+                    char ch = s[i];
+                    if (ch == '"') { i = Skip(s, i); continue; }
+                    if (ch == '{' || ch == '[') depth++;
+                    else if ((ch == '}' || ch == ']') && --depth == 0) return i + 1;
+                    i++;
+                }
+                return i;
+            }
+            while (i < s.Length && ",}] \t\r\n".IndexOf(s[i]) < 0) i++;
+            return i;
+        }
+
         // ---- where we are ----
 
         internal static bool InPlayground { get { return Game_Manager.currentGameMode == GameModes.Playground; } }
