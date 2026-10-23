@@ -12,7 +12,7 @@ Copy this into the mod folder as `LEVEL-PLAN.md` and fill it in before placing e
 
 ## Rooms
 
-| Room | Purpose | New element | Enemy roles x count | Max attacking at once | Entry doors and spawns | Cover | Items handed out | Big or small moment | Expected time | Expected deaths |
+| Room | Purpose | New element (one at most) | Enemy roles x count | Max attacking at once (1 or 2) | Entry doors and spawns | Cover | Items handed out | Big or small moment | Expected time | Expected deaths |
 |---|---|---|---|---|---|---|---|---|---|---|
 | R1 | introduce | | | | | | | small | | 0 |
 | R2 | | | | | | | | | | |
@@ -24,8 +24,8 @@ Enemy cards and the role seen for each (from watching it alone in a Playground a
 
 ## Waves (Squad Spawner, Arena Siege, Zone_Spawner)
 
-| Wave | Roles x count | Squad size and Max | Doors used | Change from the wave before | Economy (stockpiles, lockers, Item_Spawns) |
-|---|---|---|---|---|---|
+| Wave | New role (one at most, none in the last wave) | Roles x count | Squad size and Max (1 or 2 attacking at once) | Doors used | Change from the wave before | Economy (stockpiles, lockers, Item_Spawns) |
+|---|---|---|---|---|---|---|
 
 After the last wave: <the release: a quiet room, a locker, a cache>
 
