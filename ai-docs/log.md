@@ -2,6 +2,16 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 11: 0.7.3 still unplayed; code reading of the never-exercised paths
+
+- The owner closed the game session 10 had left running. Its Player.log (backed up as `Player-20261022-fight3.log` in the owner's backup folder) shows `Director 0.7.3 loaded` and the main menu only: no level, no scene file newer than "fight 2". 0.7.3 is still unplayed (Owed 12).
+- Read the paths no play has reached against a fresh decompile (same build 25615196), without changing code:
+  - **INSERT between arena waves:** the game's `CanPause()` is false while `Arena_Manager.WaveCompleted()`, but the Director menu calls `Game_Manager.PauseGame` itself, so INSERT opens between waves (Clear corpses there should work). It also means "Save a scene" from the menu works between waves, which the README says is impossible. A scene loaded between waves does not rewind the wave counter. Check in the arena play, then fix the README line or block it.
+  - **ESC closing a Director window also opens the game's pause menu** when the game can pause (`UI_Keystrokes.Update` reads the same ESC press; `Event.Use` does not stop it). Expected; press ESC again.
+  - **F9 guard** sets `wanderingDisabled`, `SetFrozen(true)` and Unaware, like the spawner's `FixedInPlace`, but not the spawner's `noRagdollInCombat = true`: a guard hit in a fight may ragdoll off its spot. Add it (saved and restored) if the guard play shows that.
+  - **Clear corpses and level completion:** story rooms finish through `Squad_Main.ReturnFactionStillAlive` (skips despawned members) and `Check_CharacterDies` counts at death, so clearing corpses cannot stop a level finishing. `DeSpawn` drops the bodies' weapons to the floor, as the console's clear does.
+  - Pause sources are a `HashSet`, so the menu and scene window opening each other cannot leave the game stuck paused.
+
 ## 2026-10-22 · session 10: bodies, crate and drift on scene load (Director 0.7.3)
 
 - Report (the owner, Director 0.7.2, The Boom Factory "fight 2"): the load "didn't properly reset all the enemies and their weapons", and corpses stayed. Asked one question: what looked wrong was a missing weapon and an enemy in the wrong place (not health, not alert). Log: `3 moved back`, then `1 moved back, 2 respawned`, and `scene: no item card N_Crate` both times (modtools T-20261022-7).
