@@ -31,7 +31,7 @@ Setup first, as in madnesswright Step 2: `releasebeta` branch, `MPN backup`.
 
 ## Step 3: MadObjects
 
-Details per type, axis rules and the Character_Ref setup: [references/madobjects.md](references/madobjects.md). The essentials:
+Details per type, axis rules and the Character_Ref setup: [references/madobjects.md](references/madobjects.md). For a new weapon, fill its row in the attack matrix there ("Before a new weapon") before modelling. The essentials:
 
 1. Put the model inside an empty parent GameObject and add the matching `MadObj_` component to the parent (Melee, Ranged, ranged addon, Armor, BodyPart, Character_Ref). Rotate the child, not the parent, so blue Z points forward (the blade's facing or the barrel's firing direction) and green Y is up (toward the tip).
 2. Use the component's context menu "Create Points" for the mandatory points (grips, business end, muzzle and casing exits), then place and rotate them. Fit the Box Collider to the object.

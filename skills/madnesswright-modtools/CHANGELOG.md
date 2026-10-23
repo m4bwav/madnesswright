@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261023-1 · 2026-10-23 · Attack matrix and hit feedback before a new weapon
+- because: books track 9 (Rogers, *Level Up!* 3rd ed., Level 10); T-20261023-2
+- files: references/madobjects.md (new section "Before a new weapon: its niche"); SKILL.md (Step 3 intro); evals/evals.json (outcome-3)
+- Before modelling a weapon, add a row beside the weapons it joins (range, speed, damage, special, cost, niche); no niche means a reskin on an existing Root or a borrowed object; overlap costs the stronger weapon; a hit-feedback check before calling it done.
+
 ### C-20261022-2 · 2026-10-22 · Blender FBX settings for MadObjects and Character_Ref
 - because: books track 7 (Pearson, *Learn Blender Simulations the Right Way*, on applying scale; *Blender 3D By Example* on Rigify), checked on Blender 5.2.1; T-20261022-10
 - files: references/madobjects.md (new section "From Blender"); SKILL.md (Step 2, item 3); evals/evals.json (outcome-2)

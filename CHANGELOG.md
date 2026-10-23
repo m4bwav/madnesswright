@@ -4,6 +4,9 @@ Plugin versions. Skill-level changes and their reasons are in each skill's own C
 
 ## Unreleased
 
+- madnesswright-scenes: `references/encounter-design.md` gains enemy roles (decided per card by watching it alone), an orchestration order, wave and squad pacing (one or two attacking at once, safe spawns, nothing new in the last wave, a release after it), finale and fairness rules and two playtest items; new `references/level-plan-template.md` (rooms, roles per card, waves, results, a campaign beat chart), after Rogers, *Level Up!*.
+- madnesswright-modtools: `references/madobjects.md` "Before a new weapon": an attack matrix with a niche column and a hit-feedback check.
+- Plugin icon resized from 1024 to 512 px (745 KB to 283 KB) to bring the tracked repository back from its size line.
 - madnesswright-modtools: `references/madobjects.md` "From Blender": FBX settings for weapons and Character_Ref rigs (scale, leaf bones, one take per action, an axis test, why a Rigify rig needs a deform-only skeleton), checked in Blender 5.2.1.
 
 ## 0.1.8 · 2026-10-22

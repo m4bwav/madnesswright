@@ -67,6 +67,33 @@
         "the plan or reply includes the filled playtest checklist and names the _PG suffix and one Player_Start under Characters"
       ],
       "runs": 3
+    },
+    {
+      "id": "outcome-2",
+      "kind": "outcome",
+      "prompt": "Design the waves for my Project Nexus Arena Siege stage in a folder FoundryArena: five waves using grunts, agents with pistols, a shielded agent, a sniper and an Engineer. Write the plan file the playtest will use.",
+      "files": [],
+      "expectations": [
+        "FoundryArena/LEVEL-PLAN.md exists and gives each enemy type a role (rusher, gunner, shield, sniper, guard, heavy or late unit) to be confirmed by watching it alone",
+        "every wave caps how many enemies attack at once at one or two, separately from the total",
+        "each new type's first wave brings it in alone or with known types only, the last wave debuts nothing new (or the plan says the brief forces it and offers another wave), and waves escalate by mix and position, not only by count",
+        "spawns are off camera or out of melee range, the last wave is followed by a release, and the weapon and health handed out is written per wave"
+      ],
+      "evidence": {
+        "type": "file",
+        "path": "FoundryArena/LEVEL-PLAN.md",
+        "must_match": [
+          "(?i)\\brole\\b",
+          "(?i)((attacking|engaged|attack(er)?s?) at once|max(imum)?\\s+\\d\\s+(attacking|engaged))"
+        ],
+        "should_match": [
+          "(?i)(off[ -]?camera|off[ -]?screen|melee range)",
+          "(?i)(release|quiet room|cache)",
+          "(?i)(stockpile|locker|item_spawn)"
+        ]
+      },
+      "baseline": "not yet run",
+      "runs": 3
     }
   ]
 }

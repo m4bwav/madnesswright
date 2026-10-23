@@ -8,6 +8,13 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261023-1 · 2026-10-23 · headless `claude -p` (Sonnet) per run, `--plugin-dir` on the branch worktree, `madnesswright@mark-local` disabled; each run in an empty folder · dev-machine · 3/3 on the final round, baseline fail
+- outcome-2 (new) round 1 · 0/3 · every LEVEL-PLAN.md had roles, a cap of 2 and a release, but all three debuted the sniper and the Engineer together in the final wave and said nothing about it.
+- round 2, after C-20261023-2's wave rule · 1/3 · all three flagged that five roles in five waves cannot each get a wave alone and offered a sixth wave; run 5 still debuted two roles in wave 4, run 6 set "Max attacking 3" in wave 3.
+- round 3, after the template columns named the limits · 3/3 · cap 1 or 2 in every wave, no new role in the last wave, the conflict flagged with a choice offered, release room, spawns off camera, economy per wave.
+- outcome-2 baseline (no plugin) · fail · wrote `arena_siege_wave_plan.md` with roles and one new type per wave, but no cap on how many attack at once, no release, no spawn safety, and the Engineer debuting in the finale. The first cap regex matched its "simultaneously"; tightened and re-tested on all seven files.
+- led to: C-20261023-2, L-002
+
 ### T-20261022-2 · 2026-10-22 · `claude plugin eval` 2.1.281 (cases from `evergreen.py eval-export --out evals/<skill>` in a scratch copy of the plugin), native Windows · 4/6 cases, both arms, 3 runs each
 - trigger-1, trigger-2 · pass 3/3 with the plugin, 0/3 without (delta +1); decoy-1, decoy-2 · quiet 3/3 in both arms.
 - action-1 · harness · fail in both arms · the exported case grants no shell by default (0 Bash calls); with `--allow-tools Bash Write Edit` every run was refused: "sandbox required but unavailable: the Windows sandbox is not active on this session (feature gate off)".

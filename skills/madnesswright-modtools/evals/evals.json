@@ -89,6 +89,31 @@
       },
       "baseline": "not yet run",
       "runs": 3
+    },
+    {
+      "id": "outcome-3",
+      "kind": "outcome",
+      "prompt": "I want to add a new slug-firing shotgun to Project Nexus that sits beside the vanilla pump shotguns. Before I start modelling it, write the plan for it in SlugGun/PLAN.md.",
+      "files": [],
+      "expectations": [
+        "SlugGun/PLAN.md holds a comparison table of the new gun against the shotguns beside it (range, fire rate, damage, special, cost) with a niche the others do not fill",
+        "the plan says the stronger weapon pays for an overlap, or that a gun with no niche is a reskin on an existing Root",
+        "the plan has a hit-feedback check (impact sound, hit reaction, effect) before calling it done"
+      ],
+      "evidence": {
+        "type": "file",
+        "path": "SlugGun/PLAN.md",
+        "must_match": [
+          "(?i)niche",
+          "\\|.*\\|.*\\|"
+        ],
+        "should_match": [
+          "(?i)(reskin|existing root|borrow)",
+          "(?i)(impact sound|hit reaction|hit feedback)"
+        ]
+      },
+      "baseline": "not yet run",
+      "runs": 3
     }
   ]
 }

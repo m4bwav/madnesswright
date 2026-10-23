@@ -14,6 +14,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17
 
+### L-002 · 2026-10-23 · A rule the brief cannot meet gets broken silently; a limit in the column header holds
+- Trigger: T-20261023-1, outcome-2 asked for five enemy types in five waves; 3/3 runs debuted two in the finale without a word; after a prose rule, 1 of 3 still set "Max attacking 3"
+- Hypothesis: the model satisfies the brief first and treats prose rules as advice; a column it must fill states the limit at the moment it writes the number
+- Rule: give each pacing rule an escape ("say so and offer another wave") and put the number limits into the template's column headers
+- Evidence: C-20261023-2, T-20261023-1 round 3 (3/3)
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
+
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts
