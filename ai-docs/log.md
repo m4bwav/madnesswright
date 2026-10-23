@@ -2,6 +2,10 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 11d: plugin v0.1.8
+
+- The owner said yes to the tag: PR #27 (plugin.json 0.1.8, Unreleased changelog plus a 0.7.4 line became 0.1.8), tag v0.1.8, release workflow green, `madnesswright-0.1.8.zip` (108,641 bytes). Local install updated 0.1.7 to 0.1.8. The wiki still names 0.1.7 (update with wikiwright when convenient).
+
 ## 2026-10-22 · session 11c: 0.7.4 played, on the Workshop
 
 - Play (the owner, The Industrial Sector, scene "outside", 15 characters): four loads, no exception; each cleared the newer mess (56, 66, 89, 275 pieces) and bodies (3, 3, 4, 7), put 8 of 8 floor weapons back and reset 3 of 3 of your weapons; the last load after F1 respawned 8. The owner: "Looks good" (modtools T-20261022-9).
