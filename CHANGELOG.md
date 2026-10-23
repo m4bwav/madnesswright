@@ -2,8 +2,9 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
-## Unreleased
+## 0.1.8 · 2026-10-22
 
+- `examples/SwapUnaware` 0.7.4: loading a scene in a story level or arena clears the blood, bullet holes, casings and debris made since the save (all of them after a restart of the stage or game); the Playground load already cleared them. Played in The Industrial Sector and published to the Workshop.
 - `examples/SwapUnaware` 0.7.3: loading a scene in a story level or arena clears the bodies of everyone who died after the save (0.7.2 respawned them and left their old bodies too); squad, scripted, boss and essential bodies stay. The laborers' crate and other level props come back in their hands (their cards were not found by name), and enemies no longer walk off their spot on an order given after the save. Each load logs one line per character and, 2 s later, who has moved off their saved spot. Scene files version 4; older ones clear only the old bodies of the respawned.
 - madnesswright-modtools: game-recipes lines on unregistered item cards and move orders.
 - `examples/SwapUnaware` 0.7.2: a weapon you threw or dropped after saving comes back to your hand on load in story levels and arenas (0.7.1 cleared it with the floor weapons, so a thrown shotgun vanished). The same weapon is picked up from wherever it lies, or a fresh one is given if it is gone; this runs before the floor is cleared.
