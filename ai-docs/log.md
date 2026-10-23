@@ -2,6 +2,14 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 11b: blood on scene load (Director 0.7.4)
+
+- First play of 0.7.3 (the owner, The Boom Factory, scene "ambush"): "looked better this time, but the blood wasn't reset". Log: 5 saved, 4 laborers respawned, Deimos put back (same character, moved 9.2 m), `4 newer bodies cleared`, floor 12 cleared and 9 of 9 put back, 3 of 3 of your weapons reset, no exception. 2 s later two characters 2.2 and 2.8 m off their spot, both in Combat (fighting, not drift). Scene file version 4 with `"dead":""` (no bodies at save time). Bodies, weapons and placement pass (modtools T-20261022-8).
+- Cause: story and arena loads never touched the mess. `Decay_Manager.decayList` (private static, 5 capped lists, oldest first: 0 bodies, 1 debris, 2 casings, 3 holes, 4 splats; caps 8/30/30/50/250). The Playground load already empties them through `InteractiveMode.ClearAll_DoIt`.
+- 0.7.4 (`SceneMess.cs`): a save remembers in memory the newest object of lists 1 to 4 (keyed by stage key and save time); a story or arena load destroys every entry after it, or the whole list when the mark is missing, destroyed or decayed (then everything left is newer than the save). No file format change, so older scene files get it too. Load line adds the count.
+- Small ruling (flagged in the mod README): bullet holes, casings and debris go with the blood, as the menu's clear button groups them; blood from before the save is not painted back after a restart.
+- Tests: clean build (0 warnings), deployed. Not played.
+
 ## 2026-10-22 · session 11: 0.7.3 still unplayed; code reading of the never-exercised paths
 
 - The owner closed the game session 10 had left running. Its Player.log (backed up as `Player-20261022-fight3.log` in the owner's backup folder) shows `Director 0.7.3 loaded` and the main menu only: no level, no scene file newer than "fight 2". 0.7.3 is still unplayed (Owed 12).
