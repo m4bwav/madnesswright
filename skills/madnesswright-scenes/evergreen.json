@@ -42,8 +42,8 @@
   },
   "consolidate_every": 25,
   "tests": {
-    "last_run": "2026-10-22T11:07",
-    "harness": "evergreen-tester",
+    "last_run": "2026-10-23T09:30",
+    "harness": "claude -p",
     "env": "windows",
     "cases": 1,
     "passed": 1,

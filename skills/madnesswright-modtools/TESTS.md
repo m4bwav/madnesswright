@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261023-2 · 2026-10-23 · headless `claude -p` (Sonnet) per run, `--plugin-dir` on the branch worktree, `madnesswright@mark-local` disabled; each run in an empty folder · dev-machine · 3/3, baseline fail
+- outcome-3 (new) · pass ×3 · each SlugGun/PLAN.md has the matrix with a niche column filled from the vanilla shotguns' cards (marked to confirm in MCM), the reskin-or-new-numbers decision argued, and a hit-feedback line in the playtest step.
+- outcome-3 baseline (no plugin) · fail · wrote no file; asked for the Project Nexus project folder instead.
+- led to: none
+
 ### T-20261022-10 · 2026-10-22 · evergreen-tester subagents (Sonnet), skill read from the branch · dev-machine · 3/3, baseline fail
 - outcome-2 (new) · pass ×3 · each export_char.py passed a stdlib checker (the FBX call, `add_leaf_bones=False`, `bake_anim_use_all_actions=True`, scale applied alone or unit scale, the Rigify bone count handled): s1 built a DEF-only skeleton and baked onto it, s2 and s3 used deform-only export and warned. The checker first failed s2 for passing the setting through a variable (`use_armature_deform_only=DEFORM_ONLY`); a correct reply, so the regex was widened and re-tested on all four files and a wrong one.
 - outcome-2 baseline (no skill) · fail · leaf bones off and one take per action, but `FBX_SCALE_ALL` with no scale step, and a comment saying deform-only drops Rigify's control bones (278 still export).

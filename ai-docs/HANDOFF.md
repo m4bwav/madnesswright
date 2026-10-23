@@ -2,15 +2,14 @@
 
 State on 2026-10-22, session 11c: Director 0.7.4 played and passed (scenes reset characters, weapons, bodies and blood in story levels) and published to Workshop item 3822329165 (public, 35 subscribers). Open: the 2 s drift check flags most characters after a load (Combat ones run off; the owner saw no problem). Plugin v0.1.8 tagged and released on the owner's go-ahead (https://github.com/m4bwav/madnesswright/releases/tag/v0.1.8; wiki still names 0.1.7). Session 11 read the never-exercised paths in the decompile (INSERT works between arena waves, so scenes can be saved there too; guard lacks the spawner's `noRagdollInCombat`; details in [log.md](log.md)). Session 10: Director 0.7.3 (bodies, props and drift on scene load) deployed, not played. Session 9: Director 0.7.0 (scene loads reset weapons and items) built and deployed, not yet played or on the Workshop. Before that, session 8: Playground Director 0.6.0 (Director menu on INSERT, clear corpses) merged, released as plugin v0.1.7 on the owner's go-ahead and published to Workshop item 3822329165 before its playtest (the owner chose that); wiki at 0.1.7; eval fixes (Owed 3 to 5). Details: [log.md](log.md).
 
-## Books track 7 (2026-10-22)
+## Books tracks 7 and 9 (2026-10-22, 2026-10-23)
 
-- madobjects.md "From Blender" (FBX settings, Rigify caveat), eval outcome-2 3/3; Unity-side checks owed: clip names from the takes and which Blender axes land on blue Z forward, in Unity 2019.2.6f1.
+- Track 9: encounter-design.md roles, waves, finale, fairness; level-plan-template.md; madobjects.md attack matrix; evals scenes outcome-2 3/3 (after two tune rounds, scenes L-002), modtools outcome-3 3/3. Rulings M1-M6 in [decisions/2026-10-23-books-track9.md](decisions/2026-10-23-books-track9.md). Icon now 512 px; tracked repository 1,055 KB.
+- Track 7: madobjects.md "From Blender" (FBX settings, Rigify caveat), eval outcome-2 3/3; Unity-side checks owed: clip names from the takes and which Blender axes land on blue Z forward, in Unity 2019.2.6f1.
 
 ## Session 10
 
 - Report on 0.7.2: dead enemies' bodies stayed after a load, a laborer's crate was never given back, one enemy ended up off its spot. Director 0.7.3 (modtools T-20261022-7, [log.md](log.md)): scene files version 4 remember the bodies lying at save time and the load clears newer ones; unregistered prop cards found among loaded cards; post-save walk orders dropped; per-character load lines plus a 2 s drift check in Player.log. Needs a play (Owed 12).
-- Session 9: scene loads reset weapons and items (0.7.0 to 0.7.2; [log.md](log.md)).
-
 - Session 8 menu design: each `Feature` adds `MenuEntry` lines in `Register()`; a keyed line presses its key for one frame (`Feature.Pressed`), character-aimed lines ask for a click first. Clear corpses uses the dev console's route (`HaveRunKillMe`, `Decay_Manager.DestroyMe_Character`) and keeps squad, scripted, boss and essential bodies. Only a load smoke test so far: the playtest checklist is in the owner's private prompt.
 - WorkshopUpload: the csproj now copies `steam_api64.dll` beside the exe, and the uploader needs absolute paths (relative ones end in `result FileNotFound` after 100%).
 
@@ -42,11 +41,10 @@ State on 2026-10-22, session 11c: Director 0.7.4 played and passed (scenes reset
 3. Done 2026-10-22: `Arena_PG` lives in `tests/fixtures/arena-project` (no reference scene). Skill pass, but the baseline still found both faults from the prefab Library (scenes T-20261022-1): the case separates on cost, not correctness.
 4. Done 2026-10-22: outcome-1 expects one PatchAll (the loader's). Skill and baseline both passed (modtools T-20261022-3); the baseline needed a second build (net472 first).
 5. Partly done 2026-10-22 (scenes T-20261022-2): `eval-export --out evals/<skill>` works (the default `skills/<x>/evals/cases` is refused as `--eval-dir`); triggers +1, decoys quiet; value cases cannot run on native Windows (no sandbox for Bash; outcome exported read-only). `worth --record`: UNPROVEN. Next: `worth --ab` or WSL2.
-6. Size budget is yellow (2026-10-22): `mpn.py` about 9,500 tokens (green up to 9,000; comments and docstrings are only 2.6K characters, so a trim means refactoring tested code), the hub description 1,000 characters (trim needs the 36-run trigger eval), installed skills folder 211 KB.
+6. Size budget is yellow (2026-10-22; tracked repository 1,055 KB since 2026-10-23): `mpn.py` about 9,500 tokens (green up to 9,000; comments and docstrings are only 2.6K characters, so a trim means refactoring tested code), the hub description 1,000 characters (trim needs the 36-run trigger eval), installed skills folder 211 KB.
 7. Headless SceneTools build route is untested (needs Unity 2019.2.6f1).
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
 10. Director 0.6.1 playtest (renamed from Playground Director 2026-10-22; on the Workshop): Director menu, clear corpses (story room, arena between waves, Playground), arena mid-wave scenes, Playground scenes (also from another map), story room-closed path, die-Retry-load, F9 guard (never logged yet). Already on the Workshop, so fix fast if it fails.
-11. Done 2026-10-22: Director menu and clear corpses (0.6.0, plugin v0.1.7).
 12. Director 0.7.3 playtest (also: kill enemies, load, no bodies left and every enemy on its spot with its weapon; read the per-character lines) (weapons reset on scene load): in the Playground and a story level, save a scene, drop or throw weapons, kill someone, empty a magazine, then load: everyone holds what they held with the same ammo, floor weapons are back where they lay and new ones are gone; Player.log's load line counts them. Then a Workshop update (owner's OK).
 
 Next step: the owner keeps session prompts in private notes (they name local paths). Without one: Owed 12 and 10 (read Player.log and the newest scene file after the next play), then Owed 5 via `evergreen.py worth --ab`.

@@ -2,6 +2,13 @@
 
 Append-only, newest first.
 
+## 2026-10-23 · books track 9: enemy roles, waves, level plan, attack matrix
+
+- From Rogers, *Level Up!* (Ai/books/plugin-learnings, track 9). encounter-design.md: roles, orchestration order, wave pacing, finale, fairness, playtest items 9 and 10; new level-plan-template.md linked from Step 4; madobjects.md attack matrix. Rulings M1-M6 in [decisions/2026-10-23-books-track9.md](decisions/2026-10-23-books-track9.md).
+- The enemy cards are inside compiled bundles, so roles are decided per card in play (M1).
+- Evals (headless `claude -p`, branch via `--plugin-dir`): scenes outcome-2 0/3, then 1/3, then 3/3 after a finale rule and limits in the column headers (scenes L-002); modtools outcome-3 3/3; both baselines fail.
+- Budget: icon 1024 to 512 px, tracked repository 1,500 to 1,055 KB.
+
 ## 2026-10-22 · books track 7: Blender FBX settings
 
 - From the Blender books (Ai/books/plugin-learnings, track 7). Probed on Blender 5.2.1: two actions on an armature exported with `bake_anim_use_all_actions=True` re-import as `Rig|Rig|walk` and `Rig|Rig|swing`; `add_leaf_bones=True` turns 2 bones into 3. polywright's recipe `rigify-export` (polywright PR, same track) shows 278 of 706 Rigify bones survive a deform-only export.
@@ -161,3 +168,4 @@ Append-only, newest first.
   - `rm -rf "$VAR/..."` is refused by a safety check; write `"${VAR:?}/..."`.
   - Heredocs holding a doubled backslash are refused by a hook; write generator scripts with the Write tool.
 - Tests: 18 unit tests pass; six value cases passed run 1 with the skill; baselines for the hub and scenes action cases also found the faults (fixtures too easy), the modtools baseline used BepInEx and no info.txt (the skill made the difference).
+## [2026-10-23] index | rebuilt (13 entries)

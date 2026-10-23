@@ -22,7 +22,7 @@ Write one line per room in `LEVEL-PLAN.md`: purpose (introduce, combine, test, r
 
 The sections below follow Rogers, *Level Up!* (3rd ed., Levels 10 to 13), adapted to side-on rooms.
 
-Give every enemy card the level uses one role in `LEVEL-PLAN.md` before choosing groups. The game does not label its enemies by role, so decide from what the card does: spawn it alone in a Playground arena and watch whether it closes in, keeps its distance, holds its spot or soaks hits up front. Write the role you saw, not one you assumed from the name.
+Give every enemy card the level uses one role in `LEVEL-PLAN.md` before choosing groups. The game does not label its enemies by role, so decide from what the card does. Spawn it alone in a Playground arena and watch: does it close in, keep its distance, hold its spot or soak hits up front? Write the role you saw, not one you assumed from the name.
 
 | Role | What it does | Pairs well with |
 |---|---|---|
@@ -35,7 +35,7 @@ Give every enemy card the level uses one role in `LEVEL-PLAN.md` before choosing
 | late unit | arrives near the end of a wave (GenerationScale pushes some types late) | whatever is left of the wave, as its last push |
 
 - Mix roles so the player has to choose what to kill first. Two of the same role is just more of the same.
-- Even a big group should have only one or two enemies actually attacking at once. Cap that with squad size and Max, not with the total count.
+- Even a big group should have only one or two enemies attacking at once. Cap that with squad size and Max, not with the total count.
 - A fast enemy must not attack without pause, and a sudden lunge needs a wind-up first. A heavy that is also fast feels unfair.
 - Enemies are there to be fought. A design the player can only run from (a threat chasing in from off-camera) teaches them to stop playing.
 
@@ -61,7 +61,7 @@ For Squad Spawner waves, Arena Siege rounds and Zone_Spawner fights:
 - Enemies enter through doors off camera, or from a spawner the player cannot stand on. Never spawn one inside melee range or in view next to the player.
 - A new role's first wave is that role alone, readable, in a room the player can see across.
 - Waves get harder by what is in them and where it stands (roles, doors, Sniperpoints), not only by how many.
-- The last wave is the peak, built only from roles the player has already met. When the brief has more new roles than waves can introduce one at a time, say so and offer another wave or moving a role to the next stage, rather than debuting two in the finale.
+- The last wave is the peak, built only from roles the player has already met. A brief may hold more new roles than waves can introduce one at a time. Then say so, and offer another wave or moving a role to the next stage. Never debut two in the finale.
 - Follow the last wave with a release: a quiet room, a locker or a weapon cache.
 - Keep an arena round to roughly 3 to 5 minutes (a heuristic; check against playtest times). Long rounds get harder from fatigue alone.
 - Write the economy per wave: what Weapon Stockpiles, lockers and Item_Spawns hand out, checked against the wave count.
@@ -95,7 +95,7 @@ Fill this in for the specific level and hand it to the player. Ask them to play 
 6. Per room: time taken, deaths, weapons used. Is there one dominant strategy that trivialises the level?
 7. What was confusing? What was the hardest moment, and was it fair?
 8. Anything visible that should not be (other rooms, backgrounds, missing walls, see-through outlines)?
-9. Before handing it over, play it badly yourself: walk the level backwards through every door, run past enemies to see whether they follow, hug walls and corners, jump at the camera borders, and set each knob to its extremes (Squad Max, GenerationScale) before settling on a value.
+9. Before handing it over, play it badly yourself. Walk the level backwards through every door, run past enemies to see whether they follow, hug walls and corners, and jump at the camera borders. Set each knob to its extremes (Squad Max, GenerationScale) before settling on a value.
 10. For a player new to the level: set the questions before the session (can they find the exit, clear each fight, tell what to do next?), record the screen and their voice if they agree, and watch without helping. Act on a problem two players hit; treat one player's suggestion as a note.
 
 After the session: run `mpn.py log`, compare results with `LEVEL-PLAN.md`, change one thing at a time.
