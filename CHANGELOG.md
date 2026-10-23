@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## Unreleased
+
+- madnesswright-modtools: `references/madobjects.md` "From Blender": FBX settings for weapons and Character_Ref rigs (scale, leaf bones, one take per action, an axis test, why a Rigify rig needs a deform-only skeleton), checked in Blender 5.2.1.
+
 ## 0.1.8 · 2026-10-22
 
 - `examples/SwapUnaware` 0.7.4: loading a scene in a story level or arena clears the blood, bullet holes, casings and debris made since the save (all of them after a restart of the stage or game); the Playground load already cleared them. Played in The Industrial Sector and published to the Workshop.

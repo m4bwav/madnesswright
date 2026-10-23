@@ -2,6 +2,10 @@
 
 State on 2026-10-22, session 11c: Director 0.7.4 played and passed (scenes reset characters, weapons, bodies and blood in story levels) and published to Workshop item 3822329165 (public, 35 subscribers). Open: the 2 s drift check flags most characters after a load (Combat ones run off; the owner saw no problem). Plugin v0.1.8 tagged and released on the owner's go-ahead (https://github.com/m4bwav/madnesswright/releases/tag/v0.1.8; wiki still names 0.1.7). Session 11 read the never-exercised paths in the decompile (INSERT works between arena waves, so scenes can be saved there too; guard lacks the spawner's `noRagdollInCombat`; details in [log.md](log.md)). Session 10: Director 0.7.3 (bodies, props and drift on scene load) deployed, not played. Session 9: Director 0.7.0 (scene loads reset weapons and items) built and deployed, not yet played or on the Workshop. Before that, session 8: Playground Director 0.6.0 (Director menu on INSERT, clear corpses) merged, released as plugin v0.1.7 on the owner's go-ahead and published to Workshop item 3822329165 before its playtest (the owner chose that); wiki at 0.1.7; eval fixes (Owed 3 to 5). Details: [log.md](log.md).
 
+## Books track 7 (2026-10-22)
+
+- madobjects.md "From Blender" (FBX settings, Rigify caveat), eval outcome-2 3/3; Unity-side checks owed: clip names from the takes and which Blender axes land on blue Z forward, in Unity 2019.2.6f1.
+
 ## Session 10
 
 - Report on 0.7.2: dead enemies' bodies stayed after a load, a laborer's crate was never given back, one enemy ended up off its spot. Director 0.7.3 (modtools T-20261022-7, [log.md](log.md)): scene files version 4 remember the bodies lying at save time and the load clears newer ones; unregistered prop cards found among loaded cards; post-save walk orders dropped; per-character load lines plus a 2 s drift check in Player.log. Needs a play (Owed 12).

@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-10 · 2026-10-22 · evergreen-tester subagents (Sonnet), skill read from the branch · dev-machine · 3/3, baseline fail
+- outcome-2 (new) · pass ×3 · each export_char.py passed a stdlib checker (the FBX call, `add_leaf_bones=False`, `bake_anim_use_all_actions=True`, scale applied alone or unit scale, the Rigify bone count handled): s1 built a DEF-only skeleton and baked onto it, s2 and s3 used deform-only export and warned. The checker first failed s2 for passing the setting through a variable (`use_armature_deform_only=DEFORM_ONLY`); a correct reply, so the regex was widened and re-tested on all four files and a wrong one.
+- outcome-2 baseline (no skill) · fail · leaf bones off and one take per action, but `FBX_SCALE_ALL` with no scale step, and a comment saying deform-only drops Rigify's control bones (278 still export).
+- led to: C-20261022-2
+
 ### T-20261022-9 · 2026-10-22 · live use by the owner · owner's PC, beta 2.20.a · 1/1 (blood on load)
 - live-f11-blood · pass · Director 0.7.4 in The Industrial Sector, "Story_IndustrialSector_SOUTH": saved "outside" (15 characters), four loads: `56`, `66`, `89`, `275 newer blood splats, bullet holes, casings and debris cleared`, bodies 3/3/4/7 cleared, floor 8 of 8 back, 3 of 3 of your weapons reset, no exception. The owner: "Looks good".
 - Drift check: 9 to 14 of 15 off their spot 2 s after each load (Combat ones up to 15 m); not seen as a problem by the owner.

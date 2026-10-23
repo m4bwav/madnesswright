@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261022-2 · 2026-10-22 · Blender FBX settings for MadObjects and Character_Ref
+- because: books track 7 (Pearson, *Learn Blender Simulations the Right Way*, on applying scale; *Blender 3D By Example* on Rigify), checked on Blender 5.2.1; T-20261022-10
+- files: references/madobjects.md (new section "From Blender"); SKILL.md (Step 2, item 3); evals/evals.json (outcome-2)
+- Apply scale only before export; FBX with unit scale, no leaf bones (on, each chain gains an end bone), one take per action (re-imported as two actions); an axis test before fixing a weapon; a Rigify rig exports 278 of its 706 bones even deform-only, so a Character_Ref needs a deform-only skeleton. The Unity 2019.2 side (clip names, axes) is untested.
+
 ### C-20261022-1 · 2026-10-22 · Game recipe for clearing corpses
 - because: user request (Playground Director 0.6.0: clear corpses and a Director menu)
 - files: references/game-recipes.md ("Characters")

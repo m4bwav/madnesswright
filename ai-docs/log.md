@@ -2,6 +2,12 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · books track 7: Blender FBX settings
+
+- From the Blender books (Ai/books/plugin-learnings, track 7). Probed on Blender 5.2.1: two actions on an armature exported with `bake_anim_use_all_actions=True` re-import as `Rig|Rig|walk` and `Rig|Rig|swing`; `add_leaf_bones=True` turns 2 bones into 3. polywright's recipe `rigify-export` (polywright PR, same track) shows 278 of 706 Rigify bones survive a deform-only export.
+- madobjects.md gained "From Blender"; SKILL.md Step 2 item 3 points at it. New eval outcome-2: skill 3/3, baseline fail (T-20261022-10). Unity 2019.2 is not installed here, so clip names and the axis mapping stay untested.
+- Budget: tracked repository 1,496 KB of the 1,536 KB yellow line before this entry; the next additions need a trim.
+
 ## 2026-10-22 · session 11d: plugin v0.1.8
 
 - The owner said yes to the tag: PR #27 (plugin.json 0.1.8, Unreleased changelog plus a 0.7.4 line became 0.1.8), tag v0.1.8, release workflow green, `madnesswright-0.1.8.zip` (108,641 bytes). Local install updated 0.1.7 to 0.1.8. The wiki still names 0.1.7 (update with wikiwright when convenient).
