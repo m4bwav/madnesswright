@@ -281,7 +281,8 @@ namespace SwapUnaware
             driftAt = Time.realtimeSinceStartup + DriftCheck;
             Game.Say("loaded scene \"" + name + "\" on " + where + ": " + r.moved + " moved back, " + r.respawned + " respawned, "
                 + r.removed + " removed, " + r.skipped + " skipped (of " + data.chars.Count + " saved), "
-                + r.corpses + (data.version >= 4 ? " newer bodies cleared" : " old bodies of the respawned cleared") + Items(data, r.floor)
+                + r.corpses + (data.version >= 4 ? " newer bodies cleared" : " old bodies of the respawned cleared")
+                + (r.mess >= 0 ? ", " + r.mess + " newer blood splats, bullet holes, casings and debris cleared" : ", blood not reset") + Items(data, r.floor)
                 + (data.HasItems ? ", " + r.yourAmmo + " of your " + data.playerItems.Count + " weapons reset" : ""));
         }
 

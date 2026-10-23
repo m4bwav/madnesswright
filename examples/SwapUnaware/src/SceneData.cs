@@ -332,6 +332,7 @@ namespace SwapUnaware
             }
             d.dead = string.Join("|", bodies.ToArray());
             d.floor = CaptureFloor();
+            SceneMess.Mark(d);
             return d;
         }
 
@@ -361,7 +362,7 @@ namespace SwapUnaware
 
         internal class Result
         {
-            public int moved, respawned, removed, skipped, yourAmmo, corpses;
+            public int moved, respawned, removed, skipped, yourAmmo, corpses, mess;
             public FloorResult floor = new FloorResult();
             // Everyone put back or respawned, for the check a moment later of who has walked off.
             public List<KeyValuePair<Combatant_Base, CharRecord>> placed = new List<KeyValuePair<Combatant_Base, CharRecord>>();
@@ -414,6 +415,7 @@ namespace SwapUnaware
                 catch (Exception e) { Game.Error("scene: restore " + r.card, e); res.skipped++; }
             }
             res.corpses = ClearNewBodies(respawned);
+            res.mess = SceneMess.ClearNewer(this);
 
             // Left over: characters the scene does not hold. The level's scripted ones (serial
             // numbers) and the player's squad stay; the rest go the way F1 removes them.

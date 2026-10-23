@@ -8,6 +8,12 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-8 · 2026-10-22 · live use by the owner · owner's PC, beta 2.20.a · 1/1 for 0.7.3's fixes, blood not reset
+- live-f11-bodies-2 · pass · Director 0.7.3 in The Boom Factory, "Room1 - linear": saved "ambush" (four `Merc0_Grunt_laborer`, Deimos), killed the four, loaded: `1 moved back, 4 respawned`, `4 newer bodies cleared`, floor `12 cleared, 9 of 9 put back`, `3 of your 3 weapons reset`, no exception. The owner: "looked better this time". Drift check: two characters 2.2 and 2.8 m off, both in Combat (fighting).
+- Not reset: blood. Story and arena loads never touched `Decay_Manager.decayList` (debris, casings, holes, splats); the Playground load clears them through `InteractiveMode.ClearAll_DoIt`.
+- Fix in 0.7.4: a save remembers the newest piece of each list while the level stays loaded; a story or arena load removes everything after it, or all of it when the mark is gone. Built clean, deployed; not yet played.
+- led to: none
+
 ### T-20261022-7 · 2026-10-22 · live use by the owner · owner's PC, beta 2.20.a · 0/1 (enemies, weapons and corpses on load)
 - live-f11-bodies · fail · Director 0.7.2 in The Boom Factory, "Room2 - flame trap demo": saved "fight 2" (two `Merc0_Grunt_laborer`, Deimos), loaded twice (`3 moved back`, then `1 moved back, 2 respawned`). The owner saw an enemy missing its weapon and one in the wrong place, and the dead grunts' bodies stayed beside their respawned copies. Log: `scene: no item card N_Crate` on both loads.
 - Causes: `RestoreLevel` respawns the dead but never removed their old bodies; `N_Crate` (the laborer's crate) is a card outside `Stats/Weapon/<category>/`, which `StatCard_Base.RegisterAllUnmoddedCardCatalogs` never registers, so `ReturnCardByName` finds nothing after `Strip` despawned the original; `TeleportTo` completes only one combat order, so a move order given after the save takes the enemy off its spot (likely; the log could not show it).
