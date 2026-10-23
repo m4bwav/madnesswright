@@ -61,7 +61,8 @@ For Squad Spawner waves, Arena Siege rounds and Zone_Spawner fights:
 - Enemies enter through doors off camera, or from a spawner the player cannot stand on. Never spawn one inside melee range or in view next to the player.
 - A new role's first wave is that role alone, readable, in a room the player can see across.
 - Waves get harder by what is in them and where it stands (roles, doors, Sniperpoints), not only by how many.
-- The last wave is the peak. Follow it with a release: a quiet room, a locker or a weapon cache.
+- The last wave is the peak, built only from roles the player has already met. When the brief has more new roles than waves can introduce one at a time, say so and offer another wave or moving a role to the next stage, rather than debuting two in the finale.
+- Follow the last wave with a release: a quiet room, a locker or a weapon cache.
 - Keep an arena round to roughly 3 to 5 minutes (a heuristic; check against playtest times). Long rounds get harder from fatigue alone.
 - Write the economy per wave: what Weapon Stockpiles, lockers and Item_Spawns hand out, checked against the wave count.
 
