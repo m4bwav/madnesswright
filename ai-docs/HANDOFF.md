@@ -5,14 +5,9 @@ State on 2026-10-22, session 10: Director 0.7.3 (bodies, props and drift on scen
 ## Session 10
 
 - Report on 0.7.2: dead enemies' bodies stayed after a load, a laborer's crate was never given back, one enemy ended up off its spot. Director 0.7.3 (modtools T-20261022-7, [log.md](log.md)): scene files version 4 remember the bodies lying at save time and the load clears newer ones; unregistered prop cards found among loaded cards; post-save walk orders dropped; per-character load lines plus a 2 s drift check in Player.log. Needs a play (Owed 12).
+- Session 9 request: scene loads reset weapons and items too, not only characters. Director 0.7.0 on branch `director-reset-weapons` (details in [log.md](log.md)): scene files version 3 save loadouts with ammo, loose weapons and the Playground player's weapons. First play: floor weapons reset, gun ammo did not; 0.7.1 resets your ammo (and career-weapon holders') in every mode; its play lost a thrown shotgun on load, and 0.7.2 picks it back up. Loads cleanly; needs a play (Owed 12) before a Workshop update.
 
-## Session 9
-
-- Request: scene loads reset weapons and items too, not only characters. Director 0.7.0 on branch `director-reset-weapons` (details in [log.md](log.md)): scene files version 3 save loadouts with ammo, loose weapons and the Playground player's weapons. First play: floor weapons reset, gun ammo did not; 0.7.1 resets your ammo (and career-weapon holders') in every mode; its play lost a thrown shotgun on load, and 0.7.2 picks it back up. Loads cleanly; needs a play (Owed 12) before a Workshop update.
-
-## Session 8
-
-- Menu design: each `Feature` adds `MenuEntry` lines in `Register()`; a keyed line presses its key for one frame (`Feature.Pressed`), character-aimed lines ask for a click first. Clear corpses uses the dev console's route (`HaveRunKillMe`, `Decay_Manager.DestroyMe_Character`) and keeps squad, scripted, boss and essential bodies. Only a load smoke test so far: the playtest checklist is in the owner's private prompt.
+- Session 8 menu design: each `Feature` adds `MenuEntry` lines in `Register()`; a keyed line presses its key for one frame (`Feature.Pressed`), character-aimed lines ask for a click first. Clear corpses uses the dev console's route (`HaveRunKillMe`, `Decay_Manager.DestroyMe_Character`) and keeps squad, scripted, boss and essential bodies. Only a load smoke test so far: the playtest checklist is in the owner's private prompt.
 - WorkshopUpload: the csproj now copies `steam_api64.dll` beside the exe, and the uploader needs absolute paths (relative ones end in `result FileNotFound` after 100%).
 
 ## Earlier sessions
