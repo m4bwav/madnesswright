@@ -42,7 +42,7 @@ Follow [references/scenetools-rules.md](references/scenetools-rules.md) (objects
 
 ## Step 4: fill it
 
-Doors (PX_Door, linked between rooms), cover (PX_Cover), lockers, interactives, enemies (Char_Start for placed characters, Squad Spawner for waves through doors), Item_Spawn, Spawnpoints (floating, for the Playground item spawner), zones, blockers, removers by difficulty. Plan encounters with [references/encounter-design.md](references/encounter-design.md) before placing enemies: write the encounter plan (per room: enemy types, count, entry doors, cover, the beat it plays) into the mod folder as `LEVEL-PLAN.md`, so the playtest has something to check against.
+Doors (PX_Door, linked between rooms), cover (PX_Cover), lockers, interactives, enemies (Char_Start for placed characters, Squad Spawner for waves through doors), Item_Spawn, Spawnpoints (floating, for the Playground item spawner), zones, blockers, removers by difficulty. Plan encounters with [references/encounter-design.md](references/encounter-design.md) before placing enemies: write the encounter plan (per room: enemy types, count, entry doors, cover, the beat it plays) into the mod folder as `LEVEL-PLAN.md` from [references/level-plan-template.md](references/level-plan-template.md) (a role for each enemy card, the most attacking at once, waves, and a beat chart for a campaign), so the playtest has something to check against.
 
 ## Step 5: lint, build, deploy
 

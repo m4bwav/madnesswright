@@ -6,6 +6,18 @@ Source: official Modding Overview Google Doc, Parts 2, 5 and 7, and the MPN_ModT
 
 Characters, melee weapons, ranged weapons, ranged weapon addons, armor, body parts (`MadObj_BodyPart`) and full characters (`Character_Ref`, 2026-04). Particle systems, fonts, textures, icons and animations need no MadObject wrapper.
 
+## Before a new weapon: its niche
+
+After Rogers, *Level Up!* (3rd ed., Level 10). Before modelling a weapon, add it as a row to an attack matrix of the weapons it will sit beside, filled from their cards (the Root card for each; MCM names the fields):
+
+| Weapon | Melee or ranged | Range | Speed or fire rate | Damage | Special (knockback, pierce, stun) | Cost (reload, weight, slow swing) | Niche no other row fills |
+|---|---|---|---|---|---|---|---|
+
+- If the niche column is empty, the weapon is a reskin: give it a borrowed object (`"ObjRef": "*M_..."`) or a new model on an existing Root instead of new numbers.
+- Where two rows overlap, the stronger one pays for it (slower, a reload, fewer rounds).
+- A slow wind-up is fine only on a heavy hit, where the delay is the price of the damage.
+- Hit feedback before calling it done: an impact sound, a hit reaction on the target, an effect on contact, and damage the player can read from the reaction. Big hits can add a short pause or shake. A ranged weapon that feels weak in play is turned up, not down.
+
 ## Orientation
 
 - Melee: blue Z forward, green Y toward the tip.
