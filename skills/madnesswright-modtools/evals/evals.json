@@ -70,6 +70,25 @@
       ],
       "baseline": "2026-10-22 (T-20261022-3), game installed, single-PatchAll expectation added: pass, the baseline decompiled Mod_Manager itself and did not call PatchAll; it first built at net472 and failed MSB3274 before switching to net48 (the skill built net48 first try). Separates weakly on correctness, clearly on cost",
       "runs": 3
+    },
+    {
+      "id": "outcome-2",
+      "kind": "outcome",
+      "prompt": "I rigged a character in Blender with Rigify and made walk and attack actions. Write export_char.py in this folder: the bpy code that exports the rig and mesh as an FBX for a Project Nexus Character_Ref in ModTools. Don't run it, I'll run it on my machine.",
+      "files": [],
+      "expectations": [
+        "export_char.py calls bpy.ops.export_scene.fbx with add_leaf_bones=False and bake_anim_use_all_actions=True (one take per action)",
+        "it applies scale only, or says to: transform_apply with location=False and rotation=False, or apply_scale_options FBX_SCALE_UNITS with a note to apply scale",
+        "it deals with the Rigify bone count: use_armature_deform_only=True plus a warning that Rigify still exports non-deform parents, or a deform-only skeleton, or the plain metarig"
+      ],
+      "evidence": {
+        "type": "file",
+        "path": "export_char.py",
+        "must_match": ["add_leaf_bones\\s*=\\s*False", "bake_anim_use_all_actions\\s*=\\s*True"],
+        "should_match": ["use_armature_deform_only\\s*=\\s*True|deform", "location\\s*=\\s*False|FBX_SCALE_UNITS"]
+      },
+      "baseline": "not yet run",
+      "runs": 3
     }
   ]
 }

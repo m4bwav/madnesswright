@@ -12,6 +12,22 @@ Characters, melee weapons, ranged weapons, ranged weapon addons, armor, body par
 - Ranged: blue Z roughly the firing direction, Y up.
 - Wrap the model in an empty parent with the `MadObj_` component; rotate the child to fix exported axes.
 
+## From Blender
+
+Checked on Blender 5.2.1, 2026-10-22, by exporting and re-importing in Blender; the Unity 2019.2 side is untested.
+
+- Apply scale on the mesh and the armature first, location and rotation left alone
+  (`transform_apply(location=False, rotation=False, scale=True)`): a scaled armature exports scaled bones.
+- FBX export: `apply_scale_options="FBX_SCALE_UNITS"`, `add_leaf_bones=False` (on, every chain gains an extra
+  end bone that is not in the Bone slots), `bake_anim=True` with `bake_anim_use_all_actions=True`: one take per
+  action (two actions came back as `Rig|Rig|walk` and `Rig|Rig|swing`). Check the clip names Unity shows.
+- Prove the axes once: export a 1 m box with a cone on its tip, import it, and see which way blue Z and green Y
+  point before fixing a real weapon by rotating its child. Which Blender axes land on "blue Z forward, green Y
+  toward the tip" under `axis_forward="-Z", axis_up="Y"` is untested.
+- A Character_Ref rig: a Rigify rig exports far more bones than it deforms with (278 of 706 even with
+  `use_armature_deform_only`). Build a deform-only skeleton, or start from the plain metarig, then fill the Bone
+  slots. A model that does not exist yet comes from a 3D modelling skill (polywright) as FBX.
+
 ## Points and colliders
 
 - Melee: two grip points (both hands) and the business-end extent. "Create Points" in the component's context menu makes the mandatory ones; optional points are added by hand. Hover a field for its tooltip.

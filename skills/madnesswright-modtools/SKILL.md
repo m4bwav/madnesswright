@@ -26,7 +26,8 @@ Setup first, as in madnesswright Step 2: `releasebeta` branch, `MPN backup`.
 
 1. Clone or download `https://github.com/MPN-Modders/MPN_ModTools` (no license file: do not redistribute its files). Install exactly Unity 2019.2.6f1 via Unity Hub (the user installs it) and open the project root.
 2. Drop source assets into `Assets` (suggested subfolders exist). Fonts, textures, animations and icons need no extra setup.
-3. Models come from Blender or similar; for a model that does not exist yet, hand over to a 3D modelling skill if one is installed (polywright) and come back with an FBX or OBJ.
+3. Models come from Blender or similar; for a model that does not exist yet, hand over to a 3D modelling skill if one is installed (polywright) and come back with an FBX or OBJ. Blender FBX
+   settings (scale, leaf bones, one take per action, axis test, Rigify) are in [references/madobjects.md](references/madobjects.md), "From Blender".
 
 ## Step 3: MadObjects
 
