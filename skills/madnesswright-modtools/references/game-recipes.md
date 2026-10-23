@@ -22,6 +22,8 @@ Members of MADNESS: Project Nexus that mods change characters with, found in a d
 - Never swap `myUpdateFunction` and the other update delegates: `KillMe` replaces them.
 - Remove without a corpse: `Combatant_Base.RemoveFromGame()` (Clear All uses it). Killing wave units advances arena waves.
 - Clear corpses: `HaveRunKillMe` true and not `AmDespawning`, then `Decay_Manager.DestroyMe_Character(c)` (the dev console and arenas do this; it calls `DeSpawn`). `Decay_Manager.ClearAll_Character()` only `Object.Destroy`s the decay queue. Keep `amEssential`, serial-numbered, boss and player-squad bodies. Blood and debris: `ClearAll_Splats`, `_Holes`, `_Casing`, `_Debris`.
+- Item cards by name: `StatCard_Base.ReturnCardByName<StatCard_Weapon>` finds only cards registered from `Stats/Weapon/<WeaponCategories>/` (plus mod cards). Level props such as the laborer's `N_Crate` live elsewhere; while the level is loaded, `Resources.FindObjectsOfTypeAll<StatCard_Item>()` finds them by name. `Catalog_Weapons.GenerateHeld(card)` takes either.
+- Orders: `TeleportTo` completes one combat order only. `Orders_Manager.ClearMoveOrders(c, OrderUrgency.Idle or .Combat, ignorePermaOrders: true)` drops the other move orders and keeps persistent or repeating ones (a squad's follow order).
 - Playable roster: no flag; combine `amPlayer`, `Char_Data.ReturnAmPlayerCharacter()`, `Game_Manager.currentCareer.chars_Core`, and the card's `DefaultFaction == Factions.Player`.
 - Teams: change through `Squad_Main.AddMember` or `ChangeFaction`, never by writing `myTeam`. Playground spawns are `Factions.None` squads, which attack everyone outside their squad.
 

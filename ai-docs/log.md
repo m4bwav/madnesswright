@@ -2,6 +2,14 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 10: bodies, crate and drift on scene load (Director 0.7.3)
+
+- Report (the owner, Director 0.7.2, The Boom Factory "fight 2"): the load "didn't properly reset all the enemies and their weapons", and corpses stayed. Asked one question: what looked wrong was a missing weapon and an enemy in the wrong place (not health, not alert). Log: `3 moved back`, then `1 moved back, 2 respawned`, and `scene: no item card N_Crate` both times (modtools T-20261022-7).
+- Same build 25615196; fresh decompile in the scratchpad. Causes: respawned characters left their old bodies; `N_Crate` is outside the folders `RegisterAllUnmoddedCardCatalogs` registers (`Stats/Weapon/<WeaponCategories>/`), so after `Strip` despawned the crate nothing could make a new one; `TeleportTo` completes only one combat order, so a move order given after the save can walk an enemy off its spot (the likely "wrong place"; the log could not prove it).
+- 0.7.3: scene files version 4 add `dead` (unique ids of bodies at save time, joined by `|`, a flat string so `JsonUtility` keeps it). `RestoreLevel` then clears, in open rooms, the old bodies of the respawned and any body not in `dead`, keeping what Clear corpses keeps. `Generate` falls back to `Resources.FindObjectsOfTypeAll<StatCard_Item>()` (cached per level). `Put` runs `Orders_Manager.ClearMoveOrders(c, Combat/Idle, true)` before teleporting (standing orders stay). New log lines: one per saved character (how matched, metres moved, weapons given or `(failed)`), and 2 s after the load each character more than 1.5 m off its spot. Load line adds the body count.
+- Small rulings (flagged in the mod README): bodies from before the save stay; a version 3 file clears only the respawned characters' old bodies; walk orders from after the save are dropped.
+- Tests: clean build (0 warnings), deployed, game launched by the session: `Director 0.7.3 loaded`, no exception. Left running for the owner's play. Not played; not on the Workshop.
+
 ## 2026-10-22 · session 9c: thrown weapon vanished on load (Director 0.7.2)
 
 - Report (the owner): in a story level, threw the shotgun, loaded, and the shotgun disappeared. Log: the load cleared 13 floor weapons and put back the 12 saved ones; the extra was the thrown shotgun (its file record shows it in the player's hand, so it was not on the floor list), and the ammo refill skipped the empty hand (modtools T-20261022-6).

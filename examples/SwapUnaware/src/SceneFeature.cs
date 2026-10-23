@@ -57,8 +57,33 @@ namespace SwapUnaware
             if (mode != Mode.Closed) Close();
         }
 
+        // Seconds after a story load to log who has walked off their saved spot.
+        const float DriftCheck = 2f;
+        const float DriftMetres = 1.5f;
+        List<KeyValuePair<Combatant_Base, SceneData.CharRecord>> drift;
+        float driftAt;
+
+        void CheckDrift()
+        {
+            var list = drift;
+            drift = null;
+            int off = 0;
+            foreach (var p in list)
+            {
+                var c = p.Key;
+                if (c == null || !Game.Alive(c)) { Game.Log("scene:   " + p.Value.card + " died or went within " + DriftCheck + " s of the load"); off++; continue; }
+                float d = Vector3.Distance(c.Position, p.Value.pos);
+                if (d < DriftMetres) continue;
+                off++;
+                Game.Log("scene:   " + p.Value.card + " is " + d.ToString("0.0") + " m from its saved spot " + DriftCheck + " s after the load"
+                    + " (alert " + c.myController.myAlertStatus + ", room " + (c.myRoom != null ? c.myRoom.name : "?") + ")");
+            }
+            Game.Log("scene: " + DriftCheck + " s after the load, " + off + " of " + list.Count + " characters are off their saved spot");
+        }
+
         protected override void Tick()
         {
+            if (drift != null && Time.realtimeSinceStartup >= driftAt && !Game_Manager.ReturnPaused()) CheckDrift();
             if (pending != null) RunPending();
             if (mode == Mode.Closed)
             {
@@ -250,9 +275,13 @@ namespace SwapUnaware
                     + Items(data, p.floor) + (p.yours ? ", your weapons reset" : ""));
                 return;
             }
+            Game.Log("scene: loading \"" + name + "\" on " + where + ", one line per saved character:");
             var r = data.RestoreLevel();
+            drift = r.placed;
+            driftAt = Time.realtimeSinceStartup + DriftCheck;
             Game.Say("loaded scene \"" + name + "\" on " + where + ": " + r.moved + " moved back, " + r.respawned + " respawned, "
-                + r.removed + " removed, " + r.skipped + " skipped (of " + data.chars.Count + " saved)" + Items(data, r.floor)
+                + r.removed + " removed, " + r.skipped + " skipped (of " + data.chars.Count + " saved), "
+                + r.corpses + (data.version >= 4 ? " newer bodies cleared" : " old bodies of the respawned cleared") + Items(data, r.floor)
                 + (data.HasItems ? ", " + r.yourAmmo + " of your " + data.playerItems.Count + " weapons reset" : ""));
         }
 

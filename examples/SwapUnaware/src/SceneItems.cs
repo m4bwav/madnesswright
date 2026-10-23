@@ -117,10 +117,24 @@ namespace SwapUnaware
         // a career weapon keeps the weapons themselves and only gets the saved ammo back.
         internal static bool ResetLoadout(Combatant_Base c, List<ItemRecord> items)
         {
+            string given;
+            return ResetLoadout(c, items, out given);
+        }
+
+        // given: the saved cards for the log, each failed one marked "(failed)".
+        internal static bool ResetLoadout(Combatant_Base c, List<ItemRecord> items, out string given)
+        {
+            given = "";
             if (c == null) return false;
-            if (HasCareerItems(c)) return RefillAmmo(c, items) > 0;
+            if (HasCareerItems(c))
+            {
+                given = "career weapons kept, ammo reset";
+                return RefillAmmo(c, items) > 0;
+            }
             Strip(c);
-            foreach (var it in items) Give(c, it);
+            var names = new List<string>();
+            foreach (var it in items) names.Add(it.card + (Give(c, it) ? "" : " (failed)"));
+            given = string.Join(", ", names.ToArray());
             return true;
         }
 
@@ -198,16 +212,38 @@ namespace SwapUnaware
         {
             StatCard_Item sc = StatCard_Base.ReturnCardByName<StatCard_Weapon>(card);
             if (sc == null) sc = StatCard_Base.ReturnCardByName<StatCard_Item>(card);
+            if (sc == null) sc = Loaded(card);
             if (sc == null) { Game.Log("scene: no item card " + card); return null; }
             return Catalog_Weapons.GenerateHeld(sc);
         }
 
-        static void Give(Combatant_Base c, ItemRecord it)
+        // The game registers only the weapon cards under Stats/Weapon/<category>/; a level's own props
+        // (the laborers' crate, N_Crate) live elsewhere and are not found by name, but their card is
+        // loaded while the level is. Cached per level.
+        static Dictionary<string, StatCard_Item> loaded;
+        static string loadedFor;
+
+        static StatCard_Item Loaded(string card)
+        {
+            var key = ScenePath();
+            if (loaded == null || loadedFor != key)
+            {
+                loaded = new Dictionary<string, StatCard_Item>();
+                loadedFor = key;
+            }
+            StatCard_Item sc;
+            if (loaded.TryGetValue(card, out sc) && sc != null) return sc;
+            sc = Resources.FindObjectsOfTypeAll<StatCard_Item>().FirstOrDefault(x => x != null && x.name == card);
+            if (sc != null) loaded[card] = sc;
+            return sc;
+        }
+
+        static bool Give(Combatant_Base c, ItemRecord it)
         {
             try
             {
                 var data = Generate(it.card);
-                if (data == null) return;
+                if (data == null) return false;
                 var ranged = data as Item_Data_RangedWeapon;
                 Item_Held held;
                 if (ranged != null && (it.thrown || (data.AmType_Thrown() && ranged.amGrenadeSlot)))
@@ -215,8 +251,9 @@ namespace SwapUnaware
                 else
                     held = Char_DataAssigner.GiveItemToCharacter(data, c, it.slot, it.hand);
                 ApplyAmmo(held, it.hasAmmo, it.ammo, it.mags);
+                return held != null;
             }
-            catch (Exception e) { Game.Error("scene: give " + it.card, e); }
+            catch (Exception e) { Game.Error("scene: give " + it.card, e); return false; }
         }
 
         internal class FloorResult { public int removed, placed; }

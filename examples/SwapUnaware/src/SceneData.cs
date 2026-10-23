@@ -8,11 +8,12 @@ namespace SwapUnaware
 {
     // A saved scene. Version 1 (0.4.0) was Playground-only and keyed by the Unity scene name;
     // version 2 adds the stage key, each character's room and serial number, and your place;
-    // version 3 adds holsters, ammo, your loadout and loose weapons (SceneItems.cs).
+    // version 3 adds holsters, ammo, your loadout and loose weapons (SceneItems.cs);
+    // version 4 the bodies already lying in the level, so a load clears only newer ones.
     [Serializable]
     public partial class SceneData
     {
-        public const int CurrentVersion = 3;
+        public const int CurrentVersion = 4;
 
         public int version = CurrentVersion;
         public string stage;        // Unity scene name (version 1's only key)
@@ -26,6 +27,8 @@ namespace SwapUnaware
         public float playerFacing;
         public RoomRef playerRoom = new RoomRef();
         public List<CharRecord> chars = new List<CharRecord>();
+        // Version 4: Char_Data.myUniqueID of every body in the level at save time, joined by '|'.
+        public string dead;
 
         [Serializable]
         public class RoomRef { public string name; public string serial; public Vector3 pos; }
@@ -294,8 +297,10 @@ namespace SwapUnaware
             }
             var mySquad = me != null && me.myData != null ? me.myData.mySquad : null;
             var squads = new List<Squad_Main>();
+            var bodies = new List<string>();
             foreach (var c in UnityEngine.Object.FindObjectsOfType<Combatant_Base>())
             {
+                if (Game.Corpse(c) && !string.IsNullOrEmpty(c.myData.myUniqueID)) { bodies.Add(c.myData.myUniqueID); continue; }
                 if (!Game.Alive(c) || c == me || c.myData == null || c.myData.myCard == null || !(c.myController is Controller_NPC)) continue;
                 if (!pg && Untouchable(c)) continue;
                 var sq = c.myData.mySquad;
@@ -325,6 +330,7 @@ namespace SwapUnaware
                     foreach (var p in route.points) r.patrol.Add(new PointRecord { pos = p.pos, stop = p.stop });
                 d.chars.Add(r);
             }
+            d.dead = string.Join("|", bodies.ToArray());
             d.floor = CaptureFloor();
             return d;
         }
@@ -353,7 +359,13 @@ namespace SwapUnaware
 
         // ---- loading in a story level, arena or custom stage ----
 
-        internal class Result { public int moved, respawned, removed, skipped, yourAmmo; public FloorResult floor = new FloorResult(); }
+        internal class Result
+        {
+            public int moved, respawned, removed, skipped, yourAmmo, corpses;
+            public FloorResult floor = new FloorResult();
+            // Everyone put back or respawned, for the check a moment later of who has walked off.
+            public List<KeyValuePair<Combatant_Base, CharRecord>> placed = new List<KeyValuePair<Combatant_Base, CharRecord>>();
+        }
 
         // Called once you stand in your saved room (its own characters have spawned by then).
         // Matches the characters already there to the saved ones, puts them back, respawns the
@@ -370,6 +382,7 @@ namespace SwapUnaware
             var match = Match(live);
 
             var squads = new Dictionary<int, Squad_Main>();
+            var respawned = new HashSet<string>();
             foreach (var r in chars)
             {
                 try
@@ -379,19 +392,28 @@ namespace SwapUnaware
                     if (match.TryGetValue(r, out c))
                     {
                         live.Remove(c);
-                        Put(c, r, Usable(room) ? room : null, HasItems);
+                        var from = c.Position;
+                        var items = Put(c, r, Usable(room) ? room : null, HasItems);
                         res.moved++;
+                        res.placed.Add(new KeyValuePair<Combatant_Base, CharRecord>(c, r));
+                        Line(r, "put back (" + How(r, c) + "), moved " + Vector3.Distance(from, c.Position).ToString("0.0") + " m"
+                            + (Usable(room) ? "" : " (room closed: left where it was)"), items);
                         continue;
                     }
-                    if (r.essential || !Usable(room)) { res.skipped++; continue; }
-                    c = Spawn(r, room, squads, null, HasItems);
-                    if (c == null) { res.skipped++; continue; }
+                    if (r.essential || !Usable(room)) { res.skipped++; Line(r, r.essential ? "skipped: essential, not respawned" : "skipped: room closed", null); continue; }
+                    string given;
+                    c = Spawn(r, room, squads, null, HasItems, out given);
+                    if (c == null) { res.skipped++; Line(r, "skipped: respawn failed", null); continue; }
                     if (!string.IsNullOrEmpty(r.serial)) c.SetSerialNumber(r.serial);
                     if (r.wave) JoinWave(c);
+                    if (!string.IsNullOrEmpty(r.id)) respawned.Add(r.id);
                     res.respawned++;
+                    res.placed.Add(new KeyValuePair<Combatant_Base, CharRecord>(c, r));
+                    Line(r, "respawned", given);
                 }
                 catch (Exception e) { Game.Error("scene: restore " + r.card, e); res.skipped++; }
             }
+            res.corpses = ClearNewBodies(respawned);
 
             // Left over: characters the scene does not hold. The level's scripted ones (serial
             // numbers) and the player's squad stay; the rest go the way F1 removes them.
@@ -413,6 +435,46 @@ namespace SwapUnaware
             // Last, so weapons dropped by the bodies removed above go too.
             if (HasItems) res.floor = RestoreFloor();
             return res;
+        }
+
+        // One Player.log line per saved character, so a playtest can tell which one went wrong.
+        static void Line(CharRecord r, string what, string items)
+        {
+            Game.Log("scene:   " + r.card + (string.IsNullOrEmpty(r.serial) ? "" : " [" + r.serial + "]") + " " + what
+                + (items == null ? "" : "; weapons: " + (items.Length > 0 ? items : "none")));
+        }
+
+        static string How(CharRecord r, Combatant_Base c)
+        {
+            if (!string.IsNullOrEmpty(r.id) && c.myData.myUniqueID == r.id) return "same character";
+            if (!string.IsNullOrEmpty(r.serial) && c.SerialNumber == r.serial) return "by serial";
+            return "nearest " + r.card;
+        }
+
+        // The bodies of characters who died after the save: those respawned above (their old
+        // bodies), and in a version 4 file every other body that was not lying there at save time.
+        // Kept as Clear corpses keeps them (Director.cs): squad, playable, boss, cutscene, scripted,
+        // essential, and bodies still running their death. Rooms the game has closed are skipped.
+        int ClearNewBodies(HashSet<string> respawned)
+        {
+            var old = version >= 4 ? new HashSet<string>((dead ?? "").Split('|')) : null;
+            var me = Game.Me();
+            int n = 0;
+            foreach (var c in UnityEngine.Object.FindObjectsOfType<Combatant_Base>())
+            {
+                if (!Game.Corpse(c) || c == me || !Usable(c.myRoom)) continue;
+                var id = c.myData.myUniqueID ?? "";
+                bool mine = respawned.Contains(id);
+                if (!mine && (old == null || old.Contains(id) || c.HasSerialNumber())) continue;
+                if (Essential(c) || Untouchable(c) || !Decay_Manager.ReturnCanCondemnCharacter(c) || !c.ReturnAppearDeadAndInert()) continue;
+                try
+                {
+                    Decay_Manager.DestroyMe_Character(c);
+                    n++;
+                }
+                catch (Exception e) { Game.Error("scene: clear body " + c.name, e); }
+            }
+            return n;
         }
 
         // Same character first (the level is still loaded), then serial number, then the nearest
@@ -449,16 +511,27 @@ namespace SwapUnaware
 
         // Puts a character that is already in the level back the way it was saved, weapons and ammo
         // too (items: a version 3 file). room null: its saved room is closed now, so it stays where it is.
-        static void Put(Combatant_Base c, CharRecord r, Room_Main room, bool items)
+        // Returns what it gave back, for the log (null without items).
+        static string Put(Combatant_Base c, CharRecord r, Room_Main room, bool items)
         {
             if (GuardFeature.IsGuard(c)) GuardFeature.Unguard(c);
             PatrolFeature.DropRoute(c);
             Game.ReleaseClaims(c.myController);
-            if (room != null) c.TeleportTo(r.pos, Facing(r.facing) * Vector3.forward, room);
+            if (room != null)
+            {
+                // TeleportTo ends one combat order only; a walk the level or the fight ordered after
+                // the save would take the character straight back off its spot. The level's
+                // standing orders (persistent or repeating) stay.
+                Orders_Manager.ClearMoveOrders(c, Orders_Manager.OrderUrgency.Combat, true);
+                Orders_Manager.ClearMoveOrders(c, Orders_Manager.OrderUrgency.Idle, true);
+                c.TeleportTo(r.pos, Facing(r.facing) * Vector3.forward, room);
+            }
             c.myTrauma = r.damage;
             Controller_Base.SetAlertStatus(c.myController, (AI_Wakeup.AlertStatus)r.alert);
-            if (items) ResetLoadout(c, r.items);
+            string given = null;
+            if (items) ResetLoadout(c, r.items, out given);
             Extras(c, r);
+            return given;
         }
 
         static void Extras(Combatant_Base c, CharRecord r)
@@ -473,6 +546,13 @@ namespace SwapUnaware
         // weapons the card hands out (older files only add theirs).
         static Combatant_Base Spawn(CharRecord r, Room_Main room, Dictionary<int, Squad_Main> squads, Squad_Main mine, bool items)
         {
+            string given;
+            return Spawn(r, room, squads, mine, items, out given);
+        }
+
+        static Combatant_Base Spawn(CharRecord r, Room_Main room, Dictionary<int, Squad_Main> squads, Squad_Main mine, bool items, out string given)
+        {
+            given = null;
             try
             {
                 var card = StatCard_Base.ReturnCardByName<StatCard_Character>(r.card);
@@ -483,7 +563,7 @@ namespace SwapUnaware
                 Squad_Main sq = r.squad == -1 ? mine : null;
                 if (sq == null && !squads.TryGetValue(r.squad, out sq)) { sq = Squad_Main.CreateSquad((Factions)r.team); squads[r.squad] = sq; }
                 sq.AddMember(c.myData);
-                if (items) ResetLoadout(c, r.items);
+                if (items) ResetLoadout(c, r.items, out given);
                 else foreach (var it in r.items) Give(c, it);
                 c.myTrauma = r.damage;
                 Controller_Base.SetAlertStatus(c.myController, (AI_Wakeup.AlertStatus)r.alert);
