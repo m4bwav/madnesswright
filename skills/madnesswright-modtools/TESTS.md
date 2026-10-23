@@ -8,6 +8,12 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-7 · 2026-10-22 · live use by the owner · owner's PC, beta 2.20.a · 0/1 (enemies, weapons and corpses on load)
+- live-f11-bodies · fail · Director 0.7.2 in The Boom Factory, "Room2 - flame trap demo": saved "fight 2" (two `Merc0_Grunt_laborer`, Deimos), loaded twice (`3 moved back`, then `1 moved back, 2 respawned`). The owner saw an enemy missing its weapon and one in the wrong place, and the dead grunts' bodies stayed beside their respawned copies. Log: `scene: no item card N_Crate` on both loads.
+- Causes: `RestoreLevel` respawns the dead but never removed their old bodies; `N_Crate` (the laborer's crate) is a card outside `Stats/Weapon/<category>/`, which `StatCard_Base.RegisterAllUnmoddedCardCatalogs` never registers, so `ReturnCardByName` finds nothing after `Strip` despawned the original; `TeleportTo` completes only one combat order, so a move order given after the save takes the enemy off its spot (likely; the log could not show it).
+- Fix in 0.7.3: scene files version 4 list the bodies lying at save time; a load clears the old bodies of the respawned and every newer body (Clear corpses' keep rules); unregistered item cards fall back to `Resources.FindObjectsOfTypeAll<StatCard_Item>()`; `Put` clears non-persistent Combat and Idle move orders before the teleport; one log line per character (how matched, metres moved, weapons given or failed) and a 2 s drift check. Built clean, loads in game; not yet played.
+- led to: none
+
 ### T-20261022-6 · 2026-10-22 · live use by the owner · owner's PC, beta 2.20.a · 0/1 (thrown weapon on load)
 - live-f11-thrown · fail · Director 0.7.1 in The Boom Factory: saved "test alpha" holding R_Shot_ChopPump5, threw it, loaded twice: the shotgun disappeared. Log: `13 cleared, 12 of 12 put back, ammo reset in 2 of your 3 weapons`: the thrown shotgun (not career-registered) was cleared as a loose floor weapon, and `RefillAmmo` only touched weapons still in their slot.
 - Fix in 0.7.2: `RefillAmmo` picks the same weapon back up (`ClearItemFromSlot` on a dead owner, `Combatant_Base.PickupItem(item, hand, slot)`), or gives a fresh one if none is left, and runs before `RestoreFloor`. Built clean and deployed while the game was running (takes effect on restart); not yet played.

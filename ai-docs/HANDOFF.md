@@ -1,6 +1,10 @@
 # Handoff
 
-State on 2026-10-22, session 9: Director 0.7.0 (scene loads reset weapons and items) built and deployed, not yet played or on the Workshop. Before that, session 8: Playground Director 0.6.0 (Director menu on INSERT, clear corpses) merged, released as plugin v0.1.7 on the owner's go-ahead and published to Workshop item 3822329165 before its playtest (the owner chose that); wiki at 0.1.7; eval fixes (Owed 3 to 5). Details: [log.md](log.md).
+State on 2026-10-22, session 10: Director 0.7.3 (bodies, props and drift on scene load) deployed, not played. Session 9: Director 0.7.0 (scene loads reset weapons and items) built and deployed, not yet played or on the Workshop. Before that, session 8: Playground Director 0.6.0 (Director menu on INSERT, clear corpses) merged, released as plugin v0.1.7 on the owner's go-ahead and published to Workshop item 3822329165 before its playtest (the owner chose that); wiki at 0.1.7; eval fixes (Owed 3 to 5). Details: [log.md](log.md).
+
+## Session 10
+
+- Report on 0.7.2: dead enemies' bodies stayed after a load, a laborer's crate was never given back, one enemy ended up off its spot. Director 0.7.3 (modtools T-20261022-7, [log.md](log.md)): scene files version 4 remember the bodies lying at save time and the load clears newer ones; unregistered prop cards found among loaded cards; post-save walk orders dropped; per-character load lines plus a 2 s drift check in Player.log. Needs a play (Owed 12).
 
 ## Session 9
 
@@ -44,6 +48,6 @@ State on 2026-10-22, session 9: Director 0.7.0 (scene loads reset weapons and it
 8. Evergreen refresh: skipped this session by ruling. The units are due 2026-11-16; the volatile releasebeta claim is due for recheck 2026-10-31.
 10. Director 0.6.1 playtest (renamed from Playground Director 2026-10-22; on the Workshop): Director menu, clear corpses (story room, arena between waves, Playground), arena mid-wave scenes, Playground scenes (also from another map), story room-closed path, die-Retry-load, F9 guard (never logged yet). Already on the Workshop, so fix fast if it fails.
 11. Done 2026-10-22: Director menu and clear corpses (0.6.0, plugin v0.1.7).
-12. Director 0.7.2 playtest (weapons reset on scene load): in the Playground and a story level, save a scene, drop or throw weapons, kill someone, empty a magazine, then load: everyone holds what they held with the same ammo, floor weapons are back where they lay and new ones are gone; Player.log's load line counts them. Then a Workshop update (owner's OK).
+12. Director 0.7.3 playtest (also: kill enemies, load, no bodies left and every enemy on its spot with its weapon; read the per-character lines) (weapons reset on scene load): in the Playground and a story level, save a scene, drop or throw weapons, kill someone, empty a magazine, then load: everyone holds what they held with the same ammo, floor weapons are back where they lay and new ones are gone; Player.log's load line counts them. Then a Workshop update (owner's OK).
 
 Next step: the owner keeps session prompts in private notes (they name local paths). Without one: Owed 12 and 10 (read Player.log and the newest scene file after the next play), then Owed 5 via `evergreen.py worth --ab`.
