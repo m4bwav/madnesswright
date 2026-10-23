@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261022-9 · 2026-10-22 · live use by the owner · owner's PC, beta 2.20.a · 1/1 (blood on load)
+- live-f11-blood · pass · Director 0.7.4 in The Industrial Sector, "Story_IndustrialSector_SOUTH": saved "outside" (15 characters), four loads: `56`, `66`, `89`, `275 newer blood splats, bullet holes, casings and debris cleared`, bodies 3/3/4/7 cleared, floor 8 of 8 back, 3 of 3 of your weapons reset, no exception. The owner: "Looks good".
+- Drift check: 9 to 14 of 15 off their spot 2 s after each load (Combat ones up to 15 m); not seen as a problem by the owner.
+- led to: Workshop update to 0.7.4
+
 ### T-20261022-8 · 2026-10-22 · live use by the owner · owner's PC, beta 2.20.a · 1/1 for 0.7.3's fixes, blood not reset
 - live-f11-bodies-2 · pass · Director 0.7.3 in The Boom Factory, "Room1 - linear": saved "ambush" (four `Merc0_Grunt_laborer`, Deimos), killed the four, loaded: `1 moved back, 4 respawned`, `4 newer bodies cleared`, floor `12 cleared, 9 of 9 put back`, `3 of your 3 weapons reset`, no exception. The owner: "looked better this time". Drift check: two characters 2.2 and 2.8 m off, both in Combat (fighting).
 - Not reset: blood. Story and arena loads never touched `Decay_Manager.decayList` (debris, casings, holes, splats); the Playground load clears them through `InteractiveMode.ClearAll_DoIt`.

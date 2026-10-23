@@ -2,6 +2,12 @@
 
 Append-only, newest first.
 
+## 2026-10-22 · session 11c: 0.7.4 played, on the Workshop
+
+- Play (the owner, The Industrial Sector, scene "outside", 15 characters): four loads, no exception; each cleared the newer mess (56, 66, 89, 275 pieces) and bodies (3, 3, 4, 7), put 8 of 8 floor weapons back and reset 3 of 3 of your weapons; the last load after F1 respawned 8. The owner: "Looks good" (modtools T-20261022-9).
+- Still open: the drift check found 9 to 14 of 15 characters off their spot 2 s after each load, Unaware ones 2.4 to 2.7 m, Combat ones up to 15 m (running in 2 s). The owner did not see a problem; look at it if a report names it.
+- Workshop item 3822329165 updated to 0.7.4 on the owner's word ("release the mod to steam"): description's F11 line now names ammo, thrown weapons and the clearing of bodies, blood, holes and casings. `result OK`, visibility 0, 35 subscribers, tags `scripts`.
+
 ## 2026-10-22 · session 11b: blood on scene load (Director 0.7.4)
 
 - First play of 0.7.3 (the owner, The Boom Factory, scene "ambush"): "looked better this time, but the blood wasn't reset". Log: 5 saved, 4 laborers respawned, Deimos put back (same character, moved 9.2 m), `4 newer bodies cleared`, floor 12 cleared and 9 of 9 put back, 3 of 3 of your weapons reset, no exception. 2 s later two characters 2.2 and 2.8 m off their spot, both in Combat (fighting, not drift). Scene file version 4 with `"dead":""` (no bodies at save time). Bodies, weapons and placement pass (modtools T-20261022-8).
