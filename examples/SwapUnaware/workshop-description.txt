@@ -20,3 +20,5 @@
 Works in the story mode, the arenas, custom stages and the Playground. In an arena, F1 counts as kills and moves the waves on. Arenas cannot be paused between waves, so save scenes mid-wave or before the first. Back up your saves before using it in a story career.
 
 This mod runs code (a Harmony DLL). Source, build steps and the bugs each playtest found: https://github.com/m4bwav/madnesswright/tree/main/examples/SwapUnaware
+
+Made with madnesswright, a free, open-source toolkit for modding MADNESS: Project Nexus: https://github.com/m4bwav/madnesswright
