@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261024-1 · 2026-10-24 · live use by the requester (report via the owner) · requester's play, Director 0.7.4 from the Workshop · 0/2 (scene load)
+- live-f11-animations · fail · characters in the middle of an animation at save were no longer doing it after a load. No log or scene file from that play on the owner's PC (newest Player.log 2026-10-22). Code: version 4 records stored no emote.
+- live-f11-teams · fail · teammates attacked each other after a load, not every time. Code: a respawned character got a new squad (`Squad_Main.CreateSquad`) even when saved squadmates survived; `Combat_Manager.FactionIsAttackable` makes different squads foes when the faction is None (Playground spawns).
+- led to: Director 0.7.5 (built clean, deployed, not played)
+
 ### T-20261023-2 · 2026-10-23 · headless `claude -p` (Sonnet) per run, `--plugin-dir` on the branch worktree, `madnesswright@mark-local` disabled; each run in an empty folder · dev-machine · 3/3, baseline fail
 - outcome-3 (new) · pass ×3 · each SlugGun/PLAN.md has the matrix with a niche column filled from the vanilla shotguns' cards (marked to confirm in MCM), the reskin-or-new-numbers decision argued, and a hit-feedback line in the playtest step.
 - outcome-3 baseline (no plugin) · fail · wrote no file; asked for the Project Nexus project folder instead.

@@ -25,7 +25,8 @@ Members of MADNESS: Project Nexus that mods change characters with, found in a d
 - Item cards by name: `StatCard_Base.ReturnCardByName<StatCard_Weapon>` finds only cards registered from `Stats/Weapon/<WeaponCategories>/` (plus mod cards). Level props such as the laborer's `N_Crate` live elsewhere; while the level is loaded, `Resources.FindObjectsOfTypeAll<StatCard_Item>()` finds them by name. `Catalog_Weapons.GenerateHeld(card)` takes either.
 - Orders: `TeleportTo` completes one combat order only. `Orders_Manager.ClearMoveOrders(c, OrderUrgency.Idle or .Combat, ignorePermaOrders: true)` drops the other move orders and keeps persistent or repeating ones (a squad's follow order).
 - Playable roster: no flag; combine `amPlayer`, `Char_Data.ReturnAmPlayerCharacter()`, `Game_Manager.currentCareer.chars_Core`, and the card's `DefaultFaction == Factions.Player`.
-- Teams: change through `Squad_Main.AddMember` or `ChangeFaction`, never by writing `myTeam`. Playground spawns are `Factions.None` squads, which attack everyone outside their squad.
+- Teams: change through `Squad_Main.AddMember` or `ChangeFaction`, never by writing `myTeam`. Playground spawns are `Factions.None` squads, which attack everyone outside their squad. Hostility is `Combat_Manager.FactionIsAttackable`: factions differ (or the attacker is None) and the squads differ, so a respawned squadmate must rejoin the live squad, not a new `CreateSquad` (Director 0.7.5). `AddMember` also takes a wave unit out of its wave unless the new squad has one.
+- Emotes: `PlayAsEmote(clip, fade, false)` starts one; `InLoopingEmote()` says if a loop plays. The clip is not stored: read it from `myAnimator_Character.myOverride[Catalog_Animations.DefaultAnimatorClips[slot]]`, slot `Emote_0` when the private `emoteState` is 1, else `Emote_1` (they alternate).
 
 ## AI state
 

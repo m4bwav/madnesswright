@@ -86,13 +86,48 @@ namespace SwapUnaware
         void Play(AnimationClip clip)
         {
             var c = target;
+            bool ok = Pose(c, clip, true);
+            Game.Say(ok ? c.name + " plays " + clip.name : c.name + " cannot play that now");
+        }
+
+        // fade false starts the loop at once, at a random point (a scene load).
+        internal static bool Pose(Combatant_Base c, AnimationClip clip, bool fade)
+        {
             if (!posing.ContainsKey(c)) posing[c] = c.wanderingDisabled;
             Game.ReleaseClaims(c.myController);
             Controller_Base.SetAlertStatus(c.myController, AI_Wakeup.AlertStatus.Unaware);
             c.wanderingDisabled = true;
             Pathfind_Main.ClearWaypointsAndTarget(c);
-            bool ok = c.PlayAsEmote(clip, true, false);
-            Game.Say(ok ? c.name + " plays " + clip.name : c.name + " cannot play that now");
+            return c.PlayAsEmote(clip, fade, false);
+        }
+
+        // The looping emote a character is playing (F4's or a level's typing, smoking...), or null.
+        // PlayAsEmote alternates two override slots and flips the private emoteState after each.
+        static readonly System.Reflection.FieldInfo EmoteSlot = typeof(Combatant_Base).GetField("emoteState",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+        internal static string CurrentEmote(Combatant_Base c)
+        {
+            if (c == null || !c.InLoopingEmote() || EmoteSlot == null) return null;
+            var aoc = c.myAnimator_Character != null ? c.myAnimator_Character.myOverride : null;
+            if (aoc == null || Catalog_Animations.DefaultAnimatorClips == null) return null;
+            var slot = (int)EmoteSlot.GetValue(c) == 1 ? Catalog_Animations.OverrideStates.Emote_0 : Catalog_Animations.OverrideStates.Emote_1;
+            AnimationClip key;
+            if (!Catalog_Animations.DefaultAnimatorClips.TryGetValue(slot, out key) || key == null) return null;
+            var clip = aoc[key];
+            return clip != null && clip != key ? clip.name : null;
+        }
+
+        // A clip by name: the character's own emotes, the game's library, then any clip loaded.
+        internal static AnimationClip FindClip(Combatant_Base c, string name)
+        {
+            if (string.IsNullOrEmpty(name)) return null;
+            var own = c.myAnimSet != null && c.myAnimSet.IdleEmotes != null ? c.myAnimSet.IdleEmotes.myClips : null;
+            var a = own != null ? own.FirstOrDefault(x => x != null && x.name == name) : null;
+            if (a != null) return a;
+            var lib = LibraryStorageList.Library != null && LibraryStorageList.Library.AnimClips != null ? LibraryStorageList.Library.AnimClips.Storage : null;
+            a = lib != null ? lib.OfType<AnimationClip>().FirstOrDefault(x => x != null && x.name == name) : null;
+            return a ?? Resources.FindObjectsOfTypeAll<AnimationClip>().FirstOrDefault(x => x.name == name);
         }
 
         static void EndPose(Combatant_Base c)
