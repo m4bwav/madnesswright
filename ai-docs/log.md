@@ -2,6 +2,12 @@
 
 Append-only, newest first.
 
+## 2026-10-24 · session 13: Director 0.7.5 played, teams and animations pass
+
+- The owner played 0.7.5 on their PC (Playground and The Boom Factory). Player.log: 0 hostile squadmate pairs on every load; the Playground's posed agent played `anim_cookstation_stir` again (1 of 1); scene files are version 5 with `emote`. Drift on the story load 0 of 5 (0.7.4: 9 to 14 of 15). modtools T-20261024-2.
+- Small bug seen: the 2 s after-load check still runs after the player leaves the level, and reports everyone gone. Not fixed yet.
+- Workshop still 0.7.4; the upload of 0.7.5 waits on the owner's OK.
+
 ## 2026-10-24 · session 12: teammates fighting and lost animations after a scene load (Director 0.7.5)
 
 - Report (the requester via the owner, Director 0.7.4 from the Workshop): after a load, characters that were mid-animation at save are no longer doing it, and teammates sometimes attack each other. No evidence on the owner's PC: newest Player.log and scene files are from 2026-10-22, so the play was elsewhere or its log was overwritten (modtools T-20261024-1).
