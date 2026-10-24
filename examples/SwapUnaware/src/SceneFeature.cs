@@ -66,9 +66,12 @@ namespace SwapUnaware
         const float ReposeAfter = 0.5f;
         List<KeyValuePair<Combatant_Base, SceneData.CharRecord>> repose;
         float reposeAt;
+        // The stage the load happened in; leaving it before the checks run cancels them.
+        int placedScene;
 
         void Placed(List<KeyValuePair<Combatant_Base, SceneData.CharRecord>> placed)
         {
+            placedScene = SceneManager.GetActiveScene().handle;
             drift = placed;
             driftAt = Time.realtimeSinceStartup + DriftCheck;
             repose = placed;
@@ -98,6 +101,12 @@ namespace SwapUnaware
 
         protected override void Tick()
         {
+            if ((drift != null || repose != null) && SceneManager.GetActiveScene().handle != placedScene)
+            {
+                Game.Log("scene: the stage changed before the after-load checks ran; skipped them");
+                drift = null;
+                repose = null;
+            }
             if (repose != null && Time.realtimeSinceStartup >= reposeAt && !Game_Manager.ReturnPaused())
             {
                 var list = repose;
