@@ -2,6 +2,14 @@
 
 Append-only, newest first.
 
+## 2026-10-24 · session 12: teammates fighting and lost animations after a scene load (Director 0.7.5)
+
+- Report (the requester via the owner, Director 0.7.4 from the Workshop): after a load, characters that were mid-animation at save are no longer doing it, and teammates sometimes attack each other. No evidence on the owner's PC: newest Player.log and scene files are from 2026-10-22, so the play was elsewhere or its log was overwritten (modtools T-20261024-1).
+- Same build 25615196; fresh decompile in the session scratchpad. Teams: `Combat_Manager.FactionIsAttackable` = factions differ (or attacker None) and squads differ. `Spawn` gave every respawned character a new `CreateSquad`, so a respawned member of a squad with survivors was a foe to them when the faction was None (every Playground spawn: `InteractiveMode.UnitSpawn_Done`). Story factions (Enemy, MERCs...) do not fight across squads. Also: the Playground's Clear All empties only the current room, so saved characters standing in other rooms were doubled into a new squad.
+- Animations: `PlayAsEmote` stores no clip; it lives in `myAnimator_Character.myOverride` under `Emote_0` or `Emote_1`, chosen by the private `emoteState` (flipped after each play).
+- 0.7.5: squads are seeded from the characters put back (same character first) and respawns join them; a put-back character in a squad that would fight its saved squadmates joins theirs (`Rejoin`; never your squad or essential ones; wave units rejoin the running wave). Playground loads put back saved characters still alive in other rooms by id. Load lines name the squad and faction now and at save; 2 s later Player.log lists saved squadmates now hostile. Scene files version 5 add `emote` (looping clip name); 0.5 s after a load `Repose` replays it with `IdleAnimFeature.Pose` for characters still unaware (frozen ones released, posed, refrozen). Ruling: one-off moves are not replayed.
+- Tests: clean build (0 warnings), deployed to the owner's Mods folder (DLL checked). Not launched or played; not on the Workshop.
+
 ## 2026-10-23 · books track 9: enemy roles, waves, level plan, attack matrix
 
 - From Rogers, *Level Up!* (Ai/books/plugin-learnings, track 9). encounter-design.md: roles, orchestration order, wave pacing, finale, fairness, playtest items 9 and 10; new level-plan-template.md linked from Step 4; madobjects.md attack matrix. Rulings M1-M6 in [decisions/2026-10-23-books-track9.md](decisions/2026-10-23-books-track9.md).

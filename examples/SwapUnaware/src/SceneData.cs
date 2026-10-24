@@ -9,11 +9,12 @@ namespace SwapUnaware
     // A saved scene. Version 1 (0.4.0) was Playground-only and keyed by the Unity scene name;
     // version 2 adds the stage key, each character's room and serial number, and your place;
     // version 3 adds holsters, ammo, your loadout and loose weapons (SceneItems.cs);
-    // version 4 the bodies already lying in the level, so a load clears only newer ones.
+    // version 4 the bodies already lying in the level, so a load clears only newer ones;
+    // version 5 the looping emote each character was playing.
     [Serializable]
     public partial class SceneData
     {
-        public const int CurrentVersion = 4;
+        public const int CurrentVersion = 5;
 
         public int version = CurrentVersion;
         public string stage;        // Unity scene name (version 1's only key)
@@ -52,6 +53,8 @@ namespace SwapUnaware
             public string id;       // Char_Data.myUniqueID: same character while the level stays loaded
             public bool essential;  // player squad, playable or amEssential: never removed or respawned
             public bool wave;       // spawned by a wave or squad spawner
+            // Version 5
+            public string emote;    // clip name of the looping emote playing at save time
         }
 
         [Serializable]
@@ -323,6 +326,7 @@ namespace SwapUnaware
                     id = c.myData.myUniqueID,
                     essential = Essential(c),
                     wave = c.myWave != null,
+                    emote = IdleAnimFeature.CurrentEmote(c),
                 };
                 r.items = Loadout(c);
                 PatrolFeature.Route route;
@@ -338,31 +342,60 @@ namespace SwapUnaware
 
         // ---- loading in the Playground: clear the room, spawn everyone (0.4.0 behaviour) ----
 
-        internal class PlaygroundResult { public int chars; public bool yours; public FloorResult floor; }
+        internal class PlaygroundResult
+        {
+            public int chars, kept, rejoined;
+            public bool yours;
+            public FloorResult floor;
+            public List<KeyValuePair<Combatant_Base, CharRecord>> placed = new List<KeyValuePair<Combatant_Base, CharRecord>>();
+        }
 
         internal PlaygroundResult RestorePlayground()
         {
             FreezeFeature.ReleaseAll();
             InteractiveMode.ClearAll_DoIt();
             var me = Game.Me();
-            var squads = new Dictionary<int, Squad_Main>();
-            int n = 0;
+            var res = new PlaygroundResult();
+            // Clear All empties only the room you are in. Saved characters still standing in another
+            // room are put back rather than doubled, and the respawned join their squads (0.7.5).
+            var byId = new Dictionary<string, Combatant_Base>();
+            foreach (var c in UnityEngine.Object.FindObjectsOfType<Combatant_Base>())
+                if (Game.IsNpc(c) && c != me && !c.AmDespawning && !string.IsNullOrEmpty(c.myData.myUniqueID))
+                    byId[c.myData.myUniqueID] = c;
+            var kept = new Dictionary<CharRecord, Combatant_Base>();
+            foreach (var r in chars)
+            {
+                Combatant_Base c;
+                if (!string.IsNullOrEmpty(r.id) && byId.TryGetValue(r.id, out c)) { kept[r] = c; byId.Remove(r.id); }
+            }
+            var squads = new Dictionary<string, Squad_Main>();
+            SeedSquads(kept, squads);
             foreach (var r in chars)
             {
                 var room = FindRoom(r.room);
                 if (!Usable(room)) room = Cam_Main.currentRoom;
-                Squad_Main mine = r.squad == -1 && me != null && me.myData != null ? me.myData.mySquad : null;
-                if (Spawn(r, room, squads, mine, HasItems) != null) n++;
+                Combatant_Base c;
+                if (kept.TryGetValue(r, out c)) { Put(c, r, room, HasItems); res.kept++; }
+                else
+                {
+                    Squad_Main mine = r.squad == -1 && me != null && me.myData != null ? me.myData.mySquad : null;
+                    c = Spawn(r, room, squads, mine, HasItems);
+                    if (c == null) continue;
+                }
+                res.chars++;
+                res.placed.Add(new KeyValuePair<Combatant_Base, CharRecord>(c, r));
             }
-            bool yours = HasItems && hasPlayer && ResetLoadout(me, playerItems);
-            return new PlaygroundResult { chars = n, yours = yours, floor = HasItems ? RestoreFloor() : new FloorResult() };
+            res.rejoined = Rejoin(res.placed, squads);
+            res.yours = HasItems && hasPlayer && ResetLoadout(me, playerItems);
+            res.floor = HasItems ? RestoreFloor() : new FloorResult();
+            return res;
         }
 
         // ---- loading in a story level, arena or custom stage ----
 
         internal class Result
         {
-            public int moved, respawned, removed, skipped, yourAmmo, corpses, mess;
+            public int moved, respawned, removed, skipped, yourAmmo, corpses, mess, rejoined;
             public FloorResult floor = new FloorResult();
             // Everyone put back or respawned, for the check a moment later of who has walked off.
             public List<KeyValuePair<Combatant_Base, CharRecord>> placed = new List<KeyValuePair<Combatant_Base, CharRecord>>();
@@ -382,7 +415,10 @@ namespace SwapUnaware
                 .ToList();
             var match = Match(live);
 
-            var squads = new Dictionary<int, Squad_Main>();
+            // A respawned character joins the live squad of its saved squadmates; a fresh squad of
+            // its own would be a foe to them when the faction is None, as Playground spawns are.
+            var squads = new Dictionary<string, Squad_Main>();
+            SeedSquads(match, squads);
             var respawned = new HashSet<string>();
             foreach (var r in chars)
             {
@@ -398,7 +434,7 @@ namespace SwapUnaware
                         res.moved++;
                         res.placed.Add(new KeyValuePair<Combatant_Base, CharRecord>(c, r));
                         Line(r, "put back (" + How(r, c) + "), moved " + Vector3.Distance(from, c.Position).ToString("0.0") + " m"
-                            + (Usable(room) ? "" : " (room closed: left where it was)"), items);
+                            + (Usable(room) ? "" : " (room closed: left where it was)"), items, c);
                         continue;
                     }
                     if (r.essential || !Usable(room)) { res.skipped++; Line(r, r.essential ? "skipped: essential, not respawned" : "skipped: room closed", null); continue; }
@@ -410,10 +446,11 @@ namespace SwapUnaware
                     if (!string.IsNullOrEmpty(r.id)) respawned.Add(r.id);
                     res.respawned++;
                     res.placed.Add(new KeyValuePair<Combatant_Base, CharRecord>(c, r));
-                    Line(r, "respawned", given);
+                    Line(r, "respawned", given, c);
                 }
                 catch (Exception e) { Game.Error("scene: restore " + r.card, e); res.skipped++; }
             }
+            res.rejoined = Rejoin(res.placed, squads);
             res.corpses = ClearNewBodies(respawned);
             res.mess = SceneMess.ClearNewer(this);
 
@@ -440,10 +477,110 @@ namespace SwapUnaware
         }
 
         // One Player.log line per saved character, so a playtest can tell which one went wrong.
-        static void Line(CharRecord r, string what, string items)
+        static void Line(CharRecord r, string what, string items, Combatant_Base c = null)
         {
             Game.Log("scene:   " + r.card + (string.IsNullOrEmpty(r.serial) ? "" : " [" + r.serial + "]") + " " + what
-                + (items == null ? "" : "; weapons: " + (items.Length > 0 ? items : "none")));
+                + (items == null ? "" : "; weapons: " + (items.Length > 0 ? items : "none"))
+                + (c == null ? "" : "; " + SquadOf(c) + ", saved squad " + r.squad + " " + (Factions)r.team));
+        }
+
+        internal static string SquadOf(Combatant_Base c)
+        {
+            var sq = c.myData != null ? c.myData.mySquad : null;
+            return "squad " + (sq != null ? sq.squadName : "none") + " " + c.myFaction;
+        }
+
+        // ---- squads ----
+
+        // -1 is your squad; -2 had none, so those share one squad per faction.
+        static string SquadKey(CharRecord r) { return r.squad == -2 ? "-2|" + r.team : r.squad.ToString(); }
+
+        // The live squad each saved squad maps to, taken from the characters put back (the same
+        // character first, then by serial, then the nearest) whose faction is still the saved one.
+        static void SeedSquads(Dictionary<CharRecord, Combatant_Base> match, Dictionary<string, Squad_Main> squads)
+        {
+            foreach (var p in match.OrderBy(p => How(p.Key, p.Value).StartsWith("same") ? 0 : How(p.Key, p.Value).StartsWith("by") ? 1 : 2))
+            {
+                var r = p.Key;
+                var sq = p.Value.myData.mySquad;
+                if (r.squad == -2 || sq == null || p.Value.myFaction != (Factions)r.team || squads.ContainsKey(SquadKey(r))) continue;
+                squads[SquadKey(r)] = sq;
+            }
+        }
+
+        // A character put back in a squad that is not its saved squadmates', where the two would
+        // fight (a None faction, or a faction changed since the save), joins theirs. Your squad
+        // and essential characters are never moved. Returns how many moved.
+        static int Rejoin(List<KeyValuePair<Combatant_Base, CharRecord>> placed, Dictionary<string, Squad_Main> squads)
+        {
+            int n = 0;
+            foreach (var p in placed)
+            {
+                var c = p.Key;
+                var r = p.Value;
+                Squad_Main sq;
+                if (r.squad < 0 || r.essential || !Game.Alive(c) || !squads.TryGetValue(SquadKey(r), out sq) || c.myData.mySquad == sq) continue;
+                if (!Combat_Manager.FactionIsAttackable(c.myFaction, sq.squadFaction)) continue;
+                try
+                {
+                    var was = SquadOf(c);
+                    sq.AddMember(c.myData);
+                    // AddMember takes a wave unit out of its wave unless the new squad has one.
+                    if (r.wave && c.myWave == null) JoinWave(c);
+                    Game.ReleaseClaims(c.myController);
+                    n++;
+                    Game.Log("scene:   " + r.card + " rejoined its saved squadmates: " + was + " -> " + SquadOf(c));
+                }
+                catch (Exception e) { Game.Error("scene: rejoin " + r.card, e); }
+            }
+            return n;
+        }
+
+        // Saved squadmates now hostile to each other, for the check a moment after a load.
+        internal static List<string> HostileSquadmates(List<KeyValuePair<Combatant_Base, CharRecord>> placed)
+        {
+            var found = new List<string>();
+            var me = Game.Me();
+            foreach (var g in placed.Where(p => p.Value.squad != -2 && Game.Alive(p.Key)).GroupBy(p => p.Value.squad))
+            {
+                var list = g.Select(p => p.Key).ToList();
+                if (g.Key == -1 && me != null) list.Add(me);
+                for (int i = 0; i < list.Count; i++)
+                    for (int j = i + 1; j < list.Count; j++)
+                        if (Combat_Manager.FactionIsAttackable(list[i], list[j]) || Combat_Manager.FactionIsAttackable(list[j], list[i]))
+                            found.Add(list[i].name + " (" + SquadOf(list[i]) + ") and " + list[j].name + " (" + SquadOf(list[j]) + ")");
+            }
+            return found;
+        }
+
+        // ---- emotes (version 5) ----
+
+        // Puts the looping emote each character was playing back, a moment after the load (a
+        // character just respawned or teleported cannot emote yet). Only for characters still
+        // unaware: one that has noticed a fight would drop the pose anyway. Returns how many.
+        internal static int Repose(List<KeyValuePair<Combatant_Base, CharRecord>> placed)
+        {
+            int n = 0;
+            foreach (var p in placed)
+            {
+                var c = p.Key;
+                var r = p.Value;
+                if (string.IsNullOrEmpty(r.emote) || !Game.Alive(c) || c.myController.myAlertStatus != AI_Wakeup.AlertStatus.Unaware) continue;
+                try
+                {
+                    var clip = IdleAnimFeature.FindClip(c, r.emote);
+                    if (clip == null) { Game.Log("scene:   " + r.card + ": animation " + r.emote + " not found"); continue; }
+                    // A frozen character's animator stands still: let it go, start the pose, freeze it again.
+                    bool frozen = FreezeFeature.IsFrozen(c);
+                    if (frozen) FreezeFeature.Release(c);
+                    bool ok = IdleAnimFeature.Pose(c, clip, false);
+                    if (frozen) FreezeFeature.Freeze(c);
+                    if (ok) n++;
+                    Game.Log("scene:   " + r.card + (ok ? " plays " : " could not play ") + r.emote + " again");
+                }
+                catch (Exception e) { Game.Error("scene: emote " + r.card, e); }
+            }
+            return n;
         }
 
         static string How(CharRecord r, Combatant_Base c)
@@ -546,13 +683,13 @@ namespace SwapUnaware
         // mine: the squad that "your squad" (-1) records join; null gives them a squad of their own,
         // so story careers never store them. items: a version 3 file, whose loadout replaces any
         // weapons the card hands out (older files only add theirs).
-        static Combatant_Base Spawn(CharRecord r, Room_Main room, Dictionary<int, Squad_Main> squads, Squad_Main mine, bool items)
+        static Combatant_Base Spawn(CharRecord r, Room_Main room, Dictionary<string, Squad_Main> squads, Squad_Main mine, bool items)
         {
             string given;
             return Spawn(r, room, squads, mine, items, out given);
         }
 
-        static Combatant_Base Spawn(CharRecord r, Room_Main room, Dictionary<int, Squad_Main> squads, Squad_Main mine, bool items, out string given)
+        static Combatant_Base Spawn(CharRecord r, Room_Main room, Dictionary<string, Squad_Main> squads, Squad_Main mine, bool items, out string given)
         {
             given = null;
             try
@@ -563,7 +700,7 @@ namespace SwapUnaware
                 var c = Combatant_Base.CreateCombatant(data, room, Controller_Base.ControllerType.NPC, r.pos, Facing(r.facing), false);
                 if (c == null) return null;
                 Squad_Main sq = r.squad == -1 ? mine : null;
-                if (sq == null && !squads.TryGetValue(r.squad, out sq)) { sq = Squad_Main.CreateSquad((Factions)r.team); squads[r.squad] = sq; }
+                if (sq == null && !squads.TryGetValue(SquadKey(r), out sq)) { sq = Squad_Main.CreateSquad((Factions)r.team); squads[SquadKey(r)] = sq; }
                 sq.AddMember(c.myData);
                 if (items) ResetLoadout(c, r.items, out given);
                 else foreach (var it in r.items) Give(c, it);

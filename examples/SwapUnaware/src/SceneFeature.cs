@@ -62,6 +62,18 @@ namespace SwapUnaware
         const float DriftMetres = 1.5f;
         List<KeyValuePair<Combatant_Base, SceneData.CharRecord>> drift;
         float driftAt;
+        // Looping emotes go back on a moment after the load, once the characters can emote.
+        const float ReposeAfter = 0.5f;
+        List<KeyValuePair<Combatant_Base, SceneData.CharRecord>> repose;
+        float reposeAt;
+
+        void Placed(List<KeyValuePair<Combatant_Base, SceneData.CharRecord>> placed)
+        {
+            drift = placed;
+            driftAt = Time.realtimeSinceStartup + DriftCheck;
+            repose = placed;
+            reposeAt = Time.realtimeSinceStartup + ReposeAfter;
+        }
 
         void CheckDrift()
         {
@@ -79,10 +91,20 @@ namespace SwapUnaware
                     + " (alert " + c.myController.myAlertStatus + ", room " + (c.myRoom != null ? c.myRoom.name : "?") + ")");
             }
             Game.Log("scene: " + DriftCheck + " s after the load, " + off + " of " + list.Count + " characters are off their saved spot");
+            var foes = SceneData.HostileSquadmates(list);
+            foreach (var f in foes) Game.Log("scene:   saved squadmates now hostile: " + f);
+            Game.Log("scene: " + DriftCheck + " s after the load, " + foes.Count + " pairs of saved squadmates are hostile to each other");
         }
 
         protected override void Tick()
         {
+            if (repose != null && Time.realtimeSinceStartup >= reposeAt && !Game_Manager.ReturnPaused())
+            {
+                var list = repose;
+                repose = null;
+                int saved = list.Count(p => !string.IsNullOrEmpty(p.Value.emote));
+                if (saved > 0) Game.Log("scene: " + SceneData.Repose(list) + " of " + saved + " saved animations playing again");
+            }
             if (drift != null && Time.realtimeSinceStartup >= driftAt && !Game_Manager.ReturnPaused()) CheckDrift();
             if (pending != null) RunPending();
             if (mode == Mode.Closed)
@@ -271,16 +293,19 @@ namespace SwapUnaware
             if (data.IsPlayground)
             {
                 var p = data.RestorePlayground();
+                Placed(p.placed);
                 Game.Say("loaded scene \"" + name + "\" on " + where + ": " + p.chars + " of " + data.chars.Count + " characters"
+                    + (p.kept > 0 ? " (" + p.kept + " still standing in other rooms put back)" : "")
+                    + (p.rejoined > 0 ? ", " + p.rejoined + " rejoined their squad" : "")
                     + Items(data, p.floor) + (p.yours ? ", your weapons reset" : ""));
                 return;
             }
             Game.Log("scene: loading \"" + name + "\" on " + where + ", one line per saved character:");
             var r = data.RestoreLevel();
-            drift = r.placed;
-            driftAt = Time.realtimeSinceStartup + DriftCheck;
+            Placed(r.placed);
             Game.Say("loaded scene \"" + name + "\" on " + where + ": " + r.moved + " moved back, " + r.respawned + " respawned, "
                 + r.removed + " removed, " + r.skipped + " skipped (of " + data.chars.Count + " saved), "
+                + (r.rejoined > 0 ? r.rejoined + " rejoined their squad, " : "")
                 + r.corpses + (data.version >= 4 ? " newer bodies cleared" : " old bodies of the respawned cleared")
                 + (r.mess >= 0 ? ", " + r.mess + " newer blood splats, bullet holes, casings and debris cleared" : ", blood not reset") + Items(data, r.floor)
                 + (data.HasItems ? ", " + r.yourAmmo + " of your " + data.playerItems.Count + " weapons reset" : ""));
