@@ -8,6 +8,12 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261024-2 · 2026-10-24 · live play by the owner · owner's PC, Director 0.7.5 deployed, build 25615196 · 2/2 (scene load)
+- live-f11-animations · pass · Playground scene "animation": file `"version":5`, `"emote":"anim_cookstation_stir"`; log `AAHW1_Agent plays anim_cookstation_stir again`, `1 of 1 saved animations playing again`. The slot choice in `CurrentEmote` names the right clip.
+- live-f11-teams · pass · every load logged `0 pairs of saved squadmates are hostile to each other` (Playground, and story "what" on The Boom Factory: 4 MERCs respawned into one squad, Deimos put back in the player squad). No `rejoined` line was needed. The owner saw no fighting.
+- Side notes: drift 0 of 5 on the first story load (was 9 to 14 of 15 on 0.7.4); 1 of 2 in the Playground (the posed agent 13.2 m off). A second story load was followed by a level exit inside 2 s, so its 2 s check reported 5 of 5 gone: the check runs after a scene change. One NullReferenceException is the game's own (`Target_Main.SweetSpot_Reconfigure` on player disable during unload). Evidence: `Player-20261024-075pass.log`, `scene-what-20261024.json` in the owner's backups.
+- led to: none (passes; the after-scene-change report is owed)
+
 ### T-20261024-1 · 2026-10-24 · live use by the requester (report via the owner) · requester's play, Director 0.7.4 from the Workshop · 0/2 (scene load)
 - live-f11-animations · fail · characters in the middle of an animation at save were no longer doing it after a load. No log or scene file from that play on the owner's PC (newest Player.log 2026-10-22). Code: version 4 records stored no emote.
 - live-f11-teams · fail · teammates attacked each other after a load, not every time. Code: a respawned character got a new squad (`Squad_Main.CreateSquad`) even when saved squadmates survived; `Combat_Manager.FactionIsAttackable` makes different squads foes when the faction is None (Playground spawns).
