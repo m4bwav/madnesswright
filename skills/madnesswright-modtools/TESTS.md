@@ -8,6 +8,11 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261024-3 · 2026-10-24 · live play by the owner and the requester · owner's PC, Director 0.8.0 deployed, build 25615196 · 2/2 (two players)
+- live-two-player-join · pass · log `player 2 joined on pad 0`, `player 2 now plays Deimos [2656]`; player one took a MERC and went back (`now plays` lines both ways).
+- live-two-player-scene · pass · story scene "bob" on The Industrial Sector: file `"version":6`, Deimos `"player":2`; load logged `Deimos played by player 2: put back, moved 15.6 m; 3 of 3 weapons reset` and `1 played by other players put back, 10 moved back, 0 respawned, 0 removed`. No exception in the log. The owner reported the test passed. Evidence: `Player-20261024-two-player-080.log`, `scene-bob-20261024.json` in the owner's backups.
+- led to: Workshop update to 0.8.0
+
 ### T-20261024-2 · 2026-10-24 · live play by the owner · owner's PC, Director 0.7.5 deployed, build 25615196 · 2/2 (scene load)
 - live-f11-animations · pass · Playground scene "animation": file `"version":5`, `"emote":"anim_cookstation_stir"`; log `AAHW1_Agent plays anim_cookstation_stir again`, `1 of 1 saved animations playing again`. The slot choice in `CurrentEmote` names the right clip.
 - live-f11-teams · pass · every load logged `0 pairs of saved squadmates are hostile to each other` (Playground, and story "what" on The Boom Factory: 4 MERCs respawned into one squad, Deimos put back in the player squad). No `rejoined` line was needed. The owner saw no fighting.

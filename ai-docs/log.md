@@ -2,6 +2,12 @@
 
 Append-only, newest first.
 
+## 2026-10-24 · session 15: two players played, Workshop 0.8.0, arena co-op prompt
+
+- The owner and the requester played 0.8.0 with a pad and reported a pass. Player.log and the scene file agree (modtools T-20261024-3): player 2 joined, a story scene saved player two's Deimos (`"player":2`, version 6) and the load put it back with its weapons; no exception.
+- Workshop item 3822329165 updated to 0.8.0 (the played DLL, byte-identical) on the owner's "release it". The description gained a "Two players" paragraph. `result OK`, visibility 0, 44 subscribers.
+- A Workshop commenter asked for full arena multiplayer: both players start the arena themselves and pick their own origins. A research-first session prompt for it is in the owner's private notes (Owed 15).
+
 ## 2026-10-24 · session 14: Workshop 0.7.5, after-load fix 0.7.6, two players 0.8.0
 
 - Workshop item 3822329165 updated to 0.7.5 as played, on the owner's OK (asked once; 0.7.6 changes only a log line, so it waits for the next upload). Description's F11 line names teams and animations; the "Made with madnesswright" line went live. `result OK`, visibility 0, 43 subscribers.
@@ -190,4 +196,5 @@ Append-only, newest first.
   - Heredocs holding a doubled backslash are refused by a hook; write generator scripts with the Write tool.
 - Tests: 18 unit tests pass; six value cases passed run 1 with the skill; baselines for the hub and scenes action cases also found the faults (fixtures too easy), the modtools baseline used BepInEx and no info.txt (the skill made the difference).
 ## [2026-10-23] index | rebuilt (13 entries)
+## [2026-10-24] index | rebuilt (15 entries)
 ## [2026-10-24] index | rebuilt (15 entries)
