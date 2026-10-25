@@ -4,7 +4,8 @@ Plugin versions. Skill-level changes and their reasons are in each skill's own C
 
 ## Unreleased
 
-- `examples/SwapUnaware` 0.7.5: after a scene load teammates no longer fight each other (a respawned character now joins its saved squadmates' live squad; a None-faction squad of its own made them foes), and characters playing a looping animation (F4's or the level's) start it again. Load lines name each character's squad and faction; 2 s later Player.log names any saved squadmates now hostile. Scene files version 5. Built and deployed, not yet played.
+- `examples/SwapUnaware` 0.7.5: after a scene load teammates no longer fight each other (a respawned character now joins its saved squadmates' live squad; a None-faction squad of its own made them foes), and characters playing a looping animation (F4's or the level's) start it again. Load lines name each character's squad and faction; 2 s later Player.log names any saved squadmates now hostile. Scene files version 5. Played and passed on 2026-10-24.
+- `examples/SwapUnaware` 0.7.6: the checks a moment after a scene load are skipped, with one log line, when the stage changed first (leaving the level within 2 s used to report every character off its spot or gone). Built and deployed, not yet played.
 - madnesswright-scenes: `references/encounter-design.md` gains enemy roles (decided per card by watching it alone), an orchestration order, wave and squad pacing (one or two attacking at once, safe spawns, nothing new in the last wave, a release after it), finale and fairness rules and two playtest items; new `references/level-plan-template.md` (rooms, roles per card, waves, results, a campaign beat chart), after Rogers, *Level Up!*.
 - madnesswright-modtools: `references/madobjects.md` "Before a new weapon": an attack matrix with a niche column and a hit-feedback check.
 - Plugin icon resized from 1024 to 512 px (745 KB to 283 KB) to bring the tracked repository back from its size line.
