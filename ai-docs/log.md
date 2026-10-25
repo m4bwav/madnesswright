@@ -190,3 +190,4 @@ Append-only, newest first.
   - Heredocs holding a doubled backslash are refused by a hook; write generator scripts with the Write tool.
 - Tests: 18 unit tests pass; six value cases passed run 1 with the skill; baselines for the hub and scenes action cases also found the faults (fixtures too easy), the modtools baseline used BepInEx and no info.txt (the skill made the difference).
 ## [2026-10-23] index | rebuilt (13 entries)
+## [2026-10-24] index | rebuilt (15 entries)
