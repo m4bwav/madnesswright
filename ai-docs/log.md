@@ -5,6 +5,7 @@ Append-only, newest first.
 ## 2026-10-25 Â· Workshop change notes
 
 - The owner noticed the item's Change Notes tab said only "Update" for the last three updates: `examples/WorkshopUpload/Program.cs` hard-coded `WithChangeLog("Update")`. It now takes a change-notes file as the seventh argument and exits 2 before `SteamClient.Init` when an update has none or it is empty (checked: `wsup.exe a b c d e 123` prints the error, exit 2). Rule in AGENTS.md, madnesswright Step 6 (C-20261025-1); backfilling the three old entries is Owed 16.
+- Backfill done the same day on the owner's "go": the tab held six "Update" entries, not three (Steam shows times in the viewer's zone). Each entry has its own page, `steamcommunity.com/sharedfiles/editchangelogentry/<item>/<entry>/`, with one textarea and a Save link; filled in 0.4.0, 0.6.0 (which also carries the never-published 0.5.x scene work), 0.6.1, 0.7.4 (which carries 0.7.0 to 0.7.3), 0.7.5 and 0.8.0 from the root CHANGELOG, and checked on the Change Notes tab.
 
 ## 2026-10-24 · session 16: arena co-op researched, owner chose the pad origin picker, Director 0.9.0 built
 
