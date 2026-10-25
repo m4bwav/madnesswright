@@ -2,6 +2,13 @@
 
 Append-only, newest first.
 
+## 2026-10-24 · session 14: Workshop 0.7.5, after-load fix 0.7.6, two players 0.8.0
+
+- Workshop item 3822329165 updated to 0.7.5 as played, on the owner's OK (asked once; 0.7.6 changes only a log line, so it waits for the next upload). Description's F11 line names teams and animations; the "Made with madnesswright" line went live. `result OK`, visibility 0, 43 subscribers.
+- 0.7.6 (PR #35, merged): the checks 2 s after a load remember the active scene and are skipped with one line when it changed. The 0.7.5 log showed the cause: the game loaded the overworld (`Story_Overworld_IndustrialSector`) before the check ran.
+- Two players: the owner chose the game's own local co-op (one question, three options). Fresh decompile, same build 25615196. Findings in [notes/2026-10-24-two-player-research.md](notes/2026-10-24-two-player-research.md): pads join with Start into a free squadmate (or at the next door, where story stages add a bonus character); the Playground's Clear All removes every character but player one's. Plan and rulings: [plans/2026-10-24-two-player.md](plans/2026-10-24-two-player.md).
+- 0.8.0: `Game.IsPlayer` and `OtherPlayers`; F2 and F9 skip and let go of any player's body; the left-click block only stops the keyboard player; F8 names the player holding your home body; scenes version 6 save the other players' characters (`player`), a load puts them back with weapons and never respawns or removes them; the Playground load clears the room itself, sparing every player; `PlayersFeature` logs joins, leaves and character changes. Clean build (0 warnings), deployed, DLL checked. Not launched or played: a play needs two people and a pad.
+
 ## 2026-10-24 · session 13: Director 0.7.5 played, teams and animations pass
 
 - The owner played 0.7.5 on their PC (Playground and The Boom Factory). Player.log: 0 hostile squadmate pairs on every load; the Playground's posed agent played `anim_cookstation_stir` again (1 of 1); scene files are version 5 with `emote`. Drift on the story load 0 of 5 (0.7.4: 9 to 14 of 15). modtools T-20261024-2.
@@ -183,3 +190,4 @@ Append-only, newest first.
   - Heredocs holding a doubled backslash are refused by a hook; write generator scripts with the Write tool.
 - Tests: 18 unit tests pass; six value cases passed run 1 with the skill; baselines for the hub and scenes action cases also found the faults (fixtures too easy), the modtools baseline used BepInEx and no info.txt (the skill made the difference).
 ## [2026-10-23] index | rebuilt (13 entries)
+## [2026-10-24] index | rebuilt (15 entries)

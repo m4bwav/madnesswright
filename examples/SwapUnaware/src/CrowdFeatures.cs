@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SwapUnaware
 {
-    // F2: freeze everyone but you; F2 again lets go of the ones it froze.
+    // F2: freeze everyone but you and the other players; F2 again lets go of the ones it froze.
     public class FreezeFeature : Feature
     {
         public KeyCode Key = KeyCode.F2;
@@ -27,19 +27,18 @@ namespace SwapUnaware
                 if (frozen.Count > 0) { int n = frozen.Count; ReleaseAll(); Game.Say(n + " characters unfrozen"); }
                 else Game.Say(FreezeAll() + " characters frozen; F2 to unfreeze");
             }
-            // Let go of the dead (so they ragdoll) and of a body the player has just taken over.
-            var me = Game.Me();
+            // Let go of the dead (so they ragdoll) and of a body a player has just taken over
+            // (F5, or a second player joining on a pad takes a squadmate).
             foreach (var c in frozen.Keys.ToList())
-                if (c == null || c.AmDead() || c == me) Release(c);
+                if (c == null || c.AmDead() || Game.IsPlayer(c)) Release(c);
         }
 
         static int FreezeAll()
         {
-            var me = Game.Me();
             int n = 0;
             foreach (var c in FindObjectsOfType<Combatant_Base>())
             {
-                if (!Game.Alive(c) || c == me || c.myController == null || frozen.ContainsKey(c)) continue;
+                if (!Game.Alive(c) || Game.IsPlayer(c) || c.myController == null || frozen.ContainsKey(c)) continue;
                 Freeze(c);
                 n++;
             }
@@ -172,9 +171,8 @@ namespace SwapUnaware
                 else if (guards.ContainsKey(c)) { Unguard(c); Game.Say(c.name + " stops guarding"); }
                 else { Guard(c); Game.Say(c.name + " is guarding: stays put, attacks anyone not on its team it sees"); }
             }
-            var me = Game.Me();
             foreach (var c in guards.Keys.ToList())
-                if (c == null || c.AmDead() || c == me) Unguard(c);
+                if (c == null || c.AmDead() || Game.IsPlayer(c)) Unguard(c);
         }
 
         internal static void Guard(Combatant_Base c)

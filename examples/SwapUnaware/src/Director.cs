@@ -184,7 +184,7 @@ namespace SwapUnaware
             var room = Cam_Main.currentRoom;
             foreach (var c in UnityEngine.Object.FindObjectsOfType<Combatant_Base>())
             {
-                if (!Game.Corpse(c) || c == me) continue;
+                if (!Game.Corpse(c) || c == me || Game.IsPlayer(c)) continue;
                 if (SceneData.Essential(c) || SceneData.Untouchable(c) || c.HasSerialNumber()
                     || !Decay_Manager.ReturnCanCondemnCharacter(c) || !c.ReturnAppearDeadAndInert()) { kept++; continue; }
                 try
