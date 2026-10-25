@@ -20,6 +20,31 @@ namespace SwapUnaware
             return pc != null ? pc.myCombatant : null;
         }
 
+        // A body any player controls: the keyboard player (Me) or one who joined on a pad (local
+        // co-op: Controller_Player.PlayerControllers 1 to 3). Director's keys act for the keyboard
+        // player; every feature leaves the others' bodies alone.
+        internal static bool IsPlayer(Combatant_Base c)
+        {
+            return c != null && c.myController != null && c.myController.AmType_Player();
+        }
+
+        // 1 to 4 for a player's body, 0 for anyone else.
+        internal static int PlayerNumber(Combatant_Base c)
+        {
+            var pc = c != null ? c.myController as Controller_Player : null;
+            return pc != null ? pc.PlayerNumber + 1 : 0;
+        }
+
+        // The living bodies of the players other than the keyboard player.
+        internal static List<Combatant_Base> OtherPlayers()
+        {
+            var list = new List<Combatant_Base>();
+            var me = Me();
+            foreach (var pc in Controller_Player.PlayerControllers)
+                if (pc != null && pc.myCombatant != null && pc.myCombatant != me && Alive(pc.myCombatant)) list.Add(pc.myCombatant);
+            return list;
+        }
+
         // A combatant the game has not set up yet has an empty corpus track, and AmDead() then
         // throws IndexOutOfRangeException (seen during a story-level save).
         internal static bool Alive(Combatant_Base c)

@@ -69,6 +69,8 @@ namespace SwapUnaware
             if (pc == null) return;
             if (home == null) { Game.Say("no home body to return to"); return; }
             if (home == pc.myCombatant) { Game.Say("already home"); return; }
+            // A second player joining on a pad takes a free squadmate, which can be your home body.
+            if (Game.IsPlayer(home)) { Game.Say("player " + Game.PlayerNumber(home) + " is playing your home body; F5 another character"); return; }
             if (!Game.IsNpc(home)) { Game.Say("your home body is dead; F5 another character"); return; }
             SwapTo(pc, home);
         }

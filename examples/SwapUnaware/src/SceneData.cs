@@ -10,11 +10,12 @@ namespace SwapUnaware
     // version 2 adds the stage key, each character's room and serial number, and your place;
     // version 3 adds holsters, ammo, your loadout and loose weapons (SceneItems.cs);
     // version 4 the bodies already lying in the level, so a load clears only newer ones;
-    // version 5 the looping emote each character was playing.
+    // version 5 the looping emote each character was playing;
+    // version 6 the other players' characters (local co-op), marked by player number.
     [Serializable]
     public partial class SceneData
     {
-        public const int CurrentVersion = 5;
+        public const int CurrentVersion = 6;
 
         public int version = CurrentVersion;
         public string stage;        // Unity scene name (version 1's only key)
@@ -30,6 +31,8 @@ namespace SwapUnaware
         public List<CharRecord> chars = new List<CharRecord>();
         // Version 4: Char_Data.myUniqueID of every body in the level at save time, joined by '|'.
         public string dead;
+        // Set by a load: saved characters another player plays now, put back by PutPlayers. Not saved.
+        internal int playersPut;
 
         [Serializable]
         public class RoomRef { public string name; public string serial; public Vector3 pos; }
@@ -55,6 +58,8 @@ namespace SwapUnaware
             public bool wave;       // spawned by a wave or squad spawner
             // Version 5
             public string emote;    // clip name of the looping emote playing at save time
+            // Version 6
+            public int player;      // 2 to 4: a player on a pad played this character at save time
         }
 
         [Serializable]
@@ -304,7 +309,7 @@ namespace SwapUnaware
             foreach (var c in UnityEngine.Object.FindObjectsOfType<Combatant_Base>())
             {
                 if (Game.Corpse(c) && !string.IsNullOrEmpty(c.myData.myUniqueID)) { bodies.Add(c.myData.myUniqueID); continue; }
-                if (!Game.Alive(c) || c == me || c.myData == null || c.myData.myCard == null || !(c.myController is Controller_NPC)) continue;
+                if (!Game.Alive(c) || c == me || c.myData == null || c.myData.myCard == null || !(c.myController is Controller_NPC || Game.IsPlayer(c))) continue;
                 if (!pg && Untouchable(c)) continue;
                 var sq = c.myData.mySquad;
                 int si = -2;
@@ -327,6 +332,7 @@ namespace SwapUnaware
                     essential = Essential(c),
                     wave = c.myWave != null,
                     emote = IdleAnimFeature.CurrentEmote(c),
+                    player = Game.PlayerNumber(c),
                 };
                 r.items = Loadout(c);
                 PatrolFeature.Route route;
@@ -353,9 +359,10 @@ namespace SwapUnaware
         internal PlaygroundResult RestorePlayground()
         {
             FreezeFeature.ReleaseAll();
-            InteractiveMode.ClearAll_DoIt();
+            ClearRoom();
             var me = Game.Me();
             var res = new PlaygroundResult();
+            var todo = PutPlayers(true);
             // Clear All empties only the room you are in. Saved characters still standing in another
             // room are put back rather than doubled, and the respawned join their squads (0.7.5).
             var byId = new Dictionary<string, Combatant_Base>();
@@ -363,14 +370,14 @@ namespace SwapUnaware
                 if (Game.IsNpc(c) && c != me && !c.AmDespawning && !string.IsNullOrEmpty(c.myData.myUniqueID))
                     byId[c.myData.myUniqueID] = c;
             var kept = new Dictionary<CharRecord, Combatant_Base>();
-            foreach (var r in chars)
+            foreach (var r in todo)
             {
                 Combatant_Base c;
                 if (!string.IsNullOrEmpty(r.id) && byId.TryGetValue(r.id, out c)) { kept[r] = c; byId.Remove(r.id); }
             }
             var squads = new Dictionary<string, Squad_Main>();
             SeedSquads(kept, squads);
-            foreach (var r in chars)
+            foreach (var r in todo)
             {
                 var room = FindRoom(r.room);
                 if (!Usable(room)) room = Cam_Main.currentRoom;
@@ -410,17 +417,18 @@ namespace SwapUnaware
             var res = new Result();
             FreezeFeature.ReleaseAll();
             var me = Game.Me();
+            var todo = PutPlayers(false);
             var live = UnityEngine.Object.FindObjectsOfType<Combatant_Base>()
                 .Where(c => Game.IsNpc(c) && c != me && !Untouchable(c) && c.myData != null && c.myData.myCard != null && Usable(c.myRoom))
                 .ToList();
-            var match = Match(live);
+            var match = Match(live, todo);
 
             // A respawned character joins the live squad of its saved squadmates; a fresh squad of
             // its own would be a foe to them when the faction is None, as Playground spawns are.
             var squads = new Dictionary<string, Squad_Main>();
             SeedSquads(match, squads);
             var respawned = new HashSet<string>();
-            foreach (var r in chars)
+            foreach (var r in todo)
             {
                 try
                 {
@@ -490,6 +498,69 @@ namespace SwapUnaware
             return "squad " + (sq != null ? sq.squadName : "none") + " " + c.myFaction;
         }
 
+        // ---- the other players (local co-op, version 6) ----
+
+        // The Playground's Clear All (InteractiveMode.ClearAll_DoIt) spares only player one's body
+        // and weapons, so a second player's character would go too. The same steps, sparing every player.
+        static void ClearRoom()
+        {
+            Decay_Manager.ClearAll_Character();
+            Decay_Manager.ClearAll_Holes();
+            Decay_Manager.ClearAll_Casing();
+            Decay_Manager.ClearAll_Splats();
+            Decay_Manager.ClearAll_Debris();
+            var room = Cam_Main.currentRoom;
+            if (room == null) return;
+            foreach (var o in new List<Target_Object>(room.myOccupants))
+                if (!Game.IsPlayer(o as Combatant_Base)) o.RemoveFromGame();
+            foreach (var it in room.GetComponentsInChildren<Item_Held>())
+                if (!Game.IsPlayer(it.myOwner)) it.DeSpawn();
+        }
+
+        // A saved character a player on a pad now plays (saved as theirs, or a squadmate they took
+        // over since) goes back to its spot with its saved weapons (in a story or arena career only
+        // the ammo, as yours), and nothing else: no alert, freeze, guard, patrol or squad change,
+        // and never a respawn or removal. Returns the records left for the usual restore.
+        List<CharRecord> PutPlayers(bool playground)
+        {
+            var bodies = new Dictionary<string, Combatant_Base>();
+            foreach (var c in Game.OtherPlayers())
+                if (c.myData != null && !string.IsNullOrEmpty(c.myData.myUniqueID)) bodies[c.myData.myUniqueID] = c;
+            var todo = new List<CharRecord>();
+            playersPut = 0;
+            foreach (var r in chars)
+            {
+                Combatant_Base c;
+                if (string.IsNullOrEmpty(r.id) || !bodies.TryGetValue(r.id, out c))
+                {
+                    if (r.player > 0) Game.Log("scene:   " + r.card + " was played by player " + r.player + " at save time; no player plays it now, so it loads as a squadmate");
+                    todo.Add(r);
+                    continue;
+                }
+                bodies.Remove(r.id);
+                playersPut++;
+                try
+                {
+                    var from = c.Position;
+                    var room = FindRoom(r.room);
+                    if (!Usable(room) && playground) room = Cam_Main.currentRoom;
+                    if (Usable(room)) c.TeleportTo(r.pos, Facing(r.facing) * Vector3.forward, room);
+                    string what = "";
+                    if (HasItems)
+                    {
+                        if (playground) what = ResetLoadout(c, r.items) ? "; weapons reset" : "; weapons not reset";
+                        else what = "; " + RefillAmmo(c, r.items) + " of " + r.items.Count + " weapons reset";
+                    }
+                    Game.Log("scene:   " + r.card + " played by player " + Game.PlayerNumber(c) + (r.player > 0 ? "" : " (a squadmate at save time)")
+                        + ": put back, moved " + Vector3.Distance(from, c.Position).ToString("0.0") + " m" + what);
+                }
+                catch (Exception e) { Game.Error("scene: player " + Game.PlayerNumber(c), e); }
+            }
+            foreach (var c in bodies.Values)
+                Game.Log("scene:   player " + Game.PlayerNumber(c) + " (" + c.name + ") was not in the scene; left where they are");
+            return todo;
+        }
+
         // ---- squads ----
 
         // -1 is your squad; -2 had none, so those share one squad per faction.
@@ -544,7 +615,11 @@ namespace SwapUnaware
             foreach (var g in placed.Where(p => p.Value.squad != -2 && Game.Alive(p.Key)).GroupBy(p => p.Value.squad))
             {
                 var list = g.Select(p => p.Key).ToList();
-                if (g.Key == -1 && me != null) list.Add(me);
+                if (g.Key == -1)
+                {
+                    if (me != null) list.Add(me);
+                    list.AddRange(Game.OtherPlayers().Where(x => !list.Contains(x)));
+                }
                 for (int i = 0; i < list.Count; i++)
                     for (int j = i + 1; j < list.Count; j++)
                         if (Combat_Manager.FactionIsAttackable(list[i], list[j]) || Combat_Manager.FactionIsAttackable(list[j], list[i]))
@@ -601,7 +676,7 @@ namespace SwapUnaware
             int n = 0;
             foreach (var c in UnityEngine.Object.FindObjectsOfType<Combatant_Base>())
             {
-                if (!Game.Corpse(c) || c == me || !Usable(c.myRoom)) continue;
+                if (!Game.Corpse(c) || c == me || Game.IsPlayer(c) || !Usable(c.myRoom)) continue;
                 var id = c.myData.myUniqueID ?? "";
                 bool mine = respawned.Contains(id);
                 if (!mine && (old == null || old.Contains(id) || c.HasSerialNumber())) continue;
@@ -618,7 +693,7 @@ namespace SwapUnaware
 
         // Same character first (the level is still loaded), then serial number, then the nearest
         // character with the same card in the same room.
-        Dictionary<CharRecord, Combatant_Base> Match(List<Combatant_Base> live)
+        static Dictionary<CharRecord, Combatant_Base> Match(List<Combatant_Base> live, List<CharRecord> chars)
         {
             var m = new Dictionary<CharRecord, Combatant_Base>();
             var used = new HashSet<Combatant_Base>();

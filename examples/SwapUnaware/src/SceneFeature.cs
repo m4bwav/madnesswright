@@ -305,6 +305,7 @@ namespace SwapUnaware
                 Placed(p.placed);
                 Game.Say("loaded scene \"" + name + "\" on " + where + ": " + p.chars + " of " + data.chars.Count + " characters"
                     + (p.kept > 0 ? " (" + p.kept + " still standing in other rooms put back)" : "")
+                    + (data.playersPut > 0 ? ", " + data.playersPut + " played by other players put back" : "")
                     + (p.rejoined > 0 ? ", " + p.rejoined + " rejoined their squad" : "")
                     + Items(data, p.floor) + (p.yours ? ", your weapons reset" : ""));
                 return;
@@ -312,7 +313,8 @@ namespace SwapUnaware
             Game.Log("scene: loading \"" + name + "\" on " + where + ", one line per saved character:");
             var r = data.RestoreLevel();
             Placed(r.placed);
-            Game.Say("loaded scene \"" + name + "\" on " + where + ": " + r.moved + " moved back, " + r.respawned + " respawned, "
+            Game.Say("loaded scene \"" + name + "\" on " + where + ": " + (data.playersPut > 0 ? data.playersPut + " played by other players put back, " : "")
+                + r.moved + " moved back, " + r.respawned + " respawned, "
                 + r.removed + " removed, " + r.skipped + " skipped (of " + data.chars.Count + " saved), "
                 + (r.rejoined > 0 ? r.rejoined + " rejoined their squad, " : "")
                 + r.corpses + (data.version >= 4 ? " newer bodies cleared" : " old bodies of the respawned cleared")
