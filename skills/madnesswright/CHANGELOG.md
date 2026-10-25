@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261025-1 · 2026-10-25 · Workshop updates get real change notes
+- because: user request (three Director updates showed only "Update" on the Change Notes tab)
+- files: SKILL.md (Step 6: share it), examples/WorkshopUpload (change-notes file, refuses an update without one)
+- Step 6 says every update carries the version and what changed for the player, and where to write it with or without the bundled uploader.
+
 ### C-20261018-2 · 2026-10-18 · Workshop uploader's new home and its quirks
 - because: R-20261018-2
 - files: SKILL.md (Workshop), references/sources.md
