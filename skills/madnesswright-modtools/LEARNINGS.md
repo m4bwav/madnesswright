@@ -46,6 +46,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill
 - Status: active · helpful 2 · harmful 0 · last_confirmed 2026-10-22
 
+### L-006 · 2026-10-24 · Check a built DLL's version string as UTF-16
+- Trigger: after deploying Director 0.9.0 (2026-10-24), an ASCII `grep -a` for `0.9.0` on the deployed `SwapUnaware.dll` found nothing although the build was right; the same bytes searched as UTF-16 found both `0.9.0` and the new feature's log text.
+- Hypothesis: C# string literals live in the assembly's user-string heap as UTF-16, so an ASCII grep misses them and a "DLL checked" step can falsely fail (or pass on an unrelated ASCII match such as the assembly version).
+- Rule: check a deployed mod DLL with a UTF-16 search, e.g. `python -c "d=open(PATH,'rb').read(); print('0.9.0'.encode('utf-16-le') in d)"`, plus a byte compare against the build output.
+- Evidence: session 16 entry in ai-docs/log.md (grep count 0, UTF-16 search True)
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-24
+
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts
