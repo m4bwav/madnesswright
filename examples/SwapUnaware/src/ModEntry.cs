@@ -7,7 +7,7 @@ namespace SwapUnaware
     public class ModEntry : IModEntrypoint
     {
         public const string Id = "com.m4bwav.mpn.swapunaware";
-        public const string Version = "0.8.0";
+        public const string Version = "0.9.0";
         static GameObject host;
 
         public void Initialize()
@@ -26,8 +26,9 @@ namespace SwapUnaware
             host.AddComponent<PatrolFeature>();
             host.AddComponent<SceneFeature>();
             host.AddComponent<PlayersFeature>();
+            host.AddComponent<ArenaGuestFeature>();
             host.AddComponent<DirectorMenu>();
-            Debug.Log("[" + Id + "] Director " + Version + " loaded: INSERT menu, F1 clear, F2 freeze, F3 patrol, F4 idle animations, F5 take over, F6 unaware, F7 keep unaware, F8 home, F9 guard, F10 alert cycle, F11 scenes (paused)");
+            Debug.Log("[" + Id + "] Director " + Version + " loaded: INSERT menu, F1 clear, F2 freeze, F3 patrol, F4 idle animations, F5 take over, F6 unaware, F7 keep unaware, F8 home, F9 guard, F10 alert cycle, F11 scenes (paused), arena guests (pad Start in an arena)");
         }
 
         public void Unload()

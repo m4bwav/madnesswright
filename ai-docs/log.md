@@ -2,6 +2,13 @@
 
 Append-only, newest first.
 
+## 2026-10-24 · session 16: arena co-op researched, owner chose the pad origin picker, Director 0.9.0 built
+
+- No play since session 15 (Player.log 22:15). Same build 25615196; fresh decompile in the scratchpad. Findings in [notes/2026-10-24-arena-coop-research.md](notes/2026-10-24-arena-coop-research.md): an arena career is built around one character with one `StatCard_Origin`, picked at career creation or a new imprint; hired squadmates come only after the pilot rescue (`HQ_Stats.Value_Hireling_SquadMax` 0 before); no half-built co-op path; rewards go to `chars_Core`; a character with no career never ends the wave; no revive in arenas. This PC has no arena career.
+- Plan with three routes: [plans/2026-10-24-arena-coop.md](plans/2026-10-24-arena-coop.md). One question to the owner; they chose (b), the pad origin picker.
+- 0.9.0 (`ArenaGuestFeature`): a pad waiting in `PlayersWaitingForAdd` in an arena stage (not the HQ) gets an IMGUI panel driven through `Joystick_Manager.Check_DpadPressed` and `Check_ButtonPressed`; the pick builds a guest (`Char_Data.CreateCharacter` on the "Arena" card, `ApplyOriginAndResetFromStats`, `Career_Data.CheatCharacterLevel` to player one's level), adds it to the player squad, spawns it beside player one with a bot and hands it the pad's controller with `AssignController`, plus the origin's first `WarchestStarterWeapons`. Not in the career. A dead guest returns when the wave is over; a guest whose player left is poofed; guests leave the squad on every scene load. Picks in `PlaygroundDirector/arena-guests.txt`.
+- Clean build (0 warnings), deployed, DLL checked (UTF-16 strings `0.9.0`, `arena guest`). Not launched or played. Checks: check_skills, test_mpn, test_decomp pass; budget yellow as before.
+
 ## 2026-10-24 · session 15: two players played, Workshop 0.8.0, arena co-op prompt
 
 - The owner and the requester played 0.8.0 with a pad and reported a pass. Player.log and the scene file agree (modtools T-20261024-3): player 2 joined, a story scene saved player two's Deimos (`"player":2`, version 6) and the load put it back with its weapons; no exception.
@@ -198,3 +205,4 @@ Append-only, newest first.
 ## [2026-10-23] index | rebuilt (13 entries)
 ## [2026-10-24] index | rebuilt (15 entries)
 ## [2026-10-24] index | rebuilt (15 entries)
+## [2026-10-24] index | rebuilt (17 entries)
