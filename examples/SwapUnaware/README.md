@@ -90,7 +90,7 @@ Copying the `SwapUnaware` folder (`info.txt` and `Managed/SwapUnaware.dll`) into
 
 Needs the .NET SDK and the game installed. `pwsh ./pack.ps1 -Version 0.6.0` builds `src/` against the game's own `Managed` DLLs (net48, `Private=false`, nothing copied from the game) and writes `dist/SwapUnaware-<version>.zip`. It finds the game with the hub skill's `mpn.py where`; pass `-GameManaged <...\Madness Project Nexus_Data\Managed>` or set `MPN_MANAGED` to point elsewhere. Then deploy with `python -I ../../skills/madnesswright/scripts/mpn.py deploy dist/stage/SwapUnaware --force` and read `mpn.py log` after playing.
 
-To update the Workshop item after a new build (absolute paths; relative ones end in `result FileNotFound`): `../WorkshopUpload/out/wsup.exe <abs>/dist/stage/SwapUnaware <abs>/preview.jpg "Director (was Playground Director)" workshop-description.txt "Scripts" 3822329165` (see [WorkshopUpload](../WorkshopUpload/README.md)).
+To update the Workshop item after a new build (absolute paths; relative ones end in `result FileNotFound`): `../WorkshopUpload/out/wsup.exe <abs>/dist/stage/SwapUnaware <abs>/preview.jpg "Director (was Playground Director)" workshop-description.txt "Scripts" 3822329165 <abs>/dist/change-notes.txt` (see [WorkshopUpload](../WorkshopUpload/README.md)). Write `dist/change-notes.txt` first: the version and what changed for the player since the last Workshop update, from the root CHANGELOG lines; it becomes the entry on the item's Change Notes tab.
 
 `build/`, `dist/`, `bin/` and `obj/` stay out of git. Never commit game DLLs or decompiled code.
 

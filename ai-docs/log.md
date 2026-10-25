@@ -2,6 +2,10 @@
 
 Append-only, newest first.
 
+## 2026-10-25 Â· Workshop change notes
+
+- The owner noticed the item's Change Notes tab said only "Update" for the last three updates: `examples/WorkshopUpload/Program.cs` hard-coded `WithChangeLog("Update")`. It now takes a change-notes file as the seventh argument and exits 2 before `SteamClient.Init` when an update has none or it is empty (checked: `wsup.exe a b c d e 123` prints the error, exit 2). Rule in AGENTS.md, madnesswright Step 6 (C-20261025-1); backfilling the three old entries is Owed 16.
+
 ## 2026-10-24 · session 16: arena co-op researched, owner chose the pad origin picker, Director 0.9.0 built
 
 - No play since session 15 (Player.log 22:15). Same build 25615196; fresh decompile in the scratchpad. Findings in [notes/2026-10-24-arena-coop-research.md](notes/2026-10-24-arena-coop-research.md): an arena career is built around one character with one `StatCard_Origin`, picked at career creation or a new imprint; hired squadmates come only after the pilot rescue (`HQ_Stats.Value_Hireling_SquadMax` 0 before); no half-built co-op path; rewards go to `chars_Core`; a character with no career never ends the wave; no revive in arenas. This PC has no arena career.

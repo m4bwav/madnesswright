@@ -10,10 +10,10 @@ A 30-line program that publishes or updates a MADNESS: Project Nexus Workshop it
 ## Run
 
 ```
-out/wsup.exe <content-folder> <preview.jpg> "<title>" <description.txt> "<tags,comma,separated>" [item-id]
+out/wsup.exe <content-folder> <preview.jpg> "<title>" <description.txt> "<tags,comma,separated>" [item-id change-notes.txt]
 ```
 
-- Without `item-id` it creates a new item; with one it updates that item (title, description, content, preview, tags) and adds a change note.
+- Without `item-id` it creates a new item; with one it updates that item (title, description, content, preview, tags) and adds the text of `change-notes.txt` as the update's change note. An update without a non-empty notes file is refused (exit 2) before Steam is touched: the item's Change Notes tab is what subscribers read, and until 2026-10-25 this program wrote the bare word "Update" there. Write what changed for the player (new features, fixes, anything they must do), usually from the mod's CHANGELOG line, and start it with the version.
 - Visibility is set to Public. Change `WithPublicVisibility()` to `WithFriendsOnlyVisibility()` or `WithPrivateVisibility()` in Program.cs for anything else.
 - Pass absolute paths: with relative ones the upload reaches 100% and then prints `result FileNotFound`.
 - The content folder holds what goes in the mod folder (`info.txt`, `Managed/`, cards, bundles). Keep the preview under 1 MB.
