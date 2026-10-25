@@ -57,12 +57,23 @@ Why, and what was left out: [the decision](../../ai-docs/decisions/2026-10-21-sc
 
 ## Two players (0.8.0)
 
-The game has local co-op: press **Start** on a pad to join (answer No to "Control Player One?" to keep the keyboard player as player one); **Start with both shoulder buttons** leaves. A joining player takes a free member of your squad; with none free, they join at the next door, where story stages add a bonus character. In the Playground and arenas, put a squadmate in your squad first. Game side: [the research note](../../ai-docs/notes/2026-10-24-two-player-research.md); rulings: [the plan](../../ai-docs/plans/2026-10-24-two-player.md).
+The game has local co-op: press **Start** on a pad to join (answer No to "Control Player One?" to keep the keyboard player as player one); **Start with both shoulder buttons** leaves. A joining player takes a free member of your squad; with none free, they join at the next door, where story stages add a bonus character. In the Playground, put a squadmate in your squad first; in arenas see [Arena co-op](#arena-co-op-090). Game side: [the research note](../../ai-docs/notes/2026-10-24-two-player-research.md); rulings: [the plan](../../ai-docs/plans/2026-10-24-two-player.md).
 
 - **The keyboard player drives the Director** (small ruling): every key and mouse pick acts for player one. A pad player gets no Director buttons. F10's "attacks you" means the keyboard player.
 - No feature touches another player's character: F2 never freezes it, F9 lets go of a guard a player takes over, the click block for patrol squares and menu picks stops only the keyboard player's shots, Clear corpses keeps a player's body. F8 says so when another player has taken your home body.
 - **Scenes** (file version 6) keep the other players' characters. A load puts a character a player plays now back on its spot with its saved weapons (only the ammo in a story or arena career) and nothing else: no alert, freeze or squad change, never a respawn or removal. A player who joined after the save stays where they are; a character nobody plays any more loads as a squadmate. The Playground load clears the room itself instead of the game's Clear All, which removes every character but player one's.
 - Player.log: `player 2 joined on pad 0`, `player 2 left`, `player 2 now plays <name> (<squad>)`, and one `played by player 2: put back` line per player on a scene load.
+
+## Arena co-op (0.9.0)
+
+The game builds an arena career around one character with one origin, and a pad that presses Start in an arena waits for a free squadmate that a young career never has (hired squadmates come only after the pilot rescue). Director fills the gap with a **guest**: press Start on the pad (answer No to "Control Player One?"), and a panel that pad drives lists the origins your career has unlocked, with their traits and bonuses. D-pad browses, **A** picks, **B** cancels (leave and press Start again to reopen it). The guest appears beside you at your level with the origin's armour and starter weapon. Game side: [the research note](../../ai-docs/notes/2026-10-24-arena-coop-research.md); routes and rulings: [the plan](../../ai-docs/plans/2026-10-24-arena-coop.md).
+
+- **The guest is not part of your career** (small ruling): cash, XP, tokens, checkpoints and stats stay yours as now, and the guest is gone in the HQ.
+- **Player two's death never ends the wave**; the guest is back beside you once the wave is over. **Your death still ends the wave**, as in the game: the arena has no revive.
+- Only in arena stages, never the HQ (story levels and the Playground have the game's own co-op). If you brought a hired squadmate, the game hands it to the pad first and no panel shows.
+- Leaving (Start with both shoulders) takes the guest away with a poof. The last pick of each pad is remembered in `PlaygroundDirector/arena-guests.txt` and offered first next time.
+- Every Director feature treats the guest as a player (0.8.0's rules), and scenes save it like any other player's character.
+- Player.log: `arena guests: player 2 is picking an origin`, `arena guest: player 2 picked <origin>`, `arena guest: player 2 plays <name> (<origin>, level N, <weapon>)`, and a line when it is removed.
 
 ## Install
 
