@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,16 +34,43 @@ namespace SwapUnaware
 
         class Entry { public string name, where; public bool here; }
 
-        // A load waiting for a stage to load or a room to fill.
-        class Pending { public SceneData data; public string name, scene; public float notBefore, deadline; }
+        // A load waiting for a stage to load or a room to fill. card and items: the character and
+        // weapons you had before another Playground stage loaded, with "Keep my character and weapons".
+        class Pending
+        {
+            public SceneData data; public string name, scene; public float notBefore, deadline;
+            public string card; public List<SceneData.ItemRecord> items;
+        }
         Pending pending;
+
+        // The list's "Keep my character and weapons" box (0.10.0): a load leaves the body you play
+        // and what it holds alone, and after a Playground stage change gives them back. Remembered
+        // as a file that exists while the box is ticked.
+        bool keepMine;
+        static string KeepFile { get { return Path.Combine(Path.Combine(Application.persistentDataPath, "PlaygroundDirector"), "load-keeps-mine.txt"); } }
 
         protected override string Name { get { return "scenes (F11)"; } }
         protected override bool RunWhilePaused { get { return true; } }
 
         static string Folder { get { return Path.Combine(Path.Combine(Application.persistentDataPath, "PlaygroundDirector"), "Scenes"); } }
 
-        void Awake() { SceneManager.sceneLoaded += OnSceneLoaded; }
+        void Awake()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            try { keepMine = File.Exists(KeepFile); } catch (Exception) { }
+        }
+
+        void SetKeepMine(bool on)
+        {
+            keepMine = on;
+            try
+            {
+                if (on) { Directory.CreateDirectory(Path.GetDirectoryName(KeepFile)); File.WriteAllText(KeepFile, "Director: scene loads keep your character and weapons\n"); }
+                else if (File.Exists(KeepFile)) File.Delete(KeepFile);
+            }
+            catch (Exception ex) { Game.Error("remember the keep box", ex); }
+            Game.Log("scene: keep my character and weapons " + (on ? "on" : "off"));
+        }
 
         // Opened straight from the paused menu: a queued key would arrive unpaused.
         protected override void Register()
@@ -177,6 +205,8 @@ namespace SwapUnaware
             {
                 GUILayout.Label("Saved scenes: click one to load it.   CAPS LOCK: back.   ESC: close.");
                 GUILayout.Label("Scenes from this stage come first; others show where they were saved.");
+                bool keep = GUILayout.Toggle(keepMine, " Keep my character and weapons (a load leaves who you play and what you hold alone)");
+                if (keep != keepMine) SetKeepMine(keep);
                 scroll = GUILayout.BeginScrollView(scroll);
                 if (saved.Length == 0) GUILayout.Label("(none yet: F11 while paused saves one)");
                 foreach (var s in saved)
@@ -237,6 +267,7 @@ namespace SwapUnaware
                 Game.Say("\"" + name + "\" holds no room and no characters (0.4.0 and 0.5.0 lost them when saving); save it again");
                 return;
             }
+            data.keepMine = keepMine;
             if (data.SavedHere())
             {
                 if (data.IsPlayground) { Finish(data, name); return; }
@@ -249,6 +280,12 @@ namespace SwapUnaware
             if (SceneData.InPlayground && data.IsPlayground && Game_Manager.GameTransitions.ReturnSceneExists(target))
             {
                 pending = new Pending { data = data, name = name, scene = target, deadline = Time.realtimeSinceStartup + 90f };
+                var me = Game.Me();
+                if (keepMine && me != null && me.myData != null && me.myData.myCard != null)
+                {
+                    pending.card = me.myData.myCard.name;
+                    pending.items = SceneData.Loadout(me);
+                }
                 Game.Say("loading " + data.Where + " for scene \"" + name + "\"");
                 Game_Manager.GameTransitions.LoadScene(target, Transitions_Main.TransitionType.WipeSide);
                 return;
@@ -292,22 +329,31 @@ namespace SwapUnaware
             }
             if (now < p.notBefore || Game_Manager.ReturnPaused()) return;
             pending = null;
-            Finish(p.data, p.name);
+            Finish(p.data, p.name, p);
         }
 
-        void Finish(SceneData data, string name)
+        void Finish(SceneData data, string name, Pending from = null)
         {
+            string kept = null;
+            if (from != null && from.card != null) kept = Become(from.card);
             var me = Game.Me();
             string where = data.Where + ", room " + (me != null && me.myRoom != null ? me.myRoom.name : "?");
             if (data.IsPlayground)
             {
                 var p = data.RestorePlayground();
+                // The stage change gave you the stage's own character and weapons; yours go back last.
+                if (kept != null)
+                {
+                    string given;
+                    SceneData.ResetLoadout(Game.Me(), from.items, out given);
+                    Game.Log("scene: kept your character after the stage change: " + kept + "; weapons: " + (given.Length > 0 ? given : "none"));
+                }
                 Placed(p.placed);
                 Game.Say("loaded scene \"" + name + "\" on " + where + ": " + p.chars + " of " + data.chars.Count + " characters"
                     + (p.kept > 0 ? " (" + p.kept + " still standing in other rooms put back)" : "")
                     + (data.playersPut > 0 ? ", " + data.playersPut + " played by other players put back" : "")
                     + (p.rejoined > 0 ? ", " + p.rejoined + " rejoined their squad" : "")
-                    + Items(data, p.floor) + (p.yours ? ", your weapons reset" : ""));
+                    + Items(data, p.floor) + (p.yours ? ", your weapons reset" : "") + (data.keepMine ? ", you kept your character and weapons" : ""));
                 return;
             }
             Game.Log("scene: loading \"" + name + "\" on " + where + ", one line per saved character:");
@@ -319,7 +365,27 @@ namespace SwapUnaware
                 + (r.rejoined > 0 ? r.rejoined + " rejoined their squad, " : "")
                 + r.corpses + (data.version >= 4 ? " newer bodies cleared" : " old bodies of the respawned cleared")
                 + (r.mess >= 0 ? ", " + r.mess + " newer blood splats, bullet holes, casings and debris cleared" : ", blood not reset") + Items(data, r.floor)
-                + (data.HasItems ? ", " + r.yourAmmo + " of your " + data.playerItems.Count + " weapons reset" : ""));
+                + (data.keepMine ? ", you kept your character and weapons"
+                    : data.HasItems ? ", " + r.yourAmmo + " of your " + data.playerItems.Count + " weapons reset" : ""));
+        }
+
+        // The Playground's own Play Character (InteractiveMode.PlayCharacter_Done) with the card you
+        // played before the stage changed. The menu keeps its choice in a non-public field.
+        static string Become(string card)
+        {
+            try
+            {
+                var me = Game.Me();
+                if (me == null || me.myData == null || me.myData.myCard == null) return "no body to change";
+                if (me.myData.myCard.name == card) return "same character (" + card + ")";
+                var sc = StatCard_Base.ReturnCardByName<StatCard_Character>(card);
+                var im = AccessTools.Field(typeof(InteractiveMode), "currentInteractive").GetValue(null);
+                if (sc == null || im == null) return "could not change back to " + card;
+                AccessTools.Field(typeof(InteractiveMode), "selectedPlayCharacter").SetValue(im, sc);
+                InteractiveMode.PlayCharacter_Done();
+                return "changed back to " + card;
+            }
+            catch (Exception e) { Game.Error("scene: keep character " + card, e); return "could not change back to " + card; }
         }
 
         static string Items(SceneData data, SceneData.FloorResult f)

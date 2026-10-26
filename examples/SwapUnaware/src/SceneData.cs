@@ -33,6 +33,9 @@ namespace SwapUnaware
         public string dead;
         // Set by a load: saved characters another player plays now, put back by PutPlayers. Not saved.
         internal int playersPut;
+        // Set by a load (the list's "Keep my character and weapons" box, 0.10.0): the players keep
+        // the weapons they hold now instead of the saved ones. Not saved.
+        internal bool keepMine;
 
         [Serializable]
         public class RoomRef { public string name; public string serial; public Vector3 pos; }
@@ -393,7 +396,7 @@ namespace SwapUnaware
                 res.placed.Add(new KeyValuePair<Combatant_Base, CharRecord>(c, r));
             }
             res.rejoined = Rejoin(res.placed, squads);
-            res.yours = HasItems && hasPlayer && ResetLoadout(me, playerItems);
+            res.yours = HasItems && hasPlayer && !keepMine && ResetLoadout(me, playerItems);
             res.floor = HasItems ? RestoreFloor() : new FloorResult();
             return res;
         }
@@ -478,7 +481,7 @@ namespace SwapUnaware
             }
             // Your weapons belong to the career here: the same weapons go back in your hands with
             // their saved ammo. Before the floor, which would clear one you threw.
-            if (HasItems && hasPlayer) res.yourAmmo = RefillAmmo(me, playerItems);
+            if (HasItems && hasPlayer && !keepMine) res.yourAmmo = RefillAmmo(me, playerItems);
             // Last, so weapons dropped by the bodies removed above go too.
             if (HasItems) res.floor = RestoreFloor();
             return res;
@@ -521,15 +524,24 @@ namespace SwapUnaware
         // over since) goes back to its spot with its saved weapons (in a story or arena career only
         // the ammo, as yours), and nothing else: no alert, freeze, guard, patrol or squad change,
         // and never a respawn or removal. Returns the records left for the usual restore.
+        // The body you play now is never doubled: if the scene holds it (taken over with F5 since
+        // the save), its record is left out and the body stays as it is (0.10.0).
         List<CharRecord> PutPlayers(bool playground)
         {
             var bodies = new Dictionary<string, Combatant_Base>();
             foreach (var c in Game.OtherPlayers())
                 if (c.myData != null && !string.IsNullOrEmpty(c.myData.myUniqueID)) bodies[c.myData.myUniqueID] = c;
+            var me = Game.Me();
+            string myId = me != null && me.myData != null ? me.myData.myUniqueID : null;
             var todo = new List<CharRecord>();
             playersPut = 0;
             foreach (var r in chars)
             {
+                if (!string.IsNullOrEmpty(myId) && r.id == myId)
+                {
+                    Game.Log("scene:   " + r.card + " is the body you play now; left as it is");
+                    continue;
+                }
                 Combatant_Base c;
                 if (string.IsNullOrEmpty(r.id) || !bodies.TryGetValue(r.id, out c))
                 {
@@ -546,7 +558,8 @@ namespace SwapUnaware
                     if (!Usable(room) && playground) room = Cam_Main.currentRoom;
                     if (Usable(room)) c.TeleportTo(r.pos, Facing(r.facing) * Vector3.forward, room);
                     string what = "";
-                    if (HasItems)
+                    if (HasItems && keepMine) what = "; weapons kept";
+                    else if (HasItems)
                     {
                         if (playground) what = ResetLoadout(c, r.items) ? "; weapons reset" : "; weapons not reset";
                         else what = "; " + RefillAmmo(c, r.items) + " of " + r.items.Count + " weapons reset";
