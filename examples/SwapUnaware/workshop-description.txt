@@ -17,6 +17,10 @@
 
 [b]Two players[/b] (new in 0.8.0): works with the game's local co-op. A second player joins on a gamepad with Start (answer No to "Control Player One?"). The keyboard player drives the Director; every player is treated as a player: never frozen, guarded, cleared or made a target, and a scene load puts each player back on their saved spot with their weapons.
 
+[b]Arena co-op[/b] (new in 0.9.0): in an arena, a second player who presses Start on a pad gets a panel listing the origins your career has unlocked (D-pad browse, A pick, B cancel) and plays a guest of that origin at your level, beside you. The guest is not saved in your career, its death never ends the wave, and it is back once the wave is over.
+
+[b]Keep my character and weapons[/b] (new in 0.10.0): a box at the top of the CAPS LOCK scene list. Ticked, loading a scene leaves the character you play and the weapons you hold alone, even after loading a scene from another Playground map. Off by default and remembered between games.
+
 [b]Needs the releasebeta branch[/b] (Steam: Properties, Betas, releasebeta): the normal release build does not load mods. Enable it from the gear icon on the main menu and restart.
 
 Works in the story mode, the arenas, custom stages and the Playground. In an arena, F1 counts as kills and moves the waves on. Arenas cannot be paused between waves, so save scenes mid-wave or before the first. Back up your saves before using it in a story career.
