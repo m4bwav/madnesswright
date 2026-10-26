@@ -2,6 +2,12 @@
 
 Append-only, newest first.
 
+## 2026-10-25 · Director 0.10.0 on the Workshop
+
+- The owner, tired of testing, asked to release what we have. Workshop item 3822329165 updated to 0.10.0 (the deployed, byte-identical DLL, holds `0.10.0` as UTF-16): `result OK`, GetPublishedFileDetails visibility 0, updated 21:55, 47 subscribers.
+- `workshop-description.txt` gained arena co-op (0.9.0) and keep-box (0.10.0) paragraphs. The change notes (`dist/change-notes.txt`, not tracked) cover 0.9.0 and 0.10.0, list the F5-then-load empty scene as a known issue with its workaround (untick the box or press F8 first), and say arena co-op has not had a full play test.
+- Still owed: the 0.10.1 fixes (Owed 17) and the arena co-op play (Owed 15), now on a public build.
+
 ## 2026-10-25 · Director 0.10.0 first play
 
 - The requester played 0.10.0 in the Playground (InteractiveChamber only) and answered an askwright test page. Player.log agrees the box works: ticked loads end "you kept your character and weapons", unticked ones "your weapons reset". The first load after F5 left out the played body as designed (8 of 9).
@@ -224,3 +230,4 @@ Append-only, newest first.
 ## [2026-10-24] index | rebuilt (15 entries)
 ## [2026-10-24] index | rebuilt (15 entries)
 ## [2026-10-24] index | rebuilt (17 entries)
+## [2026-10-25] index | rebuilt (17 entries)
