@@ -2,6 +2,12 @@
 
 Append-only, newest first.
 
+## 2026-10-25 · Director 0.10.0 first play
+
+- The requester played 0.10.0 in the Playground (InteractiveChamber only) and answered an askwright test page. Player.log agrees the box works: ticked loads end "you kept your character and weapons", unticked ones "your weapons reset". The first load after F5 left out the played body as designed (8 of 9).
+- Failed: the next load of that scene spawned 0 of 9; every spawn threw `NullReferenceException` in `Orders_Manager.CallSquadmates` (via `Squad_Main.AddMember`, `Target_Object.ChangeFaction`, `Room_Main.UpdateFactionPresent`), and so did `ClearRoom`'s `RemoveFromGame`, aborting the restore. Lead: a squad still lists a member whose combatant is gone.
+- Asked for: the Playground load should move the player back to the saved spot (story and arena loads already do). Every Playground load also reports 4 or 5 of 5 characters off their spot 2 s later; unexplained.
+
 ## 2026-10-25 · Director 0.10.0: keep my character and weapons on load
 
 - The requester asked for an option to keep the character and weapon they have when they load a scene, maybe a checkbox on the load page. No play since 2026-10-24 22:15 (Player.log), so the design came from the code and a fresh decompile (same build 25615196).
