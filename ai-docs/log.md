@@ -2,6 +2,13 @@
 
 Append-only, newest first.
 
+## 2026-10-25 · Director 0.10.0: keep my character and weapons on load
+
+- The requester asked for an option to keep the character and weapon they have when they load a scene, maybe a checkbox on the load page. No play since 2026-10-24 22:15 (Player.log), so the design came from the code and a fresh decompile (same build 25615196).
+- What a load did to the player before: the body you control was never swapped, but the Playground load replaced your weapons with the saved ones, a story or arena load reset your ammo, a scene saved on another Playground map loads that map (which may hand you its own character), and a saved record of the body you play now (taken with F5 after saving) was spawned again as a double.
+- 0.10.0: a box on the CAPS LOCK list, remembered as `PlaygroundDirector/load-keeps-mine.txt`, off by default. Ticked: `SceneData.keepMine` skips `ResetLoadout`/`RefillAmmo` for you and for pad players; a cross-map Playground load snapshots your card and `Loadout` first and afterwards calls the game's `InteractiveMode.PlayCharacter_Done` (its `currentInteractive` and `selectedPlayCharacter` are non-public, set through `AccessTools`) when the card differs, then gives the weapons back. Always: `PutPlayers` leaves out the record whose `myUniqueID` is your body's.
+- Clean build (0 warnings), deployed, DLL byte-identical to the build and holds `0.10.0` and `load-keeps-mine` as UTF-16. Not launched or played (Owed 17).
+
 ## 2026-10-25 Â· Workshop change notes
 
 - The owner noticed the item's Change Notes tab said only "Update" for the last three updates: `examples/WorkshopUpload/Program.cs` hard-coded `WithChangeLog("Update")`. It now takes a change-notes file as the seventh argument and exits 2 before `SteamClient.Init` when an update has none or it is empty (checked: `wsup.exe a b c d e 123` prints the error, exit 2). Rule in AGENTS.md, madnesswright Step 6 (C-20261025-1); backfilling the three old entries is Owed 16.
