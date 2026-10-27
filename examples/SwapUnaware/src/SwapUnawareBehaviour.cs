@@ -89,13 +89,14 @@ namespace SwapUnaware
             // the claimer re-scores every remaining claimant by reading C.myOwner. A controller listed
             // twice (ClaimTarget does not check) is still there with a null owner and throws, halfway
             // through the swap. Release both controllers' claims first, as the game's KillMe does.
-            // A frozen or guarding body holds a lock and a pinned rigidbody on the controller the swap
-            // replaces; let go first, or the lock would move to whichever body gets that controller.
-            FreezeFeature.Release(target);
+            var previous = pc.myCombatant;
             GuardFeature.Unguard(target);
             Game.PruneClaimants();
             Game.ReleaseClaims(target.myController);
             Game.ReleaseClaims(pc);
+            // Both bodies can change controllers. Move each freeze lock with its body.
+            FreezeFeature.Detach(previous);
+            FreezeFeature.Detach(target);
             try
             {
                 DoSwap(pc, target);
@@ -105,6 +106,11 @@ namespace SwapUnaware
                 Game.Error("swap failed", e);
                 Repair(pc, target);
                 return;
+            }
+            finally
+            {
+                FreezeFeature.Rebind(previous);
+                FreezeFeature.Rebind(target);
             }
             target.FlashColor(Color.green, 8f, 2f);
             Game.Say("now controlling " + target.name + (target == home ? " (home)" : ""));

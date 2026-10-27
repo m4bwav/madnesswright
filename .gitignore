@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
 dist/
+tests/DirectorFreezeChecks/bin/
+tests/DirectorFreezeChecks/obj/
 *-workspace/
 # Unity and mod build output never belongs here
 *.sobj

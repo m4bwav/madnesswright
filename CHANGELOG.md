@@ -4,6 +4,7 @@ Plugin versions. Skill-level changes and their reasons are in each skill's own C
 
 ## Unreleased
 
+- `examples/SwapUnaware` 0.10.1: F10 now cycles a frozen character's alert state without releasing its freeze. F5 takeover and switching away keep the freeze on that body instead of moving its controller lock or unfreezing it. Regression checks run against the mod's C# source in CI. Published to the Workshop on 2026-10-27; game playtest pending.
 - `examples/WorkshopUpload`: an update takes a change-notes file as its seventh argument and writes its text to the item's Change Notes tab (it used to write "Update"); an update without one is refused before Steam is touched. madnesswright Step 6 and AGENTS.md: every Workshop update gets real change notes.
 - `examples/SwapUnaware` 0.7.5: after a scene load teammates no longer fight each other (a respawned character now joins its saved squadmates' live squad; a None-faction squad of its own made them foes), and characters playing a looping animation (F4's or the level's) start it again. Load lines name each character's squad and faction; 2 s later Player.log names any saved squadmates now hostile. Scene files version 5. Played and passed on 2026-10-24.
 - `examples/SwapUnaware` 0.7.6: the checks a moment after a scene load are skipped, with one log line, when the stage changed first (leaving the level within 2 s used to report every character off its spot or gone). Built and deployed, not yet played.

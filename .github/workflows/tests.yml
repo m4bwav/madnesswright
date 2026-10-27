@@ -35,3 +35,12 @@ jobs:
           python-version: "3.14"
       - name: size budget (red fails)
         run: python scripts/budget.py
+  director-freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+      - name: F10 and character-switch freeze regressions
+        run: dotnet run --project tests/DirectorFreezeChecks/DirectorFreezeChecks.csproj

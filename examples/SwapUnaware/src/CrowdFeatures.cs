@@ -9,7 +9,7 @@ namespace SwapUnaware
     {
         public KeyCode Key = KeyCode.F2;
 
-        class Saved { public bool wasFrozen; public float animSpeed; }
+        class Saved { public bool wasFrozen; public float animSpeed; public Controller_Base controller; }
         static readonly Dictionary<Combatant_Base, Saved> frozen = new Dictionary<Combatant_Base, Saved>();
         static FreezeFeature instance;
 
@@ -27,10 +27,10 @@ namespace SwapUnaware
                 if (frozen.Count > 0) { int n = frozen.Count; ReleaseAll(); Game.Say(n + " characters unfrozen"); }
                 else Game.Say(FreezeAll() + " characters frozen; F2 to unfreeze");
             }
-            // Let go of the dead (so they ragdoll) and of a body a player has just taken over
-            // (F5, or a second player joining on a pad takes a squadmate).
+            // Dead bodies must ragdoll; live bodies keep their freeze across controller changes.
             foreach (var c in frozen.Keys.ToList())
-                if (c == null || c.AmDead() || Game.IsPlayer(c)) Release(c);
+                if (c == null || c.AmDead()) Release(c);
+                else Rebind(c);
         }
 
         static int FreezeAll()
@@ -52,9 +52,40 @@ namespace SwapUnaware
             if (instance == null || frozen.ContainsKey(c)) return;
             var anim = c.myAnimator != null ? c.myAnimator.myAnim : null;
             frozen[c] = new Saved { wasFrozen = c.AmFrozen(), animSpeed = anim != null ? anim.speed : 1f };
-            c.myController.LockController(instance);
+            Rebind(c);
             Pathfind_Main.ClearWaypointsAndTarget(c);
             c.SetFrozen(true);
+            if (anim != null) anim.speed = 0f;
+        }
+
+        internal static void Detach(Combatant_Base c)
+        {
+            Saved s;
+            if (!frozen.TryGetValue(c, out s) || s.controller == null) return;
+            s.controller.ReleaseController(instance);
+            s.controller = null;
+        }
+
+        internal static void Rebind(Combatant_Base c)
+        {
+            Saved s;
+            if (!frozen.TryGetValue(c, out s)) return;
+            if (s.controller != c.myController)
+            {
+                Detach(c);
+                s.controller = c.myController;
+                if (s.controller != null) s.controller.LockController(instance);
+                c.SetFrozen(true);
+                var anim = c.myAnimator != null ? c.myAnimator.myAnim : null;
+                if (anim != null) anim.speed = 0f;
+            }
+        }
+
+        internal static void KeepFrozen(Combatant_Base c)
+        {
+            if (!IsFrozen(c)) return;
+            c.SetFrozen(true);
+            var anim = c.myAnimator != null ? c.myAnimator.myAnim : null;
             if (anim != null) anim.speed = 0f;
         }
 
@@ -66,7 +97,7 @@ namespace SwapUnaware
             var anim = c.myAnimator != null ? c.myAnimator.myAnim : null;
             if (anim != null) anim.speed = s.animSpeed;
             if (!c.AmDead()) c.SetFrozen(s.wasFrozen || GuardFeature.IsGuard(c));
-            if (c.myController != null) c.myController.ReleaseController(instance);
+            if (s.controller != null) s.controller.ReleaseController(instance);
         }
 
         internal static void ReleaseAll()
@@ -122,7 +153,6 @@ namespace SwapUnaware
             if (!Pressed(Key)) return;
             var c = Game.NpcUnderMouse();
             if (c == null) { Game.Say("no character under the mouse"); return; }
-            if (FreezeFeature.IsFrozen(c)) { Game.Say(c.name + " is frozen; F2 to unfreeze"); return; }
             var ctl = c.myController;
             switch (ctl.myAlertStatus)
             {
@@ -146,6 +176,7 @@ namespace SwapUnaware
                     Game.Say(c.name + ": UNAWARE (lost track of you)");
                     break;
             }
+            FreezeFeature.KeepFrozen(c);
         }
     }
 

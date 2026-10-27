@@ -2,6 +2,12 @@
 
 Append-only, newest first.
 
+## 2026-10-27 · Director 0.10.1 on the Workshop
+
+- The owner asked to publish the freeze fix before pushing the repository changes. `pack.ps1 -Version 0.10.1` built the mod against the installed game assemblies; `mpn.py --strict check-mod` reported no errors or warnings. The staged DLL matched the built DLL byte for byte and contained `0.10.1`. The F10 and F5 takeover/switch-away C# regressions, 31 Python tests, skills check and budget check passed.
+- Workshop item 3822329165 updated in place: `result OK`, no legal agreement needed. The public listing (visibility 0) reported the new F2 description and a 2026-10-27 22:22:19 UTC update; its public Change Notes tab contained `Director 0.10.1`. The change-notes text is in [the mod folder](../examples/SwapUnaware/change-notes-0.10.1.txt).
+- Not played in the game yet. Try F2, F10 (all three states), F5 onto a frozen character, F8 away and F2 to release it. The older F5-then-scene-load issue and arena co-op playtest are still owed.
+
 ## 2026-10-25 · Director 0.10.0 on the Workshop
 
 - The owner, tired of testing, asked to release what we have. Workshop item 3822329165 updated to 0.10.0 (the deployed, byte-identical DLL, holds `0.10.0` as UTF-16): `result OK`, GetPublishedFileDetails visibility 0, updated 21:55, 47 subscribers.

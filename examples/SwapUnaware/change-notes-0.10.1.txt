@@ -1,0 +1,5 @@
+Director 0.10.1
+
+F10 can now change a frozen character to searching, attacking, or unaware without unfreezing them. Taking control of a frozen character and switching away also keeps that body frozen. Press F2 to unfreeze the room.
+
+The F5-then-scene-load issue noted in 0.10.0 is not part of this fix. This update was built and checked against the game files, but has not yet been playtested in the game.
