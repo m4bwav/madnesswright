@@ -11,11 +11,12 @@ namespace SwapUnaware
     // version 3 adds holsters, ammo, your loadout and loose weapons (SceneItems.cs);
     // version 4 the bodies already lying in the level, so a load clears only newer ones;
     // version 5 the looping emote each character was playing;
-    // version 6 the other players' characters (local co-op), marked by player number.
+    // version 6 the other players' characters (local co-op), marked by player number;
+    // version 7 who had infinite ammo (0.11.0). Older files load with infinite ammo off for everyone.
     [Serializable]
     public partial class SceneData
     {
-        public const int CurrentVersion = 6;
+        public const int CurrentVersion = 7;
 
         public int version = CurrentVersion;
         public string stage;        // Unity scene name (version 1's only key)
@@ -28,6 +29,7 @@ namespace SwapUnaware
         public Vector3 playerPos;
         public float playerFacing;
         public RoomRef playerRoom = new RoomRef();
+        public bool playerInfAmmo;  // version 7
         public List<CharRecord> chars = new List<CharRecord>();
         // Version 4: Char_Data.myUniqueID of every body in the level at save time, joined by '|'.
         public string dead;
@@ -63,6 +65,8 @@ namespace SwapUnaware
             public string emote;    // clip name of the looping emote playing at save time
             // Version 6
             public int player;      // 2 to 4: a player on a pad played this character at save time
+            // Version 7
+            public bool infAmmo;    // Director's infinite ammo (AmmoFeature)
         }
 
         [Serializable]
@@ -305,6 +309,7 @@ namespace SwapUnaware
                 d.playerFacing = me.transform.eulerAngles.y;
                 d.playerRoom = Ref(me.myRoom);
                 d.playerItems = Loadout(me);
+                d.playerInfAmmo = AmmoFeature.Has(me);
             }
             var mySquad = me != null && me.myData != null ? me.myData.mySquad : null;
             var squads = new List<Squad_Main>();
@@ -336,6 +341,7 @@ namespace SwapUnaware
                     wave = c.myWave != null,
                     emote = IdleAnimFeature.CurrentEmote(c),
                     player = Game.PlayerNumber(c),
+                    infAmmo = AmmoFeature.Has(c),
                 };
                 r.items = Loadout(c);
                 PatrolFeature.Route route;
@@ -364,6 +370,7 @@ namespace SwapUnaware
             FreezeFeature.ReleaseAll();
             ClearRoom();
             var me = Game.Me();
+            RestoreAmmo(me);
             var res = new PlaygroundResult();
             var todo = PutPlayers(true);
             // Clear All empties only the room you are in. Saved characters still standing in another
@@ -420,6 +427,7 @@ namespace SwapUnaware
             var res = new Result();
             FreezeFeature.ReleaseAll();
             var me = Game.Me();
+            RestoreAmmo(me);
             var todo = PutPlayers(false);
             var live = UnityEngine.Object.FindObjectsOfType<Combatant_Base>()
                 .Where(c => Game.IsNpc(c) && c != me && !Untouchable(c) && c.myData != null && c.myData.myCard != null && Usable(c.myRoom))
@@ -501,6 +509,14 @@ namespace SwapUnaware
             return "squad " + (sq != null ? sq.squadName : "none") + " " + c.myFaction;
         }
 
+        // Infinite ammo starts from nobody, then each saved character gets theirs back (Extras,
+        // PutPlayers) and you get yours. The keep box leaves every player's as it is.
+        void RestoreAmmo(Combatant_Base me)
+        {
+            AmmoFeature.ClearAll(keepMine);
+            if (!keepMine) AmmoFeature.Set(me, playerInfAmmo);
+        }
+
         // ---- the other players (local co-op, version 6) ----
 
         // The Playground's Clear All (InteractiveMode.ClearAll_DoIt) spares only player one's body
@@ -558,6 +574,7 @@ namespace SwapUnaware
                     if (!Usable(room) && playground) room = Cam_Main.currentRoom;
                     if (Usable(room)) c.TeleportTo(r.pos, Facing(r.facing) * Vector3.forward, room);
                     string what = "";
+                    if (!keepMine) AmmoFeature.Set(c, r.infAmmo);
                     if (HasItems && keepMine) what = "; weapons kept";
                     else if (HasItems)
                     {
@@ -766,6 +783,7 @@ namespace SwapUnaware
             if (r.patrol.Count > 0) PatrolFeature.SetRoute(c, r.patrol.Select(p => new PatrolFeature.Point { pos = p.pos, stop = p.stop }).ToList());
             if (r.guard) GuardFeature.Guard(c);
             if (r.frozen) FreezeFeature.Freeze(c);
+            if (r.infAmmo) AmmoFeature.Set(c, true);
         }
 
         // mine: the squad that "your squad" (-1) records join; null gives them a squad of their own,

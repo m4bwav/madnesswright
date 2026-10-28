@@ -8,5 +8,7 @@
   <ItemGroup>
     <Compile Include="..\..\examples\SwapUnaware\src\CrowdFeatures.cs" Link="CrowdFeatures.cs" />
     <Compile Include="..\..\examples\SwapUnaware\src\SwapUnawareBehaviour.cs" Link="SwapUnawareBehaviour.cs" />
+    <Compile Include="..\..\examples\SwapUnaware\src\AmmoFeature.cs" Link="AmmoFeature.cs" />
+    <Compile Include="..\..\examples\SwapUnaware\src\WeaponCatalog.cs" Link="WeaponCatalog.cs" />
   </ItemGroup>
 </Project>
