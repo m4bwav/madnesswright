@@ -54,6 +54,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-24
 
+### L-007 · 2026-10-28 · Read the decompiled member before stubbing it, and test the user's key order
+- Trigger: Director 0.10.1 (2026-10-27) shipped with a green C# harness, and the requester was stuck in a body they took over (F5 onto a frozen body; F5, F2, F8 home). The harness only ran freeze, take over, go home, unfreeze, and asserted the lock moved onto the player, which was the bug. A first guess at the cause (the stub's set of lock sources hiding a counted lock) was wrong: the decompile shows `Controller_Base.LockSources` is a `HashSet<UnityEngine.Object>`, cleared on every new connection.
+- Hypothesis: a stub written from memory of a game API passes whatever the mod assumes, and a harness written beside the fix tests the author's order, not the player's. Both hide the bug.
+- Rule: before stubbing a game member, read it in the decompile (`decomp.py find`) and copy its rule (set or count, what clears it) into the stub with a comment. Then write the user's own key order as a failing test first, on every code path the mod takes (here the same-squad swap and the cross-squad `AssignController`). Also assert the rule the user sees ("F2: everyone but you"), not the mechanism.
+- Evidence: ai-docs/log.md 2026-10-28; tests/DirectorFreezeChecks (fails on 0.10.1 at "F5 onto a frozen body", passes on 0.10.2; a one-pass rebind mutant fails "game swap")
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-28
+
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts

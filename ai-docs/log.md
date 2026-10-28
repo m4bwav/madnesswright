@@ -2,6 +2,15 @@
 
 Append-only, newest first.
 
+## 2026-10-28 · Director 0.10.2: a body a player drives is never frozen
+
+- Report (the requester, via the owner): since 0.10.1, after F5 and F2 the body they controlled did not always unfreeze. Mark's ruling: a body any player controls is never frozen; leaving a body that was frozen when taken freezes it again.
+- Decompile (scratchpad only, same build 25615196): `Controller_Base.LockSources` is a `HashSet<UnityEngine.Object>`; `LockController(src)` adds, `ReleaseController(src)` removes, `ReleaseController()` clears, `AmLocked()` is count > 0; `SetConnection` to a new body runs `NewConnection`, which clears every source. `Controller_Player.LockController` also deselects squadmates. `Combatant_Base.AssignController(c, true)` gives the incoming controller's old body this body's controller (both swap paths end there; `SwapControllersWithSquadmate(Combatant_Base)` calls it). So the prompt's guess of a counted lock was wrong; the stub's set was right.
+- Cause: 0.10.1 by design moved a frozen body's lock onto the player's controller when F5 took it over, so F5 onto a frozen body, or F5, F2 (which freezes the home body), F8 home, left the player locked until the next F2. Also found: when the game swaps two frozen bodies' controllers itself, the per-body rebind released the lock the other body had just taken.
+- Harness: stubs now clear locks on a new connection and have `PlayerControllers`; sequences run on the cross-squad and same-squad paths: 0.10.1's order, the requester's F5-F2-F8-F2, chained F5 across frozen bodies, F2 while inside one, a game swap of two frozen NPCs, and a stray player lock. Failed on 0.10.1 at "F5 onto a frozen body: the player's controller is locked"; passes on 0.10.2; a one-pass rebind mutant fails "game swap".
+- 0.10.2 (`FreezeFeature`): a player's body stays listed but holds no lock and is not pinned (`held` false) and is held again when the player leaves; the tick lets go of every stale lock before taking new ones; `ReleaseAll` also releases Director's source on every `Controller_Player.PlayerControllers` entry. Built (0 warnings), `--strict check-mod` clean, deployed byte-identical, DLL holds `0.10.2` as UTF-16. Not played: the change notes say so.
+- Plugin: modtools L-007 (read the decompiled member before stubbing; test the user's key order), T-20261028-1, a lock note in `references/game-recipes.md`.
+
 ## 2026-10-27 · Director 0.10.1 on the Workshop
 
 - The owner asked to publish the freeze fix before pushing the repository changes. `pack.ps1 -Version 0.10.1` built the mod against the installed game assemblies; `mpn.py --strict check-mod` reported no errors or warnings. The staged DLL matched the built DLL byte for byte and contained `0.10.1`. The F10 and F5 takeover/switch-away C# regressions, 31 Python tests, skills check and budget check passed.

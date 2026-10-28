@@ -9,7 +9,9 @@ namespace SwapUnaware
     {
         public KeyCode Key = KeyCode.F2;
 
-        class Saved { public bool wasFrozen; public float animSpeed; public Controller_Base controller; }
+        // controller: the one controller Director has locked for this body (at most one).
+        // held: the body is pinned now; false while a player drives it.
+        class Saved { public bool wasFrozen; public float animSpeed; public Controller_Base controller; public bool held; }
         static readonly Dictionary<Combatant_Base, Saved> frozen = new Dictionary<Combatant_Base, Saved>();
         static FreezeFeature instance;
 
@@ -27,10 +29,15 @@ namespace SwapUnaware
                 if (frozen.Count > 0) { int n = frozen.Count; ReleaseAll(); Game.Say(n + " characters unfrozen"); }
                 else Game.Say(FreezeAll() + " characters frozen; F2 to unfreeze");
             }
-            // Dead bodies must ragdoll; live bodies keep their freeze across controller changes.
-            foreach (var c in frozen.Keys.ToList())
+            // Dead bodies must ragdoll; live bodies keep their freeze across controller changes. Every
+            // stale lock is let go before any new one is taken: when the game swaps two frozen bodies'
+            // controllers, releasing one body's old controller would otherwise drop the other's new lock.
+            var bodies = frozen.Keys.ToList();
+            foreach (var c in bodies)
                 if (c == null || c.AmDead()) Release(c);
-                else Rebind(c);
+                else Unbind(c);
+            foreach (var c in bodies)
+                if (c != null && frozen.ContainsKey(c)) Apply(c);
         }
 
         static int FreezeAll()
@@ -47,15 +54,14 @@ namespace SwapUnaware
 
         // The cutscene lock stops the AI and movement input; waypoints would still move the body, so
         // they are cleared; SetFrozen pins the rigidbody; animator speed 0 holds the pose.
+        // A body any player controls is never held: it stays on the list and is held again when the
+        // player leaves it.
         internal static void Freeze(Combatant_Base c)
         {
             if (instance == null || frozen.ContainsKey(c)) return;
             var anim = c.myAnimator != null ? c.myAnimator.myAnim : null;
             frozen[c] = new Saved { wasFrozen = c.AmFrozen(), animSpeed = anim != null ? anim.speed : 1f };
             Rebind(c);
-            Pathfind_Main.ClearWaypointsAndTarget(c);
-            c.SetFrozen(true);
-            if (anim != null) anim.speed = 0f;
         }
 
         internal static void Detach(Combatant_Base c)
@@ -68,22 +74,48 @@ namespace SwapUnaware
 
         internal static void Rebind(Combatant_Base c)
         {
+            Unbind(c);
+            Apply(c);
+        }
+
+        // Lets go of a lock on a controller the body no longer has, or on a player's controller.
+        static void Unbind(Combatant_Base c)
+        {
+            Saved s;
+            if (!frozen.TryGetValue(c, out s) || s.controller == null) return;
+            if (s.controller != c.myController || Game.IsPlayer(c)) Detach(c);
+        }
+
+        static void Apply(Combatant_Base c)
+        {
             Saved s;
             if (!frozen.TryGetValue(c, out s)) return;
-            if (s.controller != c.myController)
+            var anim = c.myAnimator != null ? c.myAnimator.myAnim : null;
+            if (Game.IsPlayer(c))
             {
-                Detach(c);
-                s.controller = c.myController;
-                if (s.controller != null) s.controller.LockController(instance);
-                c.SetFrozen(true);
-                var anim = c.myAnimator != null ? c.myAnimator.myAnim : null;
-                if (anim != null) anim.speed = 0f;
+                if (!s.held) return;
+                s.held = false;
+                c.SetFrozen(false);
+                if (anim != null) anim.speed = s.animSpeed;
+                return;
             }
+            bool changed = !s.held;
+            if (s.controller == null && c.myController != null)
+            {
+                s.controller = c.myController;
+                s.controller.LockController(instance);
+                changed = true;
+            }
+            if (!changed) return;
+            if (!s.held) Pathfind_Main.ClearWaypointsAndTarget(c);
+            s.held = true;
+            c.SetFrozen(true);
+            if (anim != null) anim.speed = 0f;
         }
 
         internal static void KeepFrozen(Combatant_Base c)
         {
-            if (!IsFrozen(c)) return;
+            if (!IsFrozen(c) || Game.IsPlayer(c)) return;
             c.SetFrozen(true);
             var anim = c.myAnimator != null ? c.myAnimator.myAnim : null;
             if (anim != null) anim.speed = 0f;
@@ -96,7 +128,7 @@ namespace SwapUnaware
             frozen.Remove(c);
             var anim = c.myAnimator != null ? c.myAnimator.myAnim : null;
             if (anim != null) anim.speed = s.animSpeed;
-            if (!c.AmDead()) c.SetFrozen(s.wasFrozen || GuardFeature.IsGuard(c));
+            if (!c.AmDead() && !Game.IsPlayer(c)) c.SetFrozen(s.wasFrozen || GuardFeature.IsGuard(c));
             if (s.controller != null) s.controller.ReleaseController(instance);
         }
 
@@ -104,6 +136,10 @@ namespace SwapUnaware
         {
             foreach (var c in frozen.Keys.ToList()) Release(c);
             frozen.Clear();
+            // Safety net: no player controller keeps Director's lock, even one the bookkeeping lost.
+            if (instance == null) return;
+            foreach (var pc in Controller_Player.PlayerControllers)
+                if (pc != null) pc.ReleaseController(instance);
         }
 
         void OnDestroy() { ReleaseAll(); }
