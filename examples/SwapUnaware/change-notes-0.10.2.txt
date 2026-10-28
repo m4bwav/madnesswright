@@ -1,0 +1,5 @@
+Director 0.10.2
+
+Fixes getting stuck in a body you cannot move. Since 0.10.1, taking control of a frozen character (F5) kept it frozen, and so did going home (F8) after F5 then F2. Now a character any player controls is never frozen: F2 skips it, and taking over a frozen character frees it while you play it. When you leave a character that was frozen when you took it, it freezes again until F2. F2's unfreeze also clears any freeze left on a player.
+
+F10 still changes a frozen character's alert without unfreezing it. This update was checked against the game's code but has not been played in the game yet.

@@ -8,6 +8,10 @@ Entry shape: `### T-YYYYMMDD-n · date · harness · env · passed/total`, then 
 
 ## Runs
 
+### T-20261028-1 · 2026-10-28 · harness only, not played · dev-machine, Director 0.10.2 built against build 25615196 · 0/0 live
+- live-freeze-takeover · not played · the requester's report on 0.10.1 (stuck in a body after F5 and F2) reproduced in `tests/DirectorFreezeChecks` before the fix, on both swap paths; 0.10.2 passes it. Play owed: in the Playground, F5 onto someone, F2, walk, F2; then F2, F5 onto a frozen body, walk, F8 home, F2. Back up Player.log first.
+- led to: L-007, Director 0.10.2
+
 ### T-20261024-3 · 2026-10-24 · live play by the owner and the requester · owner's PC, Director 0.8.0 deployed, build 25615196 · 2/2 (two players)
 - live-two-player-join · pass · log `player 2 joined on pad 0`, `player 2 now plays Deimos [2656]`; player one took a MERC and went back (`now plays` lines both ways).
 - live-two-player-scene · pass · story scene "bob" on The Industrial Sector: file `"version":6`, Deimos `"player":2`; load logged `Deimos played by player 2: put back, moved 15.6 m; 3 of 3 weapons reset` and `1 played by other players put back, 10 moved back, 0 respawned, 0 removed`. No exception in the log. The owner reported the test passed. Evidence: `Player-20261024-two-player-080.log`, `scene-bob-20261024.json` in the owner's backups.
