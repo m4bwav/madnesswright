@@ -87,7 +87,12 @@ namespace SwapUnaware
 
         // The living NPC drawn nearest the mouse pointer on screen, in any room. The game's own
         // Combat_Manager.ReturnClosestTarget only accepts targets in the caller's room.
-        internal static Combatant_Base NpcUnderMouse()
+        internal static Combatant_Base NpcUnderMouse() { return UnderMouse(IsNpc); }
+
+        // The same for any living character, players included.
+        internal static Combatant_Base CharacterUnderMouse() { return UnderMouse(Alive); }
+
+        static Combatant_Base UnderMouse(Func<Combatant_Base, bool> which)
         {
             var cam = Cam();
             if (cam == null) return null;
@@ -96,7 +101,7 @@ namespace SwapUnaware
             Combatant_Base target = null;
             foreach (var c in UnityEngine.Object.FindObjectsOfType<Combatant_Base>())
             {
-                if (!IsNpc(c)) continue;
+                if (!which(c)) continue;
                 Vector3 sp = cam.WorldToScreenPoint(c.Position + Vector3.up);
                 if (sp.z <= 0f) continue;
                 float d = Vector2.Distance(mouse, sp);

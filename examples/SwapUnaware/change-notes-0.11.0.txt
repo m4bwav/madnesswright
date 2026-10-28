@@ -1,0 +1,7 @@
+Director 0.11.0
+
+Infinite ammo: point at any character (you too) and press \ (backslash). Magazines still empty and reloads still play, but spare magazines and grenades never run out. Press \ again to stop; it also ends when that character dies. Saved scenes remember who had it.
+
+Spawn a weapon: a new entry in the INSERT menu. Pick a category, then click any weapon in the game, including the ones the Playground's own spawn menu hides (marked *) and weapons from your mods. Weapons without a category are under Other. It goes into your hands, or tick the box to drop it on the floor in front of you.
+
+Not played in the game yet.

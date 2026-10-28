@@ -124,6 +124,111 @@ static class Program
         Controller_Player.PlayerControllers[0] = null;
     }
 
+    // Infinite ammo (0.11.0): the game's own InfiniteAmmo trait flag (Combatant_Base.infAmmo), kept
+    // on the body, put back each frame after the game recomputes it, ended by death.
+    static void Ammo()
+    {
+        var ammo = new AmmoFeature();
+        void Toggle(Combatant_Base c) { Game.Selected = c; Feature.Press(KeyCode.Backslash); Tick(ammo); }
+
+        var player = new Controller_Player();
+        Controller_Player.PlayerControllers[0] = player;
+        var home = new Combatant_Base("home", player);
+        var npc = new Combatant_Base("npc", new Controller_NPC());
+        var born = new Combatant_Base("born with the trait", new Controller_NPC());
+        born.traits.Add(TraitList.InfiniteAmmo);
+        born.infAmmo = true;
+        Feature.Bodies = new[] { home, npc, born };
+
+        Toggle(npc);
+        Check(AmmoFeature.Has(npc) && npc.infAmmo, "ammo: the key did not give the NPC infinite ammo");
+        Check(!home.infAmmo && !AmmoFeature.Has(home), "ammo: the player got infinite ammo too");
+        Toggle(npc);
+        Check(!AmmoFeature.Has(npc) && !npc.infAmmo, "ammo: the key again did not take it away");
+
+        Toggle(home);
+        Check(AmmoFeature.Has(home) && home.infAmmo, "ammo: a player's own body cannot get infinite ammo");
+        Toggle(home);
+        Check(!home.infAmmo, "ammo: the player's infinite ammo stayed after the second press");
+
+        Toggle(born);
+        Toggle(born);
+        Check(born.infAmmo, "ammo: turning it off took away the character's own InfiniteAmmo trait");
+
+        // The game recomputes the flag from the traits (ApplyAllStats on a level-up, a shop purchase,
+        // a boss pattern); the feature puts it back.
+        Toggle(npc);
+        npc.infAmmo = false;
+        Tick(ammo);
+        Check(npc.infAmmo, "ammo: the flag was not put back after the game reset it");
+
+        // F5 takes over a body: infinite ammo stays with the body, not the player.
+        SwapUnawareBehaviour.SwapTo(player, npc);
+        Tick(ammo);
+        Check(player.myCombatant == npc, "ammo: F5 did not take over");
+        Check(AmmoFeature.Has(npc) && npc.infAmmo, "ammo: F5 took infinite ammo off the body");
+        Check(!AmmoFeature.Has(home) && !home.infAmmo, "ammo: F5 gave the old body infinite ammo");
+        SwapUnawareBehaviour.SwapTo(player, home);
+        Tick(ammo);
+        Check(AmmoFeature.Has(npc) && npc.infAmmo && !home.infAmmo, "ammo: F8 home moved infinite ammo");
+
+        // Death ends it.
+        npc.dead = true;
+        Tick(ammo);
+        Check(!AmmoFeature.Has(npc) && !npc.infAmmo, "ammo: a dead body kept infinite ammo");
+        npc.dead = false;
+
+        // A scene load clears everyone but, with the keep box, the players' bodies.
+        Toggle(npc);
+        Toggle(home);
+        AmmoFeature.ClearAll(sparePlayers: true);
+        Check(!AmmoFeature.Has(npc) && !npc.infAmmo, "ammo: a load kept an NPC's infinite ammo");
+        Check(AmmoFeature.Has(home) && home.infAmmo, "ammo: the keep box lost the player's infinite ammo");
+        AmmoFeature.Set(npc, true);
+        Check(AmmoFeature.Has(npc) && npc.infAmmo, "ammo: a scene could not set infinite ammo");
+        AmmoFeature.ClearAll(sparePlayers: false);
+        Check(!AmmoFeature.Has(home) && !home.infAmmo && !npc.infAmmo && born.infAmmo, "ammo: clearing all left a flag wrong");
+
+        Game.Selected = null;
+        Feature.Press(KeyCode.Backslash);
+        Tick(ammo);
+        Controller_Player.PlayerControllers[0] = null;
+    }
+
+    static WeaponEntry W(string card, string name, string category, int order, bool hidden = false)
+    {
+        return new WeaponEntry { Card = card, Name = name, Category = category, Order = order, Hidden = hidden };
+    }
+
+    // The Spawn a weapon list (0.11.0): the game's categories in their own order, "Other" last.
+    static void Catalog()
+    {
+        var groups = WeaponCatalog.Group(new[]
+        {
+            W("Rifle_AK", "AK", "Rifle", 4),
+            W("Pistol_b", "beretta", "Pistol", 0),
+            W("Mod_Thing", "Strange thing", null, 100),
+            W("Pistol_A", "Automag", "Pistol", 0),
+            W("Fists_Brass", "Brass knuckles", "Unarmed", 7, hidden: true),
+            W("Pistol_A", "Automag duplicate", "Pistol", 0),
+            W("None_Card", "", "", 100),
+            W("Pistol_C", "Automag", "Pistol", 0),
+            null,
+        });
+        var names = groups.Select(g => g.Name).ToArray();
+        Check(names.SequenceEqual(new[] { "Pistol", "Rifle", "Unarmed", WeaponCatalog.Other }),
+            "catalog: groups are " + string.Join(", ", names));
+        var pistols = groups[0].Weapons.Select(w => w.Card).ToArray();
+        Check(pistols.SequenceEqual(new[] { "Pistol_A", "Pistol_C", "Pistol_b" }),
+            "catalog: pistols sorted as " + string.Join(", ", pistols));
+        Check(groups[0].Weapons[0].Label == "Automag [Pistol_A]" && groups[0].Weapons[1].Label == "Automag [Pistol_C]",
+            "catalog: two weapons with one name are not told apart: " + groups[0].Weapons[0].Label);
+        Check(groups[0].Weapons[2].Label == "beretta", "catalog: a unique name got a card suffix");
+        var other = groups[3].Weapons.Select(w => w.Label).ToArray();
+        Check(other.SequenceEqual(new[] { "None_Card", "Strange thing" }), "catalog: Other holds " + string.Join(", ", other));
+        Check(WeaponCatalog.Group(new WeaponEntry[0]).Count == 0, "catalog: an empty list made groups");
+    }
+
     static void Main()
     {
         freeze = new FreezeFeature();
@@ -132,8 +237,14 @@ static class Program
         Run(sameSquad: false);
         Run(sameSquad: true);
         Console.WriteLine("Director freeze checks passed on both swap paths");
+        Ammo();
+        Console.WriteLine("Director infinite ammo checks passed");
+        Catalog();
+        Console.WriteLine("Director weapon list checks passed");
     }
 }
+
+public enum TraitList { Zed, InfiniteAmmo }
 
 namespace UnityEngine
 {
@@ -141,7 +252,7 @@ namespace UnityEngine
     {
         protected static T[] FindObjectsOfType<T>() => Feature.Bodies.Cast<T>().ToArray();
     }
-    public enum KeyCode { F1, F2, F5, F6, F7, F8, F9, F10 }
+    public enum KeyCode { F1, F2, F5, F6, F7, F8, F9, F10, Backslash }
     public struct Color
     {
         public static Color yellow, red, white, cyan, green;
@@ -168,6 +279,7 @@ namespace SwapUnaware
         public static Combatant_Base Selected;
         public static Combatant_Base Me() => Controller_Player.PlayerController.myCombatant;
         public static Combatant_Base NpcUnderMouse() => Selected;
+        public static Combatant_Base CharacterUnderMouse() => Selected;
         public static bool Alive(Combatant_Base c) => c != null && !c.AmDead();
         public static bool IsNpc(Combatant_Base c) => Alive(c) && c.myController is Controller_NPC;
         public static bool IsPlayer(Combatant_Base c) => c?.myController is Controller_Player;
@@ -248,13 +360,18 @@ namespace SwapUnaware
         public CharData myData = new();
         public bool wanderingDisabled;
         public bool amPlayer;
+        public bool dead;
+        // As the game's: Combatant_Character.SetTraitBools sets infAmmo from the InfiniteAmmo trait.
+        public bool infAmmo;
+        public readonly HashSet<TraitList> traits = new();
+        public bool HaveTrait(TraitList t) => traits.Contains(t);
         public Combatant_Base(string name, Controller_Base controller)
         {
             this.name = name;
             controller.SetConnection(this);
         }
         public bool AmFrozen() => frozen;
-        public bool AmDead() => false;
+        public bool AmDead() => dead;
         public void SetFrozen(bool value) => frozen = value;
         public void FlashColor(Color color, float a, float b) { }
         public void RemoveFromGame() { }

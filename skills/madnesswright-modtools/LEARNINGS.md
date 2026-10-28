@@ -62,6 +62,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-28
 
+### L-008 · 2026-10-28 · Look for the game's own flag before patching a spend
+- Trigger: the infinite ammo request read like a Harmony patch on `Item_Ranged.SpendAmmo`; the decompile had two per-character flags already (`infAmmo` from a trait, `buff_InfAmmo` from a powerup), and the Playground's own weapon list turned out to miss mods' guns because of an exact-type lookup.
+- Hypothesis: a feature players ask for often exists in the game as a trait, buff or dev option; patching the spend would have fought it, and copying the Playground's list would have copied its gaps.
+- Rule: grep the decompile for the feature's words (infinite, unlimited, the stat name) and read every reader of the field before writing a patch; when a game list is the model, read its filter and its lookup, not only its UI. A flag set from traits must be set again every frame.
+- Evidence: ai-docs/notes/2026-10-28-ammo-and-weapons-research.md; Director 0.11.0 (harness checks on, off, death, F5, recomputed flag)
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-28
+
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts
