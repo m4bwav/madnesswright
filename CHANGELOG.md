@@ -2,8 +2,9 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
-## Unreleased
+## 0.1.9 · 2026-10-28
 
+- CI: the structure matrix runs on ubuntu-24.04 (ubuntu-latest became 26.04, which has no Python 3.9).
 - `examples/SwapUnaware` 0.11.0: infinite ammo on a picked character and a Spawn a weapon list (the requester's ask). \ on the character under the mouse turns on the game's own InfiniteAmmo trait for it (reloads still play; spare magazines and grenades never run out; melee still wears out); \ again or death ends it, and scenes (version 7) remember it. The INSERT menu's new Spawn a weapon entry lists every weapon card the game and enabled mods hold by the game's categories, with Other last, marks the ones the Playground's own list leaves out, leaves out cards that cannot spawn, and puts the pick in your hands or on the floor. The C# harness checks the infinite ammo bookkeeping (on, off, death, F5) and the list's grouping. Research: `ai-docs/notes/2026-10-28-ammo-and-weapons-research.md`. Built and deployed, not yet played.
 - `examples/SwapUnaware` 0.10.2: a body a player controls is never frozen. 0.10.1 kept a frozen body frozen after F5 took it over, so the requester got stuck (F5 onto a frozen character, or F5, F2, then F8 home into the body F2 had frozen). Taking over a frozen body now frees it while you drive it, and it freezes again when you leave. F2 never freezes a player's body, and F2's release also clears Director's lock on every player controller. Locks stay balanced when the game swaps two frozen bodies' controllers itself. The harness's stubs now match the decompiled lock rules and it runs the requester's key order and chained takeovers on both swap paths. Checked against the game's code, not played.
 - `examples/SwapUnaware` 0.10.1: F10 now cycles a frozen character's alert state without releasing its freeze. F5 takeover and switching away keep the freeze on that body instead of moving its controller lock or unfreezing it. Regression checks run against the mod's C# source in CI. Published to the Workshop on 2026-10-27; game playtest pending.
