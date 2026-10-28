@@ -2,6 +2,17 @@
 
 Append-only, newest first.
 
+## 2026-10-28 · Director 0.11.0: infinite ammo and Spawn a weapon
+
+- Request (the requester, via the owner): infinite ammo on a character picked with the mouse and a key, toggled; spawn any weapon in the game, including ones the Playground, loadouts and shops do not offer, from a category list then a weapon list, uncategorised ones in their own group.
+- Decompile (scratchpad only; build still 25615196): two per-character flags exist. `Combatant_Base.infAmmo` (InfiniteAmmo trait) makes `SpareMag_Have`/`SpareMag_Spend` always true, so reloads play and spare magazines and thrown restocks never run out; `SetTraitBools` recomputes it (`ApplyAllStats`: spawn, `DeathEvents`, arena shop; boss patterns). `Target_Object.buff_InfAmmo` (powerup, default 1) multiplies rounds spent and melee wear. Catalog: `StatCard_Base.ReturnAllWeapons()`; the Playground (`InteractiveMode`) filters `ItemEnabled`, store tier, not Arcane, drops Unarmed and None, and its exact-type `ReturnAllCardsByType<StatCard_Weapon>` misses mods' guns and throwables. Spawn: `Catalog_Weapons.GenerateWeapon`, `Char_DataAssigner.GiveItemToCharacter`/`GiveThrownToCharacter`, `Item_Held.CreateHeld`. Crash risks from code: `myRef` null, `StatCard_WeaponModded` without `LinkedWeapon`; `CollectHeld` silently refuses when the held item cannot be dropped. Keys: backslash is never read. Note: [notes/2026-10-28-ammo-and-weapons-research.md](notes/2026-10-28-ammo-and-weapons-research.md).
+- Rulings (README): the trait flag, not the powerup (reloads stay, melee wears); key backslash; any living character, players included; green/white flash; stays with the body through F5; death ends it; scenes save it (version 7; older files load with it off; the keep box leaves players' alone). Spawn a weapon: INSERT entry, game's categories in enum order, Other last, sorted by name with the card name added when two share a name, everything listed, Playground-hidden marked *, mods marked (mod), broken cards left out and logged; into the hands by default (floor when ticked or when the hands hold an undroppable item); window holds its own pause; ESC back then close.
+- Built as `AmmoFeature`, `WeaponSpawnFeature` and plain `WeaponCatalog` (grouping). Harness (`tests/DirectorFreezeChecks`) gained infinite ammo checks (on, off, trait kept, flag put back, F5 and F8, death, load clear with and without the keep box) and list checks (order, Other, sort, duplicates, labels); both written to fail first. Pack 0 warnings, check-mod clean, deployed, DLL byte-identical with `0.11.0` as UTF-16; check_skills, test_mpn, test_decomp pass; budget yellow (tracked 1,188 KB).
+- CI: ubuntu-latest became Ubuntu 26.04, which has no Python 3.9; the structure matrix now runs on ubuntu-24.04. PR #48 squash-merged.
+- Published with the owner's OK: Workshop item 3822329165 at 2026-10-28 22:49 UTC, `result OK`, visibility 0, 54 subscribers, description has Spawn a weapon and the madnesswright line; change notes say not played (the Change Notes tab text was not read back). Plugin 0.1.9 (PR #49), tag and release v0.1.9 (`madnesswright-0.1.9.zip`, 121,552 bytes). Wiki: version mentions to 0.1.9 (outputs still from 0.1.7's unchanged scripts), Versions rows for 0.1.8 and 0.1.9, Director paragraph to 0.11.0.
+- madnesswright: game-recipes lines (infinite ammo, weapon catalog and spawning, two-step IMGUI list); modtools L-008 (look for the game's own flag and read a model list's filter and lookup before patching or copying). No TESTS.md case: the harness covers the regressions.
+- Not played (Owed 18). Skipped by standing ruling: evergreen refreshes (everlast-resume reported due 2026-10-28).
+
 ## 2026-10-28 · Director 0.10.2: a body a player drives is never frozen
 
 - Report (the requester, via the owner): since 0.10.1, after F5 and F2 the body they controlled did not always unfreeze. Mark's ruling: a body any player controls is never frozen; leaving a body that was frozen when taken freezes it again.
@@ -246,3 +257,4 @@ Append-only, newest first.
 ## [2026-10-24] index | rebuilt (15 entries)
 ## [2026-10-24] index | rebuilt (17 entries)
 ## [2026-10-25] index | rebuilt (17 entries)
+## [2026-10-28] index | rebuilt (18 entries)
