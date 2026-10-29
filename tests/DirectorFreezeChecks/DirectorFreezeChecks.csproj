@@ -10,5 +10,8 @@
     <Compile Include="..\..\examples\SwapUnaware\src\SwapUnawareBehaviour.cs" Link="SwapUnawareBehaviour.cs" />
     <Compile Include="..\..\examples\SwapUnaware\src\AmmoFeature.cs" Link="AmmoFeature.cs" />
     <Compile Include="..\..\examples\SwapUnaware\src\WeaponCatalog.cs" Link="WeaponCatalog.cs" />
+    <Compile Include="..\..\examples\SwapUnaware\src\BossBarFeature.cs" Link="BossBarFeature.cs" />
+    <Compile Include="..\..\examples\SwapUnaware\src\WaveRoster.cs" Link="WaveRoster.cs" />
+    <Compile Include="..\..\examples\SwapUnaware\src\TeamFeature.cs" Link="TeamFeature.cs" />
   </ItemGroup>
 </Project>

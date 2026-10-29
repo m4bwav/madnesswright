@@ -2,6 +2,23 @@
 
 Append-only, newest first.
 
+## 2026-10-29 · Director 0.12.0: boss bar, wave builder, team change; Workshop title "Director"
+
+- Requests (the requester, via the owner): "a button that who ever your mouse is hovering over has a boss bar"; "a button that allows you to set a wave of enemies with set guns and allows you to let a current enemy have infinite or normal amount and let a current enemy in the wave to have a boss bar". Extra objective from the owner's prompt: a key that changes the team of the character under the cursor. The owner also asked to rename the Workshop item to just "Director".
+- No play since the 0.11.0 entry below (Player.log 2026-10-28 18:44); the requester was not around, so no play of 0.10.2 or 0.11.0 this session.
+- Decompile (scratchpad only; build still 25615196): `UI_Game.AddBoss(Target_Object)` / `RemoveBoss` are public statics; `Controller_Boss.SetConnection` calls `AddBoss(combatant)`, automatons call it with `DisplayBossHealth`. Bars are `BossfightUI` (a `CharUI`) in `UI_Game.currentUI_Game.BossfightIcons`; only one is shown (`BossfightUI.currentVisible`), later ones show when a player hits them. Trap: `CharUI.LinkToCharacter` ends the target's existing `myHealthUI` (a player's or squadmate's HUD icon) and `EndMe` clears `myHealthUI` only when it is itself. The Playground's `InteractiveMode.UnitSpawn_Done` is the wave route: `Squad_Main.CreateSquad(Factions.None)`, `Wave_Generator.AssignAllDefaultWeapons`, a wave weapon near the level when none, `Spawn_Manager.SpawnCharacterToEntrance` at a random non-`disableSpawn` entrance of `Cam_Main.currentRoom` meeting `ReturnMeetVocationRequirements`, `AddMember`, alert Combat. Hostility: `Combat_Manager.FactionIsAttackable` (different faction, or attacker None, and a different squad); `Squad_Main.AddMember` moves faction and wave. Keys: `decomp.py keys` finds `[` and `]` unread anywhere.
+- Rulings (mod README): ] boss bar on any living character, red flash, new bar shown at once, gone 2 s after death, not saved in scenes, HUD bar held aside and restored; Build a wave in the INSERT menu (characters with filter, per-row weapon / ammo / boss bar / copy / remove, spawn as the Playground does, near you when the room has no entrance, saved waves in `PlaygroundDirector/Waves/<name>.txt`); [ toggles enemy/ally relative to the keyboard player (allies to a squad of your faction or your own None squad; enemies back to their old squad or one shared Director None squad; players and career characters refused).
+- Built as `BossBarFeature`, `WaveFeature` + plain `WaveRoster`, `TeamFeature`; `Game.CareerCharacter` split out of `Playable`. Harness: boss bar checks written first and failed on 0.11.0-style naive code at "adding it ended the player's HUD health bar", pass after the fix; wave roster and file checks; team checks (a mutant making a new enemy squad each time fails "two turned enemies fight each other"). Pack 0 warnings, `--strict check-mod` clean, deployed, DLL byte-identical with `0.12.0`, `boss bar`, `Build a wave` as UTF-16. check_skills, test_mpn, test_decomp pass; budget yellow (tracked 1,240 KB, installed skills 253 KB).
+- Rename: info.txt Name "Director", mod README heading "Director", Workshop title to be plain "Director" with the next upload (folder, `PlaygroundDirector/` settings folder and HarmonyID unchanged).
+- Not played.
+
+## 2026-10-28 · Director 0.11.0 first play: logs clean
+
+- Report: the requester said infinite ammo did not work (on their own machine); they could not reproduce it on the owner's PC. Likely an old Director there (the owner's previous Player.log was 0.10.0, which had no infinite ammo); not confirmed.
+- Player.log 2026-10-28 18:44 (Director 0.11.0, one Playground session): 0 exceptions, mods.log clean. Backslash used 10 times across 6 bodies, including after F5 swaps; one off; 4 "no character under the mouse" misses. Heavy use of F2 freeze + F6 unaware on one character in turns (about 30 lines).
+- Previous log (0.10.0, 2026-10-25) had scene-spawn NullReferenceExceptions (AAHW2_Engineer, Arena_Troop_B): the `CallSquadmates` issue already logged below.
+- Improvement ideas, not built: backslash with no one under the mouse falls back to the player's own body; one key for freeze + unaware together.
+
 ## 2026-10-28 · Director 0.11.0: infinite ammo and Spawn a weapon
 
 - Request (the requester, via the owner): infinite ammo on a character picked with the mouse and a key, toggled; spawn any weapon in the game, including ones the Playground, loadouts and shops do not offer, from a category list then a weapon list, uncategorised ones in their own group.

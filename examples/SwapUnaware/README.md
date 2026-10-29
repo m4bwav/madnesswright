@@ -1,6 +1,6 @@
-# Director (was Playground Director, and before that Swap And Unaware)
+# Director
 
-Direct any fight, in any mode: the story campaign, the arenas, custom stages and the Playground. Take control of any character, freeze the room, set patrols and guards, pose enemies, clear the bodies and save scenes to replay. Renamed from Playground Director in 0.6.1 because it was never Playground-only. A requested mod, kept here as the worked example for the [madnesswright-modtools](../../skills/madnesswright-modtools/SKILL.md) skill's Harmony route: an `IModEntrypoint`, two Harmony prefixes, one component per feature, a net48 build against the player's own game files, and the bugs live playtests found.
+Direct any fight, in any mode: the story campaign, the arenas, custom stages and the Playground. Take control of any character, freeze the room, set patrols and guards, pose enemies, clear the bodies and save scenes to replay. Formerly Playground Director (renamed in 0.6.1 because it was never Playground-only; the Workshop title became plain "Director" with 0.12.0) and before that Swap And Unaware. A requested mod, kept here as the worked example for the [madnesswright-modtools](../../skills/madnesswright-modtools/SKILL.md) skill's Harmony route: an `IModEntrypoint`, two Harmony prefixes, one component per feature, a net48 build against the player's own game files, and the bugs live playtests found.
 
 | Key | What it does |
 |---|---|
@@ -17,6 +17,8 @@ Direct any fight, in any mode: the story campaign, the arenas, custom stages and
 | F10 | On the character under the mouse: unaware goes to search, search goes to attack (you are its target), attack goes to unaware. |
 | F11 | While paused (story, arena, custom stage or Playground): name the scene, ENTER saves it. CAPS LOCK while paused lists saved scenes, this stage's first; click one to load it; ESC closes. See "Scenes" below for what loading does where. The list has a **Keep my character and weapons** box (0.10.0, [below](#keep-my-character-and-weapons-0100)). |
 | \\ (backslash) | On the character under the mouse, enemy, squadmate or you: infinite ammo (0.11.0). Magazines still empty and reloads still play, but spare magazines and grenades never run out. \\ again takes it away; it also ends when that character dies. |
+| ] (right bracket) | On the character under the mouse, enemy, squadmate or you: the game's own boss health bar (0.12.0). ] again removes it. [below](#boss-bar-wave-builder-and-team-change-0120) |
+| [ (left bracket) | On the character under the mouse: enemy becomes ally, ally becomes enemy (0.12.0). Players and your career's own characters are left alone. |
 
 On the Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165 (Subscribe, then enable it from the gear icon).
 
@@ -25,6 +27,19 @@ Needs the `releasebeta` branch: the normal release build does not load mods. Ver
 0.10.1 kept a frozen body frozen when F10 changed its alert or F5 changed who controls it, which left you stuck in a frozen body you took over (or went home to after F5 then F2). 0.10.2 frees any body a player drives, keeps the rest of 0.10.1, and has F2's release also clear Director's lock on every player controller. The C# regression checks run with `dotnet run --project ../../tests/DirectorFreezeChecks/DirectorFreezeChecks.csproj` from this folder. They use game stubs whose lock rules match the decompiled game (a set of lock sources, cleared on a new connection) and run each key order on both swap paths; the fix still needs a game playtest.
 
 0.11.0 adds infinite ammo on a picked character (\\) and a Spawn a weapon list with every weapon in the game. Built and deployed 2026-10-28, not yet played; the checks above also cover the infinite ammo bookkeeping and the weapon list's grouping.
+
+0.12.0 adds a boss bar on a picked character (]), a wave builder in the INSERT menu and a team change key ([). Built and deployed 2026-10-29, not yet played; the checks cover the boss bar bookkeeping (a player's HUD bar survives it), the wave list and its saved files, and the team change.
+
+## Boss bar, wave builder and team change (0.12.0)
+
+Requested by the requester: "a button that who ever your mouse is hovering over has a boss bar", and "a button that allows you to set a wave of enemies with set guns and allows you to let a current enemy have infinite or normal amount and let a current enemy in the wave to have a boss bar". Small rulings, each decided without asking:
+
+- **The boss bar is the game's own** (`UI_Game.AddBoss`, the call story and arena bosses make). Key **]**, next to \\; the game never reads it. Any living character, you included; red flash. The game shows one boss bar at a time: a new one shows at once, and an older one comes back when someone hits that character. A dead character's bar goes two seconds after it dies. Scenes do not save boss bars.
+- **Your HUD stays**: the game ends a character's other health display when a boss bar links to it, so Director holds a player's or squadmate's HUD bar aside and puts it back.
+- **Build a wave** is an INSERT menu entry, under Spawn a weapon. **Add an enemy** lists every enabled character card (filter box; mods' marked (mod)). Each row has a weapon button (**Own weapons**, or any weapon from the Spawn a weapon list), **Infinite ammo / Normal ammo**, **Boss bar**, **Copy** and **Remove**. **SPAWN the wave** closes the window and spawns them the way the Playground's Spawn Units does: one new squad that fights you and everyone else, at the room's entrances (near you when the room has none), already fighting.
+- **Infinite ammo and boss bars in a wave** are the same as \\ and ], so those keys take them off again.
+- **Saved waves**: type a name and **Save the wave**; saved waves (up to eight shown) load with one click. Files: `PlaygroundDirector/Waves/<name>.txt` beside the scene files, one enemy per line.
+- **Team change** (the extra): **[** toggles enemy and ally as seen by you, the keyboard player. An ally joins a squad of your side (your own squad when you play a Playground spawn) and drops its target; an enemy goes back to the squad it came from, or joins one shared Director enemy squad (so two you turned do not fight each other), and starts fighting. Players and your career's own characters keep their team.
 
 ## Spawn a weapon and infinite ammo (0.11.0)
 
@@ -41,6 +56,8 @@ Requested by the requester. What the game's code says about both is in the repo'
 - The window pauses the game like the scene list, so nobody moves or shoots while it is open, and it stays open for more spawns. ESC goes back from the weapons to the categories, then closes; Back and Close buttons do the same.
 
 ## Key choices
+
+- 0.12.0: ] (boss bar) and [ (team change) sit beside \\ on the keyboard. A fresh decompile (`decomp.py keys`, build 25615196) finds neither read anywhere, dev tools included; every F key is taken (F12 is Steam's screenshot key) and the requester's rule keeps F5 to F8 and F12 as they are. The wave builder has no key: it is an INSERT menu window like Spawn a weapon.
 
 - The Director menu opens with INSERT (0.6.0). A fresh decompile lists INSERT only in the `-devtools` mod-test tools, so it is free in play; F12 (Steam's screenshot key) and CAPS LOCK (the scene list) were ruled out. INSERT works paused or not: the menu holds its own pause. Clear corpses and clear debris got no key: no free key was obvious, and the menu is one press away.
 - Clear corpses keeps bodies a level may still need: your squad and the playable characters (a story squadmate can be revived), bosses, cutscene actors, the level's scripted characters (serial numbers) and anything the game marks essential. Bodies dead under a second are left too. Clearing blood and debris was the same four calls as the Playground's Clear All, so it is a second button.

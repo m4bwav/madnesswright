@@ -74,10 +74,18 @@ namespace SwapUnaware
             if (c.amPlayer) return true;
             var d = c.myData;
             if (d == null) return false;
+            if (CareerCharacter(c)) return true;
+            return d.myCard != null && d.myCard.DefaultFaction == Factions.Player;
+        }
+
+        // A player character or one of the career's core roster: its squad is the career's business.
+        internal static bool CareerCharacter(Combatant_Base c)
+        {
+            var d = c != null ? c.myData : null;
+            if (d == null) return false;
             if (d.ReturnAmPlayerCharacter()) return true;
             var career = Game_Manager.currentCareer;
-            if (career != null && career.chars_Core != null && career.chars_Core.Contains(d)) return true;
-            return d.myCard != null && d.myCard.DefaultFaction == Factions.Player;
+            return career != null && career.chars_Core != null && career.chars_Core.Contains(d);
         }
 
         internal static Camera Cam()
