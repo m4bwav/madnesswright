@@ -1,0 +1,9 @@
+Director 0.12.0 (now just "Director")
+
+Boss bar: point at any character (you too) and press ] (right bracket) to give it the game's own boss health bar. Press ] again to remove it.
+
+Build a wave: a new entry in the INSERT menu. Add enemies, give each one a weapon from the full weapon list (or its own), infinite or normal ammo and a boss bar, copy or remove rows, then SPAWN the wave. They come in at the room's doors as one squad, already fighting. Name and save a wave to spawn it again later.
+
+Team change: point at a character and press [ (left bracket). An enemy joins your side; an ally turns on you. Press [ again to switch it back. Players and your career's own characters keep their team.
+
+Not played in the game yet.

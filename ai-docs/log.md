@@ -10,7 +10,8 @@ Append-only, newest first.
 - Rulings (mod README): ] boss bar on any living character, red flash, new bar shown at once, gone 2 s after death, not saved in scenes, HUD bar held aside and restored; Build a wave in the INSERT menu (characters with filter, per-row weapon / ammo / boss bar / copy / remove, spawn as the Playground does, near you when the room has no entrance, saved waves in `PlaygroundDirector/Waves/<name>.txt`); [ toggles enemy/ally relative to the keyboard player (allies to a squad of your faction or your own None squad; enemies back to their old squad or one shared Director None squad; players and career characters refused).
 - Built as `BossBarFeature`, `WaveFeature` + plain `WaveRoster`, `TeamFeature`; `Game.CareerCharacter` split out of `Playable`. Harness: boss bar checks written first and failed on 0.11.0-style naive code at "adding it ended the player's HUD health bar", pass after the fix; wave roster and file checks; team checks (a mutant making a new enemy squad each time fails "two turned enemies fight each other"). Pack 0 warnings, `--strict check-mod` clean, deployed, DLL byte-identical with `0.12.0`, `boss bar`, `Build a wave` as UTF-16. check_skills, test_mpn, test_decomp pass; budget yellow (tracked 1,240 KB, installed skills 253 KB).
 - Rename: info.txt Name "Director", mod README heading "Director", Workshop title to be plain "Director" with the next upload (folder, `PlaygroundDirector/` settings folder and HarmonyID unchanged).
-- Not played.
+- PR #51 squash-merged (CI green); tag and release v0.1.10 (`madnesswright-0.1.10.zip`, 121,552 bytes); wiki to 0.1.10 (Versions row, Getting-Started hash, footer, Home). Workshop Change Notes tab read in the browser before the upload: it showed 0.11.0. Upload with the owner's OK: `result OK`, GetPublishedFileDetails title "Director", visibility 0, 57 subscribers, updated 2026-10-29 22:20:51 UTC; change notes in `examples/SwapUnaware/change-notes-0.12.0.txt` say not played.
+- Not played (HANDOFF Owed 19). Skipped by standing ruling: evergreen refreshes of other units.
 
 ## 2026-10-28 · Director 0.11.0 first play: logs clean
 
@@ -275,3 +276,4 @@ Append-only, newest first.
 ## [2026-10-24] index | rebuilt (17 entries)
 ## [2026-10-25] index | rebuilt (17 entries)
 ## [2026-10-28] index | rebuilt (18 entries)
+## [2026-10-29] index | rebuilt (18 entries)
