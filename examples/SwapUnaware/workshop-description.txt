@@ -13,6 +13,8 @@
 [*][b]F9[/b]: point at a character: it stands guard, never moves, and attacks anyone not on its team once it sees them. F9 again: back to normal.
 [*][b]F10[/b]: point at a character: first press it searches, second it attacks you, third it loses track of you, then round again.
 [*][b]\ (backslash)[/b]: point at any character, you included: infinite ammo. Magazines still empty and reloads still play, but spare magazines and grenades never run out. \ again to stop; it also ends when that character dies.
+[*][b]] (right bracket)[/b]: point at any character, you included: the game's own boss health bar. ] again removes it.
+[*][b][ (left bracket)[/b]: point at a character: an enemy joins your side, an ally turns on you. Players and your career's characters keep their team.
 [*][b]F11[/b] while paused: type a scene name, [b]ENTER[/b] saves it. [b]CAPS LOCK[/b] while paused lists your saved scenes; click one to load it. A scene keeps every character, where they stand, their team, weapons and ammo, damage, the animation they were playing (typing, smoking, an F4 pose), and frozen, guard and patrol settings, plus the weapons lying on the floor; loading puts the weapons back too, picks up thrown ones and resets the ammo (in a story or arena career your own weapons stay yours and only their ammo resets). In the Playground loading rebuilds the room. In story levels and arenas it moves you back to where you saved, puts the characters back and respawns the dead (back in their saved squad, so teammates stay teammates), starts their animations again, and clears the bodies, blood, bullet holes and casings made since the save; if the game has locked that room, restart the stage and load again. Scenes saved before 0.7.0: save them again to keep weapons.
 [/list]
 
@@ -23,6 +25,8 @@
 [b]Keep my character and weapons[/b] (new in 0.10.0): a box at the top of the CAPS LOCK scene list. Ticked, loading a scene leaves the character you play and the weapons you hold alone, even after loading a scene from another Playground map. Off by default and remembered between games.
 
 [b]Spawn a weapon[/b] (new in 0.11.0): in the INSERT menu. Pick a category, then click any weapon in the game, including the ones the Playground's own spawn menu hides (marked *) and weapons from your mods; weapons without a category are under Other. It goes into your hands, or tick the box to drop it on the floor in front of you. ESC goes back, then closes.
+
+[b]Build a wave[/b] (new in 0.12.0): in the INSERT menu. Add enemies, give each one a weapon from the full list (or its own), infinite or normal ammo and a boss bar, copy or remove rows, then SPAWN the wave: they come in at the room's doors as one squad, already fighting. Name and save a wave to spawn it again later.
 
 [b]Needs the releasebeta branch[/b] (Steam: Properties, Betas, releasebeta): the normal release build does not load mods. Enable it from the gear icon on the main menu and restart.
 

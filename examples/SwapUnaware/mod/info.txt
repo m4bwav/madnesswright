@@ -1,7 +1,7 @@
 {
-  "Name": "Director (all game modes)",
+  "Name": "Director",
   "Author": "m4bwav",
-  "Description": "Works in the story, arenas, custom stages and the Playground. INSERT: menu of every action, plus clear corpses and clear debris. F1: remove everyone but you and the playable characters. F2: freeze everyone but you (again: unfreeze). F3: patrol squares (click drops, U new, P stop, Delete remove). F4: idle animation list for the character under the mouse. F5: take control of the character under the mouse. F6: everyone else unaware. F7: keep everyone unaware. F8: back to your own body. F9: guard. F10: search, attack, unaware. F11 while paused: save a scene; CAPS LOCK while paused: load one (tick Keep my character and weapons to stay as you are). Arenas: a second player on a pad presses Start, picks an origin and plays a guest beside you.",
+  "Description": "Works in the story, arenas, custom stages and the Playground. INSERT: menu of every action, plus clear corpses and clear debris. F1: remove everyone but you and the playable characters. F2: freeze everyone but you (again: unfreeze). F3: patrol squares (click drops, U new, P stop, Delete remove). F4: idle animation list for the character under the mouse. F5: take control of the character under the mouse. F6: everyone else unaware. F7: keep everyone unaware. F8: back to your own body. F9: guard. F10: search, attack, unaware. F11 while paused: save a scene; CAPS LOCK while paused: load one (tick Keep my character and weapons to stay as you are). \\: infinite ammo on the character under the mouse. ]: boss bar on the character under the mouse. [: turn the character under the mouse from enemy to ally or back. INSERT menu: Spawn a weapon, Build a wave. Arenas: a second player on a pad presses Start, picks an origin and plays a guest beside you.",
   "Tags": ["Scripts"],
   "AssemblyPath": "Managed/SwapUnaware.dll",
   "HarmonyID": "com.m4bwav.mpn.swapunaware",

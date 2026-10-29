@@ -70,7 +70,7 @@ namespace SwapUnaware
 
         // ---- the list ----
 
-        static List<WeaponGroup> Build()
+        internal static List<WeaponGroup> Build()
         {
             var entries = new List<WeaponEntry>();
             var broken = new List<string>();
@@ -156,7 +156,7 @@ namespace SwapUnaware
         }
 
         // The Playground's "Mine!": a grenade-slot throwable goes to the grenade slot, the rest to hand 0.
-        static Item_Held GiveToHands(StatCard_Weapon card, Combatant_Base me)
+        internal static Item_Held GiveToHands(StatCard_Weapon card, Combatant_Base me)
         {
             var data = Catalog_Weapons.GenerateWeapon(card);
             if (data == null) return null;
