@@ -39,6 +39,16 @@ Requested by the requester: "a button that who ever your mouse is hovering over 
 - **Build a wave** is an INSERT menu entry, under Spawn a weapon. **Add an enemy** lists every enabled character card (filter box; mods' marked (mod)). Each row has a weapon button (**Own weapons**, or any weapon from the Spawn a weapon list), **Infinite ammo / Normal ammo**, **Boss bar**, **Copy** and **Remove**. **SPAWN the wave** closes the window and spawns them the way the Playground's Spawn Units does: one new squad that fights you and everyone else, at the room's entrances (near you when the room has none), already fighting.
 - **Infinite ammo and boss bars in a wave** are the same as \\ and ], so those keys take them off again.
 - **Saved waves**: type a name and **Save the wave**; saved waves (up to eight shown) load with one click. Files: `PlaygroundDirector/Waves/<name>.txt` beside the scene files, one enemy per line.
+
+### Second weapon and throwable (0.13.0)
+
+Requested by the requester: "some enemies need to be dual wielding weapons so can you add another weapon thing and it can be anything", "or even sometimes I need an enemy to have both a weapon and has throwable weapon like hand grenades". Small rulings, each decided without asking:
+
+- **2nd weapon** (under each row; default none) offers the same full list as the first. The game decides whether a character can hold the pair (`Char_Data.ReturnCanDual`: one-handed weapons, the character's dual-wield skills, or its DualWieldOverride trait). An allowed pair is held in both hands; a refused one (a rifle beside a pistol, say) is carried stowed as a backup that the enemy switches to, as the game's own characters do, instead of being dropped on the floor.
+- **Throwable** (default none) lists the grenade-slot throwables. The enemy throws them on its own: the game's AI throws whenever it holds one and is fighting (`M_ThrowGrenade`). There is no count setting: the enemy gets the card's own stack. **Infinite ammo** covers both weapons and the throwable, so the enemy keeps throwing.
+- A grenade picked as the 2nd weapon becomes the throwable; when a throwable is also picked, the throwable wins and the grenade is left out (logged).
+- Saved waves are file version 2 (four new fields at the end of each line). 0.12.0 files still load, with no 2nd weapon and no throwable.
+- Not played yet.
 - **Team change** (the extra): **[** toggles enemy and ally as seen by you, the keyboard player. An ally joins a squad of your side (your own squad when you play a Playground spawn) and drops its target; an enemy goes back to the squad it came from, or joins one shared Director enemy squad (so two you turned do not fight each other), and starts fighting. Players and your career's own characters keep their team.
 
 ## Spawn a weapon and infinite ammo (0.11.0)

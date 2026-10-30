@@ -1,0 +1,11 @@
+Director 0.13.0
+
+Build a wave: each enemy now has a 2nd weapon and a Throwable (both start as none).
+
+2nd weapon: any weapon from the full list. If the game lets that character hold the pair (for example two pistols), it dual wields them; otherwise it carries the second one as a backup and switches to it.
+
+Throwable: hand grenades and other grenade-slot throwables. The enemy throws them by itself while fighting. With Infinite ammo it never runs out.
+
+Waves saved with 0.12.0 still load.
+
+Not played in the game yet.

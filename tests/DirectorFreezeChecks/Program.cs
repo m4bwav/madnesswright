@@ -317,6 +317,39 @@ static class Program
         Check(!AmmoFeature.Has(plain) && !plain.infAmmo && !BossBarFeature.Has(plain), "wave: a plain unit got infinite ammo or a bar");
         AmmoFeature.ClearAll(false);
         BossBarFeature.ClearAll();
+        WaveSecondSlots();
+    }
+
+    // Wave builder (0.13.0): a second weapon and a throwable per unit. The second weapon goes in the off
+    // hand when the game's Char_Data.ReturnCanDual allows the pair (else Combatant_Character drops it),
+    // otherwise into the stowed slot as a backup; a grenade-slot pick is a throwable (Wave_Generator.GiveItem).
+    static void WaveSecondSlots()
+    {
+        var w = new WaveRoster();
+        var u = w.Add("Grunt_A", "Grunt");
+        Check(u.Weapon2 == null && u.Throwable == null, "wave2: a new unit has a second weapon or a throwable");
+        u.Weapon = "Pistol_A"; u.WeaponName = "Automag";
+        u.Weapon2 = "Pistol_B"; u.Weapon2Name = "Beretta";
+        u.Throwable = "Grenade_Frag"; u.ThrowableName = "Frag"; u.Infinite = true;
+        Check(WaveRoster.Describe(u) == "Grunt: Automag and Beretta, throws Frag, infinite ammo", "wave2: describe says " + WaveRoster.Describe(u));
+        var c = w.Copy(0);
+        Check(c.Weapon2 == "Pistol_B" && c.Throwable == "Grenade_Frag", "wave2: copy lost the second weapon or throwable");
+
+        var text = WaveRoster.Save(w.Units);
+        Check(text.StartsWith("# Director wave v2"), "wave2: the file version was not bumped: " + text.Split('\n')[0]);
+        var back = WaveRoster.Load(text);
+        Check(back.Count == 2 && back[0].Weapon2 == "Pistol_B" && back[0].Weapon2Name == "Beretta" && back[0].Throwable == "Grenade_Frag" && back[0].ThrowableName == "Frag" && back[0].Infinite,
+            "wave2: save and load lost the second weapon or throwable");
+        // A 0.12.0 file (six fields, old header) still loads, with no second weapon and no throwable.
+        var old = WaveRoster.Load("# Director wave: card, weapon, infinite ammo, boss bar, name, weapon name\nGrunt_A\tPistol_A\t1\t0\tGrunt\tAutomag\n");
+        Check(old.Count == 1 && old[0].Weapon == "Pistol_A" && old[0].Infinite && old[0].Weapon2 == null && old[0].Throwable == null, "wave2: a 0.12.0 file did not load as none");
+        var blank = WaveRoster.Load(WaveRoster.Save(new[] { new WaveUnit { Card = "Grunt_A" } }));
+        Check(blank[0].Weapon2 == null && blank[0].Throwable == null, "wave2: empty slots came back as names");
+
+        Check(WaveRoster.PlaceSecond(false, false, true) == SecondPlace.OffHand, "wave2: a pair the game allows was not dual wielded");
+        Check(WaveRoster.PlaceSecond(false, false, false) == SecondPlace.Backup, "wave2: a pair the game refuses was not made a backup");
+        Check(WaveRoster.PlaceSecond(true, false, true) == SecondPlace.Throwable, "wave2: a grenade picked as second weapon was not made the throwable");
+        Check(WaveRoster.PlaceSecond(true, true, true) == SecondPlace.None, "wave2: a second grenade replaced the picked throwable");
     }
 
     // Team change (0.12.0): [ turns an enemy into an ally of the keyboard player and back, through the
