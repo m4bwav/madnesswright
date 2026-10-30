@@ -2,6 +2,14 @@
 
 Append-only, newest first.
 
+## 2026-10-30 · Director 0.13.0: second weapon and throwable in the wave builder
+
+- Requests (the requester, via the owner): "some enemies need to be dual wielding weapons so can you add another weapon thing and it can be anything", and "sometimes I need an enemy to have both a weapon and has throwable weapon like hand grenades".
+- No play before building (game not running). Mid-session the owner said the requester is testing the last version on their own PC and it is "good so far" (Workshop 0.12.0 at that point; no Player.log from that machine).
+- Decompile (scratchpad only; build 25615196): characters hold `itemSlots[slot][hand]` (slot 0 in use, slot 1 stowed; hands 0 and 1). `Combatant_Character` checks `Char_Data.ReturnCanDual` (melee: one-handed plus DualMelee skill or HoldInOffHand; ranged: one-handed plus DualRanged/AdvancedDualRanged; DualWieldOverride trait allows all) and drops a refused off-hand item. `Wave_Generator` dual-spawns only with the SpawnDual trait. Grenade-slot cards (`AmGrenadeSlot`) go to `HoldThrowable`; `Controller_NPC.SetWeaponBasedModules` adds `AI_Modules.M_ThrowGrenade` whenever the character holds a throwable (cooldown from `myAmmoMax`), so the AI really throws. Thrown count is `Item_Ranged.myAmmo`; not exposed (card's stack).
+- Rulings (mod README): 2nd weapon from the full list, off hand when ReturnCanDual allows the pair, else stowed backup (slot 1); Throwable picker of grenade-slot cards, no count, infinite ammo keeps it throwing; a grenade as 2nd weapon becomes the throwable unless one is picked; wave files version 2, 0.12.0 files load as none; weapon modules refreshed after spawn.
+- Harness: `WaveSecondSlots` written first (failed at describe on a stub), passes. Pack 0 warnings, `--strict check-mod` clean, deployed byte-identical, DLL holds `0.13.0` and the new labels (UTF-16, odd alignment). PR #53 squash-merged, CI green. Workshop upload with the owner's OK: `result OK`, title Director, visibility 0, 55 subscribers, updated 2026-10-30 12:55 UTC. Not played (Owed 20).
+
 ## 2026-10-29 · Director 0.12.0: boss bar, wave builder, team change; Workshop title "Director"
 
 - Requests (the requester, via the owner): "a button that who ever your mouse is hovering over has a boss bar"; "a button that allows you to set a wave of enemies with set guns and allows you to let a current enemy have infinite or normal amount and let a current enemy in the wave to have a boss bar". Extra objective from the owner's prompt: a key that changes the team of the character under the cursor. The owner also asked to rename the Workshop item to just "Director".
@@ -277,3 +285,4 @@ Append-only, newest first.
 ## [2026-10-25] index | rebuilt (17 entries)
 ## [2026-10-28] index | rebuilt (18 entries)
 ## [2026-10-29] index | rebuilt (18 entries)
+## [2026-10-30] index | rebuilt (18 entries)
