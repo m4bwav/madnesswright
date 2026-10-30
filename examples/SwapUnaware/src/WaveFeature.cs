@@ -14,13 +14,15 @@ namespace SwapUnaware
     // <persistentDataPath>/PlaygroundDirector/Waves/<name>.txt. The window holds its own pause.
     public class WaveFeature : Feature
     {
-        enum Step { Closed, Roster, Characters, WeaponCategories, Weapons }
+        enum Step { Closed, Roster, Characters, WeaponCategories, Weapons, Throwables }
 
         Step step = Step.Closed;
         readonly WaveRoster roster = new WaveRoster();
         int editing = -1;                 // the row whose weapon is being picked
+        bool second;                      // picking the row's second weapon, not its first
         List<StatCard_Character> characters = new List<StatCard_Character>();
         List<WeaponGroup> groups = new List<WeaponGroup>();
+        List<WeaponEntry> throwables = new List<WeaponEntry>();
         WeaponGroup group;
         string filter = "", waveName = "", last = "";
         Vector2 rosterScroll, listScroll;
@@ -51,6 +53,8 @@ namespace SwapUnaware
                 .Where(c => c != null && c.CharacterEnabled)
                 .OrderBy(c => CardName(c), StringComparer.OrdinalIgnoreCase).ToList();
             groups = WeaponSpawnFeature.Build();
+            throwables = groups.SelectMany(g => g.Weapons).Where(x => IsGrenade(x.Source as StatCard_Weapon))
+                .OrderBy(x => x.Label, StringComparer.OrdinalIgnoreCase).ToList();
             last = "";
             if (step == Step.Closed)
             {
@@ -70,11 +74,14 @@ namespace SwapUnaware
         void Back()
         {
             if (step == Step.Weapons) step = Step.WeaponCategories;
-            else if (step == Step.Characters || step == Step.WeaponCategories) step = Step.Roster;
+            else if (step == Step.Characters || step == Step.WeaponCategories || step == Step.Throwables) step = Step.Roster;
             else Close();
         }
 
         static string CardName(StatCard_Character c) { return string.IsNullOrWhiteSpace(c.FullName) ? c.name : c.FullName.Trim(); }
+
+        // The grenade slot, as Wave_Generator.GiveItem decides it.
+        static bool IsGrenade(StatCard_Weapon w) { return w != null && w.AmGrenadeSlot(); }
 
         // ---- spawning ----
 
@@ -94,6 +101,10 @@ namespace SwapUnaware
                     if (c == null) { Game.Log("wave: " + u.Card + " was not spawned"); continue; }
                     squad.AddMember(c.myData);
                     Controller_Base.SetAlertStatus(c.myController, AI_Wakeup.AlertStatus.Combat);
+                    // The grenade-throwing module is chosen from what the unit holds; refresh it in
+                    // case the alert was already Combat when the items arrived.
+                    var npc = c.myController as Controller_NPC;
+                    if (npc != null) Controller_NPC.SetWeaponBasedModules(npc);
                     WaveRoster.Apply(c, u);
                     made++;
                 }
@@ -124,7 +135,44 @@ namespace SwapUnaware
             if (c == null) c = Combatant_Base.CreateCombatant(data, room, Controller_Base.ControllerType.NPC, me.Position + me.transform.forward * 3f, me.transform.rotation, false);
             if (c == null) return null;
             if (weapon != null && WeaponSpawnFeature.GiveToHands(weapon, c) == null) Game.Log("wave: the game made no " + u.Weapon + " for " + u.Card);
+            GiveThrowable(u, c);
+            GiveSecond(u, c);
             return c;
+        }
+
+        static StatCard_Weapon WeaponCard(string card, string unit)
+        {
+            if (card == null) return null;
+            var w = StatCard_Base.ReturnCardByName<StatCard_Weapon>(card);
+            if (w == null) Game.Log("wave: no weapon card " + card + " for " + unit);
+            return w;
+        }
+
+        static void GiveThrowable(WaveUnit u, Combatant_Base c)
+        {
+            var card = WeaponCard(u.Throwable, u.Card);
+            if (card == null) return;
+            var data = Catalog_Weapons.GenerateWeapon(card) as Item_Data_RangedWeapon;
+            if (data == null || !data.amGrenadeSlot) { Game.Log("wave: " + u.Throwable + " is not a grenade-slot throwable"); return; }
+            if (Char_DataAssigner.GiveThrownToCharacter(data, c) == null) Game.Log("wave: the game made no " + u.Throwable + " for " + u.Card);
+        }
+
+        // Off hand when the game allows the pair, else stowed as a backup; a grenade becomes the throwable.
+        static void GiveSecond(WaveUnit u, Combatant_Base c)
+        {
+            var card = WeaponCard(u.Weapon2, u.Card);
+            if (card == null) return;
+            var data = Catalog_Weapons.GenerateWeapon(card);
+            if (data == null) { Game.Log("wave: the game made no " + u.Weapon2 + " for " + u.Card); return; }
+            var main = c.myData.ReturnItem(0, 0) as Item_Data_Held;
+            var place = WaveRoster.PlaceSecond(IsGrenade(card), u.Throwable != null, main == null || c.myData.ReturnCanDual(main, data));
+            if (place == SecondPlace.None) { Game.Log("wave: " + u.Card + " keeps its throwable; second weapon " + u.Weapon2 + " left out"); return; }
+            if (place == SecondPlace.Throwable) { Char_DataAssigner.GiveThrownToCharacter(data as Item_Data_RangedWeapon, c); return; }
+            Item_Held held = place == SecondPlace.OffHand
+                ? Char_DataAssigner.GiveItemToCharacter(data, c, 0, main == null ? 0 : 1)
+                : Char_DataAssigner.GiveItemToCharacter(data, c, 1, 0);
+            if (held == null || held.myOwner != c) { if (held != null) held.DeSpawn(); Game.Log("wave: " + u.Card + " could not take " + u.Weapon2); return; }
+            Game.Log("wave: " + u.Card + " " + (place == SecondPlace.OffHand ? "dual wields " : "carries as a backup ") + u.Weapon2);
         }
 
         // As the Playground's Spawn Units: the card's default weapons, else a wave weapon near its level.
@@ -183,6 +231,7 @@ namespace SwapUnaware
             if (step == Step.Roster) DrawRoster();
             else if (step == Step.Characters) DrawCharacters();
             else if (step == Step.WeaponCategories) DrawCategories();
+            else if (step == Step.Throwables) DrawThrowables();
             else DrawWeapons();
             GUILayout.EndArea();
         }
@@ -198,11 +247,16 @@ namespace SwapUnaware
                 var u = roster.Units[i];
                 GUILayout.BeginHorizontal();
                 GUILayout.Label((i + 1) + ". " + (string.IsNullOrWhiteSpace(u.Name) ? u.Card : u.Name), GUILayout.Width(Col(0.26f)));
-                if (GUILayout.Button(u.Weapon == null ? "Own weapons" : (u.WeaponName ?? u.Weapon), GUILayout.Width(Col(0.26f)))) { editing = i; step = Step.WeaponCategories; }
+                if (GUILayout.Button(u.Weapon == null ? "Own weapons" : (u.WeaponName ?? u.Weapon), GUILayout.Width(Col(0.26f)))) { editing = i; second = false; step = Step.WeaponCategories; }
                 u.Infinite = GUILayout.Toggle(u.Infinite, u.Infinite ? " Infinite ammo" : " Normal ammo", GUILayout.Width(Col(0.15f)));
                 u.Boss = GUILayout.Toggle(u.Boss, " Boss bar", GUILayout.Width(Col(0.11f)));
                 if (GUILayout.Button("Copy")) roster.Copy(i);
                 if (GUILayout.Button("Remove")) { roster.Remove(i); GUILayout.EndHorizontal(); break; }
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("", GUILayout.Width(Col(0.26f)));
+                if (GUILayout.Button(u.Weapon2 == null ? "2nd weapon: none" : "2nd: " + (u.Weapon2Name ?? u.Weapon2), GUILayout.Width(Col(0.26f)))) { editing = i; second = true; step = Step.WeaponCategories; }
+                if (GUILayout.Button(u.Throwable == null ? "Throwable: none" : "Throws: " + (u.ThrowableName ?? u.Throwable), GUILayout.Width(Col(0.26f)))) { editing = i; listScroll = Vector2.zero; step = Step.Throwables; }
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
@@ -251,9 +305,10 @@ namespace SwapUnaware
 
         void DrawCategories()
         {
-            GUILayout.Label("Weapon for " + Row() + ": pick a category.   ESC: back.");
+            GUILayout.Label((second ? "Second weapon for " : "Weapon for ") + Row() + ": pick a category.   ESC: back.");
+            if (second) GUILayout.Label("Held in the other hand when the game allows the pair, else carried as a backup.");
             listScroll = GUILayout.BeginScrollView(listScroll);
-            if (GUILayout.Button("Own weapons (what the character comes with)")) SetWeapon(null);
+            if (GUILayout.Button(second ? "None" : "Own weapons (what the character comes with)")) SetWeapon(null);
             foreach (var g in groups)
                 if (GUILayout.Button(g.Name + "   (" + g.Weapons.Count + ")")) { group = g; listScroll = Vector2.zero; step = Step.Weapons; }
             GUILayout.EndScrollView();
@@ -271,6 +326,30 @@ namespace SwapUnaware
             if (GUILayout.Button("Back")) Back();
         }
 
+        void DrawThrowables()
+        {
+            GUILayout.Label("Throwable for " + Row() + ": click one. The enemy throws it on its own; infinite ammo keeps it throwing.   ESC: back.");
+            listScroll = GUILayout.BeginScrollView(listScroll);
+            if (GUILayout.Button("None")) SetThrowable(null);
+            if (throwables.Count == 0) GUILayout.Label("(the game holds no grenade-slot throwables here)");
+            foreach (var x in throwables)
+                if (GUILayout.Button(x.Label + (x.Hidden ? "   *" : "") + (x.Mod ? "   (mod)" : ""))) SetThrowable(x);
+            GUILayout.EndScrollView();
+            if (GUILayout.Button("Back")) Back();
+        }
+
+        void SetThrowable(WeaponEntry x)
+        {
+            if (editing >= 0 && editing < roster.Units.Count)
+            {
+                var u = roster.Units[editing];
+                u.Throwable = x != null ? x.Card : null;
+                u.ThrowableName = x != null ? x.Label : null;
+            }
+            editing = -1;
+            step = Step.Roster;
+        }
+
         string Row()
         {
             return editing >= 0 && editing < roster.Units.Count ? (editing + 1) + ". " + (roster.Units[editing].Name ?? roster.Units[editing].Card) : "?";
@@ -281,8 +360,8 @@ namespace SwapUnaware
             if (editing >= 0 && editing < roster.Units.Count)
             {
                 var u = roster.Units[editing];
-                u.Weapon = x != null ? x.Card : null;
-                u.WeaponName = x != null ? x.Label : null;
+                if (second) { u.Weapon2 = x != null ? x.Card : null; u.Weapon2Name = x != null ? x.Label : null; }
+                else { u.Weapon = x != null ? x.Card : null; u.WeaponName = x != null ? x.Label : null; }
             }
             editing = -1;
             step = Step.Roster;

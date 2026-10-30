@@ -14,13 +14,21 @@ namespace SwapUnaware
         public string WeaponName;
         public bool Infinite;      // infinite ammo, as \ gives it
         public bool Boss;          // the game's boss bar, as ] gives it
+        public string Weapon2;     // a second weapon card (0.13.0); null: none
+        public string Weapon2Name;
+        public string Throwable;   // a grenade-slot throwable card (0.13.0); null: none
+        public string ThrowableName;
 
         public WaveUnit Clone() { return (WaveUnit)MemberwiseClone(); }
     }
 
+    // Where a unit's second weapon goes.
+    public enum SecondPlace { None, OffHand, Backup, Throwable }
+
     // The wave builder's list. Plain C# apart from Apply, so the harness (tests/DirectorFreezeChecks)
     // checks it without the game. Saved waves are text files, one unit per line, tab-separated:
-    // card, weapon, infinite (0/1), boss (0/1), name, weapon name.
+    // card, weapon, infinite (0/1), boss (0/1), name, weapon name, then (version 2, 0.13.0) second
+    // weapon, its name, throwable, its name.
     public class WaveRoster
     {
         public readonly List<WaveUnit> Units = new List<WaveUnit>();
@@ -46,9 +54,21 @@ namespace SwapUnaware
             if (i >= 0 && i < Units.Count) Units.RemoveAt(i);
         }
 
+        // The game's rules: a grenade-slot card always goes to the grenade slot (Wave_Generator.GiveItem),
+        // and a picked throwable wins over a grenade picked as the second weapon; any other second weapon
+        // goes in the off hand when Char_Data.ReturnCanDual allows the pair, else stowed as a backup the
+        // AI swaps to (Combatant_Character would drop a refused off-hand item on the floor).
+        public static SecondPlace PlaceSecond(bool grenade, bool throwableSet, bool canDual)
+        {
+            if (grenade) return throwableSet ? SecondPlace.None : SecondPlace.Throwable;
+            return canDual ? SecondPlace.OffHand : SecondPlace.Backup;
+        }
+
         public static string Describe(WaveUnit u)
         {
             var s = new StringBuilder(Label(u.Name, u.Card)).Append(": ").Append(u.Weapon == null ? "own weapons" : Label(u.WeaponName, u.Weapon));
+            if (u.Weapon2 != null) s.Append(" and ").Append(Label(u.Weapon2Name, u.Weapon2));
+            if (u.Throwable != null) s.Append(", throws ").Append(Label(u.ThrowableName, u.Throwable));
             if (u.Infinite) s.Append(", infinite ammo");
             if (u.Boss) s.Append(", boss bar");
             return s.ToString();
@@ -58,9 +78,10 @@ namespace SwapUnaware
 
         public static string Save(IEnumerable<WaveUnit> units)
         {
-            var s = new StringBuilder("# Director wave: card, weapon, infinite ammo, boss bar, name, weapon name\n");
+            var s = new StringBuilder("# Director wave v2: card, weapon, infinite ammo, boss bar, name, weapon name, second weapon, its name, throwable, its name\n");
             foreach (var u in units)
-                s.Append(string.Join("\t", new[] { Field(u.Card), Field(u.Weapon), u.Infinite ? "1" : "0", u.Boss ? "1" : "0", Field(u.Name), Field(u.WeaponName) })).Append('\n');
+                s.Append(string.Join("\t", new[] { Field(u.Card), Field(u.Weapon), u.Infinite ? "1" : "0", u.Boss ? "1" : "0", Field(u.Name), Field(u.WeaponName),
+                    Field(u.Weapon2), Field(u.Weapon2Name), Field(u.Throwable), Field(u.ThrowableName) })).Append('\n');
             return s.ToString();
         }
 
@@ -84,10 +105,17 @@ namespace SwapUnaware
                     Boss = f[3].Trim() == "1",
                     Name = f.Length > 4 ? f[4] : null,
                     WeaponName = f.Length > 5 ? f[5] : null,
+                    // Version 2 fields; a 0.12.0 file has none, so both slots read as none.
+                    Weapon2 = Card(f, 6),
+                    Weapon2Name = f.Length > 7 ? f[7] : null,
+                    Throwable = Card(f, 8),
+                    ThrowableName = f.Length > 9 ? f[9] : null,
                 });
             }
             return list;
         }
+
+        static string Card(string[] f, int i) { return f.Length > i && f[i].Trim().Length > 0 ? f[i].Trim() : null; }
 
         // A file name that is the same on every system: path and reserved characters become _.
         public static string FileName(string name)
