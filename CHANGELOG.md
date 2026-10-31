@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.11 · 2026-10-30
+
+- `examples/SwapUnaware` 0.14.0 (the requester's asks): Build a wave gains **Max enemies alive at once** per wave (default no limit): when one of the wave's enemies dies the next queued one spawns, until the list is used up, as the game's own waves cap units alive (`WaveContainer.UnitCount_Max`); the window also shows the wave's total. Each enemy row gains **Dual wielding: off/on**; only when it is on does the off-hand weapon picker show and the weapon get given, and the row says when the game refuses the pair for that character (carried as a backup). Wave files version 3: the limit is a comment line, so older Directors still read the enemies; v2 files load with no limit, and a v2 enemy with a 2nd weapon reads as dual wielding on. The harness checks the queue (never more than the limit alive, next after a kill, order, failed spawns) and the toggle and files. Built and deployed.
+- `examples/SwapUnaware` 0.13.0 (the requester's asks): each wave enemy gets a 2nd weapon (dual wielded when the game's `Char_Data.ReturnCanDual` allows the pair, else carried stowed as a backup) and a grenade-slot Throwable the game's AI throws by itself. Wave files version 2.
+
 ## 0.1.10 · 2026-10-29
 
 - `examples/SwapUnaware` 0.12.0 (the requester's asks): ] puts the game's own boss health bar (`UI_Game.AddBoss`) on the character under the mouse, and ] again removes it; a player's or squadmate's HUD bar is held aside and put back, since linking a boss bar ends it. A Build a wave window in the INSERT menu lists enemies with a set weapon each (any weapon from the Spawn a weapon list, or their own), infinite or normal ammo and a boss bar, copies and removes rows, saves waves by name and spawns them the way the Playground's Spawn Units does. [ turns the character under the mouse from enemy to ally or back through the game's `Squad_Main.AddMember`. The Workshop item's title is now plain "Director". The C# harness checks the boss bar (HUD kept, death, clear), the wave list and its files, and the team change. Built and deployed, not yet played.

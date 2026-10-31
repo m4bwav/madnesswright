@@ -1,0 +1,7 @@
+Director 0.14.0
+
+Build a wave: new "Max enemies alive at once" setting under the list (use - and +; it starts at no limit). With a limit, only that many of the wave's enemies are alive at a time: when one dies, the next one in the list comes in, until the whole list has spawned. The window also shows how many enemies the wave has in all.
+
+Each enemy now has a "Dual wielding: off/on" switch. Only when it is on does the Off hand weapon picker show and the enemy get a second weapon. If the game won't let that character hold the pair, the row says so and the enemy carries it as a backup. The Throwable picker is unchanged.
+
+Waves saved with 0.13.0 still load: no limit, and enemies that had a 2nd weapon load with dual wielding on.

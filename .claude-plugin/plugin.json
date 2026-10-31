@@ -1,6 +1,6 @@
 {
   "name": "madnesswright",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Evergreen skills for modding MADNESS: Project Nexus with an AI agent the official way: mod folders, info.txt and MadCards on the releasebeta branch, levels, stages, campaigns and arena maps in the SceneTools Unity project, new weapons, armor and characters in ModTools, and Harmony code loaded by the game itself. A stdlib Python helper finds the install and branch, backs up saves, lints mods and SceneTools scenes against the official rules, deploys mods and reads the game's mod log. Each skill re-researches the game's betas and tools on a schedule.",
   "author": {
     "name": "Mark Rogers"
