@@ -24,7 +24,9 @@ namespace SwapUnaware
         List<WeaponGroup> groups = new List<WeaponGroup>();
         List<WeaponEntry> throwables = new List<WeaponEntry>();
         WeaponGroup group;
-        string filter = "", waveName = "", last = "";
+        string waveName = "", last = "";
+        readonly FilterBox filter = new FilterBox("pd_wave_filter");
+        readonly FilterBox savedFilter = new FilterBox("pd_wave_saved_filter");
         Vector2 rosterScroll, listScroll;
         // Waves spawning under their limit: the next enemy comes in when one dies.
         class Running { public WaveQueue Queue; public Squad_Main Squad; public int Made; }
@@ -81,6 +83,7 @@ namespace SwapUnaware
         {
             if (step == Step.Closed) return;
             step = Step.Closed;
+            WeaponSearch.Cancel();
             Game_Manager.UnpauseGame(this);
         }
 
@@ -260,6 +263,7 @@ namespace SwapUnaware
         {
             if (step == Step.Closed) return;
             Cursor.visible = true;
+            if (WeaponSearch.IsOpen) return;
             var e = Event.current;
             if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape) { Back(); e.Use(); return; }
             float w = Mathf.Min(820f, Screen.width * 0.7f), h = Screen.height * 0.8f;
@@ -283,7 +287,7 @@ namespace SwapUnaware
                 var u = roster.Units[i];
                 GUILayout.BeginHorizontal();
                 GUILayout.Label((i + 1) + ". " + (string.IsNullOrWhiteSpace(u.Name) ? u.Card : u.Name), GUILayout.Width(Col(0.26f)));
-                if (GUILayout.Button(u.Weapon == null ? "Own weapons" : (u.WeaponName ?? u.Weapon), GUILayout.Width(Col(0.26f)))) { editing = i; second = false; step = Step.WeaponCategories; }
+                if (GUILayout.Button(u.Weapon == null ? "Own weapons" : (u.WeaponName ?? u.Weapon), GUILayout.Width(Col(0.26f)))) { editing = i; second = false; listScroll = Vector2.zero; step = Step.WeaponCategories; }
                 u.Infinite = GUILayout.Toggle(u.Infinite, u.Infinite ? " Infinite ammo" : " Normal ammo", GUILayout.Width(Col(0.15f)));
                 u.Boss = GUILayout.Toggle(u.Boss, " Boss bar", GUILayout.Width(Col(0.11f)));
                 if (GUILayout.Button("Copy")) roster.Copy(i);
@@ -292,8 +296,8 @@ namespace SwapUnaware
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("", GUILayout.Width(Col(0.26f)));
                 u.Dual = GUILayout.Toggle(u.Dual, u.Dual ? " Dual wielding: on" : " Dual wielding: off", GUILayout.Width(Col(0.2f)));
-                if (u.Dual && GUILayout.Button(u.Weapon2 == null ? "Off hand: pick" : "Off hand: " + (u.Weapon2Name ?? u.Weapon2), GUILayout.Width(Col(0.24f)))) { editing = i; second = true; step = Step.WeaponCategories; }
-                if (GUILayout.Button(u.Throwable == null ? "Throwable: none" : "Throws: " + (u.ThrowableName ?? u.Throwable), GUILayout.Width(Col(0.24f)))) { editing = i; listScroll = Vector2.zero; step = Step.Throwables; }
+                if (u.Dual && GUILayout.Button(u.Weapon2 == null ? "Off hand: pick" : "Off hand: " + (u.Weapon2Name ?? u.Weapon2), GUILayout.Width(Col(0.24f)))) { editing = i; second = true; listScroll = Vector2.zero; step = Step.WeaponCategories; }
+                if (GUILayout.Button(u.Throwable == null ? "Throwable: none" : "Throws: " + (u.ThrowableName ?? u.Throwable), GUILayout.Width(Col(0.24f)))) { editing = i; listScroll = Vector2.zero; filter.Reset(); step = Step.Throwables; }
                 GUILayout.EndHorizontal();
                 var note = WaveRoster.DualNote(u, u.Dual ? CanDual(u) : null);
                 if (note != null) { GUILayout.BeginHorizontal(); GUILayout.Label("", GUILayout.Width(Col(0.26f))); GUILayout.Label(note); GUILayout.EndHorizontal(); }
@@ -306,7 +310,7 @@ namespace SwapUnaware
             if (GUILayout.Button("+", GUILayout.Width(28f))) roster.MaxAlive++;
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add an enemy")) { filter = ""; listScroll = Vector2.zero; step = Step.Characters; }
+            if (GUILayout.Button("Add an enemy")) { filter.Reset(); listScroll = Vector2.zero; step = Step.Characters; }
             GUI.enabled = roster.Units.Count > 0;
             if (GUILayout.Button("SPAWN the wave")) SpawnWave();
             if (GUILayout.Button("Clear")) roster.Units.Clear();
@@ -315,6 +319,7 @@ namespace SwapUnaware
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Label("Name:", GUILayout.ExpandWidth(false));
+            FilterBox.Touch();
             waveName = GUILayout.TextField(waveName, 40, GUILayout.Width(Col(0.3f)));
             GUI.enabled = roster.Units.Count > 0;
             if (GUILayout.Button("Save the wave", GUILayout.ExpandWidth(false))) Save();
@@ -323,9 +328,12 @@ namespace SwapUnaware
             var saved = SavedWaves();
             if (saved.Length > 0)
             {
-                GUILayout.Label("Saved waves (click to load):");
+                // One row holds eight; with more, the filter finds the rest.
+                GUILayout.Label("Saved waves (click to load)" + (saved.Length > 8 ? ", " + saved.Length + " in all:" : ":"));
+                savedFilter.Draw(saved.Length, saved.Length > 8);
                 GUILayout.BeginHorizontal();
-                foreach (var f in saved.Take(8)) if (GUILayout.Button(Path.GetFileNameWithoutExtension(f))) Load(f);
+                foreach (var f in saved.Where(x => savedFilter.Pass(Path.GetFileNameWithoutExtension(x))).Take(8))
+                    if (GUILayout.Button(Path.GetFileNameWithoutExtension(f))) Load(f);
                 GUILayout.EndHorizontal();
             }
         }
@@ -333,15 +341,12 @@ namespace SwapUnaware
         void DrawCharacters()
         {
             GUILayout.Label("Add an enemy: click a character.   ESC: back.");
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Filter:", GUILayout.ExpandWidth(false));
-            filter = GUILayout.TextField(filter, 40);
-            GUILayout.EndHorizontal();
+            filter.Draw(characters.Count, true);
             listScroll = GUILayout.BeginScrollView(listScroll);
             foreach (var c in characters)
             {
                 var n = CardName(c);
-                if (filter.Length > 0 && n.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0 && c.name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                if (!filter.Pass(n, c.name)) continue;
                 if (GUILayout.Button(n + "   [" + c.DefaultFaction + "]" + (c.AmNewCard ? "   (mod)" : ""))) { roster.Add(c.name, n); step = Step.Roster; }
             }
             GUILayout.EndScrollView();
@@ -352,10 +357,12 @@ namespace SwapUnaware
         {
             GUILayout.Label((second ? "Second weapon for " : "Weapon for ") + Row() + ": pick a category.   ESC: back.");
             if (second) GUILayout.Label("Held in the other hand when the game allows the pair, else carried as a backup.");
+            if (GUILayout.Button("SEARCH every weapon by name"))
+                WeaponSearch.Open((second ? "off hand for " : "weapon for ") + Row(), groups.SelectMany(g => g.Weapons).OrderBy(x => x.Label, StringComparer.OrdinalIgnoreCase), SetWeapon);
             listScroll = GUILayout.BeginScrollView(listScroll);
             if (GUILayout.Button(second ? "None" : "Own weapons (what the character comes with)")) SetWeapon(null);
             foreach (var g in groups)
-                if (GUILayout.Button(g.Name + "   (" + g.Weapons.Count + ")")) { group = g; listScroll = Vector2.zero; step = Step.Weapons; }
+                if (GUILayout.Button(g.Name + "   (" + g.Weapons.Count + ")")) { group = g; listScroll = Vector2.zero; filter.Reset(); step = Step.Weapons; }
             GUILayout.EndScrollView();
             if (GUILayout.Button("Back")) Back();
         }
@@ -364,9 +371,10 @@ namespace SwapUnaware
         {
             if (group == null) { step = Step.WeaponCategories; return; }
             GUILayout.Label("Weapon for " + Row() + ", " + group.Name + ": click one.   ESC: back.   *: not in the Playground's list.");
+            filter.Draw(group.Weapons.Count);
             listScroll = GUILayout.BeginScrollView(listScroll);
             foreach (var x in group.Weapons)
-                if (GUILayout.Button(x.Label + (x.Hidden ? "   *" : "") + (x.Mod ? "   (mod)" : ""))) SetWeapon(x);
+                if (filter.Pass(x.Label, x.Card) && GUILayout.Button(x.Label + (x.Hidden ? "   *" : "") + (x.Mod ? "   (mod)" : ""))) SetWeapon(x);
             GUILayout.EndScrollView();
             if (GUILayout.Button("Back")) Back();
         }
@@ -374,11 +382,14 @@ namespace SwapUnaware
         void DrawThrowables()
         {
             GUILayout.Label("Throwable for " + Row() + ": click one. The enemy throws it on its own; infinite ammo keeps it throwing.   ESC: back.");
+            if (throwables.Count > 0 && GUILayout.Button("SEARCH the throwables by name"))
+                WeaponSearch.Open("throwable for " + Row(), throwables, SetThrowable);
+            filter.Draw(throwables.Count);
             listScroll = GUILayout.BeginScrollView(listScroll);
             if (GUILayout.Button("None")) SetThrowable(null);
             if (throwables.Count == 0) GUILayout.Label("(the game holds no grenade-slot throwables here)");
             foreach (var x in throwables)
-                if (GUILayout.Button(x.Label + (x.Hidden ? "   *" : "") + (x.Mod ? "   (mod)" : ""))) SetThrowable(x);
+                if (filter.Pass(x.Label, x.Card) && GUILayout.Button(x.Label + (x.Hidden ? "   *" : "") + (x.Mod ? "   (mod)" : ""))) SetThrowable(x);
             GUILayout.EndScrollView();
             if (GUILayout.Button("Back")) Back();
         }

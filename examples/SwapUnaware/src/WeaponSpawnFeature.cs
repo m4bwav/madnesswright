@@ -22,6 +22,7 @@ namespace SwapUnaware
         Vector2 catScroll, weaponScroll;
         bool toFloor;
         string last = "";
+        readonly FilterBox filter = new FilterBox("pd_spawn_filter");
         readonly HashSet<string> failed = new HashSet<string>();
 
         protected override string Name { get { return "spawn a weapon (INSERT menu)"; } }
@@ -59,6 +60,7 @@ namespace SwapUnaware
         {
             if (step == Step.Closed) return;
             step = Step.Closed;
+            WeaponSearch.Cancel();
             Game_Manager.UnpauseGame(this);
         }
 
@@ -90,6 +92,8 @@ namespace SwapUnaware
                     Hidden = HiddenInPlayground(raw, card),
                     Mod = card.AmNewCard,
                     Source = card,
+                    Kind = Kind(card),
+                    Stat = Stat(card),
                 });
             }
             var groups = WeaponCatalog.Group(entries);
@@ -97,6 +101,31 @@ namespace SwapUnaware
             Game.Log("weapons: " + n + " in " + groups.Count + " categories (" + string.Join(", ", groups.Select(g => g.Name + " " + g.Weapons.Count).ToArray())
                 + "), " + hidden + " not in the Playground's list, " + broken.Count + " left out as broken" + (broken.Count > 0 ? ": " + string.Join(", ", broken.ToArray()) : ""));
             return groups;
+        }
+
+        // A preset (StatCard_WeaponModded) is described by the gun it is built on.
+        static StatCard_Weapon Basis(StatCard_Weapon card)
+        {
+            var preset = card as StatCard_WeaponModded;
+            return preset != null && preset.LinkedWeapon != null ? preset.LinkedWeapon : card;
+        }
+
+        static string Kind(StatCard_Weapon card)
+        {
+            var b = Basis(card);
+            return b is StatCard_Thrown ? "throwable" : b is StatCard_Ranged ? "ranged" : "melee";
+        }
+
+        // The card's own numbers, before quality, skills and addons: what the cards give cheaply.
+        static string Stat(StatCard_Weapon card)
+        {
+            var b = Basis(card);
+            var thrown = b as StatCard_Thrown;
+            if (thrown != null) return thrown.Damage > 0f ? "damage " + thrown.Damage.ToString("0.#") : null;
+            var ranged = b as StatCard_Ranged;
+            if (ranged != null)
+                return (ranged.Damage > 0f ? "damage " + ranged.Damage.ToString("0.#") + ", " : "") + "ammo " + ranged.Ammo;
+            return b.MeleeDamage > 0f ? "damage " + b.MeleeDamage.ToString("0.#") : null;
         }
 
         // The game cannot make these: no prefab (Instantiate throws), or a preset with no base weapon.
@@ -181,6 +210,7 @@ namespace SwapUnaware
         {
             if (step == Step.Closed) return;
             Cursor.visible = true;
+            if (WeaponSearch.IsOpen) return;
             var e = Event.current;
             if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape) { Back(); e.Use(); return; }
             float w = Mathf.Min(720f, Screen.width * 0.6f), h = Screen.height * 0.75f;
@@ -190,6 +220,9 @@ namespace SwapUnaware
                 GUILayout.Label("Spawn a weapon: pick a category.   ESC: close.");
                 GUILayout.Label("*: not in the Playground's own spawn list.   (mod): from a mod.");
                 toFloor = GUILayout.Toggle(toFloor, " Drop it on the floor in front of me (instead of into my hands)");
+                GUILayout.Label(last);
+                if (GUILayout.Button("SEARCH every weapon by name"))
+                    WeaponSearch.Open("spawn a weapon", groups.SelectMany(g => g.Weapons).OrderBy(x => x.Label, StringComparer.OrdinalIgnoreCase), Spawn);
                 catScroll = GUILayout.BeginScrollView(catScroll);
                 if (groups.Count == 0) GUILayout.Label("(the game holds no weapon cards here)");
                 foreach (var g in groups)
@@ -199,6 +232,7 @@ namespace SwapUnaware
                     {
                         group = g;
                         weaponScroll = Vector2.zero;
+                        filter.Reset();
                         step = Step.Weapons;
                     }
                 }
@@ -210,9 +244,11 @@ namespace SwapUnaware
                 GUILayout.Label(group.Name + ": click a weapon to spawn it.   ESC: back to the categories.");
                 toFloor = GUILayout.Toggle(toFloor, " Drop it on the floor in front of me (instead of into my hands)");
                 GUILayout.Label(last);
+                filter.Draw(group.Weapons.Count);
                 weaponScroll = GUILayout.BeginScrollView(weaponScroll);
                 foreach (var x in group.Weapons)
                 {
+                    if (!filter.Pass(x.Label, x.Card)) continue;
                     string label = x.Label + (x.Hidden ? "   *" : "") + (x.Mod ? "   (mod)" : "") + (failed.Contains(x.Card) ? "   (failed)" : "");
                     if (GUILayout.Button(label)) Spawn(x);
                 }

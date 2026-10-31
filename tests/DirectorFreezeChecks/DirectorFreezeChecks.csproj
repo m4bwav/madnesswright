@@ -13,5 +13,6 @@
     <Compile Include="..\..\examples\SwapUnaware\src\BossBarFeature.cs" Link="BossBarFeature.cs" />
     <Compile Include="..\..\examples\SwapUnaware\src\WaveRoster.cs" Link="WaveRoster.cs" />
     <Compile Include="..\..\examples\SwapUnaware\src\TeamFeature.cs" Link="TeamFeature.cs" />
+    <Compile Include="..\..\examples\SwapUnaware\src\ListFilter.cs" Link="ListFilter.cs" />
   </ItemGroup>
 </Project>

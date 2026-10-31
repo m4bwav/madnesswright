@@ -70,7 +70,7 @@ namespace SwapUnaware
                 selected = -1;
                 Game.Say(shown ? "patrol squares shown: left click drops, U new square, click a square then P stop / Delete remove, F3 hide" : "patrol squares hidden");
             }
-            if (Input.GetKeyDown(NewKey))
+            if (Input.GetKeyDown(NewKey) && !FilterBox.Eats(NewKey))
             {
                 shown = true;
                 placing = true;
@@ -98,12 +98,12 @@ namespace SwapUnaware
             }
             if (selected >= 0 && selected < r.points.Count)
             {
-                if (Input.GetKeyDown(StopKey))
+                if (Input.GetKeyDown(StopKey) && !FilterBox.Eats(StopKey))
                 {
                     r.points[selected].stop = !r.points[selected].stop;
                     Restart(me, r);
                 }
-                if (Input.GetKeyDown(DeleteKey))
+                if (Input.GetKeyDown(DeleteKey) && !FilterBox.Eats(DeleteKey))
                 {
                     r.points.RemoveAt(selected);
                     selected = -1;

@@ -24,7 +24,8 @@ namespace SwapUnaware
         // The key, pressed on the keyboard or from the Director menu.
         protected static bool Pressed(KeyCode k)
         {
-            return Input.GetKeyDown(k) || DirectorMenu.TakeQueued(k);
+            // A key typed into a Director text box is a letter, not a feature key.
+            return (Input.GetKeyDown(k) && !FilterBox.Eats(k)) || DirectorMenu.TakeQueued(k);
         }
 
         protected static void Menu(string label, KeyCode key, bool pick = false)

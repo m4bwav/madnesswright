@@ -1,0 +1,7 @@
+Director 0.15.0
+
+Finding weapons: every list with more than 20 items now has a filter box at the top. It ignores case and matches anywhere in the name; * stands for any letters and ? for one, so ak*7 finds AK-47.
+
+Every weapon picker has a SEARCH button (Spawn a weapon, a wave enemy's weapon and off hand, and its throwable). Type part of a name: the list shows each weapon's kind, category and, where the card has them, its damage and ammo. ENTER picks the top match, ESC goes back. Your last five picks wait in a Recent row.
+
+Typing in these boxes no longer triggers Director keys. Saved waves with more than eight files get a filter so you can reach the rest. Saved waves and scenes load as before.

@@ -13,7 +13,7 @@ namespace SwapUnaware
 
         Combatant_Base target;
         List<AnimationClip> clips;
-        string filter = "";
+        readonly FilterBox filter = new FilterBox("pd_idle_filter");
         Vector2 scroll;
         bool open;
 
@@ -46,7 +46,7 @@ namespace SwapUnaware
             if (target == null) { Game.Say("no character under the mouse"); return; }
             clips = CollectClips(target);
             if (clips.Count == 0) { Game.Say("no idle animations found"); return; }
-            filter = "";
+            filter.Reset();
             scroll = Vector2.zero;
             open = true;
             // Locked, the player neither moves nor attacks while clicking and typing in the list.
@@ -145,20 +145,16 @@ namespace SwapUnaware
             float h = Screen.height * 0.7f, w = Mathf.Min(520f, Screen.width * 0.45f);
             GUILayout.BeginArea(new Rect(Screen.width - w - 20f, (Screen.height - h) / 2f, w, h), GUI.skin.box);
             GUILayout.Label("Idle animations for " + target.name + "  (F4 or ESC closes)");
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Filter:", GUILayout.Width(50f));
-            filter = GUILayout.TextField(filter);
-            GUILayout.EndHorizontal();
+            filter.Draw(clips.Count, true);
             if (GUILayout.Button("Stop the animation"))
             {
                 target.AttemptEndEmote();
                 EndPose(target);
             }
             scroll = GUILayout.BeginScrollView(scroll);
-            string f = filter.ToLowerInvariant();
             foreach (var a in clips)
             {
-                if (f.Length > 0 && !a.name.ToLowerInvariant().Contains(f)) continue;
+                if (!filter.Pass(a.name)) continue;
                 if (GUILayout.Button(a.name)) Play(a);
             }
             GUILayout.EndScrollView();

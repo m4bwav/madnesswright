@@ -505,6 +505,35 @@ static class Program
         Console.WriteLine("Director wave builder checks passed");
         Team();
         Console.WriteLine("Director team change checks passed");
+        Filter();
+        Console.WriteLine("Director list filter and weapon search checks passed");
+    }
+
+    // The filter box and weapon search (0.15.0): only lists over 20 get the box; caseless, plain
+    // text means contains, * and ? are wildcards that also match anywhere.
+    static void Filter()
+    {
+        Check(!ListFilter.Shows(20) && ListFilter.Shows(21) && !ListFilter.Shows(0), "filter: the box shows at the wrong length");
+        Check(ListFilter.Matches("", "AK-47") && ListFilter.Matches("   ", "AK-47") && ListFilter.Matches(null, "AK-47"), "filter: an empty box hides things");
+        Check(ListFilter.Matches("ak", "AK-47") && ListFilter.Matches("47", "AK-47"), "filter: contains is not caseless");
+        Check(!ListFilter.Matches("m16", "AK-47"), "filter: a miss matched");
+        Check(ListFilter.Matches("rifle", "AK-47", "Rifle_AK47"), "filter: the card name is not searched");
+        Check(ListFilter.Matches("a*7", "Big AK-47 gun") && ListFilter.Matches("A*47", "ak-47"), "filter: * does not span");
+        Check(!ListFilter.Matches("a*z", "AK-47"), "filter: * matched a missing letter");
+        Check(ListFilter.Matches("ak-?7", "AK-47") && !ListFilter.Matches("ak-?7", "AK-7"), "filter: ? is not exactly one");
+        Check(ListFilter.Matches("*", "x") && ListFilter.Matches("**", ""), "filter: a lone * misses");
+        Check(ListFilter.Matches(" ak ", "AK-47"), "filter: spaces around the text are not trimmed");
+        Check(ListFilter.Matches("[ak]", "Gun [AK] x") && ListFilter.Matches("a.k", "a.k") && !ListFilter.Matches("a.k", "abk"), "filter: other characters are not literal");
+        var left = ListFilter.Apply(new[] { "Axe", "AK-47", "Bat" }, "a", s => new[] { s });
+        Check(left.SequenceEqual(new[] { "Axe", "AK-47", "Bat" }), "filter: Apply lost an item or the order: " + string.Join(",", left));
+        Check(ListFilter.Apply(new[] { "Axe", "Bat" }, "x", s => new[] { s }).SequenceEqual(new[] { "Axe" }), "filter: Apply kept a miss");
+
+        RecentPicks.Clear();
+        foreach (var c in new[] { "a", "b", "a", "c", "d", "e", "f" }) RecentPicks.Add(c);
+        Check(RecentPicks.Cards.SequenceEqual(new[] { "f", "e", "d", "c", "a" }), "recent: kept " + string.Join(",", RecentPicks.Cards));
+        RecentPicks.Add(null);
+        Check(RecentPicks.Cards.Count == RecentPicks.Max, "recent: a null pick was kept");
+        RecentPicks.Clear();
     }
 }
 

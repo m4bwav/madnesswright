@@ -37,6 +37,7 @@ namespace SwapUnaware
 
         bool open;
         Vector2 scroll;
+        readonly FilterBox filter = new FilterBox("pd_menu_filter");
 
         protected override string Name { get { return "menu (INSERT)"; } }
         protected override bool RunWhilePaused { get { return true; } }
@@ -97,6 +98,7 @@ namespace SwapUnaware
         {
             picking = null;
             open = true;
+            filter.Reset();
             Game_Manager.PauseGame(this);
             UI_Menu.ClosePauseMenu();
         }
@@ -142,10 +144,12 @@ namespace SwapUnaware
             float w = Mathf.Min(720f, Screen.width * 0.6f), h = Screen.height * 0.75f;
             GUILayout.BeginArea(new Rect((Screen.width - w) / 2f, (Screen.height - h) / 2f, w, h), GUI.skin.box);
             GUILayout.Label("Director " + ModEntry.Version + ": click an action.   INSERT or ESC: close.");
+            filter.Draw(entries.Count);
             scroll = GUILayout.BeginScrollView(scroll);
             var here = Here();
             foreach (var e in entries.OrderBy(x => x.Key == KeyCode.None).ThenBy(x => (int)x.Key))
             {
+                if (!filter.Pass(e.Label, KeyName(e.Key))) continue;
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(KeyName(e.Key), GUILayout.Width(90f));
                 GUI.enabled = (e.Where & here) != 0;
