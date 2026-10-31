@@ -2,6 +2,16 @@
 
 Append-only, newest first.
 
+## 2026-10-31 · Director 0.15.0: filter boxes on long lists and a shared weapon search
+
+- Request (the requester, via the owner): weapons are hard to find in long lists; a caseless wildcard filter box on lists over 20 items, and a weapon search reachable wherever a weapon is picked. The owner: no other faults or requests; nobody could play today.
+- Lists found by reading the UI code: Spawn a weapon (categories, a category's weapons), the wave builder (enemies, weapon categories, weapons, throwables, saved waves), saved scenes, the Director menu, F4 idle animations. The arena guest picker is pad-only and was left alone. Saved waves showed only the first eight (`Take(8)`), so the 9th and later were unreachable: they get a filter past eight.
+- Decompile (scratchpad; build 25615196): while a Director window holds the pause the game reads no player keys (`Combatant_Base.Update` returns before `Controller_Player.RunController`); `UI_Inventory` reads Tab only while open. The in-mod risk was Director's own: CAPS LOCK opened the scene window while paused, and \\, [, ], U, P, Delete fire while the F4 list (unpaused, controller locked) has its filter. Fix: `FilterBox.Eats(key)` is true for typing keys while a Director text box was drawn last frame and holds the keyboard; F keys and INSERT still work.
+- Built: `ListFilter` (plain C#: threshold 20, matcher, `RecentPicks` of five) and `FilterBox`/`WeaponSearch` (IMGUI; owners stop drawing while it is open; a click acts after the layout closes). `WeaponEntry` gains Kind (thrown, ranged or melee by card type, presets by `LinkedWeapon`) and Stat (card `Damage`, `Ammo`, `MeleeDamage`). Harness `Filter()` written first and seen failing at "the box shows at the wrong length", then passing.
+- Pack 0 warnings, check-mod clean, deployed byte-identical (UTF-16 `0.15.0` at offsets 0 and 1), test_mpn and test_decomp OK, CI green. PR #57 squash-merged; tag v0.1.12 released (`madnesswright-0.1.12.zip`, 121,552 bytes). Wiki: Versions row, Getting-Started hash, Home, footer, and the stale "updated there to 0.6.1" Workshop line. Workshop with the owner's OK: `result OK`, title Director, visibility 0, 55 subscribers, live description has the new paragraph.
+- Rulings (mod README): wildcards also match anywhere; lists that had a filter keep it at any length; Recent is per game session, not saved; no wave or scene file version change.
+- Not played (Owed 21).
+
 ## 2026-10-30 · Director 0.14.0: wave enemy limit and dual wielding switch, played and on the Workshop
 
 - Owner: the requester tested 0.12.0 ("fine, nothing broke") and had seen 0.13.0. Requests (the requester): "I want the waves to have a limit on how many enemies there are to the wave"; "Dual wielding selection ... another thing in menu for dual wielding and can be enabled to have another one".
