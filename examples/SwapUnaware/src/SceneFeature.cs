@@ -29,6 +29,7 @@ namespace SwapUnaware
         Mode mode;
         string sceneName = "";
         Vector2 scroll;
+        readonly FilterBox filter = new FilterBox("pd_scene_filter");
         Entry[] saved = new Entry[0];
         bool focusName;
 
@@ -148,11 +149,13 @@ namespace SwapUnaware
             {
                 bool f11 = Input.GetKeyDown(SaveKey), caps = Input.GetKeyDown(ListKey);
                 if (!f11 && !caps) return;
+                // CAPS LOCK typed into another window's filter or name box is a capital letter, not this key.
+                if (FilterBox.Eats(KeyCode.CapsLock)) return;
                 if (!Game_Manager.ReturnPaused()) { if (f11) Game.Say("pause the game first (ESC), then F11"); return; }
                 if (Game.Me() == null) { if (f11) Game.Say("scenes need a character to play; start a stage first"); return; }
                 Open(f11 ? Mode.Name : Mode.List);
             }
-            else if (Input.GetKeyDown(ListKey)) Open(mode == Mode.List ? Mode.Name : Mode.List);
+            else if (Input.GetKeyDown(ListKey) && !(mode == Mode.List && FilterBox.Eats(ListKey))) Open(mode == Mode.List ? Mode.Name : Mode.List);
         }
 
         // Holds its own pause and closes the game's pause menu, so ENTER and clicks reach this window.
@@ -165,7 +168,7 @@ namespace SwapUnaware
             }
             mode = m;
             focusName = m == Mode.Name;
-            if (m == Mode.List) saved = ListScenes();
+            if (m == Mode.List) { saved = ListScenes(); filter.Reset(); }
         }
 
         void Close()
@@ -192,6 +195,7 @@ namespace SwapUnaware
                 }
                 GUILayout.Label("Name your scene, then ENTER.   CAPS LOCK: saved scenes.   ESC: close.");
                 GUILayout.Label("Here: " + SceneData.StageName());
+                FilterBox.Touch();
                 GUI.SetNextControlName("pd_scene_name");
                 sceneName = GUILayout.TextField(sceneName, 40);
                 if (focusName) { GUI.FocusControl("pd_scene_name"); focusName = false; }
@@ -207,10 +211,11 @@ namespace SwapUnaware
                 GUILayout.Label("Scenes from this stage come first; others show where they were saved.");
                 bool keep = GUILayout.Toggle(keepMine, " Keep my character and weapons (a load leaves who you play and what you hold alone)");
                 if (keep != keepMine) SetKeepMine(keep);
+                filter.Draw(saved.Length);
                 scroll = GUILayout.BeginScrollView(scroll);
                 if (saved.Length == 0) GUILayout.Label("(none yet: F11 while paused saves one)");
                 foreach (var s in saved)
-                    if (GUILayout.Button(s.here ? s.name : s.name + "     [" + s.where + "]")) Load(s.name);
+                    if (filter.Pass(s.name, s.where) && GUILayout.Button(s.here ? s.name : s.name + "     [" + s.where + "]")) Load(s.name);
                 GUILayout.EndScrollView();
                 if (GUILayout.Button("Close")) Close();
             }

@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.12 · 2026-10-30
+
+- `examples/SwapUnaware` 0.15.0 (the requester's asks): a shared filter box (`ListFilter`, `FilterBox`) tops every list longer than 20 items (a category's weapons, throwables, saved scenes, the Director menu; the enemy and idle-animation lists keep their filter at any length), caseless, contains by default, `*` and `?` as wildcards; saved waves get one past eight files, since their row shows eight. One `WeaponSearch` window opens from every weapon picker with the box focused, kind, category and the card's damage and ammo, ENTER for the top match, ESC back, and a Recent row of the last five picks. Keys that type are not Director keys while a Director text box has the keyboard (CAPS LOCK no longer opens the scene window mid-word). The harness checks the matcher, the over-20 rule and the Recent row. Built and deployed, not yet played.
+
 ## 0.1.11 · 2026-10-30
 
 - `examples/SwapUnaware` 0.14.0 (the requester's asks): Build a wave gains **Max enemies alive at once** per wave (default no limit): when one of the wave's enemies dies the next queued one spawns, until the list is used up, as the game's own waves cap units alive (`WaveContainer.UnitCount_Max`); the window also shows the wave's total. Each enemy row gains **Dual wielding: off/on**; only when it is on does the off-hand weapon picker show and the weapon get given, and the row says when the game refuses the pair for that character (carried as a backup). Wave files version 3: the limit is a comment line, so older Directors still read the enemies; v2 files load with no limit, and a v2 enemy with a 2nd weapon reads as dual wielding on. The harness checks the queue (never more than the limit alive, next after a kill, order, failed spawns) and the toggle and files. Built and deployed.

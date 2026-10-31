@@ -15,6 +15,8 @@ namespace SwapUnaware
         public bool Hidden;       // the Playground's own spawn list leaves it out
         public bool Mod;          // a mod's new card
         public object Source;     // the card itself
+        public string Kind;       // melee, ranged or throwable, for the weapon search
+        public string Stat;       // a short stat for the search ("damage 30, ammo 8"), or null
         public string Label;      // set by Group: the name, plus the card when two share one name
     }
 

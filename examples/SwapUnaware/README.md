@@ -30,6 +30,19 @@ Needs the `releasebeta` branch: the normal release build does not load mods. Ver
 
 0.12.0 adds a boss bar on a picked character (]), a wave builder in the INSERT menu and a team change key ([). Built and deployed 2026-10-29, not yet played; the checks cover the boss bar bookkeeping (a player's HUD bar survives it), the wave list and its saved files, and the team change.
 
+## Filter boxes and weapon search (0.15.0)
+
+Requested by the requester, who had trouble finding weapons in long lists: "On lists that have more than 20 items could we add a filter textbox at the top to wildcard caseless search. And can we add a weapon search menu/dialog that can be reached where-ever one selects a weapon at." Small rulings, each decided without asking:
+
+- **A filter box tops every list longer than 20 items**: a weapon category's list (Spawn a weapon and the wave builder), the throwables, the saved scenes and the Director menu itself. Shorter lists look as before. The enemy list and the F4 idle animations had a plain filter already; they keep it at any length and now match the same way.
+- **Matching**: caseless, anywhere in the name (and the card name where it differs). `*` stands for any run of letters and `?` for exactly one, and a pattern with them also matches anywhere, so `ak*7` finds "AK-47". Every other character is literal. An empty box shows everything; Clear empties it.
+- **Saved waves** show eight at a time on one row, so the 9th and later used to be unreachable; with more than eight a filter box appears there (the one place the threshold is 8, not 20).
+- **SEARCH** buttons open one shared search window from every weapon picker: Spawn a weapon's category screen, a wave enemy's weapon and off-hand category screen, and its throwable list. The window lists every weapon (or every throwable) with its kind (melee, ranged, throwable), its category and, where the card gives it, the card's own damage and magazine size (before quality, skills and addons). The box has the keyboard at once; **ENTER** picks the top match, **ESC** or Back goes back to the window that opened it. A pick does exactly what clicking it in the list does: Spawn a weapon spawns it and stays open, a wave pick fills the row, and the dual wielding check (`Char_Data.ReturnCanDual`) still runs on it.
+- **Recent** row: the last five weapons picked through the search, newest first, for this game session only (not saved), showing those that belong in the list at hand.
+- **Typing never fires a key**: while a Director text box has the keyboard, keys that type (letters, \\, [, ], U, P, Delete) and CAPS LOCK are text, not Director keys. The game's own keys are no risk: these windows hold the pause, and the game reads no player keys while paused (`Combatant_Base.Update` returns early before `Controller_Player.RunController`). F keys and INSERT still work.
+- Saved waves and scenes are unchanged (no new file version).
+- Not played yet.
+
 ## Boss bar, wave builder and team change (0.12.0)
 
 Requested by the requester: "a button that who ever your mouse is hovering over has a boss bar", and "a button that allows you to set a wave of enemies with set guns and allows you to let a current enemy have infinite or normal amount and let a current enemy in the wave to have a boss bar". Small rulings, each decided without asking:
