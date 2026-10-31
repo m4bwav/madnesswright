@@ -330,13 +330,13 @@ static class Program
         Check(u.Weapon2 == null && u.Throwable == null, "wave2: a new unit has a second weapon or a throwable");
         u.Weapon = "Pistol_A"; u.WeaponName = "Automag";
         u.Weapon2 = "Pistol_B"; u.Weapon2Name = "Beretta";
-        u.Throwable = "Grenade_Frag"; u.ThrowableName = "Frag"; u.Infinite = true;
+        u.Throwable = "Grenade_Frag"; u.ThrowableName = "Frag"; u.Infinite = true; u.Dual = true;
         Check(WaveRoster.Describe(u) == "Grunt: Automag and Beretta, throws Frag, infinite ammo", "wave2: describe says " + WaveRoster.Describe(u));
         var c = w.Copy(0);
         Check(c.Weapon2 == "Pistol_B" && c.Throwable == "Grenade_Frag", "wave2: copy lost the second weapon or throwable");
 
         var text = WaveRoster.Save(w.Units);
-        Check(text.StartsWith("# Director wave v2"), "wave2: the file version was not bumped: " + text.Split('\n')[0]);
+        Check(text.StartsWith("# Director wave v3"), "wave2: the file version was not bumped: " + text.Split('\n')[0]);
         var back = WaveRoster.Load(text);
         Check(back.Count == 2 && back[0].Weapon2 == "Pistol_B" && back[0].Weapon2Name == "Beretta" && back[0].Throwable == "Grenade_Frag" && back[0].ThrowableName == "Frag" && back[0].Infinite,
             "wave2: save and load lost the second weapon or throwable");
@@ -350,6 +350,81 @@ static class Program
         Check(WaveRoster.PlaceSecond(false, false, false) == SecondPlace.Backup, "wave2: a pair the game refuses was not made a backup");
         Check(WaveRoster.PlaceSecond(true, false, true) == SecondPlace.Throwable, "wave2: a grenade picked as second weapon was not made the throwable");
         Check(WaveRoster.PlaceSecond(true, true, true) == SecondPlace.None, "wave2: a second grenade replaced the picked throwable");
+        WaveDual();
+        WaveLimit();
+    }
+
+    // Wave builder (0.14.0): "Dual wielding: off/on" per enemy. Off means one weapon: the off-hand pick
+    // is kept in the row (and the file) but not given. A 0.13.0 (v2) unit with a 2nd weapon reads as on.
+    static void WaveDual()
+    {
+        var u = new WaveUnit { Card = "Grunt_A", Name = "Grunt", Weapon = "Pistol_A", WeaponName = "Automag", Weapon2 = "Pistol_B", Weapon2Name = "Beretta" };
+        Check(!u.Dual, "dual: a new unit dual wields");
+        Check(WaveRoster.SecondWeapon(u) == null, "dual: switched off, the unit still gets its off-hand weapon");
+        Check(WaveRoster.Describe(u) == "Grunt: Automag", "dual: describe with dual off says " + WaveRoster.Describe(u));
+        u.Dual = true;
+        Check(WaveRoster.SecondWeapon(u) == "Pistol_B", "dual: switched on, the off-hand weapon is not given");
+        Check(WaveRoster.DualNote(u, true) == null, "dual: an allowed pair got a note");
+        Check(WaveRoster.DualNote(u, null) == null, "dual: an unknown pair got a note");
+        Check((WaveRoster.DualNote(u, false) ?? "").Contains("backup"), "dual: a refused pair does not say it is carried as a backup");
+        var none = new WaveUnit { Card = "Grunt_A", Dual = true };
+        Check((WaveRoster.DualNote(none, null) ?? "").Contains("pick"), "dual: on with no off-hand weapon does not ask for one");
+
+        var off = u.Clone(); off.Dual = false;
+        var back = WaveRoster.Load(WaveRoster.Save(new[] { u, off }));
+        Check(back[0].Dual && back[0].Weapon2 == "Pistol_B", "dual: save and load lost dual wielding on");
+        Check(!back[1].Dual && back[1].Weapon2 == "Pistol_B", "dual: save and load turned dual wielding on or lost the off-hand pick");
+        var v2 = WaveRoster.Load("# Director wave v2: card, weapon, infinite ammo, boss bar, name, weapon name, second weapon, its name, throwable, its name\n" +
+            "Grunt_A\tPistol_A\t0\t0\tGrunt\tAutomag\tPistol_B\tBeretta\t\t\nGrunt_B\tPistol_A\t0\t0\tGrunt B\tAutomag\t\t\tGrenade_Frag\tFrag\n");
+        Check(v2.Count == 2 && v2[0].Dual && v2[0].Weapon2 == "Pistol_B", "dual: a v2 enemy with a 2nd weapon did not read as dual wielding on");
+        Check(!v2[1].Dual && v2[1].Throwable == "Grenade_Frag", "dual: a v2 enemy with only a throwable read as dual wielding");
+        Check(WaveRoster.MaxAliveIn(WaveRoster.Save(new[] { u })) == 0, "dual: a wave with no limit saved one");
+    }
+
+    // Wave builder (0.14.0): "Max enemies" is a cap on how many of a wave's enemies are alive at once,
+    // as the game's own waves cap units alive (WaveContainer.UnitCount_Max, Wave_Tandem.CanSpawnWithoutBreachingMax):
+    // when one dies the next queued one spawns, until the list is used up. 0 means no limit.
+    static void WaveLimit()
+    {
+        var w = new WaveRoster();
+        for (int i = 0; i < 5; i++) w.Add("Grunt_" + i, "Grunt " + i);
+        Check(w.MaxAlive == 0, "limit: a new wave has a limit");
+        var all = new WaveQueue(w.Units, 0);
+        Check(all.Due().Count == 5, "limit: no limit did not spawn the whole wave at once");
+
+        w.MaxAlive = 2;
+        var q = new WaveQueue(w.Units, w.MaxAlive);
+        var live = new List<Combatant_Base>();
+        int most = 0;
+        void Fill()
+        {
+            foreach (var u in q.Due()) { var c = new Combatant_Base(u.Card, new Controller_NPC()); live.Add(c); q.Spawned(c); }
+            most = Math.Max(most, live.Count(Game.Alive));
+        }
+        Fill();
+        Check(live.Count == 2 && q.Left == 3, "limit: the first spawn made " + live.Count + " with " + q.Left + " queued");
+        Fill();
+        Check(live.Count == 2, "limit: a second tick spawned past the limit with nobody dead");
+        live[0].dead = true;
+        Fill();
+        Check(live.Count == 3 && q.Left == 2, "limit: a kill did not bring in the next enemy");
+        Check(live[2].name == "Grunt_2", "limit: the queue came in out of order: " + live[2].name);
+        while (!q.Done) { live.First(c => !c.dead).dead = true; Fill(); }
+        Check(live.Count == 5 && most == 2, "limit: spawned " + live.Count + " of 5, with up to " + most + " alive");
+        Check(q.Total == 5 && q.Due().Count == 0, "limit: a used-up wave still spawns");
+
+        // A failed spawn does not hold a place.
+        var f = new WaveQueue(w.Units, 2);
+        var first = f.Due();
+        f.Spawned(null); f.Spawned(new Combatant_Base("ok", new Controller_NPC()));
+        Check(first.Count == 2 && f.Due().Count == 1, "limit: a failed spawn held a place");
+
+        // The limit is saved in a comment line, so 0.13.0 still reads the enemies; v2 files read as no limit.
+        var text = WaveRoster.Save(w.Units, 2);
+        Check(WaveRoster.MaxAliveIn(text) == 2 && WaveRoster.Load(text).Count == 5, "limit: save and load lost the limit or an enemy");
+        Check(WaveRoster.MaxAliveIn("# Director wave v2: card\nGrunt_A\t\t0\t0\n") == 0, "limit: a v2 file read as having a limit");
+        Check(WaveRoster.MaxAliveIn("# max alive: lots\n") == 0, "limit: a damaged limit line read as a limit");
+        Check(WaveRoster.Load(text).All(u => u.Card.StartsWith("Grunt_")), "limit: the limit line was read as an enemy");
     }
 
     // Team change (0.12.0): [ turns an enemy into an ally of the keyboard player and back, through the

@@ -26,6 +26,11 @@ namespace SwapUnaware
         WeaponGroup group;
         string filter = "", waveName = "", last = "";
         Vector2 rosterScroll, listScroll;
+        // Waves spawning under their limit: the next enemy comes in when one dies.
+        class Running { public WaveQueue Queue; public Squad_Main Squad; public int Made; }
+        readonly List<Running> running = new List<Running>();
+        readonly Dictionary<string, bool?> dualCache = new Dictionary<string, bool?>();
+        float nextFeed;
 
         static string Folder { get { return Path.Combine(Path.Combine(Application.persistentDataPath, "PlaygroundDirector"), "Waves"); } }
 
@@ -39,11 +44,19 @@ namespace SwapUnaware
 
         void Awake() { SceneManager.sceneLoaded += OnSceneLoaded; }
 
-        void OnSceneLoaded(Scene s, LoadSceneMode m) { Close(); }
+        void OnSceneLoaded(Scene s, LoadSceneMode m)
+        {
+            Close();
+            foreach (var r in running) Game.Log("wave: scene changed; " + r.Queue.Left + " queued enemies dropped");
+            running.Clear();
+        }
 
         protected override void Tick()
         {
             if (step != Step.Closed && Game.Me() == null) Close();
+            if (running.Count == 0 || Game_Manager.ReturnPaused() || Time.unscaledTime < nextFeed) return;
+            nextFeed = Time.unscaledTime + 0.25f;
+            Feed();
         }
 
         void Open()
@@ -89,31 +102,52 @@ namespace SwapUnaware
         {
             var me = Game.Me();
             if (me == null || roster.Units.Count == 0) return;
+            var r = new Running { Queue = new WaveQueue(roster.Units, roster.MaxAlive), Squad = Squad_Main.CreateSquad(Factions.None) };
+            Game.Log("wave: " + roster.Units.Count + " enemies, " + (roster.MaxAlive > 0 ? "at most " + roster.MaxAlive + " alive at once" : "no limit") +
+                " (" + string.Join("; ", roster.Units.Select(WaveRoster.Describe).ToArray()) + ")");
+            running.Add(r);
+            Close();
+            Feed();
+            Game.Say("wave: " + r.Made + " of " + r.Queue.Total + " spawned" + (r.Queue.Done ? "" : "; the next comes in when one dies"));
+        }
+
+        // Spawns what each running wave has room for, the way the Playground's Spawn Units does.
+        void Feed()
+        {
+            var me = Game.Me();
+            if (me == null) return;
             var room = Cam_Main.currentRoom != null ? Cam_Main.currentRoom : me.myRoom;
             var entrances = room != null && room.myEntrances != null ? room.myEntrances.Where(e => e != null && !e.disableSpawn).ToList() : new List<Entrance_Base>();
-            var squad = Squad_Main.CreateSquad(Factions.None);
-            int made = 0;
-            foreach (var u in roster.Units)
+            foreach (var r in running.ToList())
             {
-                try
+                var due = r.Queue.Due();
+                foreach (var u in due)
                 {
-                    var c = SpawnUnit(u, me, room, entrances);
-                    if (c == null) { Game.Log("wave: " + u.Card + " was not spawned"); continue; }
-                    squad.AddMember(c.myData);
-                    Controller_Base.SetAlertStatus(c.myController, AI_Wakeup.AlertStatus.Combat);
-                    // The grenade-throwing module is chosen from what the unit holds; refresh it in
-                    // case the alert was already Combat when the items arrived.
-                    var npc = c.myController as Controller_NPC;
-                    if (npc != null) Controller_NPC.SetWeaponBasedModules(npc);
-                    WaveRoster.Apply(c, u);
-                    made++;
+                    Combatant_Base c = null;
+                    try
+                    {
+                        c = SpawnUnit(u, me, room, entrances);
+                        if (c == null) { Game.Log("wave: " + u.Card + " was not spawned"); continue; }
+                        r.Squad.AddMember(c.myData);
+                        Controller_Base.SetAlertStatus(c.myController, AI_Wakeup.AlertStatus.Combat);
+                        // The grenade-throwing module is chosen from what the unit holds; refresh it in
+                        // case the alert was already Combat when the items arrived.
+                        var npc = c.myController as Controller_NPC;
+                        if (npc != null) Controller_NPC.SetWeaponBasedModules(npc);
+                        WaveRoster.Apply(c, u);
+                        r.Made++;
+                    }
+                    catch (Exception e) { Game.Error("wave: spawn " + u.Card, e); }
+                    finally { r.Queue.Spawned(c); }
                 }
-                catch (Exception e) { Game.Error("wave: spawn " + u.Card, e); }
+                if (due.Count > 0 && r.Made > due.Count) Game.Log("wave: next in (" + r.Made + " of " + r.Queue.Total + " spawned, " + r.Queue.Left + " queued)");
+                if (r.Queue.Done)
+                {
+                    Game.Log("wave: spawned " + r.Made + " of " + r.Queue.Total);
+                    last = "spawned " + r.Made + " of " + r.Queue.Total;
+                    running.Remove(r);
+                }
             }
-            Game.Log("wave: spawned " + made + " of " + roster.Units.Count + " (" + string.Join("; ", roster.Units.Select(WaveRoster.Describe).ToArray()) + ")");
-            last = "spawned " + made + " of " + roster.Units.Count;
-            Close();
-            Game.Say("wave: " + made + " of " + roster.Units.Count + " spawned");
         }
 
         static Combatant_Base SpawnUnit(WaveUnit u, Combatant_Base me, Room_Main room, List<Entrance_Base> entrances)
@@ -160,7 +194,7 @@ namespace SwapUnaware
         // Off hand when the game allows the pair, else stowed as a backup; a grenade becomes the throwable.
         static void GiveSecond(WaveUnit u, Combatant_Base c)
         {
-            var card = WeaponCard(u.Weapon2, u.Card);
+            var card = WeaponCard(WaveRoster.SecondWeapon(u), u.Card);
             if (card == null) return;
             var data = Catalog_Weapons.GenerateWeapon(card);
             if (data == null) { Game.Log("wave: the game made no " + u.Weapon2 + " for " + u.Card); return; }
@@ -192,7 +226,7 @@ namespace SwapUnaware
             {
                 Directory.CreateDirectory(Folder);
                 var file = Path.Combine(Folder, WaveRoster.FileName(waveName) + ".txt");
-                File.WriteAllText(file, WaveRoster.Save(roster.Units));
+                File.WriteAllText(file, WaveRoster.Save(roster.Units, roster.MaxAlive));
                 last = "saved " + Path.GetFileNameWithoutExtension(file);
                 Game.Log("wave: saved " + roster.Units.Count + " units to " + file);
             }
@@ -203,9 +237,11 @@ namespace SwapUnaware
         {
             try
             {
-                var units = WaveRoster.Load(File.ReadAllText(file));
+                var text = File.ReadAllText(file);
+                var units = WaveRoster.Load(text);
                 roster.Units.Clear();
                 roster.Units.AddRange(units);
+                roster.MaxAlive = WaveRoster.MaxAliveIn(text);
                 waveName = Path.GetFileNameWithoutExtension(file);
                 last = "loaded " + waveName + " (" + units.Count + ")";
             }
@@ -255,11 +291,20 @@ namespace SwapUnaware
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("", GUILayout.Width(Col(0.26f)));
-                if (GUILayout.Button(u.Weapon2 == null ? "2nd weapon: none" : "2nd: " + (u.Weapon2Name ?? u.Weapon2), GUILayout.Width(Col(0.26f)))) { editing = i; second = true; step = Step.WeaponCategories; }
-                if (GUILayout.Button(u.Throwable == null ? "Throwable: none" : "Throws: " + (u.ThrowableName ?? u.Throwable), GUILayout.Width(Col(0.26f)))) { editing = i; listScroll = Vector2.zero; step = Step.Throwables; }
+                u.Dual = GUILayout.Toggle(u.Dual, u.Dual ? " Dual wielding: on" : " Dual wielding: off", GUILayout.Width(Col(0.2f)));
+                if (u.Dual && GUILayout.Button(u.Weapon2 == null ? "Off hand: pick" : "Off hand: " + (u.Weapon2Name ?? u.Weapon2), GUILayout.Width(Col(0.24f)))) { editing = i; second = true; step = Step.WeaponCategories; }
+                if (GUILayout.Button(u.Throwable == null ? "Throwable: none" : "Throws: " + (u.ThrowableName ?? u.Throwable), GUILayout.Width(Col(0.24f)))) { editing = i; listScroll = Vector2.zero; step = Step.Throwables; }
                 GUILayout.EndHorizontal();
+                var note = WaveRoster.DualNote(u, u.Dual ? CanDual(u) : null);
+                if (note != null) { GUILayout.BeginHorizontal(); GUILayout.Label("", GUILayout.Width(Col(0.26f))); GUILayout.Label(note); GUILayout.EndHorizontal(); }
             }
             GUILayout.EndScrollView();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(roster.Units.Count + (roster.Units.Count == 1 ? " enemy" : " enemies") + " in this wave.   Max enemies alive at once:", GUILayout.ExpandWidth(false));
+            if (GUILayout.Button("-", GUILayout.Width(28f)) && roster.MaxAlive > 0) roster.MaxAlive--;
+            GUILayout.Label(roster.MaxAlive == 0 ? "no limit" : roster.MaxAlive.ToString(), GUILayout.Width(64f));
+            if (GUILayout.Button("+", GUILayout.Width(28f))) roster.MaxAlive++;
+            GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Add an enemy")) { filter = ""; listScroll = Vector2.zero; step = Step.Characters; }
             GUI.enabled = roster.Units.Count > 0;
@@ -365,6 +410,32 @@ namespace SwapUnaware
             }
             editing = -1;
             step = Step.Roster;
+        }
+
+        // Whether the game lets this character hold the pair (Char_Data.ReturnCanDual), from fresh data
+        // made the way the spawn makes it; null when it cannot tell (own weapons, a grenade, a missing card).
+        bool? CanDual(WaveUnit u)
+        {
+            if (u.Weapon == null || u.Weapon2 == null) return null;
+            var key = u.Card + "|" + u.Weapon + "|" + u.Weapon2;
+            bool? known = null;
+            if (dualCache.TryGetValue(key, out known)) return known;
+            try
+            {
+                var card = StatCard_Base.ReturnCardByName<StatCard_Character>(u.Card);
+                var w1 = StatCard_Base.ReturnCardByName<StatCard_Weapon>(u.Weapon);
+                var w2 = StatCard_Base.ReturnCardByName<StatCard_Weapon>(u.Weapon2);
+                if (card != null && w1 != null && w2 != null && !IsGrenade(w2))
+                {
+                    var data = Char_Data.CreateCharacter(card);
+                    var a = Catalog_Weapons.GenerateWeapon(w1) as Item_Data_Held;
+                    var b = Catalog_Weapons.GenerateWeapon(w2) as Item_Data_Held;
+                    if (data != null && a != null && b != null) known = data.ReturnCanDual(a, b);
+                }
+            }
+            catch (Exception e) { Game.Error("wave: dual check " + key, e); }
+            dualCache[key] = known;
+            return known;
         }
 
         static float Col(float share) { return Mathf.Min(820f, Screen.width * 0.7f) * share; }

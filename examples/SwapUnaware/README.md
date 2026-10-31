@@ -49,6 +49,18 @@ Requested by the requester: "some enemies need to be dual wielding weapons so ca
 - A grenade picked as the 2nd weapon becomes the throwable; when a throwable is also picked, the throwable wins and the grenade is left out (logged).
 - Saved waves are file version 2 (four new fields at the end of each line). 0.12.0 files still load, with no 2nd weapon and no throwable.
 - Not played yet.
+
+### Enemy limit and dual wielding switch (0.14.0)
+
+Requested by the requester: "I want the waves to have a limit on how many enemies there are to the wave", and "I also want the enemy selection to have Dual wielding selection Like another thing in menu for dual wielding and can be enabled to have another one". Small rulings, each decided without asking:
+
+- **Max enemies alive at once** (under the list, with - and +; default no limit) caps how many of the wave's enemies are alive at the same time, the way the game's own waves hold units back (`WaveContainer.UnitCount_Max`). SPAWN brings in the first ones; each time one dies the next one in list order comes in, until the list is used up. The line also shows how many enemies the wave has in all. To make more of one enemy, use Copy.
+- An enemy you turn into an ally with [ or take over with F5 still counts while it lives. A wave enemy the game could not make holds no place. Changing scene drops the enemies still queued (logged). Spawning another wave while one is still coming runs both, each under its own limit.
+- **Dual wielding: off/on** sits under each row (default off). Only when it is on does the **Off hand** picker show, and only then is the off-hand weapon given; turning it off keeps the pick, so turning it back on restores it. The 0.13.0 rule stays: when the game refuses the pair for that character the row says so and the enemy carries the second weapon as a backup. The game cannot tell beforehand for enemies on their own weapons, so those rows say nothing.
+- **Throwable** stays its own picker, whatever the switch says.
+- Saved waves are file version 3: one more field per line (dual wielding) and the limit as a `# max alive: N` line, which older Directors skip. 0.13.0 files load with no limit, and their enemies with a 2nd weapon load with dual wielding on.
+- Per-enemy ammo, infinite ammo, throwables and boss bars work the same for enemies that come in later.
+
 - **Team change** (the extra): **[** toggles enemy and ally as seen by you, the keyboard player. An ally joins a squad of your side (your own squad when you play a Playground spawn) and drops its target; an enemy goes back to the squad it came from, or joins one shared Director enemy squad (so two you turned do not fight each other), and starts fighting. Players and your career's own characters keep their team.
 
 ## Spawn a weapon and infinite ammo (0.11.0)
