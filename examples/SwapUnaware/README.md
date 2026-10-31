@@ -30,6 +30,10 @@ Needs the `releasebeta` branch: the normal release build does not load mods. Ver
 
 0.12.0 adds a boss bar on a picked character (]), a wave builder in the INSERT menu and a team change key ([). Built and deployed 2026-10-29, not yet played; the checks cover the boss bar bookkeeping (a player's HUD bar survives it), the wave list and its saved files, and the team change.
 
+## Props in the weapon lists (0.16.0)
+
+Requested by the requester, who knew the game has a clipboard and box weapons but could not find them. The game keeps 28 held props (`N_Clipboard`, `N_Crate`, `N_CrateTech`, laptop, keyboard, umbrella, rock, bottle, cake...) as `StatCard_Weapon` cards under `Resources/Stats/Weapon/None/`, and `StatCard_Base` skips the None folder when it registers weapons, so they are in no list and `ReturnCardByName` cannot find them. The Director loads that folder itself: a **Props** category (marked *) in Spawn a weapon and the wave builder, found by the search, and `WeaponSpawnFeature.Card` looks them up by name for wave and scene files. They are not added to the game's register, which feeds random loot, the market and arena drops. Built and deployed 2026-10-31, not yet played.
+
 ## Filter boxes and weapon search (0.15.0)
 
 Requested by the requester, who had trouble finding weapons in long lists: "On lists that have more than 20 items could we add a filter textbox at the top to wildcard caseless search. And can we add a weapon search menu/dialog that can be reached where-ever one selects a weapon at." Small rulings, each decided without asking:
