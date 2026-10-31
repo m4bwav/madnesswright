@@ -30,6 +30,8 @@
 
 [b]Find weapons fast[/b] (new in 0.15.0): every list longer than 20 has a filter box at the top (caseless; * and ? work as wildcards). Every weapon picker has a SEARCH button: type part of a name, ENTER takes the top match, and your last picks wait in a Recent row.
 
+[b]Props[/b] (new in 0.16.0): the clipboard, crates, laptop, umbrella, rock and the game's other held props, which the game never lists, are in a Props category in Spawn a weapon and the wave builder, and the search finds them.
+
 [b]Needs the releasebeta branch[/b] (Steam: Properties, Betas, releasebeta): the normal release build does not load mods. Enable it from the gear icon on the main menu and restart.
 
 Works in the story mode, the arenas, custom stages and the Playground. In an arena, F1 counts as kills and moves the waves on. Arenas cannot be paused between waves, so save scenes mid-wave or before the first. Back up your saves before using it in a story career.

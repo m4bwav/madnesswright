@@ -1,0 +1,5 @@
+Director 0.16.0
+
+Props you can hold: the game keeps 28 held props as weapon cards it never lists anywhere, among them the clipboard, the crate and the tech crate (the "box"), laptop, keyboard, umbrella, rock, bottle, cake, candle, flashlight, glowstick, microphone and paper stack. They are now in a Props category in Spawn a weapon and in every weapon picker of Build a wave, and the SEARCH box finds them (type clip or crate). Waves and scenes that hold a prop load it back.
+
+They are marked * (the Playground's own menu leaves them out). Some are scenery more than weapons; a few may do nothing in your hands.
