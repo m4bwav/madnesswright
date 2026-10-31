@@ -26,7 +26,7 @@
 
 [b]Spawn a weapon[/b] (new in 0.11.0): in the INSERT menu. Pick a category, then click any weapon in the game, including the ones the Playground's own spawn menu hides (marked *) and weapons from your mods; weapons without a category are under Other. It goes into your hands, or tick the box to drop it on the floor in front of you. ESC goes back, then closes.
 
-[b]Build a wave[/b] (new in 0.12.0): in the INSERT menu. Add enemies, give each one a weapon from the full list (or its own), infinite or normal ammo and a boss bar, copy or remove rows, then SPAWN the wave: they come in at the room's doors as one squad, already fighting. Name and save a wave to spawn it again later.
+[b]Build a wave[/b] (new in 0.12.0): in the INSERT menu. Add enemies, give each one a weapon from the full list (or its own), infinite or normal ammo and a boss bar, copy or remove rows, then SPAWN the wave: they come in at the room's doors as one squad, already fighting. Name and save a wave to spawn it again later. Each enemy can also dual wield (switch Dual wielding on and pick an off-hand weapon; if the game will not let that character hold the pair it carries it as a backup) and carry a throwable such as hand grenades, which it throws by itself. [b]Max enemies alive at once[/b] caps how many of the wave are alive together: when one dies the next one comes in, until the whole wave has spawned.
 
 [b]Needs the releasebeta branch[/b] (Steam: Properties, Betas, releasebeta): the normal release build does not load mods. Enable it from the gear icon on the main menu and restart.
 

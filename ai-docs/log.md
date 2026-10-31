@@ -2,6 +2,15 @@
 
 Append-only, newest first.
 
+## 2026-10-30 · Director 0.14.0: wave enemy limit and dual wielding switch, played and on the Workshop
+
+- Owner: the requester tested 0.12.0 ("fine, nothing broke") and had seen 0.13.0. Requests (the requester): "I want the waves to have a limit on how many enemies there are to the wave"; "Dual wielding selection ... another thing in menu for dual wielding and can be enabled to have another one".
+- Decompile (scratchpad; build 25615196): the game's own waves cap units alive at once (`WaveContainer.UnitCount_Max`, `Wave_Tandem.CanSpawnWithoutBreachingMax`, `spawnedUnitsStillAlive`), so the limit is read as alive at once. Not reused directly: its squads come from `Wave_Generator` and would lose per-enemy weapons; Director keeps its own queue (`WaveQueue`) with the same rule. `Char_Data.CreateCharacter` is data only (`GenerateCharacter` + `Init`), so the row can ask `ReturnCanDual` before spawning.
+- Built: Max enemies alive at once (- and +, default no limit, total shown), Dual wielding off/on per row (off-hand picker only when on; the pick is kept when off), a refused-pair note on the row; wave files v3 (`# max alive: N` comment line plus a dual field; v2 reads as no limit, dual on where a 2nd weapon was set). Harness `WaveDual` and `WaveLimit` failed on a skeleton first, pass. PR #55 squash-merged; plugin 0.1.11 tagged.
+- Played by the requester on the owner's PC (askwright set `director-0.14.0-play` in the private vault, 5 of 5 answered as guessed): never more than 2 alive, the next came after each kill until all 5, the dual enemy held two weapons, the single one held one, the menu is what they wanted. Player.log: six SPAWNs, each "at most 2 alive at once", "next in" lines up to 5 of 5, `Merc1_Zerker dual wields M_SwordFantasy`, no exceptions. Saved file `Test.txt` opened (L-005): v3 header, `# max alive: 2`, dual field 1 only on the Merczerker.
+- Workshop: 0.14.0 uploaded with the owner's "release the mod" (`result OK`, title Director, visibility 0, 55 subscribers). The owner then noticed the description never mentioned dual wielding: 0.13.0 and 0.14.0 had shipped without description updates. Description fixed, re-uploaded, live text checked (dual wielding and the enemy limit present). New AGENTS.md rule: player-visible changes update `workshop-description.txt` in the same PR, and every upload checks the live description.
+- askwright: the Check your answers screen showed a stray "null" (the DOM's `replaceChildren` writes null as text); fixed in askwright 0.7.1 (PR #23).
+
 ## 2026-10-30 · Director 0.13.0: second weapon and throwable in the wave builder
 
 - Requests (the requester, via the owner): "some enemies need to be dual wielding weapons so can you add another weapon thing and it can be anything", and "sometimes I need an enemy to have both a weapon and has throwable weapon like hand grenades".
