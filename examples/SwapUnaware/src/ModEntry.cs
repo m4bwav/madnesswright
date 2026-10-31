@@ -7,7 +7,7 @@ namespace SwapUnaware
     public class ModEntry : IModEntrypoint
     {
         public const string Id = "com.m4bwav.mpn.swapunaware";
-        public const string Version = "0.15.0";
+        public const string Version = "0.16.0";
         static GameObject host;
 
         public void Initialize()

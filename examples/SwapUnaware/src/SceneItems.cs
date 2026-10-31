@@ -210,7 +210,7 @@ namespace SwapUnaware
 
         static Item_Data_Held Generate(string card)
         {
-            StatCard_Item sc = StatCard_Base.ReturnCardByName<StatCard_Weapon>(card);
+            StatCard_Item sc = WeaponSpawnFeature.Card(card);
             if (sc == null) sc = StatCard_Base.ReturnCardByName<StatCard_Item>(card);
             if (sc == null) sc = Loaded(card);
             if (sc == null) { Game.Log("scene: no item card " + card); return null; }

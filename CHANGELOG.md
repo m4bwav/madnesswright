@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## Unreleased
+
+- `examples/SwapUnaware` 0.16.0 (the requester's ask): the game's 28 held props (clipboard, crate, tech crate, laptop, umbrella, rock...) are weapon cards under `Stats/Weapon/None/` that the game never registers; the Director loads that folder itself into a Props category in Spawn a weapon, the wave builder and the weapon search, and finds them by name for wave and scene files. Not added to the game's register (random loot, market, arena drops). Built and deployed, not yet played.
+
 ## 0.1.12 · 2026-10-30
 
 - `examples/SwapUnaware` 0.15.0 (the requester's asks): a shared filter box (`ListFilter`, `FilterBox`) tops every list longer than 20 items (a category's weapons, throwables, saved scenes, the Director menu; the enemy and idle-animation lists keep their filter at any length), caseless, contains by default, `*` and `?` as wildcards; saved waves get one past eight files, since their row shows eight. One `WeaponSearch` window opens from every weapon picker with the box focused, kind, category and the card's damage and ammo, ENTER for the top match, ESC back, and a Recent row of the last five picks. Keys that type are not Director keys while a Director text box has the keyboard (CAPS LOCK no longer opens the scene window mid-word). The harness checks the matcher, the over-20 rule and the Recent row. Built and deployed, not yet played.

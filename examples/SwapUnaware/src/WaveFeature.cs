@@ -159,7 +159,7 @@ namespace SwapUnaware
             if (card == null) return null;
             var data = Char_Data.CreateCharacter(card);
             if (data == null) return null;
-            var weapon = u.Weapon != null ? StatCard_Base.ReturnCardByName<StatCard_Weapon>(u.Weapon) : null;
+            var weapon = u.Weapon != null ? WeaponSpawnFeature.Card(u.Weapon) : null;
             if (u.Weapon != null && weapon == null) Game.Log("wave: no weapon card " + u.Weapon + "; " + u.Card + " gets its own");
             if (weapon == null) OwnWeapons(data);
 
@@ -180,7 +180,7 @@ namespace SwapUnaware
         static StatCard_Weapon WeaponCard(string card, string unit)
         {
             if (card == null) return null;
-            var w = StatCard_Base.ReturnCardByName<StatCard_Weapon>(card);
+            var w = WeaponSpawnFeature.Card(card);
             if (w == null) Game.Log("wave: no weapon card " + card + " for " + unit);
             return w;
         }
@@ -434,8 +434,8 @@ namespace SwapUnaware
             try
             {
                 var card = StatCard_Base.ReturnCardByName<StatCard_Character>(u.Card);
-                var w1 = StatCard_Base.ReturnCardByName<StatCard_Weapon>(u.Weapon);
-                var w2 = StatCard_Base.ReturnCardByName<StatCard_Weapon>(u.Weapon2);
+                var w1 = WeaponSpawnFeature.Card(u.Weapon);
+                var w2 = WeaponSpawnFeature.Card(u.Weapon2);
                 if (card != null && w1 != null && w2 != null && !IsGrenade(w2))
                 {
                     var data = Char_Data.CreateCharacter(card);

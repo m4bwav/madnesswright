@@ -2,6 +2,13 @@
 
 Append-only, newest first.
 
+## 2026-10-31 · Director 0.16.0: props (clipboard, crates) in the weapon lists
+
+- Ask: the requester says the game has a clipboard and box weapons and could not find them in the search or the pickers.
+- Found: `resources.assets` holds `StatCard_Weapon` cards `N_Clipboard`, `N_Crate`, `N_CrateTech` (the box) and 25 other props under `stats/weapon/none/` (read with UnityPy from globalgamemanagers' ResourceManager container, in a scratch venv). `StatCard_Base`'s register loop does `if (value == WeaponCategories.None) continue;`, so `ReturnAllWeapons` and `ReturnCardByName` never see them; the 0.15.0 log line (282 weapons, 11 categories, no Other) agrees.
+- Built: `WeaponSpawnFeature.Props()` loads the folder, entries go to category Props, Hidden; `WeaponSpawnFeature.Card(name)` falls back to the folder and replaces the weapon lookups in WaveFeature and SceneItems. Not registered with the game on purpose (Spawn_Randomizer, Market_Main, Arena_Manager read the register).
+- Tests: build clean, DirectorFreezeChecks all pass (no new harness case: the change is Unity Resources calls). Deployed. Not played; some props may be inert in hand.
+
 ## 2026-10-31 · Director 0.15.0: filter boxes on long lists and a shared weapon search
 
 - Request (the requester, via the owner): weapons are hard to find in long lists; a caseless wildcard filter box on lists over 20 items, and a weapon search reachable wherever a weapon is picked. The owner: no other faults or requests; nobody could play today.

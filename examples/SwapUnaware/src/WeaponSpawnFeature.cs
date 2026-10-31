@@ -76,20 +76,22 @@ namespace SwapUnaware
         {
             var entries = new List<WeaponEntry>();
             var broken = new List<string>();
-            foreach (var raw in StatCard_Base.ReturnAllWeapons())
+            var props = new HashSet<StatCard_Weapon>(Props());
+            foreach (var raw in StatCard_Base.ReturnAllWeapons().Concat(props))
             {
                 if (raw == null) continue;
                 var card = raw.OrOverride() ?? raw;
                 if (Broken(card)) { broken.Add(card.name); continue; }
                 var cat = card.Category;
                 bool known = Enum.IsDefined(typeof(WeaponCategories), cat) && cat != WeaponCategories.None;
+                bool prop = props.Contains(raw);
                 entries.Add(new WeaponEntry
                 {
                     Card = card.name,
                     Name = card.FullName,
-                    Category = known ? cat.ToString() : null,
-                    Order = (int)cat,
-                    Hidden = HiddenInPlayground(raw, card),
+                    Category = prop ? PropsCategory : known ? cat.ToString() : null,
+                    Order = prop ? (int)WeaponCategories.None : (int)cat,
+                    Hidden = prop || HiddenInPlayground(raw, card),
                     Mod = card.AmNewCard,
                     Source = card,
                     Kind = Kind(card),
@@ -101,6 +103,29 @@ namespace SwapUnaware
             Game.Log("weapons: " + n + " in " + groups.Count + " categories (" + string.Join(", ", groups.Select(g => g.Name + " " + g.Weapons.Count).ToArray())
                 + "), " + hidden + " not in the Playground's list, " + broken.Count + " left out as broken" + (broken.Count > 0 ? ": " + string.Join(", ", broken.ToArray()) : ""));
             return groups;
+        }
+
+        // The game files its held props (clipboard, crate, laptop, umbrella, rock...) as weapon cards
+        // under Stats/Weapon/None/ and skips that folder when it registers weapons, so they are in no
+        // weapon list and not found by name. Loaded here for the Director's own lists only: adding them
+        // to the game's register would put them in random loot, the market and arena drops.
+        internal const string PropsCategory = "Props";
+        const string PropsFolder = "Stats/Weapon/None/";
+
+        static IEnumerable<StatCard_Weapon> Props()
+        {
+            try { return Resources.LoadAll<StatCard_Weapon>(PropsFolder).Where(c => c != null && !c.AmNewCard).ToList(); }
+            catch (Exception e) { Game.Error("weapons: props", e); return new StatCard_Weapon[0]; }
+        }
+
+        // A weapon card by name, props included: for wave files and scene files.
+        internal static StatCard_Weapon Card(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return null;
+            var w = StatCard_Base.ReturnCardByName<StatCard_Weapon>(name);
+            if (w != null) return w;
+            var prop = Resources.Load<StatCard_Weapon>(PropsFolder + name);
+            return prop != null ? (prop.OrOverride() ?? prop) : null;
         }
 
         // A preset (StatCard_WeaponModded) is described by the gun it is built on.
