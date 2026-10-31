@@ -2,6 +2,12 @@
 
 Append-only, newest first.
 
+## 2026-10-31 · Director 0.16.0 on the Workshop
+
+- The owner said to upload and publish. The 0.16.0 dist zip's DLL matched build/ and the deployed DLL; wsup.exe updated item 3822329165 with change-notes-0.16.0.txt (result OK).
+- GetPublishedFileDetails: title Director, visibility 0, 55 subscribers, updated 2026-10-31 18:30:40 UTC, description has the props paragraph.
+- Still not played (Owed 22). Plugin tag and wiki for 0.16.0 not done yet.
+
 ## 2026-10-31 · Director 0.16.0: props (clipboard, crates) in the weapon lists
 
 - Ask: the requester says the game has a clipboard and box weapons and could not find them in the search or the pickers.
