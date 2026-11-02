@@ -2,6 +2,10 @@
 
 Append-only, newest first.
 
+## 2026-11-02 · Director 0.17.0 on the Workshop
+
+- The owner said to upload. Dist zip DLL matched build/; wsup.exe updated item 3822329165 with change-notes-0.17.0.txt (result OK). GetPublishedFileDetails: title Director, visibility 0, 55 subscribers, updated 17:41 UTC, description has the zed line.
+
 ## 2026-11-02 · Director 0.17.0: scenes keep one-shot animations and turned zeds
 
 - The requester's asks: "save and load should save their temporary animations" and "a guy with clothes turned into a zed should be saved too".

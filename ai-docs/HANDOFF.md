@@ -1,6 +1,6 @@
 # Handoff
 
-State on 2026-11-02: Director 0.17.0 (the requester's asks): scene saves keep F4 one-shot animations and anyone a zed turned (back as that zed in their clothes; scene files v8; `SceneMemory`, `ZedTurnPatch`). Merged (PR #62), deployed byte-identical, plugin v0.1.13 tagged (covers 0.16.0 too). **Workshop upload pending** (auto mode refused; owner runs wsup.exe) and **not played** (Owed 23).
+State on 2026-11-02: Director 0.17.0 (the requester's asks): scene saves keep F4 one-shot animations and anyone a zed turned (back as that zed in their clothes; scene files v8; `SceneMemory`, `ZedTurnPatch`). Merged (PR #62), deployed byte-identical, plugin v0.1.13 tagged (covers 0.16.0 too). On Workshop item 3822329165 since 2026-11-02 17:41 UTC on the owner's word (visibility 0, 55 subscribers, description mentions zeds). **Not played** (Owed 23).
 
 State on 2026-10-31 (later): the requester said the game has a clipboard and box weapons he could not find. They are props filed as weapon cards under `Resources/Stats/Weapon/None/` (`N_Clipboard`, `N_Crate`, `N_CrateTech` and 25 more), a folder `StatCard_Base` skips when registering weapons, so no list held them. Director 0.16.0 loads that folder into a Props category in every weapon list and search; built, harness passed, merged (PR #59), deployed to Mods/SwapUnaware, on Workshop item 3822329165 since 2026-10-31 18:30 UTC with the owner's OK (visibility 0, 55 subscribers, description has the props paragraph). **Not played** (Owed 22). No plugin tag yet (CHANGELOG Unreleased).
 
