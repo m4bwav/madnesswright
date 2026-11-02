@@ -30,6 +30,10 @@ Needs the `releasebeta` branch: the normal release build does not load mods. Ver
 
 0.12.0 adds a boss bar on a picked character (]), a wave builder in the INSERT menu and a team change key ([). Built and deployed 2026-10-29, not yet played; the checks cover the boss bar bookkeeping (a player's HUD bar survives it), the wave list and its saved files, and the team change.
 
+## Scenes keep one-shot animations and turned zeds (0.17.0)
+
+The requester's asks. A scene now saves the F4 animation a character was given even when it plays once and is over by the save (looping ones were already read from the animator); a load plays it again. Stopping the animation or the character noticing a fight forgets it. A character a zed grabbed and turned (the game swaps its card for the zed's and keeps only the clothes on screen) is saved with the card it had and the armor it wore; a load spawns that card in that armor and turns it with the game's own `MorphCombatant`, so it comes back as the same clothed zed. Only turns seen while 0.17.0 runs are known: a zed turned before, or in a scene saved by an older Director, comes back bare. Ruling: armor colours are the card's, not the exact ones worn. Scene files version 8.
+
 ## Props in the weapon lists (0.16.0)
 
 Requested by the requester, who knew the game has a clipboard and box weapons but could not find them. The game keeps 28 held props (`N_Clipboard`, `N_Crate`, `N_CrateTech`, laptop, keyboard, umbrella, rock, bottle, cake...) as `StatCard_Weapon` cards under `Resources/Stats/Weapon/None/`, and `StatCard_Base` skips the None folder when it registers weapons, so they are in no list and `ReturnCardByName` cannot find them. The Director loads that folder itself: a **Props** category (marked *) in Spawn a weapon and the wave builder, found by the search, and `WeaponSpawnFeature.Card` looks them up by name for wave and scene files. They are not added to the game's register, which feeds random loot, the market and arena drops. Built and deployed 2026-10-31, not yet played.

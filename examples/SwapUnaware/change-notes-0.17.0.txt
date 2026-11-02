@@ -1,0 +1,5 @@
+Director 0.17.0
+
+Saved scenes now keep the animations you give with F4 even when they play only once; loading plays them again.
+
+Zeds: when a zed turns a guy in clothes, saving and loading the scene brings him back as that zed still wearing his clothes (it used to come back as a plain zed). Only turns that happen with this version are remembered; scene files are now version 8.

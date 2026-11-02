@@ -98,6 +98,7 @@ namespace SwapUnaware
             Controller_Base.SetAlertStatus(c.myController, AI_Wakeup.AlertStatus.Unaware);
             c.wanderingDisabled = true;
             Pathfind_Main.ClearWaypointsAndTarget(c);
+            SceneMemory.Posed(c, clip.name);
             return c.PlayAsEmote(clip, fade, false);
         }
 
@@ -136,6 +137,7 @@ namespace SwapUnaware
             if (posing.TryGetValue(c, out wander) && c != null)
                 c.wanderingDisabled = wander || GuardFeature.IsGuard(c) || PatrolFeature.HasRoute(c);
             posing.Remove(c);
+            SceneMemory.Unposed(c);
         }
 
         void OnGUI()
