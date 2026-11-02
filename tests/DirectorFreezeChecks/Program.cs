@@ -507,6 +507,31 @@ static class Program
         Console.WriteLine("Director team change checks passed");
         Filter();
         Console.WriteLine("Director list filter and weapon search checks passed");
+        Memory();
+        Console.WriteLine("Director scene memory checks passed");
+    }
+
+    // Scene memory (0.17.0): an F4 pick is saved while the pose holds, and a zed's victim keeps the
+    // card and armor it had before it turned, even if it turns again.
+    static void Memory()
+    {
+        SceneMemory.Reset();
+        var a = new Combatant_Base("posed", new Controller_NPC());
+        Check(SceneMemory.Pose(a) == null, "memory: a pose before any pick");
+        SceneMemory.Posed(a, "Wave_Once");
+        Check(SceneMemory.Pose(a) == "Wave_Once", "memory: the F4 pick was not kept");
+        SceneMemory.Unposed(a);
+        Check(SceneMemory.Pose(a) == null, "memory: a stopped pose is still saved");
+
+        var z = new Combatant_Base("victim", new Controller_NPC());
+        SceneMemory.Turn(z, "Grunt_Suit", new[] { SceneMemory.ArmorEntry("Head", "Hat_Fedora"), SceneMemory.ArmorEntry("Body", "Suit") });
+        SceneMemory.Turn(z, "Zed", new string[0]);
+        var t = SceneMemory.TurnedFrom(z);
+        Check(t != null && t.from == "Grunt_Suit" && t.armor.Count == 2, "memory: the victim's card or clothes were lost");
+        string slot, card;
+        Check(SceneMemory.ParseArmor(t.armor[0], out slot, out card) && slot == "Head" && card == "Hat_Fedora", "memory: an armor entry does not read back");
+        Check(!SceneMemory.ParseArmor("broken", out slot, out card) && !SceneMemory.ParseArmor("Head|", out slot, out card), "memory: a broken armor entry parsed");
+        Check(SceneMemory.TurnedFrom(a) == null, "memory: a character no zed touched counts as turned");
     }
 
     // The filter box and weapon search (0.15.0): only lists over 20 get the box; caseless, plain

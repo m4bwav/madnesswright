@@ -12,11 +12,12 @@ namespace SwapUnaware
     // version 4 the bodies already lying in the level, so a load clears only newer ones;
     // version 5 the looping emote each character was playing;
     // version 6 the other players' characters (local co-op), marked by player number;
-    // version 7 who had infinite ammo (0.11.0). Older files load with infinite ammo off for everyone.
+    // version 7 who had infinite ammo (0.11.0). Older files load with infinite ammo off for everyone;
+    // version 8 (0.17.0) the card and armor of anyone a zed turned, and F4 one-shot animations (SceneMemory.cs).
     [Serializable]
     public partial class SceneData
     {
-        public const int CurrentVersion = 7;
+        public const int CurrentVersion = 8;
 
         public int version = CurrentVersion;
         public string stage;        // Unity scene name (version 1's only key)
@@ -67,6 +68,9 @@ namespace SwapUnaware
             public int player;      // 2 to 4: a player on a pad played this character at save time
             // Version 7
             public bool infAmmo;    // Director's infinite ammo (AmmoFeature)
+            // Version 8: turned by a zed. card is the zed's; zedFrom the card it had, zedArmor what it wore.
+            public string zedFrom;
+            public List<string> zedArmor = new List<string>();
         }
 
         [Serializable]
@@ -339,11 +343,13 @@ namespace SwapUnaware
                     id = c.myData.myUniqueID,
                     essential = Essential(c),
                     wave = c.myWave != null,
-                    emote = IdleAnimFeature.CurrentEmote(c),
+                    emote = IdleAnimFeature.CurrentEmote(c) ?? SceneMemory.Pose(c),
                     player = Game.PlayerNumber(c),
                     infAmmo = AmmoFeature.Has(c),
                 };
                 r.items = Loadout(c);
+                var turned = SceneMemory.TurnedFrom(c);
+                if (turned != null) { r.zedFrom = turned.from; r.zedArmor = turned.armor.ToList(); }
                 PatrolFeature.Route route;
                 if (PatrolFeature.routes.TryGetValue(c, out route))
                     foreach (var p in route.points) r.patrol.Add(new PointRecord { pos = p.pos, stop = p.stop });
@@ -802,9 +808,12 @@ namespace SwapUnaware
             {
                 var card = StatCard_Base.ReturnCardByName<StatCard_Character>(r.card);
                 if (card == null) { Debug.Log("[" + ModEntry.Id + "] scene: no card " + r.card); return null; }
-                var data = Char_Data.CreateCharacter(card);
+                var from = string.IsNullOrEmpty(r.zedFrom) ? null : StatCard_Base.ReturnCardByName<StatCard_Character>(r.zedFrom);
+                var data = Char_Data.CreateCharacter(from ?? card);
+                if (from != null) Dress(data, r.zedArmor);
                 var c = Combatant_Base.CreateCombatant(data, room, Controller_Base.ControllerType.NPC, r.pos, Facing(r.facing), false);
                 if (c == null) return null;
+                if (from != null) Rezed(c, card, r);
                 Squad_Main sq = r.squad == -1 ? mine : null;
                 if (sq == null && !squads.TryGetValue(SquadKey(r), out sq)) { sq = Squad_Main.CreateSquad((Factions)r.team); squads[SquadKey(r)] = sq; }
                 sq.AddMember(c.myData);
@@ -816,6 +825,36 @@ namespace SwapUnaware
                 return c;
             }
             catch (Exception e) { Game.Error("scene: spawn " + r.card, e); return null; }
+        }
+
+        // The clothes a zed's victim wore, put on the card it had before it turned.
+        static void Dress(Char_Data data, List<string> armor)
+        {
+            if (armor == null || armor.Count == 0) return;
+            data.DestroyAllWornArmor();
+            foreach (var e in armor)
+            {
+                string slot, name;
+                Catalog_Armor.ArmorSlots s;
+                if (!SceneMemory.ParseArmor(e, out slot, out name)) continue;
+                try { s = (Catalog_Armor.ArmorSlots)Enum.Parse(typeof(Catalog_Armor.ArmorSlots), slot); } catch { continue; }
+                var a = StatCard_Base.ReturnCardByName(name, s);
+                if (a == null) { Game.Log("scene:   no armor card " + name); continue; }
+                data.EquipArmor(Catalog_Armor.GenerateArmor(a));
+            }
+        }
+
+        // Turns a freshly spawned victim into the zed again the way the game does (MorphCombatant
+        // keeping scale, armor and name), and remembers it for the next save.
+        static void Rezed(Combatant_Base c, StatCard_Character zed, CharRecord r)
+        {
+            try
+            {
+                c.MorphCombatant(Char_Data.CreateCharacter(zed), true, true, true, false);
+                SceneMemory.Turn(c, r.zedFrom, r.zedArmor);
+                Game.Log("scene:   " + r.card + " turned again from " + r.zedFrom + " (" + r.zedArmor.Count + " armor)");
+            }
+            catch (Exception e) { Game.Error("scene: zed " + r.card, e); }
         }
 
         // A respawned wave unit joins the wave now running (the game's own WaveContainer.AddUnit,
