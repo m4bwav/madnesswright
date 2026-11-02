@@ -2,6 +2,13 @@
 
 Append-only, newest first.
 
+## 2026-11-02 · Director 0.17.0: scenes keep one-shot animations and turned zeds
+
+- The requester's asks: "save and load should save their temporary animations" and "a guy with clothes turned into a zed should be saved too".
+- Animations: scene saves read only a looping emote from the animator (`IdleAnimFeature.CurrentEmote`), so an F4 clip that plays once was lost. `SceneMemory` keeps the F4 pick while the pose holds (forgotten by Stop or `EndPose`); the save falls back to it.
+- Zeds (decompile): a zed's grab calls `PrepareForCoversion`; after death `AttemptConvertToStoredCharacter` runs `MorphCombatant(Char_Data.CreateCharacter(zedCard), keepScale, keepArmor, keepName, ...)`, so the new Char_Data is the zed card and the clothes stay only as meshes. `ZombifyMe` is an empty stub. `ZedTurnPatch` (Harmony prefix) notes the old card and `armorSlots` (slot|card) first; scene files version 8 save `zedFrom`/`zedArmor`; a respawn creates the old card, re-dresses it (`Catalog_Armor.GenerateArmor`), then morphs it the game's way. Colours are the card's (ruling).
+- Built against the game's DLLs, harness `Memory()` check added, all repo checks pass, PR #62 merged, deployed byte-identical. Workshop upload refused by auto mode: handed to the owner (folder staged in the session scratchpad; next session re-unzip dist/SwapUnaware-0.17.0.zip). Plugin 0.1.13 tagged. Not played (Owed 23).
+
 ## 2026-10-31 · Director 0.16.0 on the Workshop
 
 - The owner said to upload and publish. The 0.16.0 dist zip's DLL matched build/ and the deployed DLL; wsup.exe updated item 3822329165 with change-notes-0.16.0.txt (result OK).
