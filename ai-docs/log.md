@@ -2,6 +2,10 @@
 
 Append-only, newest first.
 
+## 2026-11-02 (late): Director 0.17.1, empty INSERT menu
+
+- The owner's son got the INSERT menu to open with nothing but the header and Close (screenshot). No filter box showed, so the static `entries` list was empty, not filtered. Cause: `ModEntry.Unload` destroys the host and `DirectorMenu.OnDestroy` cleared the shared static list; on an unload then reload the old cleanup can land after the new features' `Register`. Fix: `current` instance guard on the clear, `Add` dedupes by label, empty-list message. Built 0 warnings, harness passed, deployed byte-identical; not played (no repro run in game).
+
 ## 2026-11-02 · Director 0.17.0 on the Workshop
 
 - The owner said to upload. Dist zip DLL matched build/; wsup.exe updated item 3822329165 with change-notes-0.17.0.txt (result OK). GetPublishedFileDetails: title Director, visibility 0, 55 subscribers, updated 17:41 UTC, description has the zed line.

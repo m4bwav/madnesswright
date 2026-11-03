@@ -34,6 +34,9 @@ namespace SwapUnaware
         static KeyCode queued = KeyCode.None;
         static int queuedFrame;
         static MenuEntry picking;
+        // The live menu. When the game unloads and reloads the mod, the old menu's OnDestroy can run
+        // after the new features have registered; only the live one may empty the shared list.
+        static DirectorMenu current;
 
         bool open;
         Vector2 scroll;
@@ -45,7 +48,11 @@ namespace SwapUnaware
         // True while the menu waits for a click on a character; AttackBlockPatch skips the shot.
         internal static bool Picking { get { return picking != null || queued != KeyCode.None; } }
 
-        internal static void Add(MenuEntry e) { entries.Add(e); }
+        internal static void Add(MenuEntry e)
+        {
+            entries.RemoveAll(x => x.Label == e.Label);
+            entries.Add(e);
+        }
 
         // A key pressed from the menu counts for one frame after the menu closes or the pick lands
         // (the features skip paused frames and run in no fixed order).
@@ -56,7 +63,11 @@ namespace SwapUnaware
             return true;
         }
 
-        void Awake() { SceneManager.sceneLoaded += OnSceneLoaded; }
+        void Awake()
+        {
+            current = this;
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
 
         void OnSceneLoaded(Scene s, LoadSceneMode m)
         {
@@ -147,6 +158,7 @@ namespace SwapUnaware
             filter.Draw(entries.Count);
             scroll = GUILayout.BeginScrollView(scroll);
             var here = Here();
+            if (entries.Count == 0) GUILayout.Label("No actions loaded. Turn the mod off and on in the Mods menu, or restart the game.");
             foreach (var e in entries.OrderBy(x => x.Key == KeyCode.None).ThenBy(x => (int)x.Key))
             {
                 if (!filter.Pass(e.Label, KeyName(e.Key))) continue;
@@ -167,6 +179,8 @@ namespace SwapUnaware
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
             Close();
+            if (current != this) return;
+            current = null;
             entries.Clear();
             picking = null;
         }

@@ -1,0 +1,3 @@
+Director 0.17.1
+
+Fix: the INSERT menu could open with no actions in it, only the Close button. It happened when the game unloaded and reloaded the mod (for example turning it off and on in the Mods menu): the old copy's cleanup emptied the action list after the new copy had filled it. The menu now keeps its actions, and if the list is ever empty it says so instead of showing a blank box.
