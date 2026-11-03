@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.14 · 2026-11-02
+
+- `examples/SwapUnaware` 0.17.1 (bug a player found): the INSERT menu opened empty (header and Close only). The action list is static and the old `DirectorMenu.OnDestroy` cleared it after a mod unload and reload had re-registered the features; now only the live menu (`current`) clears it, `Add` replaces an entry with the same label, and an empty list shows a line telling the player to toggle the mod or restart. Built, harness passed, deployed; not played.
+
 ## 0.1.13 · 2026-11-02
 
 - `examples/SwapUnaware` 0.17.0 (the requester's asks): scene saves keep an F4 animation that plays once (only looping ones were kept, since the animator no longer names a finished clip; `SceneMemory` remembers the pick while the pose holds), and a character a zed turned comes back as that zed in the clothes it wore: a Harmony prefix on `Combatant_Base.AttemptConvertToStoredCharacter` notes the card and armor before the game swaps in the zed's card, scene files version 8 save them, and a load spawns the old card in that armor and morphs it with the game's own `MorphCombatant` (scale, armor and name kept). The harness checks the memory. Built and deployed, not yet played.
