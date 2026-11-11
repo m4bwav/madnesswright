@@ -67,3 +67,10 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: owner play 2026-11-11 14:16 (3 NREs, one per spike strip); decompiled Converter_Proxy.ReplaceProxy/ConvertCustomObj, Toggleable_Controller.Init (build 25615196); examples/NexusProminence `Spikes`
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11
+
+## L-20261111-5 `sample-walls-one-mesh`
+- Trigger: a room should look out over a distant view (a window, an open balcony), or a shallower room leaves an empty band at the bottom of the screen
+- Rule: the sample room's back and side walls are one mesh (`room_pg_room2_walls`), so to see past the back wall hide that renderer (keep its collider, so nobody walks out) and rebuild the side walls and the wall around the opening as boxes; put the view 5 to 24 units behind the wall (at 40 to 60 it rendered black) and grow distant layers by about 1 + dz/14 so they still fill the window. When a stretch makes a room shallower, also move CameraPoint back in z by about half the removed depth: the camera otherwise stays put and the lower screen shows void.
+- Evidence: examples/NexusProminence `OpenBackWall`, `Stretch`; build-p log 2026-11-11 (back ray hit the single walls mesh), owner's in-game shot of the empty lower half; shots-p 40/40 corners
+- Scope: skill
+- Status: retired · helpful 0 · harmful 1 · last_confirmed 2026-11-11 (owner: hiding the walls mesh, the depth/width scales and the 0.55 zoom broke the rooms and the Playground room; all reverted in build-r. Do not hide the sample walls mesh.)

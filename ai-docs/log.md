@@ -443,3 +443,20 @@ README gained a Works with section (polywright, musicwright, fetchwright, ludowr
 - The owner asked to make room 1 smaller and rework its sides and back after the film frame at 0:19. New `Street` set (one back window, left counter, right side door) and RoomSpec 1.0 x 0.8 with 2 agents. Decal() quads only face the camera, so side-wall signs cannot use it: "no loitering" moved to the window head. build-m, shots-m (40/40), sync-m, check-mod, deploy OK. Workshop upload blocked by the auto-mode classifier; see HANDOFF.
 
 - 2026-11-11 16:50: merged PR #87 (room 1 rework), tagged and released v0.1.17, updated the installed plugin. Upload still waits on the owner.
+- 2026-11-11 balcony pass: owner wanted no roof or foreground in view (open-air balcony). DepthScale 0.7 on all rooms, camera FOV x0.8, DepthFollow 0.25. build-n, shots-n 40/40 corners, sync-n, check-mod, deploy OK. Not played.
+
+## 2026-11-11 continue check
+Balcony build unplayed (mods.log 16:47 < deploy 16:52). No work possible; waits on owner.
+Recheck: played 16:53-16:55, logs clean apart from a stock NRE on exit to menu (Controller_Player.OnDisable). Waits on owner verdict + upload OK.
+- 2026-11-11 tighter pass: owner said still too wide/zoomed out. WidthScale 0.8, DepthScale 0.6, Zoom 0.65. build-o, shots-o 40/40, sync-o, check-mod, deploy OK 17:00. Not played.
+- 2026-11-11 narrow+deep skyline pass (build-p): WidthScale 0.6, Zoom 0.55, EdgeLead 6, camera z follows half the removed depth, room 1 walls mesh hidden and rebuilt, 3-layer city behind glass. Gotcha: sample walls are one mesh (back+sides). Far layers at 40/60 rendered black; 24/32 work. 40/40 corners, deployed. Not played.
+- 2026-11-11 build-q: room 1 blood splats removed (Gags `blood = index != 0`); film contact sheets show blood in every later room. 40/40, deployed 17:09. Not played.
+- 2026-11-11 wrap-up: L-20261111-5 `sample-walls-one-mesh` added to madnesswright-scenes LEARNINGS (uncommitted, ships with the next PR); lab script madnesswright-lab/nexus/rebuild.sh <letter> runs a whole pass.
+
+## 2026-11-11 revert to build-m look
+
+State on 2026-11-11 (revert): the owner said builds n-q "fucked it up", the Playground room too. Generator reverted to the committed room 1 build (PR #87, build-m): no WidthScale/DepthScale/Zoom, DepthFollow 0.6, EdgeLead 10, no OpenBackWall, old flat city in the window. Kept only: no blood in room 1. build-r, 40/40 corners OK, check-mod clean, deployed 17:13. Learning L-20261111-5 retired as harmful. **Not played, not uploaded.** Next: owner plays build-r; narrowing, if still wanted, goes in small steps (e.g. WidthScale 0.9 only) with a play between each.
+
+## 2026-11-11 release build-r, narrower, left wall
+
+State on 2026-11-11 (left wall + narrower): on the owner's go-ahead, build-r was uploaded to Workshop item 3837705778 (wsup.exe, change-notes-2026-11-11j.txt plus a no-blood line, lab preview j; result OK). Then: every room's width x0.85 (`WidthScale`, width only; depth, zoom and camera follow untouched), and room 1's left wall matches the film at 0:19: plain charcoal facing (`FacingL`), vertical panel seams, a dark rail, red skirting; the counter, red band, diagonal stripe, banner and the three doors' hazard bars on that wall are gone (Shell pieces are named `NX_*`, so the strip matches that prefix). build-v, 40/40 corners OK, check-mod clean, deployed 17:21. **Not played, not uploaded.** Next: owner plays build-v; upload only on their OK.

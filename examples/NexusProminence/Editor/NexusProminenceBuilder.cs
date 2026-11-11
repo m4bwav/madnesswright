@@ -104,7 +104,7 @@ public static class NexusProminenceBuilder
         for (int i = 0; i < Rooms.Length; i++)
         {
             var room = built[i];
-            Stretch(room, Rooms[i].Width, Rooms[i].Depth);
+            Stretch(room, Rooms[i].Width * WidthScale, Rooms[i].Depth); // owner 2026-11-11: narrower
             FitCamera(room);
             room.gameObject.name = "Room_" + Rooms[i].Name;
             room.ForceStartingRoom = i == 0;
@@ -173,6 +173,8 @@ public static class NexusProminenceBuilder
         }
         Debug.Log("NexusProminence: camera fit " + room.name + " margin " + m.ToString("0.0") + " x " + lo.position.x.ToString("0.0") + ".." + hi.position.x.ToString("0.0"));
     }
+    // owner 2026-11-11: narrower rooms, one small step (0.6 together with depth and zoom changes broke the map)
+    const float WidthScale = 0.85f;
     const float DepthFollow = 0.6f;
 
     static void StretchWalk(Transform parent, RoomObj room, float ax, float az, float sx, float sz, ref int scaled, ref int moved)
@@ -532,12 +534,20 @@ public static class NexusProminenceBuilder
         Box(f, "SignFace", sx, wy1 - 0.8f, f.zb - 1.3f, 2.9f, 0.85f, 0.02f, "glass");
         Box(f, "SignWire", sx + 0.4f, wy1 - 2.0f, f.zb - 1.25f, 0.03f, 1.6f, 0.03f, "black");
 
-        // left side: a counter along the wall, red glow under the top
-        float cz0 = f.zf + f.D * 0.2f, cz1 = f.zb - 1.0f;
-        Box(f, "SideCounter", f.x0 + 0.8f, f.y + 0.6f, (cz0 + cz1) / 2, 1.4f, 1.2f, cz1 - cz0, "dark");
-        Box(f, "SideCounterTop", f.x0 + 0.85f, f.y + 1.25f, (cz0 + cz1) / 2, 1.6f, 0.1f, cz1 - cz0 + 0.1f, "panel");
-        Box(f, "SideCounterGlow", f.x0 + 1.52f, f.y + 0.3f, (cz0 + cz1) / 2, 0.03f, 0.35f, cz1 - cz0, "red");
-        Box(f, "SideBand", f.x0 + 0.05f, f.y + 2.4f, f.Cz, 0.04f, 0.25f, f.D * 0.9f, "red");
+        // left side as in the film (0:19): a plain charcoal panelled wall with only the red skirting;
+        // drop the Shell's red band, diagonal stripe and banner on this wall
+        for (int c = f.Parent.childCount - 1; c >= 0; c--)
+        {
+            var ch = f.Parent.GetChild(c);
+            if (ch.position.x < f.x0 + 2.5f && (ch.name == "NX_Band_L" || ch.name == "NX_DiagStripe" || ch.name.StartsWith("NX_Banner") || ch.name.StartsWith("NX_Hazard")))
+                Object.DestroyImmediate(ch.gameObject);
+        }
+        // a flat charcoal facing over the template wall's red-and-black trim, then the skirting again
+        Box(f, "FacingL", f.x0 + 0.03f, f.y + 3.6f, f.Cz, 0.04f, 7.2f, f.D + 1f, "wall");
+        Box(f, "SkirtL2", f.x0 + 0.07f, f.y + 0.14f, f.Cz, 0.06f, 0.28f, f.D + 1f, "red");
+        for (float z = f.zb - 2.5f; z > f.zf + 0.5f; z -= 2.5f)
+            Box(f, "PanelSeamL", f.x0 + 0.1f, f.y + 3.4f, z, 0.03f, 6.8f, 0.06f, "dark");
+        Box(f, "PanelRailL", f.x0 + 0.1f, f.y + 0.9f, f.Cz, 0.04f, 0.06f, f.D, "dark");
 
         // right side: door with an emblem, trash bin and cups in the back corner
         float dz = f.zf + f.D * 0.5f;
@@ -1113,11 +1123,13 @@ public static class NexusProminenceBuilder
     static void Gags(Frame f, int index)
     {
         var r = new System.Random(100 + index);
-        int splats = 3 + index % 3;
+        // owner 2026-11-11: the film's street (room 1) is clean before the fight
+        bool blood = index != 0;
+        int splats = blood ? 3 + index % 3 : 0;
         for (int i = 0; i < splats; i++) Splat(f, 0.12f + (float)r.NextDouble() * 0.76f, 0.15f + (float)r.NextDouble() * 0.6f, 1.6f + (float)r.NextDouble() * 1.8f, i + index);
         WallDecal(f, "holes_" + (index % 2), 0.1f + 0.8f * (float)r.NextDouble(), 2.6f, 2.2f, 2.2f);
         WallDecal(f, "holes_" + ((index + 1) % 2), 0.1f + 0.8f * (float)r.NextDouble(), 3.4f, 1.8f, 1.8f);
-        if (index % 3 != 2) WallDecal(f, "splat_" + (index % 4), 0.2f + 0.6f * (float)r.NextDouble(), 2.2f, 2.4f, 2.4f, index * 31f);
+        if (blood && index % 3 != 2) WallDecal(f, "splat_" + (index % 4), 0.2f + 0.6f * (float)r.NextDouble(), 2.2f, 2.4f, 2.4f, index * 31f);
         switch (index)
         {
             case 0:
