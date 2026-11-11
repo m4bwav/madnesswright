@@ -2,6 +2,14 @@
 
 Append-only, newest first.
 
+## 2026-11-11 Nexus Prominence juice: shootable set pieces
+
+- Asked to use the game-juice plugin while staying true to the video. A Playground map has no game code, so juice lives in the set: SceneTools `CustomObj_Destructible` is converted by the game (`Converter_Proxy.ConvertCustomObj` -> `Interactive_Target`, decompile of build 25615196 in the session scratchpad) and swaps `DestructionStates` on hits, with `FlashColorOnHit`, FMOD hit/destroy sounds and an optional `Explosion` card. `Hazard_Splosive` also exists (game class with the same name) but no sample uses it, so it was not used.
+- Added `Breakable()` and 23 breakables: room 2 case glass, room 7 four lamps (glow + cone), room 10 18 monitors. `AllBulletsPassThrough`, no bar, empty popup list, no explosion (constant `MonitorExplosion`, e.g. `ElecSplode`). Sounds used are ones the game's code or sample prefab name (`event:/Foley/Glass Bottles/Wine Bottle Break`, `.../Beer Bottle Break`, `event:/MechanicalFoley/Sparks/Electrocution`, `event:/Combat/Richochet/Richochet Sheild`); the strings bank is a compressed trie, so no full event list.
+- Explosion cards (globalgamemanagers ResourceManager, UnityPy): barrelsplode, elecsplode, propanetank, nexusbomb, nexusburst small/med/large, grenade, shockblast and more under stats/explosion/.
+- make_decals.py needs Pillow, which `python -I` hides; the Tex folder already had the decals, so it was skipped.
+- Build: 23 CO_NX_ objects, Intact active and Broken inactive after SYNCH; NexusShots 40/40 corners OK (lab shots-h); sobj 1.96 MB; check-mod clean; deployed. Not played, not uploaded (Owed 24); notes in workshop/change-notes-2026-11-11g.txt.
+
 ## 2026-11-11 Nexus Prominence Workshop screenshots and video
 
 - Workshop extra previews: images through `AddItemPreviewFile` (type 0), videos only as a YouTube id (`AddItemPreviewVideo`); Facepunch.Steamworks' Editor has no API for either, so wsup.exe gained a `previews` mode calling the steam_api64 flat API (SteamUGC_v014, SteamUtils_v009) after `SteamClient.Init(488860, false)`, then polling IsAPICallCompleted and reading SubmitItemUpdateResult_t (callback 3404, EResult first). Update without content keeps the files, title and main preview.
