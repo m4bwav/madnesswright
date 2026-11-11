@@ -28,40 +28,52 @@ public static class NexusProminenceBuilder
         public ProxyObj_Cover.ProxyType[] Cover;
         public Foe[] Foes;
         public bool KeepLocker, KeepSnipers;
+        public float Width = 1f, Depth = 1f; // stretch of the sample box: rooms are not all the same square
+        public Vector2[] CoverAt;           // cover spots as (0..1 across, 0..1 from front to back); default spread
     }
 
     static readonly RoomSpec[] Rooms =
     {
-        new RoomSpec { Name = "01_StreetCheckpoint", Alert = AlertStatus.Unaware,
-            Cover = new[] { ProxyObj_Cover.ProxyType.Barrel, ProxyObj_Cover.ProxyType.Crate1 },
-            Foes = new[] { new Foe(CharacterTypes.Nexus1_Agent, 2) } },
-        new RoomSpec { Name = "02_WantedHall", Alert = AlertStatus.Unaware,
-            Cover = new[] { ProxyObj_Cover.ProxyType.Wall1 },
-            Foes = new[] { new Foe(CharacterTypes.Nexus1_Agent, 2), new Foe(CharacterTypes.Nexus2_Scout, 1) } },
-        new RoomSpec { Name = "03_ControlsOffice", Alert = AlertStatus.Unaware,
-            Cover = new[] { ProxyObj_Cover.ProxyType.Desk1, ProxyObj_Cover.ProxyType.Desk2 },
-            Foes = new[] { new Foe(CharacterTypes.Nexus1_Agent, 2), new Foe(CharacterTypes.Nexus3_Support, 1) } },
-        new RoomSpec { Name = "04_CargoBay", Alert = AlertStatus.Hunting,
-            Cover = new[] { ProxyObj_Cover.ProxyType.Crate2, ProxyObj_Cover.ProxyType.Crate3, ProxyObj_Cover.ProxyType.Pallet },
-            Foes = new[] { new Foe(CharacterTypes.Nexus4_Riot__Guard, 2), new Foe(CharacterTypes.Nexus6_Soldat, 1) } },
-        new RoomSpec { Name = "05_SniperLoft", Alert = AlertStatus.Hunting, KeepSnipers = true,
-            Cover = new[] { ProxyObj_Cover.ProxyType.Wall2 },
-            Foes = new[] { new Foe(CharacterTypes.Nexus2_Scout, 2), new Foe(CharacterTypes.Nexus1_Agent, 1) } },
-        new RoomSpec { Name = "06_ShutterGarage", Alert = AlertStatus.Hunting,
-            Cover = new[] { ProxyObj_Cover.ProxyType.Crate4, ProxyObj_Cover.ProxyType.Barrel },
-            Foes = new[] { new Foe(CharacterTypes.Nexus5_Engineer, 2), new Foe(CharacterTypes.Nexus1_Agent, 1) } },
-        new RoomSpec { Name = "07_SpotlightCorridor", Alert = AlertStatus.Combat,
-            Cover = new ProxyObj_Cover.ProxyType[0],
+        new RoomSpec { Name = "01_StreetCheckpoint", Width = 1.5f, Depth = 1f, Alert = AlertStatus.Unaware, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Barrel, ProxyObj_Cover.ProxyType.Crate1, ProxyObj_Cover.ProxyType.Barrel, ProxyObj_Cover.ProxyType.Crate2 },
+            CoverAt = new[] { new Vector2(0.18f, 0.3f), new Vector2(0.45f, 0.55f), new Vector2(0.62f, 0.25f), new Vector2(0.8f, 0.6f) },
             Foes = new[] { new Foe(CharacterTypes.Nexus1_Agent, 3) } },
-        new RoomSpec { Name = "08_LockerRoom", Alert = AlertStatus.Combat, KeepLocker = true,
-            Cover = new[] { ProxyObj_Cover.ProxyType.Wall3 },
+        new RoomSpec { Name = "02_WantedHall", Width = 1.3f, Depth = 1f, Alert = AlertStatus.Unaware, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Wall1, ProxyObj_Cover.ProxyType.Crate1, ProxyObj_Cover.ProxyType.Barrel },
+            CoverAt = new[] { new Vector2(0.35f, 0.4f), new Vector2(0.6f, 0.65f), new Vector2(0.85f, 0.3f) },
+            Foes = new[] { new Foe(CharacterTypes.Nexus1_Agent, 3), new Foe(CharacterTypes.Nexus2_Scout, 1) } },
+        new RoomSpec { Name = "03_ControlsOffice", Width = 1.0f, Depth = 1f, Alert = AlertStatus.Unaware, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Desk1, ProxyObj_Cover.ProxyType.Desk2, ProxyObj_Cover.ProxyType.Desk1 },
+            CoverAt = new[] { new Vector2(0.25f, 0.45f), new Vector2(0.55f, 0.3f), new Vector2(0.8f, 0.6f) },
+            Foes = new[] { new Foe(CharacterTypes.Nexus1_Agent, 2), new Foe(CharacterTypes.Nexus3_Support, 1) } },
+        new RoomSpec { Name = "04_CargoBay", Width = 1.6f, Depth = 1.15f, Alert = AlertStatus.Hunting, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Crate2, ProxyObj_Cover.ProxyType.Crate3, ProxyObj_Cover.ProxyType.Pallet, ProxyObj_Cover.ProxyType.Crate4, ProxyObj_Cover.ProxyType.Crate1, ProxyObj_Cover.ProxyType.Crate3 },
+            CoverAt = new[] { new Vector2(0.15f, 0.6f), new Vector2(0.3f, 0.3f), new Vector2(0.45f, 0.55f), new Vector2(0.6f, 0.25f), new Vector2(0.72f, 0.7f), new Vector2(0.88f, 0.4f) },
+            Foes = new[] { new Foe(CharacterTypes.Nexus4_Riot__Guard, 2), new Foe(CharacterTypes.Nexus1_Agent, 2), new Foe(CharacterTypes.Nexus6_Soldat, 1) } },
+        new RoomSpec { Name = "05_SniperLoft", Width = 1.2f, Depth = 1f, Alert = AlertStatus.Hunting, KeepSnipers = true, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Wall2, ProxyObj_Cover.ProxyType.Crate1, ProxyObj_Cover.ProxyType.Barrel },
+            CoverAt = new[] { new Vector2(0.3f, 0.4f), new Vector2(0.6f, 0.6f), new Vector2(0.8f, 0.3f) },
+            Foes = new[] { new Foe(CharacterTypes.Nexus2_Scout, 2), new Foe(CharacterTypes.Nexus1_Agent, 2) } },
+        new RoomSpec { Name = "06_ShutterGarage", Width = 1.35f, Depth = 1f, Alert = AlertStatus.Hunting, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Crate4, ProxyObj_Cover.ProxyType.Barrel, ProxyObj_Cover.ProxyType.Pallet, ProxyObj_Cover.ProxyType.Crate2 },
+            CoverAt = new[] { new Vector2(0.2f, 0.4f), new Vector2(0.4f, 0.7f), new Vector2(0.6f, 0.35f), new Vector2(0.82f, 0.6f) },
+            Foes = new[] { new Foe(CharacterTypes.Nexus5_Engineer, 2), new Foe(CharacterTypes.Nexus1_Agent, 2) } },
+        new RoomSpec { Name = "07_SpotlightCorridor", Width = 2.0f, Depth = 0.75f, Alert = AlertStatus.Combat, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Wall1, ProxyObj_Cover.ProxyType.Barrel, ProxyObj_Cover.ProxyType.Wall3 },
+            CoverAt = new[] { new Vector2(0.3f, 0.5f), new Vector2(0.55f, 0.5f), new Vector2(0.78f, 0.5f) },
+            Foes = new[] { new Foe(CharacterTypes.Nexus1_Agent, 4), new Foe(CharacterTypes.Nexus4_Riot__Guard, 1) } },
+        new RoomSpec { Name = "08_LockerRoom", Width = 0.85f, Depth = 0.85f, Alert = AlertStatus.Combat, KeepLocker = true, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Wall3, ProxyObj_Cover.ProxyType.Table },
+            CoverAt = new[] { new Vector2(0.4f, 0.45f), new Vector2(0.7f, 0.6f) },
             Foes = new[] { new Foe(CharacterTypes.Nexus4_Riot__Guard, 1), new Foe(CharacterTypes.Nexus1_Agent, 2) } },
-        new RoomSpec { Name = "09_BreakRoom", Alert = AlertStatus.Combat,
-            Cover = new[] { ProxyObj_Cover.ProxyType.Table, ProxyObj_Cover.ProxyType.Counter },
-            Foes = new[] { new Foe(CharacterTypes.Nexus3_Support, 1), new Foe(CharacterTypes.Nexus1_Agent, 2), new Foe(CharacterTypes.Nexus_Scientist, 1) } },
-        new RoomSpec { Name = "10_ControlTower", Alert = AlertStatus.Combat,
-            Cover = new[] { ProxyObj_Cover.ProxyType.Desk1, ProxyObj_Cover.ProxyType.Counter, ProxyObj_Cover.ProxyType.Desk2 },
-            Foes = new[] { new Foe(CharacterTypes.Nexus6_Soldat, 2), new Foe(CharacterTypes.Nexus4_Riot__Guard, 1), new Foe(CharacterTypes.Nexus5_Engineer, 1) } },
+        new RoomSpec { Name = "09_BreakRoom", Width = 1.15f, Depth = 1f, Alert = AlertStatus.Combat, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Table, ProxyObj_Cover.ProxyType.Table, ProxyObj_Cover.ProxyType.Counter, ProxyObj_Cover.ProxyType.Barrel },
+            CoverAt = new[] { new Vector2(0.2f, 0.4f), new Vector2(0.45f, 0.55f), new Vector2(0.7f, 0.35f), new Vector2(0.9f, 0.65f) },
+            Foes = new[] { new Foe(CharacterTypes.Nexus3_Support, 1), new Foe(CharacterTypes.Nexus1_Agent, 3), new Foe(CharacterTypes.Nexus_Scientist, 1) } },
+        new RoomSpec { Name = "10_ControlTower", Width = 1.5f, Depth = 1.1f, Alert = AlertStatus.Combat, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Desk1, ProxyObj_Cover.ProxyType.Counter, ProxyObj_Cover.ProxyType.Desk2, ProxyObj_Cover.ProxyType.Desk1, ProxyObj_Cover.ProxyType.Crate1 },
+            CoverAt = new[] { new Vector2(0.2f, 0.35f), new Vector2(0.4f, 0.6f), new Vector2(0.6f, 0.3f), new Vector2(0.78f, 0.55f), new Vector2(0.9f, 0.25f) },
+            Foes = new[] { new Foe(CharacterTypes.Nexus6_Soldat, 2), new Foe(CharacterTypes.Nexus4_Riot__Guard, 2), new Foe(CharacterTypes.Nexus5_Engineer, 1), new Foe(CharacterTypes.Nexus1_Agent, 2) } },
     };
 
     [MenuItem("Madness/Templates/Build Nexus Prominence _PG")]
@@ -90,6 +102,7 @@ public static class NexusProminenceBuilder
         for (int i = 0; i < Rooms.Length; i++)
         {
             var room = built[i];
+            Stretch(room, Rooms[i].Width, Rooms[i].Depth);
             room.gameObject.name = "Room_" + Rooms[i].Name;
             room.ForceStartingRoom = i == 0;
             if (i > 0) StripStartOnly(room);
@@ -103,6 +116,51 @@ public static class NexusProminenceBuilder
         importer.SetAssetBundleNameAndVariant(BundleLabel, "");
         AssetDatabase.SaveAssets();
         Debug.Log("NexusProminence: built " + built.Count + " rooms into " + DstScene + " (label '" + BundleLabel + "'). Select Room_01_StreetCheckpoint, press SYNCH VISUALS, check it, then run scene-lint and the AssetBundle build.");
+    }
+
+    // Stretch the cloned sample box: room meshes scale about the left wall (x) and the back wall (z);
+    // everything else that sits in the room (doors, cover, markers, lights, camera borders, camera) moves
+    // with the stretch but keeps its size. The camera keeps its distance (only x moves).
+    static void Stretch(RoomObj room, float sx, float sz)
+    {
+        if (Mathf.Approximately(sx, 1f) && Mathf.Approximately(sz, 1f)) return;
+        Physics.SyncTransforms();
+        var fb = FloorBounds(room);
+        float ax = fb.min.x, az = fb.max.z;
+        int scaled = 0, moved = 0;
+        StretchWalk(room.transform, room, ax, az, sx, sz, ref scaled, ref moved);
+        if (room.CameraPoint != null)
+        {
+            var t = room.CameraPoint.transform; var p = t.position;
+            t.position = new Vector3(ax + (p.x - ax) * sx, p.y, p.z);
+        }
+        Debug.Log("NexusProminence: stretched " + room.name + " x" + sx + " z" + sz + " (" + scaled + " meshes scaled, " + moved + " objects moved)");
+    }
+
+    static void StretchWalk(Transform parent, RoomObj room, float ax, float az, float sx, float sz, ref int scaled, ref int moved)
+    {
+        foreach (Transform c in parent)
+        {
+            if (room.CameraPoint != null && c == room.CameraPoint.transform) continue;
+            var p = c.position;
+            var np = new Vector3(ax + (p.x - ax) * sx, p.y, az + (p.z - az) * sz);
+            bool geometry = (c.GetComponent<MeshRenderer>() != null || c.GetComponent<Collider>() != null) && c.GetComponent<SceneObj>() == null && c.GetComponent<Camera>() == null && c.childCount == 0;
+            if (geometry)
+            {
+                c.position = np;
+                var s = c.localScale;
+                // imported meshes are often rotated (Blender's -90 on X): scale each local axis by the
+                // stretch of the world axis it lines up with
+                System.Func<Vector3, float> k = d => Mathf.Abs(d.x) > 0.7f ? sx : Mathf.Abs(d.z) > 0.7f ? sz : 1f;
+                c.localScale = new Vector3(s.x * k(c.right), s.y * k(c.up), s.z * k(c.forward));
+                scaled++;
+            }
+            else if (c.GetComponent<SceneObj>() != null || c.GetComponent<Light>() != null || c.GetComponent<Camera>() != null || c.childCount == 0)
+            {
+                c.position = np; moved++;
+            }
+            else StretchWalk(c, room, ax, az, sx, sz, ref scaled, ref moved);
+        }
     }
 
     // Player_Start and the Playground terminal live only in the first room.
@@ -220,6 +278,7 @@ public static class NexusProminenceBuilder
             foreach (var gf in room.CameraPoint.GetComponents<MonoBehaviour>().Where(b => b != null && b.GetType().Name == "GlobalFog")) gf.enabled = false;
         foreach (var l in room.GetComponentsInChildren<Light>(true)) { l.color = new Color(1f, 0.96f, 0.95f); }
 
+        Physics.SyncTransforms();
         var fb = FloorBounds(room);
         var layout = room.transform.Find("Layout") ?? room.transform;
         var setGo = new GameObject("NX_Set");
@@ -267,7 +326,10 @@ public static class NexusProminenceBuilder
                 if (c >= spec.Cover.Length) { Object.DestroyImmediate(covers[c].gameObject); continue; }
                 covers[c].Type = spec.Cover[c];
                 var p = covers[c].transform.position;
-                covers[c].transform.position = new Vector3(Mathf.Lerp(fb.min.x, fb.max.x, (c + 1f) / (spec.Cover.Length + 1f)), p.y, p.z);
+                // Spread through the floor, not one row: the video's rooms have crates and desks out in the open.
+                Vector2 at = spec.CoverAt != null && c < spec.CoverAt.Length ? spec.CoverAt[c]
+                    : new Vector2((c + 1f) / (spec.Cover.Length + 1f), c % 2 == 0 ? 0.35f : 0.65f);
+                covers[c].transform.position = new Vector3(Mathf.Lerp(f.x0 + 1.5f, f.x1 - 1.5f, at.x), p.y, Mathf.Lerp(fb.min.z + 2f, f.zb - 1.5f, at.y));
                 covers[c].gameObject.name = "PX_Cover_" + spec.Cover[c];
                 EditorUtility.SetDirty(covers[c]);
             }
@@ -284,8 +346,10 @@ public static class NexusProminenceBuilder
             {
                 var go = (GameObject)PrefabUtility.InstantiatePrefab(charPrefab, room.gameObject.scene);
                 go.transform.SetParent(folder, false);
-                float t = total == 1 ? 0.7f : Mathf.Lerp(0.4f, 0.9f, n / (float)(total - 1));
-                go.transform.position = new Vector3(Mathf.Lerp(fb.min.x, fb.max.x, t), fb.max.y, fb.center.z);
+                // Staged like the video: a loose group right of centre, staggered front to back.
+                float t = total == 1 ? 0.7f : Mathf.Lerp(0.4f, 0.92f, n / (float)(total - 1));
+                float depth = new[] { 0.5f, 0.25f, 0.75f, 0.4f, 0.6f }[n % 5];
+                go.transform.position = new Vector3(Mathf.Lerp(f.x0 + 1f, f.x1 - 1f, t), fb.max.y, Mathf.Lerp(fb.min.z + 2f, f.zb - 1.5f, depth));
                 var m = go.GetComponent<Marker_Character>();
                 m.Character = foe.Type;
                 m.Faction = Factions.Nexus;
@@ -330,8 +394,41 @@ public static class NexusProminenceBuilder
         Box(f, "Pipe_Back", f.Cx, f.y + 6.0f, f.zb - 0.3f, f.W, 0.14f, 0.14f, "steel");
         for (float x = f.x0 + 2f; x < f.x1; x += 6f)
             Box(f, "PipeClamp", x, f.y + 6.1f, f.zb - 0.2f, 0.1f, 0.35f, 0.2f, "dark");
+        var doors = room.GetComponentsInChildren<ProxyObj_Door>(true);
+        foreach (var side in new[] { -1, 1 })
+        {
+            float x = side < 0 ? f.x0 + 0.07f : f.x1 - 0.07f;
+            var sideDoors = doors.Where(d => (d.transform.position.x < f.Cx) == (side < 0)).Select(d => d.transform.position.z).ToArray();
+            // the video's diagonal red stripe climbing each side wall from the band toward the ceiling at the back
+            var diag = Box(f, "DiagStripe", x, f.y + 3.6f, f.zb - Mathf.Min(3.2f, f.D * 0.25f), 0.12f, 0.5f, 6.5f, "red");
+            diag.transform.rotation = Quaternion.Euler(-38f, 0, 0);
+            // a banner on each side wall, as far from that wall's doors as possible
+            float bz = new[] { f.zb - 3f, f.Cz, f.zf + 4f }
+                .OrderByDescending(z => sideDoors.Length == 0 ? 99f : sideDoors.Min(dz => Mathf.Abs(dz - z))).First();
+            if (sideDoors.Length == 0 || sideDoors.Min(dz => Mathf.Abs(dz - bz)) > 2.2f) Banner(f, x, f.y + 3.4f, bz, true);
+        }
+        // dark corner posts where the back wall meets the sides, and floor panel seams
+        Box(f, "CornerPost", f.x0 + 0.3f, f.y + 3.6f, f.zb - 0.3f, 0.6f, 7.2f, 0.6f, "dark");
+        Box(f, "CornerPost", f.x1 - 0.3f, f.y + 3.6f, f.zb - 0.3f, 0.6f, 7.2f, 0.6f, "dark");
+        for (float z = f.zb - 4f; z > f.zf + 1f; z -= 4f)
+            Box(f, "FloorSeam", f.Cx, f.y + 0.006f, z, f.W - 1f, 0.004f, 0.05f, "dark");
+        // the open floor: flat details only (nothing to walk around): drain grates, a painted red line
+        // across the front third, loose papers; the game's cover props and the enemies fill the rest
+        var rng = new System.Random(room.name.GetHashCode());
+        Box(f, "FloorLine", f.Cx, f.y + 0.008f, f.zf + f.D * 0.3f, f.W - 3f, 0.004f, 0.12f, "red");
+        for (int i = 0; i < Mathf.Max(2, (int)(f.W / 12f)); i++)
+        {
+            float gx = Mathf.Lerp(f.x0 + 3f, f.x1 - 3f, (i + 0.5f) / Mathf.Max(2, (int)(f.W / 12f))), gz = f.zf + f.D * (0.15f + 0.5f * (float)rng.NextDouble());
+            Box(f, "Grate", gx, f.y + 0.01f, gz, 1.4f, 0.008f, 1.0f, "dark");
+            for (int k = 0; k < 4; k++) Box(f, "GrateSlot", gx - 0.45f + k * 0.3f, f.y + 0.016f, gz, 0.1f, 0.004f, 0.8f, "black");
+        }
+        for (int i = 0; i < (int)(f.W / 4f); i++)
+        {
+            var paper = Box(f, "Paper", f.x0 + 2f + (float)rng.NextDouble() * (f.W - 4f), f.y + 0.012f, f.zf + 1f + (float)rng.NextDouble() * (f.D - 3f), 0.5f, 0.004f, 0.65f, "white");
+            paper.transform.rotation = Quaternion.Euler(0, (float)rng.NextDouble() * 180f, 0);
+        }
         // door frames: black opening, dark jambs, red-and-dark hazard bar above
-        foreach (var door in room.GetComponentsInChildren<ProxyObj_Door>(true))
+        foreach (var door in doors)
         {
             var p = door.transform.position;
             bool left = p.x < f.Cx;
@@ -477,6 +574,11 @@ public static class NexusProminenceBuilder
         Box(f, "NoticeB", f.x0 + 6f, f.y + 3.0f, f.zb - 0.1f, 1.0f, 1.4f, 0.06f, "panel");
         Box(f, "BackDoorHole", f.x0 + 9.5f, f.y + 1.9f, f.zb - 0.05f, 2.4f, 3.8f, 0.04f, "black");
         Box(f, "BackDoorHeader", f.x0 + 9.5f, f.y + 4.0f, f.zb - 0.12f, 2.8f, 0.3f, 0.15f, "red");
+        // more of the office: a door marked by a hazard header on the left, a banner, filing cabinets, a wall clock
+        BackDoorway(f, f.x0 + 2.6f);
+        Banner(f, f.x1 - 2.6f, f.y + 3.4f, f.zb - 0.1f, false);
+        for (int i = 0; i < 3; i++) Box(f, "FileCabinet", f.x1 - 6.2f + i * 1.0f, f.y + 1.1f, f.zb - 0.55f, 0.9f, 2.2f, 0.9f, "steel");
+        Cyl(f, "Clock", f.x0 + 5f, f.y + 5.2f, f.zb - 0.1f, 0.8f, 0.1f, "white");
     }
 
     // 4: cargo bay: strapped crates stacked against the back and a pallet line, red floor hazard band.
@@ -490,6 +592,13 @@ public static class NexusProminenceBuilder
         Box(f, "Pallet", f.Cx, f.y + 0.15f, f.zb - 1.2f, 3f, 0.3f, 2f, "steel");
         for (int i = 0; i < 12; i++)
             Box(f, "FloorHazard", f.x0 + 2f + i * 2.4f, f.y + 0.012f, f.zb - 3.3f, 1.2f, 0.02f, 0.4f, "red");
+        // a wide bay: loading door at the right with hazard header, banners, more crates in the far corners
+        BackDoorway(f, f.x1 - 3f);
+        Banner(f, f.x0 + 0.38f * f.W, f.y + 3.6f, f.zb - 0.1f, false);
+        Banner(f, f.x0 + 0.62f * f.W, f.y + 3.6f, f.zb - 0.1f, false);
+        Crate(f, f.x0 + 1.6f, f.zb - 3.2f, 1.4f);
+        Crate(f, f.x1 - 1.6f, f.zb - 4.4f, 1.4f);
+        Box(f, "HangSign", f.Cx, f.y + 6.2f, f.zb - 3f, 3f, 0.5f, 0.1f, "red");
     }
 
     // 5: sniper loft: a ledge across the back wall at head height, ladder up to it, a big open-frame crate.
@@ -510,6 +619,8 @@ public static class NexusProminenceBuilder
         Box(f, "BandRise", lx0 - 0.2f, (f.y + 1.6f + ly + 1.2f) / 2, f.zb - 0.07f, 0.55f, ly + 1.2f - f.y - 1.6f, 0.12f, "red");
         Box(f, "BandHigh", (lx0 + f.x1) / 2, ly + 1.0f, f.zb - 0.07f, f.x1 - lx0, 0.55f, 0.12f, "red");
         OpenCrate(f, f.x0 + 5f, f.zb - 1.8f, 2.6f);
+        Banner(f, f.x0 + 0.3f * f.W, f.y + 3.4f, f.zb - 0.1f, false);
+        BackDoorway(f, f.x1 - 3.5f);
     }
 
     // 6: garage: a big roll-up shutter over a low control console, side door frame.
@@ -525,6 +636,11 @@ public static class NexusProminenceBuilder
         for (int i = 0; i < 4; i++) Box(f, "ConsoleLamp", sx - 3f + i * 2f, f.y + 1.0f, f.zb - 1.07f, 0.8f, 0.6f, 0.03f, i == 3 ? "screen" : "dark");
         Box(f, "WallPanel", f.x1 - 4f, f.y + 3.2f, f.zb - 0.1f, 2.2f, 3.0f, 0.08f, "dark");
         Box(f, "WallPanelStripes", f.x1 - 4f, f.y + 2.0f, f.zb - 0.15f, 2.2f, 0.3f, 0.04f, "red");
+        // vending machine and a banner beside the shutter, oil stains on the floor
+        Box(f, "Vending", f.x0 + 2.4f, f.y + 1.9f, f.zb - 0.7f, 1.6f, 3.8f, 1.2f, "dark");
+        Box(f, "VendingFace", f.x0 + 2.4f, f.y + 2.3f, f.zb - 1.32f, 1.2f, 2.4f, 0.03f, "screen");
+        Banner(f, f.x1 - 7f, f.y + 3.4f, f.zb - 0.1f, false);
+        foreach (var x in new[] { 0.3f, 0.55f, 0.75f }) Box(f, "OilStain", f.x0 + x * f.W, f.y + 0.01f, f.Cz + (x - 0.5f) * 3f, 1.6f, 0.006f, 1.0f, "stain");
     }
 
     // 7: corridor lit by ceiling lamps throwing red cones down the back wall; dark slate board.
@@ -549,6 +665,10 @@ public static class NexusProminenceBuilder
         Box(f, "SlateFrame", f.Cx + 1f, f.y + 1.95f, f.zb - 0.14f, 6.3f, 0.12f, 0.12f, "steel");
         Box(f, "Shutter", f.x0 + 3f, f.y + 2.2f, f.zb - 0.12f, 2f, 4.4f, 0.06f, "steel");
         for (float yy = f.y + 0.3f; yy < f.y + 4.4f; yy += 0.35f) Box(f, "ShutterLine", f.x0 + 3f, yy, f.zb - 0.16f, 2f, 0.05f, 0.02f, "dark");
+        // banners between the lamps and doorways at both ends of the long corridor
+        for (int i = 0; i < 3; i++) Banner(f, f.x0 + 4f + (i + 0.5f) * (f.W - 8f) / 3f, f.y + 3.4f, f.zb - 0.1f, false);
+        BackDoorway(f, f.x0 + 1.9f);
+        BackDoorway(f, f.x1 - 1.9f);
     }
 
     // 8: locker room: a bank of tall lockers, a bench, a cabinet; a ceiling lamp cone.
@@ -568,6 +688,8 @@ public static class NexusProminenceBuilder
         Box(f, "Cabinet", f.x1 - 5f, f.y + 1.1f, f.zb - 0.6f, 2.4f, 2.2f, 1.0f, "panel");
         Box(f, "BoardFrame", f.x1 - 9f, f.y + 3.3f, f.zb - 0.1f, 1.4f, 1.8f, 0.1f, "red");
         Box(f, "Board", f.x1 - 9f, f.y + 3.3f, f.zb - 0.16f, 1.1f, 1.5f, 0.04f, "panel");
+        Banner(f, f.x1 - 2.2f, f.y + 3.4f, f.zb - 0.1f, false);
+        Cyl(f, "Bin", f.x1 - 7f, f.y + 0.6f, f.zb - 0.7f, 0.9f, 1.2f, "steel");
     }
 
     // 9: break room: serving counter under a row of glowing menu panels, tables, a drum.
@@ -583,6 +705,14 @@ public static class NexusProminenceBuilder
         Box(f, "TableLeg", f.x0 + 6f, f.y + 0.45f, f.zb - 4f, 0.2f, 0.9f, 0.2f, "dark");
         Cyl(f, "Drum", f.x0 + 2.5f, f.y + 0.8f, f.zb - 0.9f, 1.2f, 1.6f, "steel");
         Box(f, "DrumBand", f.x0 + 2.5f, f.y + 1.1f, f.zb - 0.9f, 1.25f, 0.15f, 1.25f, "red");
+        // a slate board with chalk lines, a fridge and a vending machine, a banner
+        Box(f, "Slate", f.x0 + 4.5f, f.y + 3.6f, f.zb - 0.1f, 3.2f, 2.0f, 0.06f, "dark");
+        for (int i = 0; i < 4; i++) Box(f, "Chalk", f.x0 + 4.5f - 0.2f * (i % 2), f.y + 4.2f - i * 0.4f, f.zb - 0.14f, 2.2f - 0.3f * i, 0.06f, 0.02f, "white");
+        Box(f, "Fridge", f.x1 - 2.2f, f.y + 2.0f, f.zb - 0.7f, 1.6f, 4.0f, 1.2f, "white");
+        Box(f, "FridgeLine", f.x1 - 2.2f, f.y + 2.7f, f.zb - 1.31f, 1.6f, 0.05f, 0.02f, "dark");
+        Box(f, "Vending", f.x1 - 4.2f, f.y + 1.9f, f.zb - 0.7f, 1.6f, 3.8f, 1.2f, "dark");
+        Box(f, "VendingFace", f.x1 - 4.2f, f.y + 2.3f, f.zb - 1.32f, 1.2f, 2.4f, 0.03f, "screen");
+        Banner(f, f.x0 + 1.9f, f.y + 3.4f, f.zb - 0.1f, false);
     }
 
     // 10: control tower: a wall of red monitors above a long desk, server racks at the sides.
@@ -603,6 +733,46 @@ public static class NexusProminenceBuilder
             Box(f, "Rack", x, f.y + 2.0f, f.zb - 0.8f, 1.3f, 4.0f, 1.2f, "black");
             for (float yy = f.y + 0.6f; yy < f.y + 3.8f; yy += 0.45f) Box(f, "RackLed", x - 0.35f, yy, f.zb - 1.42f, 0.25f, 0.06f, 0.02f, "screen");
         }
+        // the top of the tower: a red sky strip above the monitor wall, banners flanking it, a door to the server room
+        Box(f, "SkyStrip", f.Cx, f.y + 6.6f, f.zb - 0.05f, f.W - 2f, 0.9f, 0.04f, "sky");
+        Box(f, "SkyStripFrame", f.Cx, f.y + 6.1f, f.zb - 0.12f, f.W - 2f, 0.12f, 0.12f, "dark");
+        Banner(f, f.Cx - 9f, f.y + 3.6f, f.zb - 0.1f, false);
+        Banner(f, f.Cx + 9f, f.y + 3.6f, f.zb - 0.1f, false);
+        BackDoorway(f, f.x1 - 6.5f);
+    }
+
+    // Faction-style banner: red board, dark border, a plain chevron (an original mark, not the game's logo).
+    static void Banner(Frame f, float x, float y, float z, bool onSide)
+    {
+        float w = 1.8f, h = 2.6f;
+        if (onSide)
+        {
+            float inward = x < f.Cx ? 1 : -1;
+            Box(f, "BannerBorder", x, y, z, 0.05f, h + 0.2f, w + 0.2f, "dark");
+            Box(f, "Banner", x + inward * 0.04f, y, z, 0.04f, h, w, "red");
+            var a = Box(f, "BannerMarkA", x + inward * 0.07f, y + 0.1f, z - 0.3f, 0.02f, 1.2f, 0.25f, "dark");
+            a.transform.rotation = Quaternion.Euler(35f, 0, 0);
+            var b = Box(f, "BannerMarkB", x + inward * 0.07f, y + 0.1f, z + 0.3f, 0.02f, 1.2f, 0.25f, "dark");
+            b.transform.rotation = Quaternion.Euler(-35f, 0, 0);
+        }
+        else
+        {
+            Box(f, "BannerBorder", x, y, z, w + 0.2f, h + 0.2f, 0.05f, "dark");
+            Box(f, "Banner", x, y, z - 0.04f, w, h, 0.04f, "red");
+            var a = Box(f, "BannerMarkA", x - 0.3f, y + 0.1f, z - 0.07f, 0.25f, 1.2f, 0.02f, "dark");
+            a.transform.rotation = Quaternion.Euler(0, 0, 35f);
+            var b = Box(f, "BannerMarkB", x + 0.3f, y + 0.1f, z - 0.07f, 0.25f, 1.2f, 0.02f, "dark");
+            b.transform.rotation = Quaternion.Euler(0, 0, -35f);
+        }
+    }
+
+    // Recessed doorway in the back wall with the video's red-and-dark hazard header.
+    static void BackDoorway(Frame f, float x)
+    {
+        Box(f, "BackDoorFrame", x, f.y + 2.4f, f.zb - 0.12f, 3.0f, 4.8f, 0.1f, "dark");
+        Box(f, "BackDoor", x, f.y + 2.3f, f.zb - 0.18f, 2.5f, 4.6f, 0.04f, "black");
+        for (int k = 0; k < 5; k++)
+            Box(f, "BackHazard", x - 1.2f + k * 0.6f, f.y + 5.2f, f.zb - 0.12f, 0.3f, 0.4f, 0.06f, k % 2 == 0 ? "red" : "dark");
     }
 
     static void Crate(Frame f, float x, float z, float size, float stackOn = 0f)

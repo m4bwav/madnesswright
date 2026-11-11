@@ -345,6 +345,14 @@ Append-only, newest first.
 ## [2026-10-28] index | rebuilt (18 entries)
 ## [2026-10-29] index | rebuilt (18 entries)
 ## [2026-10-30] index | rebuilt (18 entries)
+## [2026-11-11] Nexus Prominence: released, then rooms resized and filled
+
+- The owner tested the rooms 1-2 build: "release it". wsup.exe updated item 3837705778 with change-notes-2026-11-11b.txt (result OK). Gotcha: wsup.exe needs absolute Windows paths for every file argument; a relative path joined to $PWD threw FileNotFound at Program.cs line 16.
+- Asked: can rooms only be square? They were because every room is a clone of the one sample box. New `Stretch(room, width, depth)`: room meshes and colliders scale about the left and back walls, everything else (doors, cover, markers, lights, the four camera borders) moves, the camera keeps its distance. Two bugs on the way: collider bounds were read before `Physics.SyncTransforms`, and the imported meshes are rotated (-90 on X), so each local axis is now scaled by the world axis it lines up with. Widths: 47, 41, 31, 50, 38, 43, 63, 27, 36, 47 units.
+- Camera check (decompile, Cam_Main): the game clamps the camera between the room's borderX positions, which come from Border_Left and Border_Right, so a wide room pans instead of cropping.
+- Look: side-wall diagonal red stripes, banners (an original chevron, no logo), corner posts, floor grates, papers, a red floor line, back doorways with hazard headers; rooms 3-10 gained cabinets, vending machines, a fridge, a chalk slate, a sky strip over the monitor wall. Cover spreads through the floor by (across, depth) spots and squads grew (3 to 7, riot guards and soldats mixed in), staggered in depth.
+- Rebuilt, SyncAndBuild (.sobj 1.71 MB), check-mod clean (no Author), deployed. **Not played, not uploaded.** Render: examples/NexusProminence/renders/rooms-2026-11-11c.jpg.
+
 ## [2026-11-11] Nexus Prominence: Workshop updated, rooms 1-2 closer to the video
 
 - The owner tested rooms 1 and 2 and said to publish (the old version "will make us look bad"). wsup.exe updated item 3837705778 with the rebuilt map and workshop/change-notes-2026-11-11.txt: result OK.
