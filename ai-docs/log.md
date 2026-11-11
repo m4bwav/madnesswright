@@ -333,3 +333,8 @@ Append-only, newest first.
 ## [2026-10-28] index | rebuilt (18 entries)
 ## [2026-10-29] index | rebuilt (18 entries)
 ## [2026-10-30] index | rebuilt (18 entries)
+## [2026-11-10] Nexus Prominence map template
+
+- Ask: template of the map in YouTube v0suvMY3GgM (collab, 14:22). Pulled it with `uvx yt-dlp -S res:480` (plain `-f best[height<=480]` found no format), contact sheets with ffmpeg `fps=1/9,tile=4x6`.
+- No in-game editor, so the route is SceneTools. Wrote `examples/NexusProminence/Editor/NexusProminenceBuilder.cs`: copies SamplePlayground_PG, clones its one room (5 doors) ten times 300 units apart, links rightmost door to next room's leftmost, keeps Player_Start and PX_Playground in room 1, repaints with Standard materials, adds Char_Start markers (Nexus1-6, Scientist; CharacterTypes from SceneEditorHelpers.cs).
+- Unverified: never compiled (no Unity 2019.2.6f1).
