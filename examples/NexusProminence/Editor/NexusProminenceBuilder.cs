@@ -34,10 +34,10 @@ public static class NexusProminenceBuilder
 
     static readonly RoomSpec[] Rooms =
     {
-        new RoomSpec { Name = "01_StreetCheckpoint", Width = 1.5f, Depth = 1f, Alert = AlertStatus.Unaware, 
-            Cover = new[] { ProxyObj_Cover.ProxyType.Barrel, ProxyObj_Cover.ProxyType.Crate1, ProxyObj_Cover.ProxyType.Barrel, ProxyObj_Cover.ProxyType.Crate2 },
-            CoverAt = new[] { new Vector2(0.18f, 0.3f), new Vector2(0.45f, 0.55f), new Vector2(0.62f, 0.25f), new Vector2(0.8f, 0.6f) },
-            Foes = new[] { new Foe(CharacterTypes.Nexus1_Agent, 3) } },
+        new RoomSpec { Name = "01_StreetCheckpoint", Width = 1.0f, Depth = 0.8f, Alert = AlertStatus.Unaware, 
+            Cover = new[] { ProxyObj_Cover.ProxyType.Barrel, ProxyObj_Cover.ProxyType.Crate1 },
+            CoverAt = new[] { new Vector2(0.3f, 0.35f), new Vector2(0.7f, 0.5f) },
+            Foes = new[] { new Foe(CharacterTypes.Nexus1_Agent, 2) } },
         new RoomSpec { Name = "02_WantedHall", Width = 1.3f, Depth = 1f, Alert = AlertStatus.Unaware, 
             Cover = new[] { ProxyObj_Cover.ProxyType.Wall1, ProxyObj_Cover.ProxyType.Crate1, ProxyObj_Cover.ProxyType.Barrel },
             CoverAt = new[] { new Vector2(0.35f, 0.4f), new Vector2(0.6f, 0.65f), new Vector2(0.85f, 0.3f) },
@@ -489,71 +489,67 @@ public static class NexusProminenceBuilder
 
     // ---- per-room dressing (layout and colour from the frames; no art, logos or signs copied) ----
 
-    // 1: the street side (video 0:20-0:60). Left: a tall window onto the red city with a glowing sill, a counter
-    // rail and a sign hung from the ceiling. Middle: a dark pillar with a bin and cups. Right: the way inside,
-    // a recessed door panel with a red emblem board, a medkit cabinet and striped skirting. Stained dark floor.
+    // 1: street checkpoint (video 0:19): a small room, the back wall one wide window over the red city
+    // (towers, billboards, a hung broken sign), a counter running along the left side wall with a red glow,
+    // a door with an emblem on the right side wall, trash bin and cups in the back right corner.
     static void Street(Frame f)
     {
         var rng = new System.Random(7);
         Box(f, "Asphalt", f.Cx, f.y + 0.004f, f.Cz, f.W, 0.008f, f.D, "asphalt");
-        for (int i = 0; i < 14; i++)
+        for (int i = 0; i < 8; i++)
             Box(f, "Stain", f.x0 + 2f + (float)rng.NextDouble() * (f.W - 4f), f.y + 0.01f, f.zf + 1f + (float)rng.NextDouble() * (f.D - 2f),
                 0.6f + (float)rng.NextDouble() * 1.8f, 0.006f, 0.4f + (float)rng.NextDouble() * 1.2f, "stain");
 
-        float split = f.x0 + f.W * 0.74f;
-        float wx0 = f.x0 + 1.6f, wx1 = split - 1.2f, wy0 = f.y + 1.6f, wy1 = f.y + 6.6f, wz = f.zb - 0.05f;
+        // back: one window almost wall to wall
+        float wx0 = f.x0 + 1.4f, wx1 = f.x1 - 1.4f, wy0 = f.y + 1.4f, wy1 = f.y + 6.8f, wz = f.zb - 0.05f;
         Box(f, "Window_Sky", (wx0 + wx1) / 2, (wy0 + wy1) / 2, wz, wx1 - wx0, wy1 - wy0, 0.04f, "sky");
-        for (float x = wx0 + 0.3f; x < wx1 - 0.6f; )
+        for (float x = wx0 + 0.2f; x < wx1 - 0.6f; )
         {
             float w = 1.0f + (float)rng.NextDouble() * 1.8f;
-            float h = 2.4f + (float)rng.NextDouble() * 2.6f;
+            float h = 2.4f + (float)rng.NextDouble() * 3.0f;
             float cx = Mathf.Min(x + w / 2, wx1 - w / 2);
             Box(f, "Tower", cx, wy0 + h / 2, wz - 0.05f, w, h, 0.04f, rng.NextDouble() < 0.5 ? "black" : "dark");
             for (float yy = wy0 + 0.3f; yy < wy0 + h - 0.3f; yy += 0.4f)
                 for (float xx = cx - w / 2 + 0.2f; xx < cx + w / 2 - 0.15f; xx += 0.3f)
                     if (rng.NextDouble() < 0.6) Box(f, "LitWin", xx, yy, wz - 0.08f, 0.14f, 0.2f, 0.02f, "lit");
-            if (rng.NextDouble() < 0.45) // billboard on a tower face
+            if (rng.NextDouble() < 0.45)
             {
                 Box(f, "BillFrame", cx, wy0 + h * 0.6f, wz - 0.1f, w * 0.8f, 1.2f, 0.02f, "white");
                 Box(f, "Bill", cx, wy0 + h * 0.6f, wz - 0.11f, w * 0.7f, 1.05f, 0.02f, "screen");
             }
             x += w + 0.1f;
         }
-        // thick frame, glowing red sill strip and the dark counter rail in front of it
         Box(f, "Window_Head", (wx0 + wx1) / 2, wy1 + 0.3f, f.zb - 0.3f, wx1 - wx0 + 0.8f, 0.6f, 0.6f, "dark");
         Box(f, "Window_SideA", wx0 - 0.2f, (wy0 + wy1) / 2, f.zb - 0.3f, 0.5f, wy1 - wy0, 0.6f, "dark");
         Box(f, "Window_SideB", wx1 + 0.2f, (wy0 + wy1) / 2, f.zb - 0.3f, 0.5f, wy1 - wy0, 0.6f, "dark");
-        Box(f, "Window_Sill", (wx0 + wx1) / 2, wy0 + 0.1f, f.zb - 0.35f, wx1 - wx0, 0.2f, 0.6f, "screen");
-        Box(f, "CounterRail", (wx0 + wx1) / 2, wy0 + 0.35f, f.zb - 0.75f, wx1 - wx0 - 0.4f, 0.12f, 0.25f, "dark");
-        Box(f, "CounterLeg", wx0 + 0.6f, f.y + 0.95f, f.zb - 0.75f, 0.12f, 1.9f, 0.12f, "dark");
-        Box(f, "CounterLeg", wx1 - 0.6f, f.y + 0.95f, f.zb - 0.75f, 0.12f, 1.9f, 0.12f, "dark");
-        // sign hung from the ceiling in the middle of the window
+        Box(f, "Window_Sill", (wx0 + wx1) / 2, wy0 + 0.1f, f.zb - 0.35f, wx1 - wx0, 0.2f, 0.6f, "dark");
+        Box(f, "Window_Glow", (wx0 + wx1) / 2, wy0 - 0.5f, f.zb - 0.1f, wx1 - wx0, 1.0f, 0.04f, "screen");
+        // hung, cracked sign in the middle of the window
         float sx = (wx0 + wx1) / 2;
-        Box(f, "SignRodA", sx - 1f, wy1 + 0.2f, f.zb - 1.2f, 0.06f, 1.2f, 0.06f, "dark");
-        Box(f, "SignRodB", sx + 1f, wy1 + 0.2f, f.zb - 1.2f, 0.06f, 1.2f, 0.06f, "dark");
-        Box(f, "Sign", sx, wy1 - 0.7f, f.zb - 1.2f, 2.8f, 0.9f, 0.15f, "dark");
-        Box(f, "SignFace", sx, wy1 - 0.7f, f.zb - 1.3f, 2.5f, 0.65f, 0.02f, "glass");
-        // pillar between window and the inside
-        Box(f, "Pillar", split, f.y + 3.6f, f.zb - 0.6f, 1.4f, 7.2f, 1.2f, "dark");
-        Box(f, "PillarSkirt", split, f.y + 0.2f, f.zb - 1.22f, 1.4f, 0.4f, 0.04f, "red");
-        Cyl(f, "TrashBin", split + 1.6f, f.y + 0.75f, f.zb - 1.0f, 1.1f, 1.5f, "steel");
-        Box(f, "TrashLid", split + 1.6f, f.y + 1.52f, f.zb - 1.0f, 1.2f, 0.08f, 1.2f, "dark");
-        for (int i = 0; i < 3; i++) Cyl(f, "Cup", split + 0.8f + i * 0.28f, f.y + 0.13f, f.zb - 1.7f - (i % 2) * 0.2f, 0.18f, 0.26f, "white");
-        // inside: recessed door panel with an emblem board, medkit cabinet, striped skirting
-        float dx = split + (f.x1 - split) * 0.62f;
-        Box(f, "DoorPanelFrame", dx, f.y + 3.0f, f.zb - 0.12f, 3.6f, 5.6f, 0.08f, "dark");
-        Box(f, "DoorPanel", dx, f.y + 3.0f, f.zb - 0.17f, 3.2f, 5.2f, 0.04f, "panel");
-        Box(f, "EmblemBoard", dx, f.y + 4.0f, f.zb - 0.2f, 2.2f, 1.6f, 0.03f, "red");
-        Box(f, "EmblemCut", dx, f.y + 3.9f, f.zb - 0.22f, 1.2f, 0.7f, 0.03f, "panel");
-        float mx = split + (f.x1 - split) * 0.2f;
-        Box(f, "Medkit", mx, f.y + 3.0f, f.zb - 0.2f, 1.1f, 1.3f, 0.25f, "white");
-        Box(f, "MedkitBase", mx, f.y + 2.3f, f.zb - 0.2f, 1.1f, 0.15f, 0.26f, "red");
-        Box(f, "MedkitCrossV", mx, f.y + 3.05f, f.zb - 0.34f, 0.18f, 0.6f, 0.02f, "steel");
-        Box(f, "MedkitCrossH", mx, f.y + 3.05f, f.zb - 0.34f, 0.6f, 0.18f, 0.02f, "steel");
-        for (float x = split + 1f; x < f.x1 - 0.4f; x += 0.9f)
-            Box(f, "SkirtStripe", x, f.y + 0.14f, f.zb - 0.13f, 0.35f, 0.24f, 0.02f, "dark");
-        for (float x = f.x0 + 2f; x < f.x1 - 1f; x += 3.2f) // back-wall panel seams
-            Box(f, "PanelSeam", x, f.y + 3.6f, f.zb - 0.02f, 0.06f, 7.2f, 0.02f, "dark");
+        Box(f, "SignRodA", sx - 1.2f, wy1 + 0.2f, f.zb - 1.2f, 0.12f, 1.2f, 0.12f, "dark");
+        Box(f, "SignRodB", sx + 1.2f, wy1 + 0.2f, f.zb - 1.2f, 0.12f, 1.2f, 0.12f, "dark");
+        Box(f, "Sign", sx, wy1 - 0.8f, f.zb - 1.2f, 3.2f, 1.1f, 0.15f, "dark");
+        Box(f, "SignFace", sx, wy1 - 0.8f, f.zb - 1.3f, 2.9f, 0.85f, 0.02f, "glass");
+        Box(f, "SignWire", sx + 0.4f, wy1 - 2.0f, f.zb - 1.25f, 0.03f, 1.6f, 0.03f, "black");
+
+        // left side: a counter along the wall, red glow under the top
+        float cz0 = f.zf + f.D * 0.2f, cz1 = f.zb - 1.0f;
+        Box(f, "SideCounter", f.x0 + 0.8f, f.y + 0.6f, (cz0 + cz1) / 2, 1.4f, 1.2f, cz1 - cz0, "dark");
+        Box(f, "SideCounterTop", f.x0 + 0.85f, f.y + 1.25f, (cz0 + cz1) / 2, 1.6f, 0.1f, cz1 - cz0 + 0.1f, "panel");
+        Box(f, "SideCounterGlow", f.x0 + 1.52f, f.y + 0.3f, (cz0 + cz1) / 2, 0.03f, 0.35f, cz1 - cz0, "red");
+        Box(f, "SideBand", f.x0 + 0.05f, f.y + 2.4f, f.Cz, 0.04f, 0.25f, f.D * 0.9f, "red");
+
+        // right side: door with an emblem, trash bin and cups in the back corner
+        float dz = f.zf + f.D * 0.5f;
+        Box(f, "SideDoorFrame", f.x1 - 0.08f, f.y + 2.6f, dz, 0.1f, 5.2f, 3.0f, "dark");
+        Box(f, "SideDoor", f.x1 - 0.14f, f.y + 2.5f, dz, 0.04f, 4.8f, 2.6f, "panel");
+        Box(f, "SideDoorEmblem", f.x1 - 0.17f, f.y + 3.6f, dz, 0.03f, 1.0f, 1.0f, "red");
+        Box(f, "SideDoorSill", f.x1 - 0.3f, f.y + 0.15f, dz, 0.5f, 0.3f, 3.0f, "red");
+        Cyl(f, "TrashBin", f.x1 - 1.4f, f.y + 0.75f, f.zb - 1.2f, 1.1f, 1.5f, "steel");
+        Box(f, "TrashLid", f.x1 - 1.4f, f.y + 1.52f, f.zb - 1.2f, 1.2f, 0.08f, 1.2f, "dark");
+        for (int i = 0; i < 3; i++) Cyl(f, "Cup", f.x1 - 2.4f + i * 0.28f, f.y + 0.13f, f.zb - 1.9f - (i % 2) * 0.2f, 0.18f, 0.26f, "white");
+        for (float x = f.x0 + 2f; x < f.x1 - 1f; x += 3.2f)
+            Box(f, "PanelSeam", x, f.y + 7.5f, f.zb - 0.02f, 0.06f, 0.8f, 0.02f, "dark");
     }
 
     // 2: red-lit hall (video 1:28-2:00): wanted posters in red frames hung on rods, a glass display case of
@@ -1125,13 +1121,9 @@ public static class NexusProminenceBuilder
         switch (index)
         {
             case 0:
-                // the wall is full (window, pillar, door panel): the town sign goes on the hung sign,
-                // "no loitering" on the pillar face at eye height
-                {
-                    float sx = (f.x0 + 1.6f + f.x0 + f.W * 0.74f - 1.2f) / 2;
-                    Decal(f, "sign_population", sx, f.y + 5.9f, f.zb - 1.33f, 2.3f, 0.9f);
-                    Decal(f, "sign_noloiter", f.x0 + f.W * 0.74f, f.y + 2.8f, f.zb - 1.23f, 1.3f, 0.65f);
-                }
+                // the back wall is one window: the town sign goes on the hung sign, "no loitering" on the window head
+                Decal(f, "sign_population", f.Cx, f.y + 6.0f, f.zb - 1.33f, 2.6f, 1.0f);
+                Decal(f, "sign_noloiter", f.x1 - 3.5f, f.y + 7.1f, f.zb - 0.62f, 1.1f, 0.5f);
                 WallDecal(f, "scrawl_0", 0.7f, 1.0f, 3.2f, 1.6f);
                 break;
             case 1:

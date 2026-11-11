@@ -4,7 +4,7 @@ Playground map: Hank storms the Nexus Prominence control tower, ten rooms chaine
 Difficulty climbs as you go: guards start unaware, then hunt you, then come in shooting. Every room has a Nexus weapon lying near the entrance, and ammo and med cabinets wait before the hard rooms. Shoot the set up as you go: the wanted hall's display case shatters, the spotlight corridor's lamps go dark and the control tower's monitor wall cracks screen by screen.
 [table]
 [tr][th]#[/th][th]Room[/th][th]What's in it[/th][th]Enemies[/th][th]Difficulty[/th][/tr]
-[tr][td]1[/td][td]Street checkpoint[/td][td]City window, barrels and crates[/td][td]3 agents with rifles (unaware)[/td][td]Easy[/td][/tr]
+[tr][td]1[/td][td]Street checkpoint[/td][td]Small room, wide city window, side counter and door[/td][td]2 agents with rifles (unaware)[/td][td]Easy[/td][/tr]
 [tr][td]2[/td][td]Wanted hall[/td][td]Wanted posters, display case, floor hatches[/td][td]3 agents, 1 sword scout (unaware)[/td][td]Easy[/td][/tr]
 [tr][td]3[/td][td]Controls office[/td][td]Desks, cabinets, "CONTROLS" door[/td][td]2 agents, 1 support (unaware)[/td][td]Easy[/td][/tr]
 [tr][td]4[/td][td]Cargo bay[/td][td]Strapped crates, pallets, striped floor[/td][td]2 riot guards, 2 agents, 1 soldat (hunting)[/td][td]Hard[/td][/tr]

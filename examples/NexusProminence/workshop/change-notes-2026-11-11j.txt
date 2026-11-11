@@ -1,0 +1,7 @@
+Street checkpoint rework and spike fix.
+
+- Room 1 (street checkpoint) is smaller and closer to the film's opening shot: the back wall is one wide window over the red city with a hung sign, a counter runs along the left wall, a door with an emblem sits on the right, and the trash bin and cups are in the back corner. Two agents guard it instead of three.
+- Spike traps in the shutter garage and the spotlight corridor should now drop and rise on a timer instead of sitting still (fix for a game error; tell us if they still stay up).
+- New main image and room screenshots.
+
+Nothing to do on your side: resubscribe or restart the game if the map does not update.
