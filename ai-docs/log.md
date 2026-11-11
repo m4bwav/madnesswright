@@ -441,3 +441,5 @@ README gained a Works with section (polywright, musicwright, fetchwright, ludowr
 ## 2026-11-11 room 1 rework
 
 - The owner asked to make room 1 smaller and rework its sides and back after the film frame at 0:19. New `Street` set (one back window, left counter, right side door) and RoomSpec 1.0 x 0.8 with 2 agents. Decal() quads only face the camera, so side-wall signs cannot use it: "no loitering" moved to the window head. build-m, shots-m (40/40), sync-m, check-mod, deploy OK. Workshop upload blocked by the auto-mode classifier; see HANDOFF.
+
+- 2026-11-11 16:50: merged PR #87 (room 1 rework), tagged and released v0.1.17, updated the installed plugin. Upload still waits on the owner.
