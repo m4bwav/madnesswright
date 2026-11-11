@@ -88,6 +88,7 @@ public static class NexusProminenceBuilder
         AssetDatabase.CopyAsset(SrcScene, DstScene);
         var scene = EditorSceneManager.OpenScene(DstScene, OpenSceneMode.Single);
 
+        AssetDatabase.Refresh();
         var mats = MakeMaterials();
         var charPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(CharStart);
         var template = Object.FindObjectsOfType<RoomObj>().OrderBy(r => r.transform.position.x).First();
@@ -103,6 +104,7 @@ public static class NexusProminenceBuilder
         {
             var room = built[i];
             Stretch(room, Rooms[i].Width, Rooms[i].Depth);
+            FitCamera(room);
             room.gameObject.name = "Room_" + Rooms[i].Name;
             room.ForceStartingRoom = i == 0;
             if (i > 0) StripStartOnly(room);
@@ -136,6 +138,39 @@ public static class NexusProminenceBuilder
         }
         Debug.Log("NexusProminence: stretched " + room.name + " x" + sx + " z" + sz + " (" + scaled + " meshes scaled, " + moved + " objects moved)");
     }
+
+    // Cam_Main (decompile, build 25615196) follows the player inside [border + m, border - m] where
+    // m = |target - camera| * fov * 0.005 * (aspect - 1) once the room is over 17 units wide, and follows
+    // depth only by Leeway z (0 in the sample room: the camera never moves toward the front). With the
+    // borders on the walls a player in a front corner walked off screen. So: follow depth fully and set
+    // the side borders so the camera centre can reach EdgeLead units past a player standing at a wall.
+    const float EdgeLead = 10f;
+    static void FitCamera(RoomObj room)
+    {
+        if (room.CameraPoint == null || room.CameraTarget == null || room.BorderLeft == null || room.BorderRight == null) return;
+        Physics.SyncTransforms();
+        var fb = FloorBounds(room);
+        var offset = room.CameraTarget.transform.position - room.CameraPoint.transform.position;
+        float m = offset.magnitude * room.CameraPoint.fieldOfView * 0.005f * (16f / 9f - 1f);
+        bool leftIsMin = room.BorderLeft.transform.position.x < room.BorderRight.transform.position.x;
+        var lo = leftIsMin ? room.BorderLeft.transform : room.BorderRight.transform;
+        var hi = leftIsMin ? room.BorderRight.transform : room.BorderLeft.transform;
+        lo.position = new Vector3(fb.min.x + 1.5f + EdgeLead - m, lo.position.y, lo.position.z);
+        hi.position = new Vector3(fb.max.x - 1.5f - EdgeLead + m, hi.position.y, hi.position.z);
+        if (lo.position.x > hi.position.x) { float c = fb.center.x; lo.position = new Vector3(c - 9f, lo.position.y, lo.position.z); hi.position = new Vector3(c + 9f, hi.position.y, hi.position.z); }
+        room.Leeway_Pos = new Vector3(room.Leeway_Pos.x, room.Leeway_Pos.y, DepthFollow);
+        room.Leeway_Look = new Vector3(room.Leeway_Look.x, room.Leeway_Look.y, DepthFollow);
+        if (room.BorderBack != null && room.BorderForward != null)
+        {
+            bool backIsMin = room.BorderBack.transform.position.z < room.BorderForward.transform.position.z;
+            var zlo = backIsMin ? room.BorderBack.transform : room.BorderForward.transform;
+            var zhi = backIsMin ? room.BorderForward.transform : room.BorderBack.transform;
+            zlo.position = new Vector3(zlo.position.x, zlo.position.y, fb.min.z);
+            zhi.position = new Vector3(zhi.position.x, zhi.position.y, fb.max.z);
+        }
+        Debug.Log("NexusProminence: camera fit " + room.name + " margin " + m.ToString("0.0") + " x " + lo.position.x.ToString("0.0") + ".." + hi.position.x.ToString("0.0"));
+    }
+    const float DepthFollow = 0.6f;
 
     static void StretchWalk(Transform parent, RoomObj room, float ax, float az, float sx, float sz, ref int scaled, ref int moved)
     {
@@ -314,6 +349,7 @@ public static class NexusProminenceBuilder
             case 8: BreakRoom(f); break;
             case 9: ControlTower(f); break;
         }
+        Gags(f, index);
 
         // Cover: reuse the room's PX_Cover objects, add or remove to match the spec.
         var covers = room.GetComponentsInChildren<ProxyObj_Cover>(true).ToList();
@@ -815,6 +851,117 @@ public static class NexusProminenceBuilder
         r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         s.isStatic = true;
         return s;
+    }
+
+    // ---- printed decals (textures from tools/make_decals.py in MatDir/Tex) ----
+    static readonly Dictionary<string, Material> decalMats = new Dictionary<string, Material>();
+    static Material DecalMat(string tex)
+    {
+        Material m;
+        if (decalMats.TryGetValue(tex, out m) && m != null) return m;
+        string tpath = MatDir + "/Tex/" + tex + ".png";
+        var ti = AssetImporter.GetAtPath(tpath) as TextureImporter;
+        if (ti == null) { Debug.LogWarning("NexusProminence: missing " + tpath + " (run tools/make_decals.py)"); return null; }
+        if (!ti.alphaIsTransparency || ti.mipmapEnabled == false) { ti.alphaIsTransparency = true; ti.mipmapEnabled = true; ti.wrapMode = TextureWrapMode.Clamp; ti.SaveAndReimport(); }
+        var t = AssetDatabase.LoadAssetAtPath<Texture2D>(tpath);
+        bool cut = !tex.StartsWith("sign_") || tex == "sign_dontblink";
+        string path = MatDir + "/NX_Decal_" + tex + ".mat";
+        var sh = cut ? Shader.Find("Legacy Shaders/Transparent/Cutout/Diffuse") : Shader.Find("Standard");
+        m = AssetDatabase.LoadAssetAtPath<Material>(path);
+        if (m == null) { m = new Material(sh); AssetDatabase.CreateAsset(m, path); }
+        m.shader = sh; m.mainTexture = t; m.color = Color.white;
+        if (cut) m.SetFloat("_Cutoff", 0.4f); else m.SetFloat("_Glossiness", 0.05f);
+        EditorUtility.SetDirty(m);
+        decalMats[tex] = m;
+        return m;
+    }
+
+    // A quad on the back wall (faces the camera) or flat on the floor; w, h in units.
+    static void Decal(Frame f, string tex, float x, float y, float z, float w, float h, bool floor = false, float spin = 0f)
+    {
+        var mat = DecalMat(tex); if (mat == null) return;
+        var q = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        Object.DestroyImmediate(q.GetComponent<Collider>());
+        q.name = "NX_Decal_" + tex;
+        q.transform.SetParent(f.Parent, true);
+        q.transform.position = new Vector3(x, y, z);
+        q.transform.rotation = floor ? Quaternion.Euler(90f, spin, 0f) : Quaternion.Euler(0f, 0f, spin);
+        q.transform.localScale = new Vector3(w, h, 1f);
+        var r = q.GetComponent<MeshRenderer>(); r.sharedMaterial = mat;
+        r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        q.isStatic = true;
+    }
+
+    static void Splat(Frame f, float u, float v, float size, int seed)
+    {
+        Decal(f, "splat_" + (seed % 4), Mathf.Lerp(f.x0, f.x1, u), f.y + 0.035f + seed * 0.001f, Mathf.Lerp(f.zf, f.zb, v), size, size, true, seed * 47f);
+    }
+    const float SignScale = 1.9f;
+    static void WallDecal(Frame f, string tex, float u, float y, float w, float h, float spin = 0f)
+    {
+        w *= SignScale; h *= SignScale; // readable from the game camera
+        y = Mathf.Min(y, 5.3f - h / 2f);
+        Decal(f, tex, Mathf.Lerp(f.x0, f.x1, u), f.y + y, f.zb - 0.47f, w, h, false, spin);
+    }
+
+    // Madness-map dressing on top of each room's set: the film's blood and bullet holes everywhere,
+    // its own wall scrawl and chalk, plus one or two joke signs per room.
+    static void Gags(Frame f, int index)
+    {
+        var r = new System.Random(100 + index);
+        int splats = 3 + index % 3;
+        for (int i = 0; i < splats; i++) Splat(f, 0.12f + (float)r.NextDouble() * 0.76f, 0.15f + (float)r.NextDouble() * 0.6f, 1.6f + (float)r.NextDouble() * 1.8f, i + index);
+        WallDecal(f, "holes_" + (index % 2), 0.1f + 0.8f * (float)r.NextDouble(), 2.6f, 2.2f, 2.2f);
+        WallDecal(f, "holes_" + ((index + 1) % 2), 0.1f + 0.8f * (float)r.NextDouble(), 3.4f, 1.8f, 1.8f);
+        if (index % 3 != 2) WallDecal(f, "splat_" + (index % 4), 0.2f + 0.6f * (float)r.NextDouble(), 2.2f, 2.4f, 2.4f, index * 31f);
+        switch (index)
+        {
+            case 0:
+                WallDecal(f, "sign_population", 0.74f, 3.4f, 3.0f, 1.17f);
+                WallDecal(f, "sign_noloiter", 0.93f, 2.6f, 1.8f, 0.9f);
+                WallDecal(f, "scrawl_0", 0.7f, 1.0f, 3.2f, 1.6f);
+                break;
+            case 1:
+                WallDecal(f, "sign_incident", 0.95f, 3.0f, 1.5f, 1.25f);
+                WallDecal(f, "sign_reward", 0.44f, 2.0f, 1.4f, 0.44f);
+                WallDecal(f, "scrawl_1", 0.06f, 1.1f, 2.6f, 1.3f);
+                break;
+            case 2:
+                WallDecal(f, "sign_number", 0.42f, 4.6f, 1.7f, 0.97f);
+                WallDecal(f, "sign_receptionist", 0.72f, 4.7f, 2.4f, 1.12f);
+                break;
+            case 3:
+                WallDecal(f, "sign_fragile", 0.5f, 4.4f, 2.0f, 0.94f);
+                WallDecal(f, "sign_upside", 0.25f, 4.6f, 1.9f, 0.6f, 180f);
+                Decal(f, "sign_wetfloor", f.x0 + 0.62f * f.W, f.y + 0.03f, f.zf + 0.35f * f.D, 1.0f, 1.25f, true, 15f);
+                break;
+            case 4:
+                WallDecal(f, "sign_nopeek", 0.15f, 4.4f, 1.9f, 1.0f);
+                WallDecal(f, "scrawl_0", 0.85f, 1.1f, 2.6f, 1.3f);
+                break;
+            case 5:
+                WallDecal(f, "sign_doorgrunts", 0.08f, 3.0f, 1.6f, 1.08f);
+                WallDecal(f, "sign_wetfloor", 0.92f, 1.0f, 0.8f, 1.0f);
+                break;
+            case 6:
+                // the film's corridor chalkboard reads "Don't Blink"
+                Box(f, "Chalkboard", f.x0 + 0.5f * f.W, f.y + 3.6f, f.zb - 0.4f, 4.2f, 1.6f, 0.06f, "dark");
+                WallDecal(f, "sign_dontblink", 0.5f, 3.6f, 3.6f, 1.12f);
+                WallDecal(f, "scrawl_1", 0.85f, 1.2f, 2.6f, 1.3f);
+                break;
+            case 7:
+                WallDecal(f, "sign_lostfound", 0.9f, 3.2f, 1.6f, 1.08f);
+                break;
+            case 8:
+                WallDecal(f, "sign_lunch", 0.3f, 2.6f, 0.9f, 0.73f, 6f);
+                WallDecal(f, "sign_coffee", 0.6f, 4.4f, 1.5f, 0.84f);
+                break;
+            case 9:
+                WallDecal(f, "sign_authorized", 0.2f, 4.6f, 3.0f, 1.05f);
+                WallDecal(f, "sign_selfdestruct", 0.62f, 2.0f, 1.3f, 0.81f);
+                Box(f, "BigRedButton", f.x0 + 0.62f * f.W, f.y + 1.2f, f.zb - 0.6f, 0.5f, 0.3f, 0.3f, "red");
+                break;
+        }
     }
 
     static void Cyl(Frame f, string name, float x, float y, float z, float diameter, float height, string mat)

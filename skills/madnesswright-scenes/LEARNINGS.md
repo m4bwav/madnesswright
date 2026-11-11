@@ -42,7 +42,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 
 ## L-20261111-1 `stretch-cloned-rooms`
 - Trigger: every room cloned from the sample box looks the same square; a script resizes rooms
-- Rule: scale room meshes and colliders about one wall and move everything else (doors, cover, markers, lights, Border_*); the sample meshes are rotated -90 on X, so scale each local axis by the world axis it lines up with; call `Physics.SyncTransforms()` before reading collider bounds. Wide rooms are fine: Cam_Main clamps the camera between Border_Left and Border_Right, so it pans.
+- Rule: scale room meshes and colliders about one wall and move everything else (doors, cover, markers, lights, Border_*); the sample meshes are rotated -90 on X, so scale each local axis by the world axis it lines up with; call `Physics.SyncTransforms()` before reading collider bounds. Wide rooms pan, but see L-20261111-2 `camera-reaches-corners`.
 - Evidence: examples/NexusProminence `Stretch`, build logs 2026-11-11 (widths stayed 31.5 until both fixes), decompiled Cam_Main
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11
+
+## L-20261111-2 `camera-reaches-corners`
+- Trigger: in a wide or deep room the player walks off screen at the front corners, or an exit door stays half hidden
+- Rule: Cam_Main follows depth only by the room's Leeway z (0 in the sample room, so never toward the front) and stops `|CameraTarget - CameraPoint| * fov * 0.005 * (aspect - 1)` inside Border_Left/Right once the room is over 17 units wide (about 5 units in the sample). Set Leeway_Pos.z and Leeway_Look.z (0.6 works) and place the side borders so that margin lands a little past a player at the wall; check with a render that reproduces the follow (examples/NexusProminence `FitCamera`, `NexusShots.Render -corners`).
+- Evidence: decompiled Cam_Main.UpdateView (build 25615196); corner renders 2026-11-11: 19 of 40 corners off screen before, 0 after
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11

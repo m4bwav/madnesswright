@@ -62,6 +62,7 @@ Headless build (unverified, no 2019.2.6f1 editor was available to test): add an 
 
 ## Rules that bite
 
+- A room wider than a screen needs camera fitting: Leeway z above 0 and side borders past the walls, or the player leaves the frame at the front corners (LEARNINGS L-20261111-2 `camera-reaches-corners`).
 - Never rotate rooms or Zone_Camera; Zone_Camera must sit under the room's `Waypoints` object.
 - A stage with no valid `SceneName` or no `RequiredCharacters` is dropped; do not reuse one Character card twice in a player squad.
 - Lights outside rooms are ignored; the Background object only shows for the focused room.
