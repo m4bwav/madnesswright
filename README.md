@@ -61,6 +61,15 @@ You install Unity 2019.2.6f1, the SceneTools and ModTools projects (from https:/
 - The SceneTools and ModTools projects have no license file, so nothing from them is copied here. The test fixtures are synthetic.
 - Not affiliated with Gibbing Tree or Krinkels. MADNESS: Project Nexus is their game.
 
+## Works with
+
+- **[polywright](https://github.com/m4bwav/polywright)**: a weapon, armor piece or character that does not exist yet comes from polywright as FBX or OBJ.
+- **[musicwright](https://github.com/m4bwav/musicwright)**: musicwright-game builds its cue list from the music row of a madnesswright campaign beat chart.
+- **[fetchwright](https://github.com/m4bwav/fetchwright)**: Steam returns 429 to fast fetches, so madnesswright reads Steam pages through fetchwright.
+- **[ludowright](https://github.com/m4bwav/ludowright)**: ludowright reviews the design; madnesswright makes the change in the game and holds the playtest templates.
+
+The wiki's [Works with](https://github.com/m4bwav/madnesswright/wiki/Works-with) page describes each pairing in more detail.
+
 ## Privacy
 
 The skills and the helper send nothing anywhere. `mpn.py` reads Steam's manifests and the game's data folder. It writes only a backup zip and, on `deploy`, the game's Mods folder. Research refreshes fetch public pages (Steam, Google Docs, GitHub).

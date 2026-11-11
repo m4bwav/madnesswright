@@ -399,3 +399,6 @@ Append-only, newest first.
 - Ask: template of the map in YouTube v0suvMY3GgM (collab, 14:22). Pulled it with `uvx yt-dlp -S res:480` (plain `-f best[height<=480]` found no format), contact sheets with ffmpeg `fps=1/9,tile=4x6`.
 - No in-game editor, so the route is SceneTools. Wrote `examples/NexusProminence/Editor/NexusProminenceBuilder.cs`: copies SamplePlayground_PG, clones its one room (5 doors) ten times 300 units apart, links rightmost door to next room's leftmost, keeps Player_Start and PX_Playground in room 1, repaints with Standard materials, adds Char_Start markers (Nexus1-6, Scientist; CharacterTypes from SceneEditorHelpers.cs).
 - Unverified: never compiled (no Unity 2019.2.6f1).
+
+## [2026-11-11] docs | Works with section
+README gained a Works with section (polywright, musicwright, fetchwright, ludowright); the wiki gained a Works-with page linked from the sidebar and Home. Each entry describes a handoff found in the skill files on one side or the other.
