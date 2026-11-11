@@ -94,6 +94,7 @@ public static class NexusProminenceBuilder
         var template = Object.FindObjectsOfType<RoomObj>().OrderBy(r => r.transform.position.x).First();
         foreach (var extra in Object.FindObjectsOfType<RoomObj>()) if (extra != template) Object.DestroyImmediate(extra.gameObject);
 
+        frames.Clear();
         var built = new List<RoomObj>();
         // Clone every room from the bare template first, then dress each one; cloning a dressed room
         // would copy its set, enemies and markers into the next one.
@@ -111,6 +112,8 @@ public static class NexusProminenceBuilder
             Dress(room, Rooms[i], i, mats, charPrefab);
         }
         ChainDoors(built);
+        // after chaining, so the spawn-only doors are never picked as a room's way in or out
+        for (int i = 0; i < built.Count; i++) Encounters(built[i], frames[built[i]], i);
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
@@ -211,9 +214,9 @@ public static class NexusProminenceBuilder
         if (!AssetDatabase.IsValidFolder(MatDir)) AssetDatabase.CreateFolder("Assets/Templates", "NexusProminence");
         var d = new Dictionary<string, Material>
         {
-            { "wall", Mat("NX_Wall", new Color(0.27f, 0.26f, 0.27f), Color.black) },
-            { "floor", Mat("NX_Floor", new Color(0.40f, 0.39f, 0.40f), Color.black) },
-            { "panel", Mat("NX_Panel", new Color(0.33f, 0.32f, 0.33f), Color.black) },
+            { "wall", Mat("NX_Wall", new Color(0.25f, 0.20f, 0.21f), Color.black) },
+            { "floor", Mat("NX_Floor", new Color(0.34f, 0.29f, 0.30f), Color.black) },
+            { "panel", Mat("NX_Panel", new Color(0.31f, 0.26f, 0.27f), Color.black) },
             { "red", Mat("NX_RedStripe", new Color(0.85f, 0.04f, 0.04f), new Color(0.55f, 0f, 0f)) },
             { "dark", Mat("NX_DarkTrim", new Color(0.11f, 0.10f, 0.11f), Color.black) },
             { "black", Mat("NX_Black", new Color(0.02f, 0.02f, 0.02f), Color.black) },
@@ -306,12 +309,12 @@ public static class NexusProminenceBuilder
             bool isFloor = col != null && col.CompareTag("Floor");
             r.sharedMaterial = isFloor ? mats["floor"] : mats["wall"];
         }
-        room.AmbientColor = new Color(0.30f, 0.29f, 0.29f);
+        room.AmbientColor = new Color(0.33f, 0.27f, 0.27f); // warm maroon cast, as in the film
         room.FogDensity = 0f;
         room.FogColor = Color.black;
         if (room.CameraPoint != null)
             foreach (var gf in room.CameraPoint.GetComponents<MonoBehaviour>().Where(b => b != null && b.GetType().Name == "GlobalFog")) gf.enabled = false;
-        foreach (var l in room.GetComponentsInChildren<Light>(true)) { l.color = new Color(1f, 0.96f, 0.95f); }
+        foreach (var l in room.GetComponentsInChildren<Light>(true)) { l.color = new Color(1f, 0.90f, 0.88f); }
 
         Physics.SyncTransforms();
         var fb = FloorBounds(room);
@@ -330,6 +333,7 @@ public static class NexusProminenceBuilder
         f.x1 = WallHit(walls, origin, Vector3.right, f.x1);
         Debug.Log("NexusProminence: " + room.name + " walls x " + f.x0 + ".." + f.x1 + " back z " + f.zb + " (floor " + fb.min.x + ".." + fb.max.x + ", " + fb.max.z + ")");
 
+        frames[room] = f;
         Shell(f, room);
         switch (index)
         {
@@ -1186,6 +1190,123 @@ public static class NexusProminenceBuilder
     }
 
     // Rightmost door of room k leads to the leftmost door of room k+1; the other doors stay spawn doors.
+    // ---- encounters (fun pass 2): squads that drop in by rappel or crawl out of vents, reinforcement waves in
+    // the control tower, timed spike strips. Spawn doors are PX_Door of a spawner type (VentSide, Rapel), linked to
+    // nothing; Squad_Spawner (Marker_Squad) sends its wave through them. Set JuiceEncounters false to build without.
+    const bool JuiceEncounters = true;
+    const string DoorPrefab = "Assets/Library/Prefabs/Proxies/PX_Door.prefab";
+    const string SquadPrefab = "Assets/Library/Prefabs/Markers/Squad_Spawner.prefab";
+    const string TogglePrefab = "Assets/Library/Prefabs/Proxies/PX_Togglable.prefab";
+    static readonly Dictionary<RoomObj, Frame> frames = new Dictionary<RoomObj, Frame>();
+
+    static void Encounters(RoomObj room, Frame f, int index)
+    {
+        if (!JuiceEncounters) return;
+        switch (index)
+        {
+            case 3: // cargo bay: a rappel team drops in once the fight has started
+                Squad(room, f, "CargoRappel", 14f, 3, 3, Units(new Foe(CharacterTypes.Nexus1_Agent, 3)),
+                    WeaponLoadout_STP.LoadoutPools.NEXUS_T5, SpawnDoor(room, f, "Rappel_A", ProxyObj_Door.ProxyType.Rapel, 0.45f, 0.55f));
+                break;
+            case 5: // shutter garage: two spike strips across the floor, out of step with each other
+                Spikes(room, f, "A", 0.33f, 0.5f, 0f);
+                Spikes(room, f, "B", 0.66f, 0.5f, 120f);
+                break;
+            case 6: // spotlight corridor: agents crawl out of the wall vents; one spike strip mid-corridor
+                Squad(room, f, "CorridorVents", 10f, 2, 4, Units(new Foe(CharacterTypes.Nexus1_Agent, 4)),
+                    WeaponLoadout_STP.LoadoutPools.NEXUS_T5,
+                    SpawnDoor(room, f, "Vent_A", ProxyObj_Door.ProxyType.VentSide, 0.4f, 0.97f),
+                    SpawnDoor(room, f, "Vent_B", ProxyObj_Door.ProxyType.VentSide, 0.75f, 0.97f));
+                Spikes(room, f, "A", 0.55f, 0.3f, 0f);
+                break;
+            case 9: // control tower: reinforcement waves by vent and rappel line, riot guards and soldats last
+                Squad(room, f, "TowerReinforcements", 12f, 3, 6,
+                    Units(new Foe(CharacterTypes.Nexus1_Agent, 5), new Foe(CharacterTypes.Nexus4_Riot__Guard, 2), new Foe(CharacterTypes.Nexus6_Soldat, 2)),
+                    WeaponLoadout_STP.LoadoutPools.NEXUS_T7_Ranged,
+                    SpawnDoor(room, f, "Vent_A", ProxyObj_Door.ProxyType.VentSide, 0.3f, 0.97f),
+                    SpawnDoor(room, f, "Rappel_A", ProxyObj_Door.ProxyType.Rapel, 0.5f, 0.5f),
+                    SpawnDoor(room, f, "Rappel_B", ProxyObj_Door.ProxyType.Rapel, 0.75f, 0.4f));
+                break;
+        }
+    }
+
+    static List<WaveCharacter_STP> Units(params Foe[] foes)
+    {
+        // GenerationScale 0.5 brings the later lines (riot guards, soldats) in toward the end of the wave
+        return foes.Select(x => new WaveCharacter_STP { Character = x.Type, Total = x.Count, GenerationScale = 0.5f, MadCard = "NONE" }).ToList();
+    }
+
+    static ProxyObj_Door SpawnDoor(RoomObj room, Frame f, string name, ProxyObj_Door.ProxyType type, float u, float v)
+    {
+        var src = AssetDatabase.LoadAssetAtPath<GameObject>(DoorPrefab);
+        if (src == null) { Debug.LogWarning("NexusProminence: " + DoorPrefab + " missing; no " + name); return null; }
+        var any = room.GetComponentsInChildren<ProxyObj_Door>(true).FirstOrDefault();
+        var go = (GameObject)PrefabUtility.InstantiatePrefab(src, room.gameObject.scene);
+        go.transform.SetParent(any != null ? any.transform.parent : room.transform, true);
+        go.transform.position = new Vector3(Mathf.Lerp(f.x0 + 2f, f.x1 - 2f, u), f.y, Mathf.Lerp(f.zf + 2f, f.zb - 0.6f, v));
+        go.transform.rotation = Quaternion.identity;
+        go.name = "PX_Spawn_" + name;
+        var d = go.GetComponent<ProxyObj_Door>();
+        d.Type = type; d.LinkedDoor = null; d.LinkedScene = ""; d.DisableSpawn = false;
+        d.SerialNumber = "NXP_" + room.name + "_" + name;
+        EditorUtility.SetDirty(d);
+        // set dressing: a rope from the ceiling for a rappel point, a grille low on the back wall for a vent
+        var p = go.transform.position;
+        if (type == ProxyObj_Door.ProxyType.Rapel) Box(f, "RappelRope", p.x, f.y + 4.4f, p.z, 0.06f, 4.0f, 0.06f, "dark");
+        else
+        {
+            Box(f, "VentFrame", p.x, f.y + 0.75f, f.zb - 0.2f, 1.7f, 1.3f, 0.06f, "steel"); // in front of the band and skirting
+            for (int k = 0; k < 4; k++) Box(f, "VentSlat", p.x, f.y + 0.35f + k * 0.27f, f.zb - 0.24f, 1.4f, 0.1f, 0.04f, "dark");
+        }
+        return d;
+    }
+
+    static void Squad(RoomObj room, Frame f, string name, float delay, int squadSize, int maxOnScreen,
+        List<WaveCharacter_STP> units, WeaponLoadout_STP.LoadoutPools guns, params ProxyObj_Door[] doors)
+    {
+        var src = AssetDatabase.LoadAssetAtPath<GameObject>(SquadPrefab);
+        if (src == null) { Debug.LogWarning("NexusProminence: " + SquadPrefab + " missing; no " + name); return; }
+        var go = (GameObject)PrefabUtility.InstantiatePrefab(src, room.gameObject.scene);
+        go.transform.SetParent(room.CharacterFolder != null ? room.CharacterFolder.transform : room.transform, false);
+        go.transform.position = new Vector3(f.Cx, f.y, f.Cz); // position does not matter for a squad spawner
+        go.name = "Squad_" + name;
+        var m = go.GetComponent<Marker_Squad>();
+        m.SpawnEnabled = true; m.Faction = Factions.Nexus; m.Alertness = AlertStatus.Combat;
+        m.SerialNumber = "NXP_" + name;
+        m.SecondsInRoomTilSpawn = delay;
+        m.SpawnFromDoors = doors.Where(d => d != null).Cast<ProxyObj_REPOSITORY>().ToList();
+        m.SpawnRequirement = Marker_Squad.SpawnRules.None;
+        m.NeverendingWaves = false;
+        m.WaveSpawnType = Marker_Squad.TandemTypes.NewTandem;
+        m.Wave = new WaveSpawn_STP { MaxSquadSize = squadSize, MaxUnitCount = maxOnScreen, WaveUnits = units,
+            WeaponStock = new List<WeaponLoadout_STP> { new WeaponLoadout_STP { MadCard = "NONE", Loadout = guns, Count = units.Sum(x => x.Total) } } };
+        EditorUtility.SetDirty(m);
+        Debug.Log("NexusProminence: " + room.name + " squad " + name + " (" + units.Sum(x => x.Total) + " units, " + m.SpawnFromDoors.Count + " doors, after " + delay + " s)");
+    }
+
+    // Spike strip that rises and drops on a timer (automator times are frames, 60 per second).
+    static void Spikes(RoomObj room, Frame f, string name, float u, float v, float offsetFrames)
+    {
+        var src = AssetDatabase.LoadAssetAtPath<GameObject>(TogglePrefab);
+        if (src == null) { Debug.LogWarning("NexusProminence: " + TogglePrefab + " missing; no spikes"); return; }
+        var any = room.GetComponentsInChildren<ProxyObj_Door>(true).FirstOrDefault();
+        var go = (GameObject)PrefabUtility.InstantiatePrefab(src, room.gameObject.scene);
+        go.transform.SetParent(any != null ? any.transform.parent : room.transform, true);
+        go.transform.position = new Vector3(Mathf.Lerp(f.x0 + 2f, f.x1 - 2f, u), f.y, Mathf.Lerp(f.zf + 2f, f.zb - 1.5f, v));
+        go.name = "PX_Spikes_" + name;
+        var t = go.GetComponent<ProxyObj_Togglable>();
+        t.Type = ProxyObj_Togglable.ProxyType.Spikes; t.StartUp = false; t.ResetPathNodes = false;
+        t.SerialNumber = "NXP_" + room.name + "_Spikes_" + name;
+        EditorUtility.SetDirty(t);
+        var a = go.GetComponent<CustomAddon_ToggleAutomator>() ?? go.AddComponent<CustomAddon_ToggleAutomator>();
+        a.AutomatorEnabled = true; a.RunInActiveRoomOnly = true; a.OnlyRunDuringWaves = false;
+        a.TimeStayDown = 150; a.TimeStayUp = 90; a.StartTime = 60 + offsetFrames;
+        EditorUtility.SetDirty(a);
+        // warning paint: a hazard-striped plate under the strip
+        var q = go.transform.position;
+        for (int k = 0; k < 6; k++) Box(f, "SpikeHazard", q.x - 1.5f + k * 0.6f, f.y + 0.014f, q.z, 0.3f, 0.004f, 1.6f, k % 2 == 0 ? "red" : "dark");
+    }
+
     static void ChainDoors(List<RoomObj> rooms)
     {
         for (int k = 0; k + 1 < rooms.Count; k++)

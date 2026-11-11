@@ -21,3 +21,4 @@ A template inspired by the fan collab "NEXUS: HANK RAID" (watch it: https://www.
 Use: enable the mod from the gear icon, open the Playground terminal and load Nexus Prominence.
 
 Early test build: tell us about doors that don't connect, rooms you can't clear or walls in odd places.
+The tower fights back: reinforcement squads crawl out of a vent and slide down rappel lines in the control tower, a rappel team drops into the cargo bay, agents crawl out of the spotlight corridor vents, and spike strips in the shutter garage and corridor rise and drop on a timer (watch for the striped floor plates).
