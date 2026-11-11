@@ -8,7 +8,7 @@ Source: the official SceneTools Overview Google Doc and the MPN_SceneTools repos
 - **Room**: a gameplay area; `Room_Layout` prefab with a RoomObj script, children `Characters`, `Waypoints`, `Background`, `Light_Main`, camera markers.
 - **ProxyObject** (`PX_`): stands in for a game object that "does something"; replaced by the real one in game. Type dropdown picks the variant.
 - **MarkerObject**: invisible features (pathing, spawns, zones).
-- **Custom SceneObject** (`CO_` prefabs): Cover, Togglable, Interactive (+ Locker or Vendor addon), Destructible, Door, Seat built from scratch.
+- **Custom SceneObject** (`CO_` prefabs): Cover, Togglable, Interactive (+ Locker or Vendor addon), Destructible, Door, Seat built from scratch. A Destructible with bullets passing through, no bar and no explosion makes a cosmetic shootable prop (L-20261111-3 `shootable-set-pieces`).
 
 ## Objects
 

@@ -53,3 +53,10 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: decompiled Cam_Main.UpdateView (build 25615196); corner renders 2026-11-11: 19 of 40 corners off screen before, 0 after
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11
+
+## L-20261111-3 `shootable-set-pieces`
+- Trigger: a map should react to gunfire (glass, lamps, screens) without changing the fight
+- Rule: wrap the prop in a `CustomObj_Destructible` (the game converts it to `Interactive_Target`) with an Intact state shown until hit and a Broken state after; keep `AllBulletsPassThrough` on, no damage bar, no popup text, no explosion, `FlashColorOnHit` on; use built-in sound names (Wine Bottle Break, Sparks/Electrocution); set hit boxes on the back wall, overhead or inside cases, out of the walk lane. Played clean: sound, flash and swap show, no bar or marker icon, bullets still reach enemies behind.
+- Evidence: examples/NexusProminence `Breakable` and juice-changes.md; owner play 2026-11-11 ("play test went well"), mods.log clean; Workshop item 3837705778 updated 14:02
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11

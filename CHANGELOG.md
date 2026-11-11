@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.16 · 2026-11-11
+
+- madnesswright-scenes: recipe for cosmetic shootable props (a Destructible with bullets passing through, no bar, no explosion), confirmed in a play of the Nexus Prominence breakables (L-20261111-3).
+
 ## 0.1.15 · 2026-11-11
 
 - Plugin icon shrunk from 512 px RGB (283 KB) to a 256 px palette PNG (18 KB) to bring the tracked repository back under the size budget (1,575 KB was over the 1,536 KB limit).
