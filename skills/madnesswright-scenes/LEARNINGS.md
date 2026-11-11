@@ -60,3 +60,10 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: examples/NexusProminence `Breakable` and juice-changes.md; owner play 2026-11-11 ("play test went well"), mods.log clean; Workshop item 3837705778 updated 14:02
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11
+
+## L-20261111-4 `automator-needs-custom-togglable`
+- Trigger: a timed trap or moving platform uses `CustomAddon_ToggleAutomator`, or Player.log shows `NullReferenceException at Toggleable_Automator.SetAutomatorState` from `Toggleable_Controller.Awake`
+- Rule: the converter replaces a stock PX_Togglable with a new library object and moves no add-ons, so an automator on it finds no `Toggleable_Main` and throws (the trap never cycles; mods.log stays clean). Put the automator on a `CustomObj_Togglable` (the game adds `Toggleable_Main` to that object); to time stock spikes, give that invisible driver the PX_Togglable in `UpObjs` (the converter swaps the entry for the created object) and leave the stock one StartUp on. Read Player.log, not only mods.log, after every play.
+- Evidence: owner play 2026-11-11 14:16 (3 NREs, one per spike strip); decompiled Converter_Proxy.ReplaceProxy/ConvertCustomObj, Toggleable_Controller.Init (build 25615196); examples/NexusProminence `Spikes`
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11

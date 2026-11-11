@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.17 · 2026-11-11
+
+- madnesswright-scenes: a toggle automator only runs on a CO_ Togglable; time stock spikes through an invisible driver (L-20261111-4).
+
 ## 0.1.16 · 2026-11-11
 
 - madnesswright-scenes: recipe for cosmetic shootable props (a Destructible with bullets passing through, no bar, no explosion), confirmed in a play of the Nexus Prominence breakables (L-20261111-3).
