@@ -411,3 +411,4 @@ README gained a Works with section (polywright, musicwright, fetchwright, ludowr
 ## 2026-11-11 (budget)
 
 - Continue prompt run: no owner play since the Stations rebuild (mods.log 11:11, Player.log 11:17), so no generator work. Shrank .claude-plugin/icon.png 512 px RGB 283 KB to 256 px FASTOCTREE palette 18 KB (Pillow); budget tracked KB 1,575 to 1,317. PR #78 merged, v0.1.15 released.
+- The owner played the Stations build: "looking good release it". wsup.exe updated item 3837705778 with change-notes-2026-11-11f.txt and workshop-preview-2026-11-11.jpg: result OK; GetPublishedFileDetails shows visibility 0, updated 13:12, 21 subscribers.
