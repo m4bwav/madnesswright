@@ -27,7 +27,7 @@ Player start and the Playground terminal stay in room 1. Weapons are the charact
 2. Copy `Editor/NexusProminenceBuilder.cs` into `<SceneTools>/Assets/Editor/`.
 3. Menu **Madness > Templates > Build Nexus Prominence _PG**. It writes `Assets/Scenes/NexusProminence_PG.unity` (asset label `nexusprominence`) and materials under `Assets/Templates/NexusProminence/`.
 4. Select `Room_01_StreetCheckpoint`, press SYNCH VISUALS, look through each room, then `mpn.py scene-lint Assets/Scenes/NexusProminence_PG.unity`.
-5. Madness > AssetBundle > Build, copy `nexusprominence.sobj` into `NexusProminence/`, then `mpn.py check-mod NexusProminence` and `mpn.py deploy NexusProminence`.
+5. Madness > AssetBundle > Build, copy `nexusprominence.sobj` into `NexusProminence/` (the built .sobj is not kept in the repository, for size; the Workshop item 3837705778 carries it), then `mpn.py check-mod NexusProminence` and `mpn.py deploy NexusProminence`.
 6. In game: enable the mod, open the Playground terminal, load Nexus Prominence.
 
 ## Playtest checklist
