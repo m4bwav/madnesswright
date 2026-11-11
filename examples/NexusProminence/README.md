@@ -2,7 +2,7 @@
 
 A Playground map template after the fan collab "NEXUS: HANK RAID | MADNESS COMBAT" (hosted by KJ and DUALITY, 2025): Hank storms the Nexus Prominence control tower from the street, room by room. The requester asked for "a template of this map". The video's art belongs to its animators, so this template copies none of it: it rebuilds the route as ten rooms with the game's own proxies and Nexus enemies, in the collab's gray-and-red look.
 
-Status: written 2026-11-10, **not yet run**. No Unity 2019.2.6f1 editor was on the build machine, so the generator has not compiled or produced a scene yet.
+Status: built 2026-11-10 in Unity 2019.2.6f1 (batch mode): the generator compiled first time and made all ten rooms; SYNCH VISUALS, scene-lint (0 errors), the .sobj (1.1 MB), check-mod and deploy all passed. **Not yet played.** Batch route: `Unity.exe -batchmode -quit -projectPath <SceneTools> -executeMethod NexusProminenceBuilder.Build`, then `NexusBatch.SyncAndBuild` (Editor/NexusBatch.cs: SYNCH VISUALS on room 1, save, compressed bundle build).
 
 ## Rooms (left to right, each door chains to the next)
 
@@ -27,7 +27,7 @@ Player start and the Playground terminal stay in room 1. Weapons are the charact
 2. Copy `Editor/NexusProminenceBuilder.cs` into `<SceneTools>/Assets/Editor/`.
 3. Menu **Madness > Templates > Build Nexus Prominence _PG**. It writes `Assets/Scenes/NexusProminence_PG.unity` (asset label `nexusprominence`) and materials under `Assets/Templates/NexusProminence/`.
 4. Select `Room_01_StreetCheckpoint`, press SYNCH VISUALS, look through each room, then `mpn.py scene-lint Assets/Scenes/NexusProminence_PG.unity`.
-5. Madness > AssetBundle > Build, copy `nexusprominence.sobj` into `mod/`, then `mpn.py check-mod mod` and `mpn.py deploy mod`.
+5. Madness > AssetBundle > Build, copy `nexusprominence.sobj` into `NexusProminence/`, then `mpn.py check-mod NexusProminence` and `mpn.py deploy NexusProminence`.
 6. In game: enable the mod, open the Playground terminal, load Nexus Prominence.
 
 ## Playtest checklist
