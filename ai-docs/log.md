@@ -2,6 +2,11 @@
 
 Append-only, newest first.
 
+## 2026-11-11 Nexus Prominence Workshop screenshots and video
+
+- Workshop extra previews: images through `AddItemPreviewFile` (type 0), videos only as a YouTube id (`AddItemPreviewVideo`); Facepunch.Steamworks' Editor has no API for either, so wsup.exe gained a `previews` mode calling the steam_api64 flat API (SteamUGC_v014, SteamUtils_v009) after `SteamClient.Init(488860, false)`, then polling IsAPICallCompleted and reading SubmitItemUpdateResult_t (callback 3404, EResult first). Update without content keeps the files, title and main preview.
+- Uploaded six editor renders and the film (v0suvMY3GgM). Result 1; page shows 6 screenshots and 1 movie.
+
 ## 2026-11-11 Nexus Prominence clean-up
 
 - Owner: signs over doors and objects in rooms 1-2; clean up, match enemy weapons to the video, better Workshop image.
