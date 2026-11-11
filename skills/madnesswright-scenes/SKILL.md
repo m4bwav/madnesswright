@@ -35,7 +35,7 @@ Card fields for stages, campaigns, cutscenes, events and missions: [references/s
 Follow [references/scenetools-rules.md](references/scenetools-rules.md) (objects, layers, hard rules). The order that avoids most rework:
 
 1. New scene; delete Main Camera and Directional Light. Drag in `Room_Layout`; click SYNCH VISUALS (makes the Dev_Cam). Never rotate a room.
-2. Geometry from primitives first: floor (Tag Floor, Layer Terrain, Static), back walls Terrain, foreground pieces TerrainObstacle, the camera-side wall TerrainInvis or no renderer, an invisible ceiling collider. Stairs need an invisible Interactive-layer ramp.
+2. Geometry from primitives first: floor (Tag Floor, Layer Terrain, Static), back walls Terrain, foreground pieces TerrainObstacle, the camera-side wall TerrainInvis or no renderer, an invisible ceiling collider. Materials on the game's `Madness/Terrain - General` shader, not Standard, and solid-looking props get colliders (L-20261111-6). Stairs need an invisible Interactive-layer ramp.
 3. Camera: Camera Point and Camera Target, the four Border markers, Leeway; SYNCH VISUALS after each change. The Dev_Cam's own camera values do not carry into the game.
 4. Exactly one `Player_Start`, parented to the room's `Characters` object. At least one Waypoint per room, at floor level, under `Waypoints`, placed so every area is seen by one waypoint; add corner waypoints around large geometry.
 5. Light: `Light_Main` in the room; at most 4 lights active (3 on low quality); use Glow Effect prefabs for extra light sources.

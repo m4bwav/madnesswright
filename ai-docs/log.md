@@ -2,6 +2,13 @@
 
 Append-only, newest first.
 
+## 2026-11-11 Nexus Prominence Workshop feedback pass
+
+- Read the 14 Workshop comments, set the hostility aside, checked each technical claim in the generator (note: notes/2026-11-11-nexus-workshop-comments.md).
+- Owner's play of build-v clean (mpn.py log: 0 problems in mods.log and Player.log); uploaded with change-notes-2026-11-11k.txt, result OK.
+- Implemented all ideas (builds w, x, y). Dead end: a closed box for the camera-side wall faces the camera and blacks out the whole view (build-w); a thin slab with its renderer off works. The Madness terrain shader reads colour only from _MainTex and lights mostly from ambient, so editor shots look darker than Standard did.
+- Skill lesson L-20261111-6, plugin 0.1.18.
+
 ## 2026-11-11 Nexus Prominence encounters and colour
 
 - SceneTools facts used (MPN_SceneTools/Assets/Code/SceneObjs): `ProxyObj_Door.ProxyType` has spawner types Manhole, FloorGrate, Vent, VentDrop, VentSide, VentFan, Rapel; `Marker_Squad` (prefab Markers/Squad_Spawner) takes `SpawnFromDoors`, `SecondsInRoomTilSpawn`, `Wave` (WaveUnits with GenerationScale, MaxSquadSize, MaxUnitCount, WeaponStock pools such as NEXUS_T5, NEXUS_T7_Ranged); `ProxyObj_Togglable.ProxyType.Spikes`; `CustomAddon_ToggleAutomator` (TimeStayUp/Down in frames) whose header says to place it on a custom togglable.

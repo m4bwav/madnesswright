@@ -79,6 +79,7 @@ public static class NexusProminenceBuilder
     [MenuItem("Madness/Templates/Build Nexus Prominence _PG")]
     public static void Build()
     {
+        solidCount = 0;
         if (AssetDatabase.LoadAssetAtPath<SceneAsset>(SrcScene) == null) { Debug.LogError("NexusProminence: " + SrcScene + " not found; pull SceneTools."); return; }
         if (AssetDatabase.LoadAssetAtPath<SceneAsset>(DstScene) != null &&
             !Application.isBatchMode && !EditorUtility.DisplayDialog("Nexus Prominence", DstScene + " exists. Overwrite it?", "Overwrite", "Cancel")) return;
@@ -120,6 +121,7 @@ public static class NexusProminenceBuilder
         var importer = AssetImporter.GetAtPath(DstScene);
         importer.SetAssetBundleNameAndVariant(BundleLabel, "");
         AssetDatabase.SaveAssets();
+        Debug.Log("NexusProminence: " + solidCount + " solid props (Obstacle colliders)");
         Debug.Log("NexusProminence: built " + built.Count + " rooms into " + DstScene + " (label '" + BundleLabel + "'). Select Room_01_StreetCheckpoint, press SYNCH VISUALS, check it, then run scene-lint and the AssetBundle build.");
     }
 
@@ -239,7 +241,24 @@ public static class NexusProminenceBuilder
     {
         string path = MatDir + "/" + name + ".mat";
         var m = AssetDatabase.LoadAssetAtPath<Material>(path);
-        if (m == null) { m = new Material(Shader.Find("Standard")); AssetDatabase.CreateAsset(m, path); }
+        // Unlit-looking surfaces (no emission) use the game's own toon terrain shader, so they get the black
+        // Madness outline and match the vanilla cover; it reads its colour from _MainTex, so each gets a
+        // small solid texture. Glowing pieces keep Standard (the Madness terrain shader has no emission).
+        var mad = Shader.Find(MadShader);
+        bool useMad = emission == Color.black && mad != null;
+        if (m == null) { m = new Material(useMad ? mad : Shader.Find("Standard")); AssetDatabase.CreateAsset(m, path); }
+        if (useMad)
+        {
+            m.shader = mad;
+            m.mainTexture = SolidTex(name, c);
+            m.color = Color.white;
+            if (m.HasProperty("_Outline")) m.SetFloat("_Outline", 0.06f);
+            if (m.HasProperty("_OutlineColor")) m.SetColor("_OutlineColor", Color.black);
+            if (m.HasProperty("_TintColor")) m.SetColor("_TintColor", new Color(0, 0, 0, 0));
+            EditorUtility.SetDirty(m);
+            return m;
+        }
+        if (mad == null) Debug.LogWarning("NexusProminence: shader " + MadShader + " not found; using Standard");
         m.shader = Shader.Find("Standard");
         m.color = c;
         m.SetFloat("_Glossiness", 0.08f);
@@ -247,6 +266,18 @@ public static class NexusProminenceBuilder
         else { m.DisableKeyword("_EMISSION"); m.SetColor("_EmissionColor", Color.black); }
         EditorUtility.SetDirty(m);
         return m;
+    }
+
+    const string MadShader = "Madness/Terrain - General";
+
+    static Texture2D SolidTex(string name, Color c)
+    {
+        string path = MatDir + "/" + name + "_Tex.asset";
+        var t = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        if (t == null) { t = new Texture2D(4, 4, TextureFormat.RGBA32, false); AssetDatabase.CreateAsset(t, path); }
+        var px = new Color[16]; for (int i = 0; i < 16; i++) px[i] = c;
+        t.SetPixels(px); t.Apply(); EditorUtility.SetDirty(t);
+        return t;
     }
 
     // Soft red light cone under the ceiling lamps (additive, so it brightens what is behind it).
@@ -294,6 +325,7 @@ public static class NexusProminenceBuilder
     class Frame
     {
         public Transform Parent; public float x0, x1, zb, zf, y; public Dictionary<string, Material> M;
+        public List<Vector3> Doors = new List<Vector3>();
         public float W { get { return x1 - x0; } }
         public float D { get { return zb - zf; } }
         public float Cx { get { return (x0 + x1) * 0.5f; } }
@@ -335,6 +367,7 @@ public static class NexusProminenceBuilder
         f.x1 = WallHit(walls, origin, Vector3.right, f.x1);
         Debug.Log("NexusProminence: " + room.name + " walls x " + f.x0 + ".." + f.x1 + " back z " + f.zb + " (floor " + fb.min.x + ".." + fb.max.x + ", " + fb.max.z + ")");
 
+        f.Doors = room.GetComponentsInChildren<ProxyObj_Door>(true).Select(d => d.transform.position).ToList();
         frames[room] = f;
         Shell(f, room);
         switch (index)
@@ -355,6 +388,8 @@ public static class NexusProminenceBuilder
             case 8: BreakRoom(f); break;
             case 9: ControlTower(f); break;
         }
+        LightTheLamps(room, f);
+        BoxFourthWall(room);
         Physics.SyncTransforms();
         CollectWallBusy(f, room);
         Stations(f, room, index);
@@ -374,7 +409,12 @@ public static class NexusProminenceBuilder
                 // Spread through the floor, not one row: the video's rooms have crates and desks out in the open.
                 Vector2 at = spec.CoverAt != null && c < spec.CoverAt.Length ? spec.CoverAt[c]
                     : new Vector2((c + 1f) / (spec.Cover.Length + 1f), c % 2 == 0 ? 0.35f : 0.65f);
-                covers[c].transform.position = new Vector3(Mathf.Lerp(f.x0 + 1.5f, f.x1 - 1.5f, at.x), p.y, Mathf.Lerp(fb.min.z + 2f, f.zb - 1.5f, at.y));
+                var cp = new Vector3(Mathf.Lerp(f.x0 + 1.5f, f.x1 - 1.5f, at.x), p.y, Mathf.Lerp(fb.min.z + 2f, f.zb - 1.5f, at.y));
+                // keep cover out of doorways (Workshop feedback: cover in front of a door): push it toward the
+                // middle of the room until it is 4 units from every door
+                for (int guard = 0; guard < 20 && f.Doors.Any(d => new Vector2(d.x - cp.x, d.z - cp.z).magnitude < 4f); guard++)
+                    cp.x += cp.x < f.Cx ? 0.5f : -0.5f;
+                covers[c].transform.position = cp;
                 covers[c].gameObject.name = "PX_Cover_" + spec.Cover[c];
                 EditorUtility.SetDirty(covers[c]);
             }
@@ -405,6 +445,65 @@ public static class NexusProminenceBuilder
                 EditorUtility.SetDirty(m);
             }
         EditorUtility.SetDirty(room);
+    }
+
+    // Every visible lamp must light (Workshop feedback: "lights that dont light"). The game allows 4 lights
+    // a room: the room's own lights move under its lamps (a spot pointing down, inside the lamp's Intact
+    // group, so shooting the lamp also puts its light out); missing ones are added up to the cap.
+    const int LightCap = 4;
+    static void LightTheLamps(RoomObj room, Frame f)
+    {
+        var lamps = f.Parent.GetComponentsInChildren<Transform>(true).Where(t => t.name.StartsWith("CO_NX_Lamp")).Take(LightCap).ToList();
+        if (lamps.Count == 0) return;
+        var lights = room.GetComponentsInChildren<Light>(true).ToList();
+        var template = lights.FirstOrDefault();
+        for (int i = 0; i < lamps.Count; i++)
+        {
+            Light l;
+            if (i < lights.Count) l = lights[i];
+            else if (lights.Count < LightCap) { l = new GameObject("NX_LampLight").AddComponent<Light>(); if (template != null) { l.intensity = template.intensity; l.shadows = template.shadows; } lights.Add(l); }
+            else break;
+            var intact = lamps[i].Find("Intact") ?? lamps[i];
+            l.transform.SetParent(intact, true);
+            l.transform.position = lamps[i].position + Vector3.down * 0.3f;
+            l.transform.rotation = Quaternion.Euler(90f, 0, 0);
+            l.type = LightType.Spot; l.spotAngle = 70f; l.range = 9f;
+            l.color = new Color(1f, 0.45f, 0.42f);
+            l.gameObject.isStatic = false;
+        }
+        Debug.Log("NexusProminence: " + room.name + " " + lamps.Count + " lamps lit");
+    }
+
+    // The sample room's camera-side wall is six uneven triangulated planes (Workshop feedback). Swap its
+    // mesh for one plain box of the same bounds; the object, its layer and components stay as they were.
+    static void BoxFourthWall(RoomObj room)
+    {
+        foreach (var mf in room.GetComponentsInChildren<MeshFilter>(true).Where(m => m.name.StartsWith("room_pg_room2_4thwall")))
+        {
+            if (mf.sharedMesh == null) continue;
+            var b = mf.sharedMesh.bounds;
+            Debug.Log("NexusProminence: " + room.name + " 4th wall bounds " + b.center + " " + b.size);
+            // a thin slab on its thinnest axis (a full box of the bounds sat in front of the camera and
+            // could fill the floor); the camera-side wall is never drawn, so its renderer goes off
+            var sz = b.size; int ax = sz.x < sz.y ? (sz.x < sz.z ? 0 : 2) : (sz.y < sz.z ? 1 : 2);
+            float th = Mathf.Clamp(sz[ax], 0.2f, 0.3f); var c = b.center; c[ax] = b.min[ax] + sz[ax] / 2; sz[ax] = th;
+            b = new Bounds(c, sz);
+            var mr = mf.GetComponent<MeshRenderer>(); if (mr != null) mr.enabled = false;
+            string path = MatDir + "/NX_FourthWallBox.asset";
+            var box = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            bool fresh = box == null;
+            if (fresh) box = new Mesh { name = "NX_FourthWallBox" };
+            var tmp = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var cube = tmp.GetComponent<MeshFilter>().sharedMesh;
+            box.Clear();
+            box.vertices = cube.vertices.Select(v => b.center + Vector3.Scale(v, b.size)).ToArray();
+            box.normals = cube.normals; box.uv = cube.uv; box.triangles = cube.triangles;
+            box.RecalculateBounds();
+            Object.DestroyImmediate(tmp);
+            if (fresh) AssetDatabase.CreateAsset(box, path); else EditorUtility.SetDirty(box);
+            mf.sharedMesh = box;
+            var mc = mf.GetComponent<MeshCollider>(); if (mc != null) mc.sharedMesh = box;
+        }
     }
 
     static float WallHit(Collider[] walls, Vector3 origin, Vector3 dir, float fallback)
@@ -528,11 +627,12 @@ public static class NexusProminenceBuilder
         Box(f, "Window_Glow", (wx0 + wx1) / 2, wy0 - 0.5f, f.zb - 0.1f, wx1 - wx0, 1.0f, 0.04f, "screen");
         // hung, cracked sign in the middle of the window
         float sx = (wx0 + wx1) / 2;
-        Box(f, "SignRodA", sx - 1.2f, wy1 + 0.2f, f.zb - 1.2f, 0.12f, 1.2f, 0.12f, "dark");
-        Box(f, "SignRodB", sx + 1.2f, wy1 + 0.2f, f.zb - 1.2f, 0.12f, 1.2f, 0.12f, "dark");
-        Box(f, "Sign", sx, wy1 - 0.8f, f.zb - 1.2f, 3.2f, 1.1f, 0.15f, "dark");
-        Box(f, "SignFace", sx, wy1 - 0.8f, f.zb - 1.3f, 2.9f, 0.85f, 0.02f, "glass");
-        Box(f, "SignWire", sx + 0.4f, wy1 - 2.0f, f.zb - 1.25f, 0.03f, 1.6f, 0.03f, "black");
+        // (pulled back to the window plane: Workshop feedback said the outdoors reached into the room)
+        Box(f, "SignRodA", sx - 1.2f, wy1 + 0.2f, f.zb - 0.45f, 0.12f, 1.2f, 0.12f, "dark");
+        Box(f, "SignRodB", sx + 1.2f, wy1 + 0.2f, f.zb - 0.45f, 0.12f, 1.2f, 0.12f, "dark");
+        Box(f, "Sign", sx, wy1 - 0.8f, f.zb - 0.45f, 3.2f, 1.1f, 0.15f, "dark");
+        Box(f, "SignFace", sx, wy1 - 0.8f, f.zb - 0.54f, 2.9f, 0.85f, 0.02f, "glass");
+        Box(f, "SignWire", sx + 0.4f, wy1 - 2.0f, f.zb - 0.5f, 0.03f, 1.6f, 0.03f, "black");
 
         // left side as in the film (0:19): a plain charcoal panelled wall with only the red skirting;
         // drop the Shell's red band, diagonal stripe and banner on this wall
@@ -551,10 +651,13 @@ public static class NexusProminenceBuilder
 
         // right side: door with an emblem, trash bin and cups in the back corner
         float dz = f.zf + f.D * 0.5f;
-        Box(f, "SideDoorFrame", f.x1 - 0.08f, f.y + 2.6f, dz, 0.1f, 5.2f, 3.0f, "dark");
-        Box(f, "SideDoor", f.x1 - 0.14f, f.y + 2.5f, dz, 0.04f, 4.8f, 2.6f, "panel");
-        Box(f, "SideDoorEmblem", f.x1 - 0.17f, f.y + 3.6f, dz, 0.03f, 1.0f, 1.0f, "red");
-        Box(f, "SideDoorSill", f.x1 - 0.3f, f.y + 0.15f, dz, 0.5f, 0.3f, 3.0f, "red");
+        if (FakeDoors)
+        {
+            Box(f, "SideDoorFrame", f.x1 - 0.08f, f.y + 2.6f, dz, 0.1f, 5.2f, 3.0f, "dark");
+            Box(f, "SideDoor", f.x1 - 0.14f, f.y + 2.5f, dz, 0.04f, 4.8f, 2.6f, "panel");
+            Box(f, "SideDoorEmblem", f.x1 - 0.17f, f.y + 3.6f, dz, 0.03f, 1.0f, 1.0f, "red");
+            Box(f, "SideDoorSill", f.x1 - 0.3f, f.y + 0.15f, dz, 0.5f, 0.3f, 3.0f, "red");
+        }
         Cyl(f, "TrashBin", f.x1 - 1.4f, f.y + 0.75f, f.zb - 1.2f, 1.1f, 1.5f, "steel");
         Box(f, "TrashLid", f.x1 - 1.4f, f.y + 1.52f, f.zb - 1.2f, 1.2f, 0.08f, 1.2f, "dark");
         for (int i = 0; i < 3; i++) Cyl(f, "Cup", f.x1 - 2.4f + i * 0.28f, f.y + 0.13f, f.zb - 1.9f - (i % 2) * 0.2f, 0.18f, 0.26f, "white");
@@ -841,8 +944,12 @@ public static class NexusProminenceBuilder
     }
 
     // Recessed doorway in the back wall with the video's red-and-dark hazard header.
+    // Off since 2026-11-11 (Workshop feedback: "doors on fake doors"): a painted doorway beside real exits
+    // reads as a door the player cannot use. Real doors keep their frames and hazard bars from Shell.
+    const bool FakeDoors = false;
     static void BackDoorway(Frame f, float x)
     {
+        if (!FakeDoors) return;
         Box(f, "BackDoorFrame", x, f.y + 2.4f, f.zb - 0.12f, 3.0f, 4.8f, 0.1f, "dark");
         Box(f, "BackDoor", x, f.y + 2.3f, f.zb - 0.18f, 2.5f, 4.6f, 0.04f, "black");
         for (int k = 0; k < 5; k++)
@@ -926,6 +1033,7 @@ public static class NexusProminenceBuilder
         r.sharedMaterial = f.M[mat];
         r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         s.isStatic = true;
+        Solidify(f, s, x, y - sy / 2, z, sx, sy, sz);
         return s;
     }
 
@@ -1191,7 +1299,24 @@ public static class NexusProminenceBuilder
         s.transform.localScale = new Vector3(diameter, height / 2, diameter);
         s.GetComponent<MeshRenderer>().sharedMaterial = f.M[mat];
         s.isStatic = true;
+        Solidify(f, s, x, y - height / 2, z, diameter, height, diameter);
     }
+
+    // Props that look solid must be solid (Workshop feedback: "cover that doesnt cover"). A piece standing
+    // on the floor, at least 0.8 tall and 0.4 across both ways, gets a box collider on the Obstacle layer
+    // (blocks bodies, not sight or aim). Never within 3.5 units of a door, so no exit is ever walled off.
+    const bool SolidProps = true;
+    const int ObstacleLayer = 13;
+    static void Solidify(Frame f, GameObject s, float x, float bottom, float z, float sx, float sy, float sz)
+    {
+        if (!SolidProps || bottom - f.y > 0.15f || sy < 0.8f || sx < 0.4f || sz < 0.4f) return;
+        if (sx > f.W * 0.6f || sz > f.D * 0.6f) return; // wall facings and floor sheets
+        foreach (var d in f.Doors) if (new Vector2(d.x - x, d.z - z).magnitude < 3.5f) return;
+        s.AddComponent<BoxCollider>();
+        s.layer = ObstacleLayer;
+        solidCount++;
+    }
+    static int solidCount;
 
     // Rightmost door of room k leads to the leftmost door of room k+1; the other doors stay spawn doors.
     // ---- encounters (fun pass 2): squads that drop in by rappel or crawl out of vents, reinforcement waves in

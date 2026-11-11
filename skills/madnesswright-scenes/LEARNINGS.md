@@ -74,3 +74,10 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: examples/NexusProminence `OpenBackWall`, `Stretch`; build-p log 2026-11-11 (back ray hit the single walls mesh), owner's in-game shot of the empty lower half; shots-p 40/40 corners
 - Scope: skill
 - Status: retired · helpful 0 · harmful 1 · last_confirmed 2026-11-11 (owner: hiding the walls mesh, the depth/width scales and the 0.55 zoom broke the rooms and the Playground room; all reverted in build-r. Do not hide the sample walls mesh.)
+
+## L-20261111-6 `madness-shader-solid-props`
+- Trigger: generated or primitive geometry in a room; players say props look out of place next to the game's cover, have no outlines, or "cover that doesnt cover"
+- Rule: give walls, floors and props the game's `Madness/Terrain - General` shader (it reads colour only from `_MainTex`, so a solid colour needs a small texture; `_Outline` about 0.06), never `Standard`: that is what draws the black Madness outline and lights from the room's ambient. Keep `Standard` only for glowing pieces (the terrain shader has no emission). Any prop that looks solid and stands on the floor needs a collider (Obstacle layer 13), kept clear of doors. Never give the camera-side wall a visible closed mesh: a box there faces the camera and blacks out the view; keep it one-sided or renderer off.
+- Evidence: Workshop comments on item 3837705778 (2026-11-11); SceneTools sample materials Room_Cutaway_* use Terrain - General; examples/NexusProminence `Mat`, `Solidify`, `BoxFourthWall`; build-w (box 4th wall: all-black shots) and build-y (outlines visible, 40/40 corners)
+- Scope: skill
+- Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-11

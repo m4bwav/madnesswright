@@ -4,7 +4,7 @@ Playground map: Hank storms the Nexus Prominence control tower, ten rooms chaine
 Difficulty climbs as you go: guards start unaware, then hunt you, then come in shooting. Every room has a Nexus weapon lying near the entrance, and ammo and med cabinets wait before the hard rooms. Shoot the set up as you go: the wanted hall's display case shatters, the spotlight corridor's lamps go dark and the control tower's monitor wall cracks screen by screen.
 [table]
 [tr][th]#[/th][th]Room[/th][th]What's in it[/th][th]Enemies[/th][th]Difficulty[/th][/tr]
-[tr][td]1[/td][td]Street checkpoint[/td][td]Small room, wide city window, side counter and door[/td][td]2 agents with rifles (unaware)[/td][td]Easy[/td][/tr]
+[tr][td]1[/td][td]Street checkpoint[/td][td]Small room, wide city window over the red city[/td][td]2 agents with rifles (unaware)[/td][td]Easy[/td][/tr]
 [tr][td]2[/td][td]Wanted hall[/td][td]Wanted posters, display case, floor hatches[/td][td]3 agents, 1 sword scout (unaware)[/td][td]Easy[/td][/tr]
 [tr][td]3[/td][td]Controls office[/td][td]Desks, cabinets, "CONTROLS" door[/td][td]2 agents, 1 support (unaware)[/td][td]Easy[/td][/tr]
 [tr][td]4[/td][td]Cargo bay[/td][td]Strapped crates, pallets, striped floor[/td][td]2 riot guards, 2 agents, 1 soldat (hunting)[/td][td]Hard[/td][/tr]
@@ -16,9 +16,9 @@ Difficulty climbs as you go: guards start unaware, then hunt you, then come in s
 [tr][td]10[/td][td]Control tower[/td][td]Monitor wall, server racks[/td][td]2 soldats, 2 riot guards, 1 engineer, 2 agents (combat)[/td][td]Very hard (finale)[/td][/tr]
 [/table]
 
-A template inspired by the fan collab "NEXUS: HANK RAID" (watch it: https://www.youtube.com/watch?v=v0suvMY3GgM). No art from the video is used; the rooms are built from the game's own pieces in a gray-and-red look.
+A template inspired by the fan collab "NEXUS: HANK RAID" (watch it: https://www.youtube.com/watch?v=v0suvMY3GgM). No art from the video is used; the rooms are built from simple shapes drawn with the game's own outlined terrain shader, in a gray-and-red look; solid-looking props block movement.
 
 Use: enable the mod from the gear icon, open the Playground terminal and load Nexus Prominence.
 
 Early test build: tell us about doors that don't connect, rooms you can't clear or walls in odd places.
-The tower fights back: reinforcement squads crawl out of a vent and slide down rappel lines in the control tower, a rappel team drops into the cargo bay, agents crawl out of the spotlight corridor vents, and spike strips in the shutter garage and corridor are marked by striped floor plates (their rise-and-drop timer is being fixed).
+Planned, not confirmed in play yet: reinforcement squads from a vent and rappel lines in the control tower and cargo bay, and timed spike strips in the shutter garage and spotlight corridor. If you see them work (or not), say so in the comments.

@@ -1,0 +1,12 @@
+Look and collision pass, from Workshop feedback.
+
+- Walls, floors and props now use the game's own outlined terrain shader, so the rooms have the Madness black outlines and match the game's cover.
+- Solid-looking props (crates, cabinets, counters, bins, machines) now block movement. Nothing solid stands within a few steps of a door.
+- Cover is kept out of doorways.
+- Painted fake doors are gone; every door you see is a real exit.
+- The spotlight corridor's lamps now cast real light, and shooting a lamp puts its light out.
+- Room 1's hanging sign sits back against the window instead of reaching into the room.
+- The invisible camera-side wall is one simple box instead of six uneven pieces.
+- The description now lists only what has been confirmed in play.
+
+Nothing to do on your side: resubscribe or restart the game if the map does not update.
