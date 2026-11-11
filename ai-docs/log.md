@@ -2,6 +2,10 @@
 
 Append-only, newest first.
 
+## 2026-11-10 · Nexus Prominence on the Workshop
+
+- The owner tested the map ("looks good") and asked to publish it for the requester to test. Uploaded the deployed Mods/NexusProminence folder with examples/WorkshopUpload as new public item 3837705778, title "Nexus Prominence (Hank Raid map)", tag Playground, plain gray-and-red title-card preview (PIL, no video art) and description in examples/NexusProminence/workshop/. `result OK`. Next: the requester's test (Owed 24).
+
 ## 2026-11-10 (late): Nexus Prominence built and deployed
 
 - Owner installed Unity 2019.2.6f1. Ran the generator headless (`-batchmode -executeMethod NexusProminenceBuilder.Build`): compiled first time, ten rooms written.
@@ -341,6 +345,22 @@ Append-only, newest first.
 ## [2026-10-28] index | rebuilt (18 entries)
 ## [2026-10-29] index | rebuilt (18 entries)
 ## [2026-10-30] index | rebuilt (18 entries)
+## [2026-11-11] Nexus Prominence: Workshop updated, rooms 1-2 closer to the video
+
+- The owner tested rooms 1 and 2 and said to publish (the old version "will make us look bad"). wsup.exe updated item 3837705778 with the rebuilt map and workshop/change-notes-2026-11-11.txt: result OK.
+- Asked for rooms closer to the video. Pulled full-size frames (0:23-0:58 street, 1:30-1:56 wanted hall) into Ai/madnesswright-lab/nexus/ref12 and compared with NexusShots renders. Room 1 now: stained dark floor, window over three quarters of the back wall (taller towers, billboards, frame, glowing sill, counter rail, hung sign), dark pillar with a bin and cups, medkit cabinet, recessed door panel with a red board, striped skirting, wall seams. Room 2: red light and ambient, three large framed wanted-style posters on rods (no faces copied), a glass display case with shelves, two dark doorways, red conduits, two floor hatches, band stripes.
+- Limit: the game camera (CameraPoint) looks down on a deep floor, so a frame can never be identical to the video's flat side view; the back wall is where the match happens.
+- Rebuilt, SyncAndBuild, check-mod clean, deployed locally. **Not played; this version is not on the Workshop yet** (the Workshop has the earlier 2026-11-11 rebuild). Render: examples/NexusProminence/renders/rooms-1-2-2026-11-11b.jpg.
+
+## [2026-11-11] Nexus Prominence rebuilt to look like the video
+
+- Report: the requester (the owner's son) said the levels "looked nothing like the video", and the owner saw a light red fog in the default room. Cause: every room was the bare sample box, and in a headless render it showed as one dark red box (proxies only appear in game). The fog was the sample's FogDensity 0.1 plus our red FogColor and ambient.
+- Reference: re-pulled v0suvMY3GgM (`uvx yt-dlp -S res:720`, saved as video.mp4.webm) into Ai/madnesswright-lab/nexus (not in the repo: the video's art is not ours), with contact sheets at 1 frame per 4 s.
+- Generator: a shared shell per room (red band at 1.05-1.6 above the floor, red skirting, red floor seams on three walls, back-wall pilasters, a pipe rail, a black opening with dark jambs and a red-and-dark hazard bar over every side door), plus a set for each room built from the frames as plain primitives with no colliders (no logos, posters or characters copied): street window onto a block-tower skyline, framed boards with a floor hatch and a vending machine, a counter under a glowing window, strapped crates with a floor hazard line, a ledge with a ladder and an open-frame crate, a roll-up shutter over a console, four ceiling lamps throwing additive red cones, lockers and a bench, a serving counter under menu panels, and a monitor wall with server racks. Fog off (density 0, GlobalFog disabled), ambient 0.30 gray, white light.
+- Bugs fixed: (1) rooms 2-10 were cloned from room 1 after it was dressed, so every clone carried room 1's enemies and set (now: clone everything first, then dress); (2) the overwrite dialog cancels in batch mode (skipped there).
+- New `Editor/NexusShots.cs`: renders each room from its CameraPoint to PNG with only that room's lights on (all ten directional lights otherwise wash everything out). Grid: examples/NexusProminence/renders/rooms-2026-11-11.jpg.
+- Rebuilt headless, SyncAndBuild, .sobj 1.39 MB, check-mod clean (warning: no Author), deployed with --force. **Not played. Workshop item 3837705778 not yet updated** (waits on the owner's OK).
+
 ## [2026-11-10] Nexus Prominence map template
 
 - Ask: template of the map in YouTube v0suvMY3GgM (collab, 14:22). Pulled it with `uvx yt-dlp -S res:480` (plain `-f best[height<=480]` found no format), contact sheets with ffmpeg `fps=1/9,tile=4x6`.

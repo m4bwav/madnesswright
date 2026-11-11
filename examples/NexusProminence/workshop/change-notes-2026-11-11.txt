@@ -1,0 +1,1 @@
+Rooms rebuilt to match the video: charcoal walls with the red band, door hazard bars, and a set for each of the ten rooms. Red fog removed. Fixed rooms 2-10 copying room 1's enemies.
