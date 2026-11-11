@@ -1,0 +1,1 @@
+Camera now reaches every corner of every room (room 1's exit was barely visible). Rooms dressed in Madness style: blood, bullet holes, scrawls and joke signs, each on a clear patch of wall. Enemies carry the film's weapons. Description now lists every room with its enemies and difficulty.
