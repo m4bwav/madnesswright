@@ -8,3 +8,4 @@ tests/DirectorFreezeChecks/obj/
 *.sobj
 *.mobj
 !tests/fixtures/**
+examples/NexusProminence/NexusProminence/*.sobj
