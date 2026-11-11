@@ -28,3 +28,8 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - because: L-20261111-3 (owner play of the Nexus Prominence breakables, user request "improve the madnesswright")
 - files: references/scenetools-rules.md, LEARNINGS.md
 - Destructible recipe for look-only set pieces, confirmed in game.
+
+### C-20261111-2 · 2026-11-11 · Toggle automators need a custom Togglable
+- because: L-20261111-4 (Player.log NREs in the Nexus Prominence spike play, user request "improve the madnesswright")
+- files: references/scenetools-rules.md (Custom SceneObject line), LEARNINGS.md
+- Automator placement rule and the driver route for timing stock spikes.

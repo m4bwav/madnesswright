@@ -1295,10 +1295,23 @@ public static class NexusProminenceBuilder
         go.transform.position = new Vector3(Mathf.Lerp(f.x0 + 2f, f.x1 - 2f, u), f.y, Mathf.Lerp(f.zf + 2f, f.zb - 1.5f, v));
         go.name = "PX_Spikes_" + name;
         var t = go.GetComponent<ProxyObj_Togglable>();
-        t.Type = ProxyObj_Togglable.ProxyType.Spikes; t.StartUp = false; t.ResetPathNodes = false;
+        t.Type = ProxyObj_Togglable.ProxyType.Spikes; t.StartUp = true; t.PlayFirstAnim = false; t.ResetPathNodes = false;
         t.SerialNumber = "NXP_" + room.name + "_Spikes_" + name;
         EditorUtility.SetDirty(t);
-        var a = go.GetComponent<CustomAddon_ToggleAutomator>() ?? go.AddComponent<CustomAddon_ToggleAutomator>();
+        // The game swaps a stock PX_Togglable for a new library object and leaves add-ons behind on the proxy,
+        // where Toggleable_Automator.Init finds no Toggleable_Main and throws (seen in play 2026-11-11). So the
+        // timer drives an invisible CustomObj_Togglable (the game adds Toggleable_Main to that same object)
+        // whose Up object is the stock strip: the converter swaps the entry for the created spikes.
+        var drv = new GameObject("CO_NX_SpikeTimer_" + name);
+        drv.transform.SetParent(go.transform.parent, true);
+        drv.transform.position = go.transform.position;
+        var c = drv.AddComponent<CustomObj_Togglable>();
+        c.StartUp = true; c.PlayFirstAnim = false; c.ResetPathNodes = false;
+        c.SerialNumber = "NXP_" + room.name + "_SpikeTimer_" + name;
+        c.UpObjs = new List<GameObject> { go }; c.DownObjs = new List<GameObject>();
+        c.UpSound = ""; c.DownSound = "";
+        EditorUtility.SetDirty(c);
+        var a = drv.AddComponent<CustomAddon_ToggleAutomator>();
         a.AutomatorEnabled = true; a.RunInActiveRoomOnly = true; a.OnlyRunDuringWaves = false;
         a.TimeStayDown = 150; a.TimeStayUp = 90; a.StartTime = 60 + offsetFrames;
         EditorUtility.SetDirty(a);

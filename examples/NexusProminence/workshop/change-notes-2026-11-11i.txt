@@ -1,0 +1,5 @@
+Spike fix.
+
+- Spike traps now run: the two strips in the shutter garage and the one in the spotlight corridor drop and rise on a timer (up about 1.5 s, down about 2.5 s) instead of sitting still. Hazard-striped floor plates mark them; time your crossing.
+
+Nothing to do on your side: resubscribe or restart the game if the map does not update.
