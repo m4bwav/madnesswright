@@ -1,0 +1,6 @@
+Narrower rooms and a plainer street wall.
+
+- Every room is a little narrower (85% of the old width), so fights feel closer.
+- Room 1's left wall now matches the film's opening shot: plain dark panels, a dark rail and red skirting, with the counter, stripes and banner gone.
+
+Nothing to do on your side: resubscribe or restart the game if the map does not update.

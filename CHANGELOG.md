@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.18 · 2026-11-11
+
+- madnesswright-scenes: generated geometry uses the game's Madness terrain shader and solid props collide (L-20261111-6).
+- examples/NexusProminence: Workshop feedback pass (outlined shader, solid props, cover out of doorways, no fake doors, lit lamps, camera-side wall as one slab, description lists only confirmed features).
+
 ## 0.1.17 · 2026-11-11
 
 - madnesswright-scenes: a toggle automator only runs on a CO_ Togglable; time stock spikes through an invisible driver (L-20261111-4).

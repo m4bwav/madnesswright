@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261111-6 · 2026-11-11 · Game shader and solid props for generated geometry
+- because: L-20261111-6 (Workshop feedback on the Nexus Prominence map)
+- files: SKILL.md (Build steps, step 2); LEARNINGS.md
+- Step 2 now names the `Madness/Terrain - General` shader and colliders on solid-looking props.
+
 ### C-20261023-2 · 2026-10-23 · The last wave debuts nothing new; template columns carry the limits
 - because: T-20261023-1 (first round: all three runs debuted two new roles in the final wave without a word; second round: one run set "Max attacking 3", one debuted two roles in wave 4), L-002
 - files: references/encounter-design.md ("Wave and squad pacing"); references/level-plan-template.md (room and wave columns); evals/evals.json (outcome-2 expectation and evidence)
