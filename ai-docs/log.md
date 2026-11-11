@@ -432,3 +432,8 @@ README gained a Works with section (polywright, musicwright, fetchwright, ludowr
 
 - Owner: "Play test went well release the latest version". mpn.py log clean. wsup.exe updated item 3837705778 (change-notes-2026-11-11g.txt, workshop-preview-2026-11-11.jpg): result OK; GetPublishedFileDetails: visibility 0, updated 14:02, 24 subscribers, description has the breakables.
 - Scenes skill: L-20261111-3 and a rules line (PR #82, v0.1.16). game-juice juice-apply L-002 (PR #12, v1.3.5). Both plugins updated locally.
+
+## 2026-11-11 (spike fix)
+
+- Owner: "Play test went well release the latest version". mods.log clean; Player.log 3x NRE Toggleable_Automator.SetAutomatorState (Init from Toggleable_Controller.Awake). wsup.exe updated 3837705778 with change-notes h (spike timer listed as a known issue): result OK, live 14:32, 26 subscribers.
+- Fresh decompile (scratchpad, game Assembly-CSharp): Converter_Proxy.ReplaceProxy instantiates a library prefab for stock togglables and copies no add-ons; ConvertCustomObj adds Toggleable_Main onto a CO_ Togglable; UpObjs entries are swapped for created objects. Generator `Spikes` now uses a CO_ driver. Built, 40/40 corners, deployed; not played. Scenes L-20261111-4, PR #85, v0.1.17.
