@@ -349,6 +349,9 @@ public static class NexusProminenceBuilder
             case 8: BreakRoom(f); break;
             case 9: ControlTower(f); break;
         }
+        Physics.SyncTransforms();
+        CollectWallBusy(f, room);
+        Stations(f, room, index);
         Gags(f, index);
 
         // Cover: reuse the room's PX_Cover objects, add or remove to match the spec.
@@ -391,6 +394,7 @@ public static class NexusProminenceBuilder
                 m.Faction = Factions.Nexus;
                 m.Alertness = spec.Alert;
                 m.SerialNumber = "NXP_" + spec.Name + "_" + n;
+                Loadout(m, foe.Type, index, n);
                 go.name = "Char_" + foe.Type + "_" + n;
                 EditorUtility.SetDirty(m);
             }
@@ -897,11 +901,136 @@ public static class NexusProminenceBuilder
         Decal(f, "splat_" + (seed % 4), Mathf.Lerp(f.x0, f.x1, u), f.y + 0.035f + seed * 0.001f, Mathf.Lerp(f.zf, f.zb, v), size, size, true, seed * 47f);
     }
     const float SignScale = 1.9f;
+    // Back-wall areas already taken by the set (doors, pillars, posters, windows, cabinets) and by earlier
+    // decals, as x/y rectangles. Signs used to sit at fixed fractions and landed on doors and behind pillars.
+    static List<Rect> wallBusy = new List<Rect>();
+    static void CollectWallBusy(Frame f, RoomObj room)
+    {
+        wallBusy = new List<Rect>();
+        var rs = f.Parent.GetComponentsInChildren<Renderer>(true).Concat(room.GetComponentsInChildren<ProxyObj_Door>(true).SelectMany(d => d.GetComponentsInChildren<Renderer>(true)));
+        foreach (var r in rs)
+        {
+            var b = r.bounds;
+            if (b.max.z < f.zb - 2.5f) continue;              // out on the floor, not against the wall
+            if (b.size.x > f.W * 0.6f) continue;             // bands, pipes, skirting, sky strips span the wall
+            if (b.size.y < 0.3f && b.size.x < 1f) continue;  // tiny trim
+            if (b.size.x < 0.7f) continue;                   // pilasters, seams, rods, conduits, corner posts: signs may cover them
+            if (r.name.Contains("Stripe") || r.name.Contains("Band") || r.name.Contains("Skirt") || r.name.Contains("Hazard") || r.name.Contains("Seam")) continue;
+            if (b.max.y < f.y + 0.5f) continue;              // floor details
+            wallBusy.Add(Rect.MinMaxRect(b.min.x, b.min.y, b.max.x, b.max.y));
+        }
+    }
+    static bool WallFree(Rect r) { foreach (var b in wallBusy) if (b.Overlaps(r)) return false; return true; }
+
     static void WallDecal(Frame f, string tex, float u, float y, float w, float h, float spin = 0f)
     {
         w *= SignScale; h *= SignScale; // readable from the game camera
         y = Mathf.Min(y, 5.3f - h / 2f);
-        Decal(f, tex, Mathf.Lerp(f.x0, f.x1, u), f.y + y, f.zb - 0.47f, w, h, false, spin);
+        bool soft = tex.StartsWith("holes_") || tex.StartsWith("splat_") || tex.StartsWith("scrawl_");
+        float pad = 0.25f;
+        // try the asked spot, then step outward along the wall, then a little higher or lower
+        float w0 = w, h0 = h;
+        foreach (var sc in new[] { 1f, 0.75f, 0.55f })
+        foreach (var dy in new[] { 0f, 0.8f, -0.6f })
+            for (int k = 0; k <= 30; k++)
+            {
+                w = w0 * sc; h = h0 * sc;
+                float du = (k % 2 == 1 ? 1 : -1) * ((k + 1) / 2) * 0.04f;
+                float uu = u + du;
+                float x = Mathf.Lerp(f.x0, f.x1, uu);
+                float yy = Mathf.Clamp(y + dy, h / 2f + 0.6f, 5.3f - h / 2f);
+                if (x - w / 2 < f.x0 + 0.8f || x + w / 2 > f.x1 - 0.8f) continue;
+                var r = new Rect(x - w / 2 - pad, f.y + yy - h / 2 - pad, w + 2 * pad, h + 2 * pad);
+                if (!WallFree(r)) continue;
+                Decal(f, tex, x, f.y + yy, f.zb - 0.47f, w, h, false, spin);
+                wallBusy.Add(r);
+                return;
+            }
+        Debug.Log("NexusProminence: no clear wall for " + tex + (soft ? " (dropped)" : " (sign dropped)"));
+    }
+
+    // ---- fun pass (2026-11-11): things to grab. Ammo and med cabinets on the back wall before the hard
+    // rooms, and one floor weapon per room near the entrance, from the film's Nexus arsenal.
+    const string InteractPrefab = "Assets/Library/Prefabs/Proxies/PX_Interact.prefab";
+    const string ItemPrefab = "Assets/Library/Prefabs/Markers/Item_Spawn.prefab";
+    static readonly ProxyObj_Interact.ProxyType[][] RoomStations =
+    {
+        new[] { ProxyObj_Interact.ProxyType.Ammo },
+        new ProxyObj_Interact.ProxyType[0],
+        new[] { ProxyObj_Interact.ProxyType.Ammo },
+        new[] { ProxyObj_Interact.ProxyType.MedCabinet, ProxyObj_Interact.ProxyType.AmmoGrenade },
+        new ProxyObj_Interact.ProxyType[0],
+        new[] { ProxyObj_Interact.ProxyType.Ammo },
+        new[] { ProxyObj_Interact.ProxyType.MedCabinet, ProxyObj_Interact.ProxyType.Ammo },
+        new ProxyObj_Interact.ProxyType[0],
+        new[] { ProxyObj_Interact.ProxyType.MedCabinet },
+        new[] { ProxyObj_Interact.ProxyType.MedCabinet, ProxyObj_Interact.ProxyType.Ammo, ProxyObj_Interact.ProxyType.AmmoGrenade },
+    };
+    static readonly string[] RoomPickup = { "R_NN57", "M_SwordNexus", "R_NM46", "Shield_RiotLight", "R_Hrifle_NFAL", "R_NZucker", "R_Nc762", "M_SwordNexus", "R_NS-V.10", "R_Hrifle_NFAL" };
+
+    static void Stations(Frame f, RoomObj room, int index)
+    {
+        var ip = AssetDatabase.LoadAssetAtPath<GameObject>(InteractPrefab);
+        var mp = AssetDatabase.LoadAssetAtPath<GameObject>(ItemPrefab);
+        var cover = room.GetComponentInChildren<ProxyObj_Cover>(true);
+        var parent = cover != null ? cover.transform.parent : room.transform;
+        if (ip == null) Debug.LogWarning("NexusProminence: " + InteractPrefab + " missing; no stations.");
+        else
+        {
+            float u = 0.06f;
+            foreach (var type in RoomStations[index])
+            {
+                bool placed = false;
+                for (; u < 0.95f && !placed; u += 0.02f)
+                {
+                    float x = Mathf.Lerp(f.x0, f.x1, u);
+                    var r = new Rect(x - 0.8f, f.y, 1.6f, 2.6f);
+                    if (x - 0.8f < f.x0 + 0.8f || !WallFree(r)) continue;
+                    var go = (GameObject)PrefabUtility.InstantiatePrefab(ip, room.gameObject.scene);
+                    go.transform.SetParent(parent, true);
+                    go.transform.position = new Vector3(x, f.y, f.zb - 0.5f);
+                    var px = go.GetComponent<ProxyObj_Interact>();
+                    px.Type = type;
+                    go.name = "PX_Interact_" + type;
+                    EditorUtility.SetDirty(px);
+                    wallBusy.Add(r);
+                    placed = true;
+                }
+                if (!placed) Debug.Log("NexusProminence: no clear wall for station " + type + " in " + room.name);
+            }
+        }
+        if (mp == null) { Debug.LogWarning("NexusProminence: " + ItemPrefab + " missing; no pickups."); return; }
+        var it = (GameObject)PrefabUtility.InstantiatePrefab(mp, room.gameObject.scene);
+        it.transform.SetParent(parent, true);
+        it.transform.position = new Vector3(Mathf.Lerp(f.x0, f.x1, 0.2f), f.y + 0.1f, Mathf.Lerp(f.zf, f.zb, 0.3f));
+        var mi = it.GetComponent<Marker_Item>();
+        mi.MadCard = RoomPickup[index];
+        mi.PhysicsOn = false;
+        it.name = "Item_" + RoomPickup[index];
+        EditorUtility.SetDirty(mi);
+    }
+
+    // Weapons from the film: street guards with rifles, hall agents with pistols and SMGs, riot guards with
+    // a shield and a pistol, soldats with battle rifles, the odd agent with the Nexus sword. Card names are
+    // the game's own (resources.assets, build 25615196).
+    static void Loadout(Marker_Character m, CharacterTypes t, int room, int n)
+    {
+        string r = null, l = null;
+        switch (t)
+        {
+            case CharacterTypes.Nexus1_Agent:
+                if (room == 0) r = n % 3 == 2 ? "R_NN57" : "R_Nc762";
+                else if (room == 1) r = n % 2 == 0 ? "R_NN57" : "R_NM46";
+                else if (room >= 6 && n % 4 == 3) r = "M_SwordNexus";
+                else r = new[] { "R_NN57", "R_NM46", "R_Nc762" }[(n + room) % 3];
+                break;
+            case CharacterTypes.Nexus2_Scout: r = room == 4 ? "R_Hrifle_NFAL" : "M_SwordNexus"; break;
+            case CharacterTypes.Nexus4_Riot__Guard: r = "R_NN57"; l = "Shield_RiotLight"; break;
+            case CharacterTypes.Nexus6_Soldat: r = "R_Hrifle_NFAL"; break;
+            default: return; // support, engineer, scientist keep their own gear
+        }
+        m.ClearDefaultWeapons = true;
+        m.Held_R = r; m.Held_L = l;
     }
 
     // Madness-map dressing on top of each room's set: the film's blood and bullet holes everywhere,
@@ -917,8 +1046,13 @@ public static class NexusProminenceBuilder
         switch (index)
         {
             case 0:
-                WallDecal(f, "sign_population", 0.74f, 3.4f, 3.0f, 1.17f);
-                WallDecal(f, "sign_noloiter", 0.93f, 2.6f, 1.8f, 0.9f);
+                // the wall is full (window, pillar, door panel): the town sign goes on the hung sign,
+                // "no loitering" on the pillar face at eye height
+                {
+                    float sx = (f.x0 + 1.6f + f.x0 + f.W * 0.74f - 1.2f) / 2;
+                    Decal(f, "sign_population", sx, f.y + 5.9f, f.zb - 1.33f, 2.3f, 0.9f);
+                    Decal(f, "sign_noloiter", f.x0 + f.W * 0.74f, f.y + 2.8f, f.zb - 1.23f, 1.3f, 0.65f);
+                }
                 WallDecal(f, "scrawl_0", 0.7f, 1.0f, 3.2f, 1.6f);
                 break;
             case 1:
@@ -946,7 +1080,7 @@ public static class NexusProminenceBuilder
             case 6:
                 // the film's corridor chalkboard reads "Don't Blink"
                 Box(f, "Chalkboard", f.x0 + 0.5f * f.W, f.y + 3.6f, f.zb - 0.4f, 4.2f, 1.6f, 0.06f, "dark");
-                WallDecal(f, "sign_dontblink", 0.5f, 3.6f, 3.6f, 1.12f);
+                Decal(f, "sign_dontblink", f.x0 + 0.5f * f.W, f.y + 3.6f, f.zb - 0.45f, 3.9f, 1.25f); // on its board, never moved
                 WallDecal(f, "scrawl_1", 0.85f, 1.2f, 2.6f, 1.3f);
                 break;
             case 7:

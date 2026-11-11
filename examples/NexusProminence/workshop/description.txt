@@ -1,5 +1,21 @@
 Playground map: Hank storms the Nexus Prominence control tower, ten rooms chained left to right from the street checkpoint to the control tower (wanted hall, controls office, cargo bay, sniper loft, shutter garage, spotlight corridor, locker room, break room). Nexus agents, guards, scouts, engineers and soldats get more alert the deeper you go.
 
+[h2]The rooms[/h2]
+Difficulty climbs as you go: guards start unaware, then hunt you, then come in shooting. Every room has a Nexus weapon lying near the entrance, and ammo and med cabinets wait before the hard rooms.
+[table]
+[tr][th]#[/th][th]Room[/th][th]What's in it[/th][th]Enemies[/th][th]Difficulty[/th][/tr]
+[tr][td]1[/td][td]Street checkpoint[/td][td]City window, barrels and crates[/td][td]3 agents with rifles (unaware)[/td][td]Easy[/td][/tr]
+[tr][td]2[/td][td]Wanted hall[/td][td]Wanted posters, display case, floor hatches[/td][td]3 agents, 1 sword scout (unaware)[/td][td]Easy[/td][/tr]
+[tr][td]3[/td][td]Controls office[/td][td]Desks, cabinets, "CONTROLS" door[/td][td]2 agents, 1 support (unaware)[/td][td]Easy[/td][/tr]
+[tr][td]4[/td][td]Cargo bay[/td][td]Strapped crates, pallets, striped floor[/td][td]2 riot guards, 2 agents, 1 soldat (hunting)[/td][td]Hard[/td][/tr]
+[tr][td]5[/td][td]Sniper loft[/td][td]Ladder and ledge snipers[/td][td]2 scouts with battle rifles, 2 agents (hunting)[/td][td]Medium[/td][/tr]
+[tr][td]6[/td][td]Shutter garage[/td][td]Roll-up shutter, vending machine[/td][td]2 engineers, 2 agents (hunting)[/td][td]Medium[/td][/tr]
+[tr][td]7[/td][td]Spotlight corridor[/td][td]Long, narrow, red spotlights, little cover[/td][td]4 agents, 1 riot guard (combat)[/td][td]Hard[/td][/tr]
+[tr][td]8[/td][td]Locker room[/td][td]Tight room, lockers[/td][td]1 riot guard, 2 agents (combat)[/td][td]Medium[/td][/tr]
+[tr][td]9[/td][td]Break room[/td][td]Tables, counter, menu board[/td][td]3 agents, 1 support, 1 scientist (combat)[/td][td]Hard[/td][/tr]
+[tr][td]10[/td][td]Control tower[/td][td]Monitor wall, server racks[/td][td]2 soldats, 2 riot guards, 1 engineer, 2 agents (combat)[/td][td]Very hard (finale)[/td][/tr]
+[/table]
+
 A template inspired by the fan collab "NEXUS: HANK RAID" (watch it: https://www.youtube.com/watch?v=v0suvMY3GgM). No art from the video is used; the rooms are built from the game's own pieces in a gray-and-red look.
 
 Use: enable the mod from the gear icon, open the Playground terminal and load Nexus Prominence.

@@ -8,20 +8,22 @@ Earlier status 2026-11-11: rooms differ in size (`Width`/`Depth` per room in the
 
 ## Rooms (left to right, each door chains to the next)
 
-| # | Room | From the video | Cover | Enemies (Nexus faction) | Alert |
-|---|------|----------------|-------|------------------------|-------|
-| 1 | Street checkpoint | city street, "Nexus Prominence City" | barrel, crate | 2 agents | unaware |
-| 2 | Wanted hall | wanted posters, floor hatch | wall | 2 agents, 1 scout | unaware |
-| 3 | Controls office | "CONTROLS" door, report desk | 2 desks | 2 agents, 1 support | unaware |
-| 4 | Cargo bay | red-striped floor, strapped crates | 2 crates, pallet | 2 riot guards, 1 soldat | hunting |
-| 5 | Sniper loft | ladder, sniper on a ledge | wall | 2 scouts, 1 agent (sniper points kept) | hunting |
-| 6 | Shutter garage | roll-up shutter, vending machine | crate, barrel | 2 engineers, 1 agent | hunting |
-| 7 | Spotlight corridor | red ceiling spotlights | none | 3 agents | combat |
-| 8 | Locker room | lockers, "employee of the month" | wall | 1 riot guard, 2 agents (locker kept) | combat |
-| 9 | Break room | "Agents don't do law", menu board | table, counter | 1 support, 2 agents, 1 scientist | combat |
-| 10 | Control tower | monitor wall, server room | 2 desks, counter | 2 soldats, 1 riot guard, 1 engineer | combat |
+Sets per room are in the generator (`Street`, `WantedHall`, ...); the Workshop description carries the same table with difficulty. Stations and pickups come from `Stations` (fun pass 2026-11-11).
 
-Player start and the Playground terminal stay in room 1. Weapons are the characters' default loadouts (no card names invented).
+| # | Room | Enemies (Nexus) | Alert | Stations (back wall) | Floor pickup | Difficulty |
+|---|------|-----------------|-------|----------------------|--------------|------------|
+| 1 | Street checkpoint | 3 agents, rifles | unaware | Ammo | R_NN57 pistol | Easy |
+| 2 | Wanted hall | 3 agents, 1 scout | unaware | - | M_SwordNexus | Easy |
+| 3 | Controls office | 2 agents, 1 support | unaware | (ammo: no clear wall, skipped) | R_NM46 SMG | Easy |
+| 4 | Cargo bay | 2 riot guards, 2 agents, 1 soldat | hunting | Med cabinet, grenade ammo | Shield_RiotLight | Hard |
+| 5 | Sniper loft | 2 scouts (battle rifles), 2 agents | hunting | - | R_Hrifle_NFAL | Medium |
+| 6 | Shutter garage | 2 engineers, 2 agents | hunting | Ammo | R_NZucker | Medium |
+| 7 | Spotlight corridor | 4 agents, 1 riot guard | combat | Med cabinet, ammo | R_Nc762 rifle | Hard |
+| 8 | Locker room | 1 riot guard, 2 agents | combat | - | M_SwordNexus | Medium |
+| 9 | Break room | 3 agents, 1 support, 1 scientist | combat | Med cabinet | R_NS-V.10 | Hard |
+| 10 | Control tower | 2 soldats, 2 riot guards, 1 engineer, 2 agents | combat | Med cabinet, ammo, grenade ammo | R_Hrifle_NFAL | Very hard |
+
+Player start and the Playground terminal stay in room 1. Weapons follow the film (`Loadout` in the generator, the game's own card names): rifles at the street checkpoint, pistols and SMGs in the hall, riot guards with `Shield_RiotLight` and a pistol, soldats with `R_Hrifle_NFAL`, scouts and a few later agents with `M_SwordNexus`; support, engineers and scientists keep their defaults. Wall signs and splats find a clear patch of wall (`CollectWallBusy`) or are dropped with a `no clear wall` log line. The Workshop preview comes from `tools/make_preview.py` over the room shots.
 
 ## Use it
 

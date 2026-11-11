@@ -2,6 +2,14 @@
 
 Append-only, newest first.
 
+## 2026-11-11 Nexus Prominence clean-up
+
+- Owner: signs over doors and objects in rooms 1-2; clean up, match enemy weapons to the video, better Workshop image.
+- Weapon cards: no list in the repo; UnityPy over resources.assets grouped MonoBehaviours by script class (StatCard_Ranged 84, StatCard_Weapon 101, StatCard_Character 111). Nexus cards: R_NN57 pistol, R_NM46 SMG, R_Nc762 rifle, R_Hrifle_NFAL, R_NS-V.10, R_NZucker, Revolver_Nex410_S, M_SwordNexus, Shield_RiotLight. Character cards' default loadouts were not decoded (no typetree); weapons are now set on the markers (`Held_R`/`Held_L`, `ClearDefaultWeapons`).
+- Video frames (sheet_01): street guards with assault rifles, hall agents with pistols/SMGs, a riot shield, blades.
+- Decal placement: first pass counted pilasters and seams as blocked and dropped nearly every sign; filtered thin and wall-spanning parts. Room 1's back wall really is full, so its signs got fixed mounts.
+- Built, rendered (madnesswright-lab/nexus/rooms-2026-11-11e.jpg), 40/40 corners OK, SyncAndBuild, check-mod clean, deploy --force. Not played, not uploaded.
+
 ## 2026-11-11 · Nexus Prominence: camera reaches every corner, Madness dressing
 
 - Owner's report: at the bottom left or right of room 1 the camera did not follow; the right exit barely showed. Cause (decompiled Cam_Main): the sample room's Leeway z is 0, so the camera never moves toward the front, and it stops about 5 units inside Border_Left/Right, which sat on the walls. New `FitCamera` in the generator: Leeway z 0.6 (position and look), side borders placed so the camera centre gets 10 units past a player 1.5 units from a wall (`EdgeLead`), Z borders on the floor edges.
@@ -352,6 +360,12 @@ Append-only, newest first.
 ## [2026-10-28] index | rebuilt (18 entries)
 ## [2026-10-29] index | rebuilt (18 entries)
 ## [2026-10-30] index | rebuilt (18 entries)
+## [2026-11-11] Nexus Prominence: room table on the Workshop, fun pass
+
+- The owner tested the camera, dressing and clean-up build and said publish. wsup.exe updated item 3837705778 with change-notes-2026-11-11e.txt and madnesswright-lab/nexus/workshop-preview-2026-11-11.jpg: result OK. Description gained a room table (contents, enemies, difficulty Easy to Very hard) in Steam BBCode `[table]`.
+- Fun pass: generator `Stations` instantiates Assets/Library/Prefabs/Proxies/PX_Interact.prefab (Type Ammo, AmmoGrenade, MedCabinet) on free back wall (reserves a wallBusy rect so signs avoid them) and Markers/Item_Spawn.prefab with a Nexus MadCard per room (R_NN57, M_SwordNexus, R_NM46, Shield_RiotLight, R_Hrifle_NFAL, R_NZucker, R_Nc762, R_NS-V.10). First try searched u 0.06-0.6 and dropped two stations; widened to 0.95, room 3 still has none.
+- Built, NexusShots -corners 40/40 OK, SyncAndBuild (.sobj 1.95 MB), check-mod clean (no Author), deploy --force. Not played, not uploaded.
+
 ## [2026-11-11] Nexus Prominence: released, then rooms resized and filled
 
 - The owner tested the rooms 1-2 build: "release it". wsup.exe updated item 3837705778 with change-notes-2026-11-11b.txt (result OK). Gotcha: wsup.exe needs absolute Windows paths for every file argument; a relative path joined to $PWD threw FileNotFound at Program.cs line 16.
