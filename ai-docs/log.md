@@ -407,3 +407,7 @@ Append-only, newest first.
 
 ## [2026-11-11] docs | Works with section
 README gained a Works with section (polywright, musicwright, fetchwright, ludowright); the wiki gained a Works-with page linked from the sidebar and Home. Each entry describes a handoff found in the skill files on one side or the other.
+
+## 2026-11-11 (budget)
+
+- Continue prompt run: no owner play since the Stations rebuild (mods.log 11:11, Player.log 11:17), so no generator work. Shrank .claude-plugin/icon.png 512 px RGB 283 KB to 256 px FASTOCTREE palette 18 KB (Pillow); budget tracked KB 1,575 to 1,317. PR #78 merged, v0.1.15 released.
