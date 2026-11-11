@@ -420,3 +420,8 @@ README gained a Works with section (polywright, musicwright, fetchwright, ludowr
 
 - Continue prompt run: no owner play since the Stations rebuild (mods.log 11:11, Player.log 11:17), so no generator work. Shrank .claude-plugin/icon.png 512 px RGB 283 KB to 256 px FASTOCTREE palette 18 KB (Pillow); budget tracked KB 1,575 to 1,317. PR #78 merged, v0.1.15 released.
 - The owner played the Stations build: "looking good release it". wsup.exe updated item 3837705778 with change-notes-2026-11-11f.txt and workshop-preview-2026-11-11.jpg: result OK; GetPublishedFileDetails shows visibility 0, updated 13:12, 21 subscribers.
+
+## 2026-11-11 (juice released)
+
+- Owner: "Play test went well release the latest version". mpn.py log clean. wsup.exe updated item 3837705778 (change-notes-2026-11-11g.txt, workshop-preview-2026-11-11.jpg): result OK; GetPublishedFileDetails: visibility 0, updated 14:02, 24 subscribers, description has the breakables.
+- Scenes skill: L-20261111-3 and a rules line (PR #82, v0.1.16). game-juice juice-apply L-002 (PR #12, v1.3.5). Both plugins updated locally.
