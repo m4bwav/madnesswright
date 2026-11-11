@@ -22,6 +22,14 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-23
 
+### L-003 · 2026-11-11 · A generated SceneTools map is unchecked until each room is rendered from its camera
+- Trigger: the Nexus Prominence template (2026-11-10) shipped to the Workshop as ten bare sample boxes in red fog; the player said it "looked nothing like the video". Nobody had looked at a room before deploy (proxies only show in game).
+- Hypothesis: lint and check-mod prove the map loads, not how it looks; a headless render per room is cheap and shows it
+- Rule: before deploy, render every room from its CameraPoint (examples/NexusProminence/Editor/NexusShots.cs, `-executeMethod NexusShots.Render -shotDir <dir>`) and compare with the reference. Traps seen: (1) enable only that room's lights, or every room's directional light washes it white; (2) clone all rooms from the bare template before dressing any, or clones copy room 1's enemies and set; (3) `EditorUtility.DisplayDialog` returns Cancel in `-batchmode` (guard with `Application.isBatchMode`); (4) SamplePlayground's rooms carry FogDensity 0.1 (zero it unless fog is wanted); (5) the bundle build writes to LocalLow/Gibbing Tree/Madness Project Nexus SceneTools/SceneObjs
+- Evidence: madnesswright ai-docs/log.md 2026-11-11; renders examples/NexusProminence/renders/rooms-2026-11-11.jpg; build.log "Cancelling DisplayDialog ... should not be called in batch mode"
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11
+
 <!-- Example (delete once you have a real entry):
 ### L-001 · 2026-10-17 · One-line lesson in plain words
 - Trigger: what happened, with dates or counts
