@@ -16,7 +16,7 @@ Sets per room are in the generator (`Street`, `WantedHall`, ...); the Workshop d
 
 | # | Room | Enemies (Nexus) | Alert | Stations (back wall) | Floor pickup | Difficulty |
 |---|------|-----------------|-------|----------------------|--------------|------------|
-| 1 | Street checkpoint | 3 agents, rifles | unaware | Ammo | R_NN57 pistol | Easy |
+| 1 | Street checkpoint | 2 agents, rifles | unaware | Ammo | R_NN57 pistol | Easy |
 | 2 | Wanted hall | 3 agents, 1 scout | unaware | - | M_SwordNexus | Easy |
 | 3 | Controls office | 2 agents, 1 support | unaware | (ammo: no clear wall, skipped) | R_NM46 SMG | Easy |
 | 4 | Cargo bay | 2 riot guards, 2 agents, 1 soldat | hunting | Med cabinet, grenade ammo | Shield_RiotLight | Hard |

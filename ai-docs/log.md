@@ -437,3 +437,7 @@ README gained a Works with section (polywright, musicwright, fetchwright, ludowr
 
 - Owner: "Play test went well release the latest version". mods.log clean; Player.log 3x NRE Toggleable_Automator.SetAutomatorState (Init from Toggleable_Controller.Awake). wsup.exe updated 3837705778 with change-notes h (spike timer listed as a known issue): result OK, live 14:32, 26 subscribers.
 - Fresh decompile (scratchpad, game Assembly-CSharp): Converter_Proxy.ReplaceProxy instantiates a library prefab for stock togglables and copies no add-ons; ConvertCustomObj adds Toggleable_Main onto a CO_ Togglable; UpObjs entries are swapped for created objects. Generator `Spikes` now uses a CO_ driver. Built, 40/40 corners, deployed; not played. Scenes L-20261111-4, PR #85, v0.1.17.
+
+## 2026-11-11 room 1 rework
+
+- The owner asked to make room 1 smaller and rework its sides and back after the film frame at 0:19. New `Street` set (one back window, left counter, right side door) and RoomSpec 1.0 x 0.8 with 2 agents. Decal() quads only face the camera, so side-wall signs cannot use it: "no loitering" moved to the window head. build-m, shots-m (40/40), sync-m, check-mod, deploy OK. Workshop upload blocked by the auto-mode classifier; see HANDOFF.
