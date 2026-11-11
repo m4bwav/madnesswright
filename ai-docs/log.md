@@ -2,6 +2,13 @@
 
 Append-only, newest first.
 
+## 2026-11-11 Nexus Prominence encounters and colour
+
+- SceneTools facts used (MPN_SceneTools/Assets/Code/SceneObjs): `ProxyObj_Door.ProxyType` has spawner types Manhole, FloorGrate, Vent, VentDrop, VentSide, VentFan, Rapel; `Marker_Squad` (prefab Markers/Squad_Spawner) takes `SpawnFromDoors`, `SecondsInRoomTilSpawn`, `Wave` (WaveUnits with GenerationScale, MaxSquadSize, MaxUnitCount, WeaponStock pools such as NEXUS_T5, NEXUS_T7_Ranged); `ProxyObj_Togglable.ProxyType.Spikes`; `CustomAddon_ToggleAutomator` (TimeStayUp/Down in frames) whose header says to place it on a custom togglable.
+- Spawn doors are added after ChainDoors: ChainDoors links the leftmost and rightmost door by x, so a spawn door added earlier could become an exit.
+- Vent grilles on the back wall vanished twice: flush with the band and skirting (z), then dark on the near-black lower wall; now steel, 0.2 out from the wall.
+- Build k: 40/40 corners, sobj 2.09 MB, check-mod clean, scene-lint 0 errors, deployed. Not played, not uploaded; notes workshop/change-notes-2026-11-11h.txt. F12 screenshots wait on the owner's play.
+
 ## 2026-11-11 Nexus Prominence juice: shootable set pieces
 
 - Asked to use the game-juice plugin while staying true to the video. A Playground map has no game code, so juice lives in the set: SceneTools `CustomObj_Destructible` is converted by the game (`Converter_Proxy.ConvertCustomObj` -> `Interactive_Target`, decompile of build 25615196 in the session scratchpad) and swaps `DestructionStates` on hits, with `FlashColorOnHit`, FMOD hit/destroy sounds and an optional `Explosion` card. `Hazard_Splosive` also exists (game class with the same name) but no sample uses it, so it was not used.

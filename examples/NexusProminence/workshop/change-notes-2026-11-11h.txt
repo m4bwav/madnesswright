@@ -1,0 +1,9 @@
+Encounters update.
+
+- Control tower: reinforcement waves. About 12 seconds in, nine more Nexus troops arrive in squads of up to three, crawling out of a wall vent and sliding down two rappel lines; agents first, riot guards and soldats toward the end.
+- Cargo bay: a three-agent rappel team drops in about 14 seconds after you enter.
+- Spotlight corridor: four agents crawl out of two wall vents about 10 seconds in.
+- Spike traps: two spike strips in the shutter garage and one in the spotlight corridor rise and drop on a timer (up about 1.5 s, down about 2.5 s). Hazard-striped plates on the floor mark them. Time your crossing.
+- Look: floors and walls now have the film's warm maroon cast instead of flat gray.
+
+Nothing to do on your side: resubscribe or restart the game if the map doesn't update.
