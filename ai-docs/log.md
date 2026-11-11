@@ -2,6 +2,14 @@
 
 Append-only, newest first.
 
+## 2026-11-10 (late): Nexus Prominence built and deployed
+
+- Owner installed Unity 2019.2.6f1. Ran the generator headless (`-batchmode -executeMethod NexusProminenceBuilder.Build`): compiled first time, ten rooms written.
+- SYNCH VISUALS has no menu item (inspector button, private `RoomObj_Editor.ActivateRoomVisuals`), so `NexusBatch.SyncAndBuild` calls it by reflection, saves, then calls `Build_Compressed`. Bundles land in LocalLow/Gibbing Tree/Madness Project Nexus SceneTools/SceneObjs.
+- scene-lint: 0 errors; it reports `rooms: 1` because only room 1 stays a prefab instance (rooms 2-10 are unpacked copies; all 10 floors tagged). Warnings: S10 Camera_Point x9, S12 nine lights (from the sample room copies).
+- Mod folder renamed `mod` -> `NexusProminence` (deploy names the Mods folder after it). check-mod clean bar no Author; deployed to Mods/NexusProminence. Owed 7 (headless SceneTools build) now proven.
+- Not played: waits on the owner (enable in gear menu, Playground terminal, README checklist, then `mpn.py log`).
+
 ## 2026-11-02 (late): Director 0.17.1, empty INSERT menu
 
 - A player got the INSERT menu to open with nothing but the header and Close (screenshot). No filter box showed, so the static `entries` list was empty, not filtered. Cause: `ModEntry.Unload` destroys the host and `DirectorMenu.OnDestroy` cleared the shared static list; on an unload then reload the old cleanup can land after the new features' `Register`. Fix: `current` instance guard on the clear, `Add` dedupes by label, empty-list message. Built 0 warnings, harness passed, deployed byte-identical; not played (no repro run in game). Merged PR #65, tag v0.1.14, wsup.exe updated item 3822329165 with change-notes-0.17.1.txt (result OK; GetPublishedFileDetails: Director, visibility 0, 56 subscribers, updated 01:19 UTC).
