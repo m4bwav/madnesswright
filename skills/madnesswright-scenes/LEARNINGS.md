@@ -39,3 +39,10 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Scope: skill | repo:<slug> | env:<name> | global
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17
 -->
+
+## L-20261111-1 `stretch-cloned-rooms`
+- Trigger: every room cloned from the sample box looks the same square; a script resizes rooms
+- Rule: scale room meshes and colliders about one wall and move everything else (doors, cover, markers, lights, Border_*); the sample meshes are rotated -90 on X, so scale each local axis by the world axis it lines up with; call `Physics.SyncTransforms()` before reading collider bounds. Wide rooms are fine: Cam_Main clamps the camera between Border_Left and Border_Right, so it pans.
+- Evidence: examples/NexusProminence `Stretch`, build logs 2026-11-11 (widths stayed 31.5 until both fixes), decompiled Cam_Main
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11
