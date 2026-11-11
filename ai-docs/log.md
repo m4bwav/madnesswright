@@ -2,6 +2,13 @@
 
 Append-only, newest first.
 
+## 2026-11-11 · Nexus Prominence: camera reaches every corner, Madness dressing
+
+- Owner's report: at the bottom left or right of room 1 the camera did not follow; the right exit barely showed. Cause (decompiled Cam_Main): the sample room's Leeway z is 0, so the camera never moves toward the front, and it stops about 5 units inside Border_Left/Right, which sat on the walls. New `FitCamera` in the generator: Leeway z 0.6 (position and look), side borders placed so the camera centre gets 10 units past a player 1.5 units from a wall (`EdgeLead`), Z borders on the floor edges.
+- New `NexusShots.Render -corners`: reproduces Cam_Main's follow (zoom off, mouse centred) for a player at each floor corner, renders it with a red marker and logs OK/OUT. Before: 19 of 40 corners off screen (all rooms but the locker room). After: 40 of 40, player 0.22 to 0.31 in from the screen edge.
+- Look pass against the frame sheets (owner: "more like a madness map, funnier, but true to the movie"): new tools/make_decals.py writes PNG signs and splats into the SceneTools project (out of the repo for size); `Gags` puts 3 to 5 floor blood splats, bullet-hole bursts and a wall splat in every room, red wall scrawls, the film's "Don't Blink" chalkboard in the spotlight corridor, and joke signs (Welcome to Nevada: population decreasing; Days without an incident: 0; Reward: yes; Now serving 9,999; Please do not shoot the receptionist (again); Fragile (like grunts); This side up upside down; Sniper nest, no peeking; Shutter closes on grunts; Lost & found; Who ate my lunch; Authorized personnel only (you are not); Self destruct do not press beside a big red button; a wet-floor sign).
+- Built, SyncAndBuild (.sobj 1.97 MB), check-mod clean (no Author), deployed byte-identical. **Not played, not uploaded** (owner: don't publish until fixed and played). Description now links the film (https://www.youtube.com/watch?v=v0suvMY3GgM); change notes workshop/change-notes-2026-11-11c.txt. Renders: Ai/madnesswright-lab/nexus/rooms-2026-11-11d.jpg, corners-room1-2026-11-11d.jpg.
+
 ## 2026-11-10 · Nexus Prominence on the Workshop
 
 - The owner tested the map ("looks good") and asked to publish it for the requester to test. Uploaded the deployed Mods/NexusProminence folder with examples/WorkshopUpload as new public item 3837705778, title "Nexus Prominence (Hank Raid map)", tag Playground, plain gray-and-red title-card preview (PIL, no video art) and description in examples/NexusProminence/workshop/. `result OK`. Next: the requester's test (Owed 24).

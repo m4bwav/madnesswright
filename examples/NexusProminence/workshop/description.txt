@@ -1,6 +1,6 @@
 Playground map: Hank storms the Nexus Prominence control tower, ten rooms chained left to right from the street checkpoint to the control tower (wanted hall, controls office, cargo bay, sniper loft, shutter garage, spotlight corridor, locker room, break room). Nexus agents, guards, scouts, engineers and soldats get more alert the deeper you go.
 
-A template inspired by the fan collab "NEXUS: HANK RAID". No art from the video is used; the rooms are built from the game's own pieces in a gray-and-red look.
+A template inspired by the fan collab "NEXUS: HANK RAID" (watch it: https://www.youtube.com/watch?v=v0suvMY3GgM). No art from the video is used; the rooms are built from the game's own pieces in a gray-and-red look.
 
 Use: enable the mod from the gear icon, open the Playground terminal and load Nexus Prominence.
 
