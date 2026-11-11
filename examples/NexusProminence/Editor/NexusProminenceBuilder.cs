@@ -996,7 +996,20 @@ public static class NexusProminenceBuilder
                     wallBusy.Add(r);
                     placed = true;
                 }
-                if (!placed) Debug.Log("NexusProminence: no clear wall for station " + type + " in " + room.name);
+                if (!placed)
+                {
+                    // wall full (room 3): stand it free on the floor, a step in front of the back wall,
+                    // left of centre so it does not block the exit door
+                    float x = Mathf.Lerp(f.x0, f.x1, 0.35f);
+                    var go = (GameObject)PrefabUtility.InstantiatePrefab(ip, room.gameObject.scene);
+                    go.transform.SetParent(parent, true);
+                    go.transform.position = new Vector3(x, f.y, Mathf.Lerp(f.zf, f.zb, 0.8f));
+                    var px = go.GetComponent<ProxyObj_Interact>();
+                    px.Type = type;
+                    go.name = "PX_Interact_" + type + "_Floor";
+                    EditorUtility.SetDirty(px);
+                    Debug.Log("NexusProminence: wall full; station " + type + " stands on the floor in " + room.name);
+                }
             }
         }
         if (mp == null) { Debug.LogWarning("NexusProminence: " + ItemPrefab + " missing; no pickups."); return; }
