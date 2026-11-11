@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.15 · 2026-11-11
+
+- Plugin icon shrunk from 512 px RGB (283 KB) to a 256 px palette PNG (18 KB) to bring the tracked repository back under the size budget (1,575 KB was over the 1,536 KB limit).
+
 ## 0.1.14 · 2026-11-02
 
 - `examples/SwapUnaware` 0.17.1 (bug a player found): the INSERT menu opened empty (header and Close only). The action list is static and the old `DirectorMenu.OnDestroy` cleared it after a mod unload and reload had re-registered the features; now only the live menu (`current`) clears it, `Add` replaces an entry with the same label, and an empty list shows a line telling the player to toggle the mod or restart. Built, harness passed, deployed; not played.
