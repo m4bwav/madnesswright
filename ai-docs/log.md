@@ -352,6 +352,10 @@ Append-only, newest first.
   - `rm -rf "$VAR/..."` is refused by a safety check; write `"${VAR:?}/..."`.
   - Heredocs holding a doubled backslash are refused by a hook; write generator scripts with the Write tool.
 - Tests: 18 unit tests pass; six value cases passed run 1 with the skill; baselines for the hub and scenes action cases also found the faults (fixtures too easy), the modtools baseline used BepInEx and no info.txt (the skill made the difference).
+## [2026-11-11] Nexus Prominence: room 3 ammo box on the floor
+
+- Continue-prompt session; owner said keep going, will test later. `Stations` now stands a station on the floor (80% back, 35% across) when no back-wall patch is clear; room 3's ammo box was the only one skipped. Rebuilt headless (build-g, shots-g, sync-g logs in madnesswright-lab/nexus), 40/40 corners OK, check-mod clean, deployed. **Not played, not uploaded** (Owed 24). Untried fun ideas still: reinforcement waves, vent/rappel spawns, Spikes.
+
 ## [2026-10-23] index | rebuilt (13 entries)
 ## [2026-10-24] index | rebuilt (15 entries)
 ## [2026-10-24] index | rebuilt (15 entries)
