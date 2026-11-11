@@ -577,7 +577,21 @@ public static class NexusProminenceBuilder
         // display case: dark cabinet, glowing glass, shelves with boxes and a medkit
         float cx = f.x0 + 0.55f * f.W;
         Box(f, "Case", cx, f.y + 2.3f, f.zb - 0.8f, 2.6f, 4.6f, 1.2f, "dark");
-        Box(f, "CaseGlass", cx, f.y + 2.8f, f.zb - 1.42f, 2.1f, 3.0f, 0.03f, "glass");
+        var glass = Box(f, "CaseGlass", cx, f.y + 2.8f, f.zb - 1.42f, 2.1f, 3.0f, 0.03f, "glass");
+        // shot glass: a jagged rim left in the frame and shards on the floor in front of the case
+        var shards = new List<GameObject>
+        {
+            Box(f, "CaseGlassRimTop", cx, f.y + 4.2f, f.zb - 1.42f, 2.1f, 0.25f, 0.03f, "glass"),
+            Box(f, "CaseGlassRimLeft", cx - 0.9f, f.y + 3.4f, f.zb - 1.42f, 0.3f, 1.2f, 0.03f, "glass"),
+        };
+        for (int k = 0; k < 6; k++)
+        {
+            var s = Box(f, "Shard", cx - 1.0f + k * 0.4f, f.y + 0.02f, f.zb - 1.7f - (k % 3) * 0.25f, 0.3f - (k % 2) * 0.12f, 0.02f, 0.18f, "glass");
+            s.transform.rotation = Quaternion.Euler(0, k * 37f, 0);
+            shards.Add(s);
+        }
+        Breakable(f, "CaseGlass", new Vector3(cx, f.y + 2.8f, f.zb - 1.2f), new Vector3(2.1f, 3.0f, 0.4f),
+            new List<GameObject> { glass }, shards, GlassHits, "", GlassBreakSound);
         for (int k = 0; k < 3; k++)
         {
             float sy = f.y + 1.6f + k * 1.0f;
@@ -690,7 +704,8 @@ public static class NexusProminenceBuilder
         {
             float x = f.x0 + 4f + i * (f.W - 8f) / 3f;
             Box(f, "Lamp", x, f.y + 6.3f, f.zb - 0.5f, 1.4f, 0.25f, 0.6f, "dark");
-            Box(f, "LampGlow", x, f.y + 6.16f, f.zb - 0.5f, 1.1f, 0.04f, 0.4f, "screen");
+            var glow = Box(f, "LampGlow", x, f.y + 6.16f, f.zb - 0.5f, 1.1f, 0.04f, 0.4f, "screen");
+            var dead = Box(f, "LampDead", x, f.y + 6.16f, f.zb - 0.5f, 1.1f, 0.04f, 0.4f, "black");
             var beam = new GameObject("Beam");
             beam.transform.SetParent(f.Parent, false);
             beam.transform.position = new Vector3(x, f.y, f.zb - 0.4f);
@@ -700,6 +715,9 @@ public static class NexusProminenceBuilder
             r.sharedMaterial = f.M["beam"];
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             r.receiveShadows = false;
+            // shoot the lamp out: its glow and cone go dark
+            Breakable(f, "Lamp" + i, new Vector3(x, f.y + 6.2f, f.zb - 0.5f), new Vector3(1.4f, 0.4f, 0.8f),
+                new List<GameObject> { glow, beam }, new List<GameObject> { dead }, LampHits, "", LampBreakSound);
         }
         Box(f, "Slate", f.Cx + 1f, f.y + 3.2f, f.zb - 0.1f, 6f, 2.4f, 0.06f, "dark");
         Box(f, "SlateFrame", f.Cx + 1f, f.y + 1.95f, f.zb - 0.14f, 6.3f, 0.12f, 0.12f, "steel");
@@ -763,7 +781,13 @@ public static class NexusProminenceBuilder
             {
                 float x = f.Cx - 6.25f + c * 2.5f, yy = f.y + 2.6f + r * 1.5f;
                 Box(f, "MonitorCase", x, yy, f.zb - 0.2f, 2.3f, 1.35f, 0.25f, "black");
-                Box(f, "MonitorScreen", x, yy, f.zb - 0.34f, 2.0f, 1.1f, 0.02f, (r + c) % 4 == 1 ? "dark" : "screen");
+                var screen = Box(f, "MonitorScreen", x, yy, f.zb - 0.34f, 2.0f, 1.1f, 0.02f, (r + c) % 4 == 1 ? "dark" : "screen");
+                // shot screen: black glass with a crack across it
+                var off = Box(f, "MonitorDead", x, yy, f.zb - 0.34f, 2.0f, 1.1f, 0.02f, "black");
+                var crack = Box(f, "MonitorCrack", x + 0.1f, yy, f.zb - 0.36f, 1.6f, 0.04f, 0.01f, "steel");
+                crack.transform.rotation = Quaternion.Euler(0, 0, 18f + c * 11f);
+                Breakable(f, "Monitor" + r + c, new Vector3(x, yy, f.zb - 0.3f), new Vector3(2.0f, 1.1f, 0.2f),
+                    new List<GameObject> { screen }, new List<GameObject> { off, crack }, MonitorHits, MonitorHitSound, MonitorBreakSound, MonitorExplosion);
             }
         Box(f, "Desk", f.Cx, f.y + 0.75f, f.zb - 1.6f, 15f, 1.5f, 1.4f, "panel");
         Box(f, "DeskTop", f.Cx, f.y + 1.55f, f.zb - 1.6f, 15.4f, 0.1f, 1.6f, "dark");
@@ -839,6 +863,44 @@ public static class NexusProminenceBuilder
         }
         var brace = Box(f, "Brace", x, f.y + h, z - h, s * 1.35f, 0.12f, 0.12f, "dark");
         brace.transform.rotation = Quaternion.Euler(0, 0, 45);
+    }
+
+    // ---- juice: set pieces from the film that break when shot (CustomObj_Destructible, converted by the
+    // game into Interactive_Target). Feedback only: bullets pass through, no explosion unless a card is set,
+    // no damage bar, no popup, so fights play exactly as before. Set JuiceBreakables false to build without.
+    const bool JuiceBreakables = true;
+    const int GlassHits = 1, LampHits = 2, MonitorHits = 2;
+    const string GlassBreakSound = "event:/Foley/Glass Bottles/Wine Bottle Break";
+    const string LampBreakSound = "event:/Foley/Glass Bottles/Beer Bottle Break";
+    const string MonitorHitSound = "event:/Combat/Richochet/Richochet Sheild";
+    const string MonitorBreakSound = "event:/MechanicalFoley/Sparks/Electrocution";
+    const string MonitorExplosion = ""; // e.g. "ElecSplode" for a damaging spark burst (changes gameplay)
+
+    // Wrap already-built visual pieces into a destructible: 'intact' shows until it breaks, 'broken' after.
+    // The hit box is a thin collider at (center, size); keep it out of the walk lane.
+    static void Breakable(Frame f, string name, Vector3 center, Vector3 size, List<GameObject> intact, List<GameObject> broken,
+        int hits, string hitSound, string breakSound, string explosion = "")
+    {
+        if (!JuiceBreakables) { foreach (var g in broken) Object.DestroyImmediate(g); return; }
+        var root = new GameObject("CO_NX_" + name);
+        root.transform.SetParent(f.Parent, true);
+        root.transform.position = center;
+        var a = new GameObject("Intact"); a.transform.SetParent(root.transform, false);
+        var b = new GameObject("Broken"); b.transform.SetParent(root.transform, false);
+        foreach (var g in intact) { g.isStatic = false; g.transform.SetParent(a.transform, true); }
+        foreach (var g in broken) { g.isStatic = false; g.transform.SetParent(b.transform, true); }
+        b.SetActive(false);
+        var hit = new GameObject("Hit"); hit.transform.SetParent(root.transform, false);
+        var col = hit.AddComponent<BoxCollider>(); col.size = size;
+        var d = root.AddComponent<CustomObj_Destructible>();
+        d.AimTarget = hit;
+        d.HitLocations = new List<Collider> { col };
+        d.DestructionStates = new List<GameObject> { a, b };
+        d.Health = hits; d.DamageIrrelevant = true;
+        d.ShowDamageBar = false; d.FlashColorOnHit = true; d.AllBulletsPassThrough = true;
+        d.HitSound = hitSound; d.DestroySound = breakSound; d.AdvanceStateSound = "";
+        d.Explosion = explosion; d.ExplodePoint = hit.transform;
+        d.Tasks = new[] { new CustomObj_Destructible.DestroyTask { PopupComplete = new string[0] } };
     }
 
     // Visual-only box (no collider, so pathing and the room's own collision are untouched).
