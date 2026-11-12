@@ -59,3 +59,11 @@ YouTube links mapped by title (oEmbed):
 Read but empty for scenes: guide 2664043208 (weapons, armor and the asset pipeline), guide 3305980802 (MadCard Maker only; it says stages are "not yet" covered), the Steam guides list (5 guides) and the SceneTools READMEs (installation only; no wiki).
 
 Next leads: a transcript of u7VV0N33Sx0. Re-export the SceneTools Overview doc and diff it against RESEARCH.md for the 2025 and 2026 features (items 12 to 18). Check the Nexus Prominence Workshop tags against item 19.
+
+## Round 3 (2026-11-11 night)
+
+- u7VV0N33Sx0 transcript read (yt-dlp auto-captions, 57 min). Its new rules are now in the skill (scenes C-20261111-3, R-20261111-3): room rotation 0 and scale 1, FBX Scale Factor, one-way LinkedDoor, lockout disables, the stray-object check, CG shaders yes and C# no, no scene joins without a load screen, Leave_Default_ToDoor, self-looping stage, Campaign Hubs (autosave plus name banner), Stage marker Prerequisites/Forbidden/QuestIfUnbeaten, cutscene fields. The video also says MadCard edits saved while the game runs were not picked up by Apply; restart or reload the mods.
+- Overview doc exported again: it still says nothing about items 12 to 17. They stay leads until a test in game. Item 18 (Uniforms) was already in RESEARCH R-20261017-1.
+- Item 19: Workshop item 3837705778 carries only the tag `playground` (GetPublishedFileDetails). Proposal for the owner: add the tags from Steam's search menu on the next upload (it needs his OK, since it is a Workshop change).
+- Map ideas from the video: set Leave_Default_ToStage to the stage itself for an endless run; a Stage marker with QuestIfUnbeaten if the map ever gets a hub.
+- Next leads: _xbtGGh6Rso (Quick Room Tutorial for Firing Range); in-game tests of items 12 to 15 in a scratch _PG scene.

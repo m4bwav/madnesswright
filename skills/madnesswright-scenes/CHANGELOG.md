@@ -53,3 +53,8 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - because: L-20261111-4 (Player.log NREs in the Nexus Prominence spike play, user request "improve the madnesswright")
 - files: references/scenetools-rules.md (Custom SceneObject line), LEARNINGS.md
 - Automator placement rule and the driver route for timing stock spikes.
+
+### C-20261111-3 · 2026-11-11 · Rules from the official stages and cutscenes video
+- because: R-20261111-3 (harvest, user request "do some more technique harvesting")
+- files: references/scenetools-rules.md (six lines under "Spawns, doors and moving parts"), references/stages-and-campaigns.md (stage card, Hubs, Stage marker, cutscene fields)
+- SKILL.md is unchanged, so triggers and decisions stay the same and the evals do not need a rerun.
