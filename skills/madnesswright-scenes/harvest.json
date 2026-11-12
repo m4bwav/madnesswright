@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "note": "2026-11-11 harvest: community pages gave almost nothing (GameBanana ad-block page, Steam guide HTTP 429, no YouTube tutorials); the useful finds were the official SceneTools and Event System Google Docs linked from the pinned Master Doc. Fetch the Master Doc as HTML export (text export drops links); linked docs export as text without sign-in. Unread leads: ai-docs/notes/2026-11-11-level-technique-harvest.md.",
   "targets": [
     {
       "kind": "web",
