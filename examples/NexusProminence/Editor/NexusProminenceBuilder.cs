@@ -222,6 +222,8 @@ public static class NexusProminenceBuilder
             { "floor", Mat("NX_Floor", new Color(0.34f, 0.29f, 0.30f), Color.black) },
             { "panel", Mat("NX_Panel", new Color(0.31f, 0.26f, 0.27f), Color.black) },
             { "red", Mat("NX_RedStripe", new Color(0.85f, 0.04f, 0.04f), new Color(0.55f, 0f, 0f)) },
+            { "maroon", Mat("NX_Maroon", new Color(0.50f, 0.03f, 0.05f), new Color(0.30f, 0f, 0.02f)) },
+            { "rubble", Mat("NX_Rubble", new Color(0.40f, 0.37f, 0.37f), Color.black) },
             { "dark", Mat("NX_DarkTrim", new Color(0.11f, 0.10f, 0.11f), Color.black) },
             { "black", Mat("NX_Black", new Color(0.02f, 0.02f, 0.02f), Color.black) },
             { "steel", Mat("NX_Steel", new Color(0.52f, 0.51f, 0.52f), Color.black) },
@@ -369,7 +371,7 @@ public static class NexusProminenceBuilder
 
         f.Doors = room.GetComponentsInChildren<ProxyObj_Door>(true).Select(d => d.transform.position).ToList();
         frames[room] = f;
-        Shell(f, room);
+        Shell(f, room, index);
         switch (index)
         {
             case 0: Street(f); break;
@@ -395,6 +397,7 @@ public static class NexusProminenceBuilder
         CollectWallBusy(f, room);
         Stations(f, room, index);
         Gags(f, index);
+        Debris(f, index);
 
         // Cover: reuse the room's PX_Cover objects, add or remove to match the spec.
         var covers = room.GetComponentsInChildren<ProxyObj_Cover>(true).ToList();
@@ -518,11 +521,22 @@ public static class NexusProminenceBuilder
     }
 
     // ---- shared shell: bands, skirting, seams, panels, ceiling pipe, door frames ----
-    static void Shell(Frame f, RoomObj room)
+    // look proposal 2 (2026-11-11): the rooms ran together with the same band everywhere, so each room gets
+    // its own band height, thickness and tone (red or maroon), and rooms with their own centrepiece drop the
+    // side-wall banners. Set VaryBands false to go back to one band.
+    const bool VaryBands = true;
+    static readonly float[,] BandByRoom = { // bandLo, bandH, maroon (1) or red (0)
+        { 1.05f, 0.55f, 0 }, { 0.75f, 0.35f, 0 }, { 1.4f, 0.4f, 1 }, { 1.05f, 0.9f, 1 }, { 1.7f, 0.3f, 0 },
+        { 0.6f, 0.7f, 0 }, { 1.2f, 0.25f, 1 }, { 1.05f, 0.55f, 1 }, { 0.9f, 0.45f, 0 }, { 1.5f, 0.6f, 0 } };
+    static readonly int[] OwnCentrepiece = { 0, 1, 6, 9 }; // street window, wanted hall, lamp corridor, tower
+
+    static void Shell(Frame f, RoomObj room, int index)
     {
-        const float bandLo = 1.05f, bandH = 0.55f;
+        float bandLo = 1.05f, bandH = 0.55f; string bandMat = "red";
+        if (VaryBands && index < BandByRoom.GetLength(0))
+        { bandLo = BandByRoom[index, 0]; bandH = BandByRoom[index, 1]; if (BandByRoom[index, 2] > 0) bandMat = "maroon"; }
         // back wall
-        Box(f, "Band_Back", f.Cx, f.y + bandLo + bandH / 2, f.zb - 0.06f, f.W, bandH, 0.12f, "red");
+        Box(f, "Band_Back", f.Cx, f.y + bandLo + bandH / 2, f.zb - 0.06f, f.W, bandH, 0.12f, bandMat);
         Box(f, "Skirt_Back", f.Cx, f.y + 0.14f, f.zb - 0.06f, f.W, 0.28f, 0.12f, "red");
         Box(f, "Seam_Back", f.Cx, f.y + 0.01f, f.zb - 0.35f, f.W, 0.02f, 0.18f, "red");
         // side walls
@@ -538,7 +552,7 @@ public static class NexusProminenceBuilder
                 float z1 = Mathf.Min(gz - 1.5f, f.zb);
                 if (z1 - z0 > 0.2f)
                 {
-                    Box(f, "Band_" + s, x, f.y + bandLo + bandH / 2, (z0 + z1) / 2, 0.12f, bandH, z1 - z0, "red");
+                    Box(f, "Band_" + s, x, f.y + bandLo + bandH / 2, (z0 + z1) / 2, 0.12f, bandH, z1 - z0, bandMat);
                     Box(f, "Skirt_" + s, x, f.y + 0.14f, (z0 + z1) / 2, 0.12f, 0.28f, z1 - z0, "red");
                 }
                 z0 = gz + 1.5f;
@@ -562,7 +576,8 @@ public static class NexusProminenceBuilder
             // a banner on each side wall, as far from that wall's doors as possible
             float bz = new[] { f.zb - 3f, f.Cz, f.zf + 4f }
                 .OrderByDescending(z => sideDoors.Length == 0 ? 99f : sideDoors.Min(dz => Mathf.Abs(dz - z))).First();
-            if (sideDoors.Length == 0 || sideDoors.Min(dz => Mathf.Abs(dz - bz)) > 2.2f) Banner(f, x, f.y + 3.4f, bz, true);
+            bool ownPiece = VaryBands && System.Array.IndexOf(OwnCentrepiece, index) >= 0;
+            if (!ownPiece && (sideDoors.Length == 0 || sideDoors.Min(dz => Mathf.Abs(dz - bz)) > 2.2f)) Banner(f, x, f.y + 3.4f, bz, true);
         }
         // dark corner posts where the back wall meets the sides, and floor panel seams
         Box(f, "CornerPost", f.x0 + 0.3f, f.y + 3.6f, f.zb - 0.3f, 0.6f, 7.2f, 0.6f, "dark");
@@ -1371,6 +1386,60 @@ public static class NexusProminenceBuilder
 
     // Madness-map dressing on top of each room's set: the film's blood and bullet holes everywhere,
     // its own wall scrawl and chalk, plus one or two joke signs per room.
+    // look proposal 1 (2026-11-11): the front third of every room was bare floor. Low debris there (rubble,
+    // a fallen ceiling panel, casings, papers, a tipped bin) fills it without blocking: every piece stays under
+    // 0.8 high, so Solidify gives it no collider, and nothing lands within 4 units of a door. Logged as NX_DEBRIS.
+    const bool FrontDebris = true;
+    static void Debris(Frame f, int index)
+    {
+        if (!FrontDebris) return;
+        var r = new System.Random(500 + index);
+        System.Func<float> R = () => (float)r.NextDouble();
+        float zLo = f.zf + 0.6f, zHi = f.zf + Mathf.Max(1.5f, f.D * 0.33f);
+        int clusters = 3 + index % 2, placed = 0;
+        for (int c = 0, tries = 0; c < clusters && tries < 40; tries++)
+        {
+            float cx = Mathf.Lerp(f.x0 + 2f, f.x1 - 2f, (c + 0.2f + 0.6f * R()) / clusters), cz = Mathf.Lerp(zLo, zHi, R());
+            if (f.Doors.Any(d => new Vector2(d.x - cx, d.z - cz).magnitude < 4f)) continue;
+            c++;
+            switch ((index + c) % 4)
+            {
+                case 0: // rubble heap
+                    for (int k = 0; k < 5; k++)
+                    {
+                        float s = 0.25f + 0.35f * R();
+                        var b = Box(f, "DebrisRubble", cx + (R() - 0.5f) * 1.6f, f.y + s * 0.35f, cz + (R() - 0.5f) * 1.0f, s, s * 0.7f, s * 0.9f, k % 2 == 0 ? "rubble" : "panel");
+                        b.transform.rotation = Quaternion.Euler(R() * 20f, R() * 90f, R() * 20f);
+                    }
+                    break;
+                case 1: // ceiling panel fallen flat, one corner propped up
+                    var pn = Box(f, "DebrisPanel", cx, f.y + 0.2f, cz, 2.2f, 0.08f, 1.1f, "panel");
+                    pn.transform.rotation = Quaternion.Euler(0, R() * 40f - 20f, 9f);
+                    Box(f, "DebrisRubble", cx + 0.9f, f.y + 0.12f, cz, 0.3f, 0.24f, 0.3f, "rubble");
+                    break;
+                case 2: // spent casings and loose papers
+                    for (int k = 0; k < 9; k++)
+                    {
+                        var cs = Box(f, "DebrisCasing", cx + (R() - 0.5f) * 1.8f, f.y + 0.03f, cz + (R() - 0.5f) * 1.2f, 0.06f, 0.06f, 0.16f, "steel");
+                        cs.transform.rotation = Quaternion.Euler(0, R() * 180f, 0);
+                    }
+                    for (int k = 0; k < 3; k++)
+                    {
+                        var pp = Box(f, "DebrisPaper", cx + (R() - 0.5f) * 2.2f, f.y + 0.012f, cz + (R() - 0.5f) * 1.4f, 0.45f, 0.01f, 0.6f, "white");
+                        pp.transform.rotation = Quaternion.Euler(0, R() * 180f, 0);
+                    }
+                    break;
+                default: // tipped bin with spilled trash
+                    var bin = Box(f, "DebrisBin", cx, f.y + 0.3f, cz, 0.6f, 0.6f, 0.75f, "dark");
+                    bin.transform.rotation = Quaternion.Euler(0, R() * 60f - 30f, 0);
+                    for (int k = 0; k < 4; k++) Box(f, "DebrisPaper", cx + 0.5f + R() * 1.2f, f.y + 0.012f, cz + (R() - 0.5f) * 0.9f, 0.35f, 0.01f, 0.4f, k % 2 == 0 ? "white" : "stain");
+                    break;
+            }
+            placed++;
+        }
+        Debug.Log("NX_DEBRIS room " + (index + 1) + ": " + placed + " clusters in the front third");
+    }
+
     static void Gags(Frame f, int index)
     {
         var r = new System.Random(100 + index);

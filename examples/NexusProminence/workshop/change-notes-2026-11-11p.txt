@@ -1,4 +1,6 @@
 Nexus Prominence 2026-11-11p
 
-- Garage: two concrete pylons to fight around, and a petrol generator with a gas can, toolbox and wrench by the back wall.
+- Garage (room 6): two concrete pylons with a red band and a generator set (generator, fuel can, hazard sign, hose, toolbox) by the back wall, as in the film.
+- Every room now has rubble, a fallen ceiling panel, spent casings, papers or a tipped bin near the front, so the lower half of the screen is no longer bare floor. All of it is low and you walk over it.
+- Each room has its own wall band (height, thickness, red or dark maroon), and the street, wanted hall, lamp corridor and control tower lost their side-wall banners, so the rooms no longer look alike.
 - Nothing to do: resubscribe or restart the game to get the update.
