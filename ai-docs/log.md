@@ -496,3 +496,4 @@ Look proposal 3 from notes/2026-11-11-nexus-overlaps-and-look.md: lit accents in
 ## 2026-11-11 19:30 pylons and generator (build-zg)
 
 - Owner's frame showed tapered red-banded pylons and a petrol generator set missing from the map. New builder helpers `Pylon` and `Generator`, both used in room 6; names added to Features for the overlap scan. zg: corners 40/40, no new clashes, deployed. Waits on a play.
+- Wrap-up: anonymous curl of the Workshop item page returns the Steam error page (not the gallery); the continue prompt now says to check the gallery in the browser.
