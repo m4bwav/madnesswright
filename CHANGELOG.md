@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.28 · 2026-11-12
+
+- madnesswright-scenes: beta SceneTools additions from the SceneTools_Testing commit log (water zones and room fog, Lockers on Destructibles, Vessel and seat tuning, Uniforms on character markers, ExplosionGenerator, door StartPoints rename and lockdown, Camera Zones, unfinished Arena setup, progress blockers, movie player). madnesswright: four beta character traits. Beta-only, field names unconfirmed, unverified in game.
+
 ## 0.1.27 · 2026-11-12
 
 - madnesswright-modtools: firearm attachments (MadObj_Addon), reskin materials, Slash's Asset Viewer, NEMLegacy's hooks for loading extra files (stale, re-check in a decompile), more FMOD details. madnesswright: MCM reskins, bundle logs and load-order colours. Unverified in game.

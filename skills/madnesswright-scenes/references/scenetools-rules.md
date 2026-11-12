@@ -82,6 +82,18 @@ Tags: `Floor` (spawn and pathing surface), `Character`.
 - **The fourth wall**: a copy of the back-wall quad turned 180 degrees with its Mesh Renderer removed, so it blocks but is not drawn. Observed.
 - Source: [../../../ai-docs/notes/2026-11-12-madness-technique-harvest.md](../../../ai-docs/notes/2026-11-12-madness-technique-harvest.md), items 23 to 26.
 
+## Beta SceneTools additions (2026-11-12e harvest, items 61-62, 64-65, 67-68, 70-71; beta-only, unverified in game)
+
+From MPN_SceneTools_Testing commit messages only (testing repo, beta branch). Field and prefab names need confirming in the prefabs and tooltips before use.
+
+- Water and fog (2025-12-04): `Hazard_WaterZone` adds water; `GlobalFog` on a room's `Camera_Point` sets that room's fog, and [Sync Visuals] copies it to the Dev_Cam on room sync.
+- Lockers on Destructibles: a Locker addon on a Destructible drops its items when destroyed.
+- Vessels (2026-01): `CollisionDamageMult`, `ImpactThreshold`, ignore collision with the linked seat user; a DriverAction's `AdditiveForce` adds to velocity instead of setting it, so several can drive one Rigidbody. VesselAnimationEvents exist.
+- Seats: samples `Proxy_Seat` and `CO_Seat`; reticle can stay on while seated (turrets); `FaceTowards` takes a limit.
+- `Marker_Character` can carry Uniforms (outfit per placed character; fields unknown, 2026-09-02).
+- `Effect_ExplosionGenerator`: scripted explosions without a weapon.
+- Doors: custom-door `SpawnPoints` was renamed `StartPoints` (old guides use the old name); addon effects, access lights, and a 2026-07-06 lockdown update (details unknown). Stage Start Markers since 2025-06-06.
+- Camera Zones have tooltips. The 2026-07-11 "ARENA TEST SETUP" is marked unfinished by its author: custom Arena work on beta may change.
 ## Build output
 
 `>> Build (Compressed) *RECOMMENDED*` or `>> Build (Uncompressed)` writes to `Application.persistentDataPath/SceneObjs/`, which for this project (company Gibbing Tree, product "Madness Project Nexus SceneTools") is `%USERPROFILE%\AppData\LocalLow\Gibbing Tree\Madness Project Nexus SceneTools\SceneObjs\`. Target is StandaloneWindows64.

@@ -54,3 +54,5 @@ On the stage card. `Conditions_Start` (at least one) starts it; `Actions_Exists`
 Start interactive (the game adds the start-waves action), Siege Targets (Destructibles or Interactives), victory cutscenes, Staging Grounds zones, PX_SiegeRepair, and on each room's RoomObj: `ArenaSafeRoom`, `PatrolPaths` and `GuardPoints` (Infiltration), `ToysToResetOnReEnter`. A custom arena stage replaces an existing one; there is no free slot yet.
 
 Custom stage music (2026-11-12b harvest, item 28; community, unverified in game): a 2D FMOD event with a loop region shows in the Playground Radio and can be set as a Stage_Arena's music. Steps in madnesswright-modtools references/sounds-and-fonts.md.
+
+Beta-only (2026-11-12e harvest, items 63, 69; SceneTools_Testing commit messages, unverified in game, names need confirming): Progress and Backtrack Blockers stop and later allow progress across stages (like the Outskirts junkyard crawl; fields unknown). `Tool_MoviePlayer` plays a movie in a cutscene, with a cutscene camera AnimController. `Effect_ExplosionGenerator` (scenetools-rules.md) suits event-fired set pieces.
