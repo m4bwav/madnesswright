@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261112-6 · 2026-11-12 · AddonGroup TetherTo, official transcripts and Event sheet links
+- because: user request (technique harvest); ai-docs/notes/2026-11-12f-madness-technique-harvest.md items 72-80
+- files: references/madcards.md (new "AddonGroup TetherTo"); references/sources.md (Community)
+- Official sheet or developer commit text, unverified in game; SKILL.md unchanged.
+
 ### C-20261112-5 · 2026-11-12 · Beta character traits
 - because: user request (technique harvest); ai-docs/notes/2026-11-12e-madness-technique-harvest.md item 66
 - files: references/madcards.md (new "Character traits from the beta tools")

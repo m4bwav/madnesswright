@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261112-5 · 2026-11-12 · Full Event Conditions and Actions, BooleanSet fix, early SceneTools objects
+- because: user request (technique harvest); ai-docs/notes/2026-11-12f-madness-technique-harvest.md items 72-80
+- files: references/event-actions.md (new); references/stages-and-campaigns.md (Events: BooleanSet, pointer, briefing voice); references/scenetools-rules.md (Beta SceneTools additions: earlier objects)
+- Official sheet or developer commit text, unverified in game; SKILL.md unchanged.
+
 ### C-20261112-4 · 2026-11-12 · Beta SceneTools additions (water, fog, vessels, seats, doors, blockers, movie player)
 - because: user request (technique harvest); ai-docs/notes/2026-11-12e-madness-technique-harvest.md items 61-65, 67-71
 - files: references/scenetools-rules.md (new "Beta SceneTools additions"); references/stages-and-campaigns.md (end)

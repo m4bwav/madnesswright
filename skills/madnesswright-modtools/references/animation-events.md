@@ -43,6 +43,8 @@ A custom attack without `H2H_Warmup`, `H2H_Swing_*`, `H2H_Hit_*` and `H2H_End` a
 | | `VoiceEvent` | INT 0-9: Angry, Attack, BigAttack, Cheer, Laugh, Grunt, Death, Pain, Affirmative, Dialogue; `VoiceEvent_20` plays at 20 % |
 | | `WeaponSoundEvent` | INT 0-5: Equip, Stow, Drop, Block, Hit, Swing |
 | | `JumpEvent`, `Footstep`, `LandEvent` | movement sounds |
+| Buffs (2026-11-12f harvest, item 79; developer commit 2025-02-13, unverified in game) | `BuffEvent` | applies any buff type; `SetBuffLifespan(int)` sets its length |
+| | `DoTEvent` | applies any DoT MadCard |
 | Misc | `AnimEvent` | play another clip |
 | | `GibMe` | gib the character |
 
