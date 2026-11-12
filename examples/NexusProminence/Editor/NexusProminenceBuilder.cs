@@ -822,6 +822,44 @@ public static class NexusProminenceBuilder
         Box(f, "VendingFace", f.x0 + 2.4f, f.y + 2.3f, f.zb - 1.32f, 1.2f, 2.4f, 0.03f, "screen");
         Banner(f, f.x1 - 7f, f.y + 3.4f, f.zb - 0.1f, false);
         foreach (var x in new[] { 0.3f, 0.55f, 0.75f }) Box(f, "OilStain", f.x0 + x * f.W, f.y + 0.01f, f.Cz + (x - 0.5f) * 3f, 1.6f, 0.006f, 1.0f, "stain");
+        // owner's film frame (2026-11-11): tapered concrete pylons with a red band, a generator set on the back wall
+        Pylon(f, f.x0 + 0.22f * f.W, f.zf + 0.38f * f.D);
+        Pylon(f, f.x0 + 0.46f * f.W, f.zf + 0.30f * f.D);
+        Generator(f, f.x1 - 4f, f.zb - 0.75f);
+    }
+
+    // Tapered concrete pylon (the film's checkpoint blocks): four shrinking tiers, red band on the second.
+    static void Pylon(Frame f, float x, float z)
+    {
+        if (f.Doors.Any(d => Mathf.Abs(d.x - x) < 2.5f && Mathf.Abs(d.z - z) < 2.5f)) return;
+        float[] w = { 1.9f, 1.6f, 1.35f, 1.1f }; float[] h = { 0.9f, 0.5f, 0.9f, 0.9f };
+        float y = f.y;
+        for (int i = 0; i < 4; i++)
+        {
+            Box(f, i == 0 ? "Pylon" : "PylonTier", x, y + h[i] / 2, z, w[i], h[i], w[i], i == 1 ? "red" : "panel");
+            y += h[i];
+        }
+        Box(f, "PylonCap", x, y + 0.04f, z, 1.15f, 0.08f, 1.15f, "dark");
+    }
+
+    // Petrol generator on the back wall with a gasoline can, warning sign, hose, toolbox and wrench (film frame).
+    static void Generator(Frame f, float x, float z)
+    {
+        Box(f, "Generator", x, f.y + 0.6f, z, 2.4f, 1.2f, 1.1f, "red");
+        Box(f, "GeneratorFrame", x, f.y + 1.25f, z, 2.5f, 0.1f, 1.2f, "dark");
+        Box(f, "GeneratorFace", x + 0.15f, f.y + 0.7f, z - 0.56f, 1.8f, 0.6f, 0.03f, "white");
+        Box(f, "GeneratorSwitch", x - 0.9f, f.y + 0.45f, z - 0.56f, 0.3f, 0.2f, 0.03f, "dark");
+        Box(f, "GeneratorFoot", x, f.y + 0.05f, z, 2.3f, 0.1f, 1.0f, "black");
+        Box(f, "GasCan", x + 1.65f, f.y + 0.45f, z - 0.1f, 0.5f, 0.9f, 0.35f, "white");
+        Box(f, "GasCanLabel", x + 1.65f, f.y + 0.45f, z - 0.28f, 0.36f, 0.4f, 0.02f, "red");
+        Box(f, "GasCanSpout", x + 1.75f, f.y + 1.0f, z - 0.1f, 0.06f, 0.25f, 0.06f, "steel");
+        Box(f, "HazardSign", x + 2.9f, f.y + 2.8f, f.zb - 0.08f, 1.0f, 1.0f, 0.04f, "dark");
+        Box(f, "HazardSignMark", x + 2.9f, f.y + 2.85f, f.zb - 0.11f, 0.55f, 0.55f, 0.02f, "screen");
+        Box(f, "HoseHook", x - 1.8f, f.y + 2.6f, f.zb - 0.12f, 0.12f, 0.12f, 0.15f, "steel");
+        Box(f, "HoseCoil", x - 1.8f, f.y + 2.0f, f.zb - 0.12f, 0.6f, 1.1f, 0.08f, "black");
+        Box(f, "Toolbox", x - 3.2f, f.y + 0.2f, f.zf + 0.35f * f.D, 0.9f, 0.4f, 0.45f, "red");
+        Box(f, "ToolboxHandle", x - 3.2f, f.y + 0.42f, f.zf + 0.35f * f.D, 0.4f, 0.04f, 0.06f, "white");
+        Box(f, "Wrench", x - 2.4f, f.y + 0.02f, f.zf + 0.33f * f.D, 1.0f, 0.04f, 0.12f, "steel");
     }
 
     // 7: corridor lit by ceiling lamps throwing red cones down the back wall; dark slate board.
@@ -1060,7 +1098,7 @@ public static class NexusProminenceBuilder
     static readonly string[] Strips = { "Pipe_Back", "Skirt", "PanelRail", "SkyStripFrame" };
     static readonly string[] Filler = { "Pilaster", "PipeClamp", "Conduit", "BandStripe", "DiagStripe", "PanelSeam", "WallPanelStripes", "FloorSeam", "Grate", "Paper", "Stain", "OilStain" };
     static readonly string[] Features = { "Door", "Window", "LitWin", "Poster", "Case", "Sign", "Banner", "Board", "Slate", "Shutter", "Vending",
-        "Notice", "Locker", "Menu", "Bill", "Vent", "Fridge", "Cabinet", "Rack", "Console", "Monitor", "Lamp", "Ledge", "Counter", "Hatch", "Crate", "Desk", "Table", "Bench", "Ladder" };
+        "Notice", "Locker", "Menu", "Bill", "Vent", "Fridge", "Cabinet", "Rack", "Console", "Monitor", "Lamp", "Ledge", "Counter", "Pylon", "Generator", "GasCan", "HazardSign", "Toolbox", "Hatch", "Crate", "Desk", "Table", "Bench", "Ladder" };
     static string Family(string name, string[] keys)
     {
         string n = name.StartsWith("NX_") ? name.Substring(3) : name;

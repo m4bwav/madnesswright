@@ -492,3 +492,7 @@ Look proposal 3 from notes/2026-11-11-nexus-overlaps-and-look.md: lit accents in
 ## 2026-11-11 19:25 zf released
 
 - build-zf played (mods.log 19:15, no problems); owner: release it. wsup.exe updated 3837705778 (notes o, preview zf from shots-zf via tools/make_preview.py): result OK, updated 19:24, public, 27 subscribers. `previews --clear 7` with six zf room JPEGs + film: result 1. Steam page fetch (curl) lacks the gallery strip, so the live count was not checked.
+
+## 2026-11-11 19:30 pylons and generator (build-zg)
+
+- Owner's frame showed tapered red-banded pylons and a petrol generator set missing from the map. New builder helpers `Pylon` and `Generator`, both used in room 6; names added to Features for the overlap scan. zg: corners 40/40, no new clashes, deployed. Waits on a play.
