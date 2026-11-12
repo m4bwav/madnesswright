@@ -90,3 +90,7 @@ One JSON object, required for a local mod, saved as `info.txt` or `info.json`. T
 - Reskins: for Mirror skins write the new texture name; for armor, "Old" is the texture the armor uses and "New" is yours. The material side: madnesswright-modtools references/madobjects.md. Field names are MCM's; confirm there.
 - MCM lists assets from JSON "bundle logs" with a `.LOG` extension. It writes `mobj.log` into the mod folder after the game has run in the MPN workspace, so dropdowns still fill when the mod is disabled. To list your own materials, add a log by hand: `{ "Material": ["Material_Name", "Material_Name2"] }`. Categories: MadObj_Melee, MadObj_Ranged, MadObj_Addon, MadObj_Armor, MadObj_BodyPart, ParticleSystem, GameObject, AnimationClip, Texture, Material, Sprite, Fonts.
 - A card rooted on another MadCard must load after its root or it does not load in game; MCM sets that on save. Workspace Local vs MPN: switching does not copy mods.
+
+## Character traits from the beta tools (2026-11-12e harvest, item 66; SceneTools_Testing commit messages, beta-only, unverified in game)
+
+`NoIncap` (player squadmates truly die), `NoDeadZoneDamage` (ignores dead zones; the S-3LF Eater has it), `BadBlock` (blocks without the skill), `NoRanged` (moved to the end of the trait list, so index-based trait data may shift). Confirm names in the tools before use.

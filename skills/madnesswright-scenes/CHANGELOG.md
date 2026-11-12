@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261112-4 · 2026-11-12 · Beta SceneTools additions (water, fog, vessels, seats, doors, blockers, movie player)
+- because: user request (technique harvest); ai-docs/notes/2026-11-12e-madness-technique-harvest.md items 61-65, 67-71
+- files: references/scenetools-rules.md (new "Beta SceneTools additions"); references/stages-and-campaigns.md (end)
+- Beta-only commit messages, field names unconfirmed, unverified in game; SKILL.md unchanged.
+
 ### C-20261112-3 · 2026-11-12 · Debug mode for playtests
 - because: user request (technique harvest); ai-docs/notes/2026-11-12c-madness-technique-harvest.md item 50
 - files: references/encounter-design.md (new "Debug mode for playtests")
