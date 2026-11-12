@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.25 · 2026-11-12
+
+- madnesswright-modtools: new references/sounds-and-fonts.md (FMOD banks, music, fonts) and references/porting.md (effect map codes, FBX import scale, armor, AltParts, melee points, origin icons, AssetStudio); Blender clip export settings; ModConfigs convention. Community guides, unverified in game.
+- madnesswright: rich text and name tokens, hand-written origin descriptions, MadCard Maker priority and card types, the subscribed mod folder. madnesswright-scenes: stage music pointer.
+
 ## 0.1.24 · 2026-11-12
 
 - madnesswright-modtools: new references/animation-events.md (Animation Events list, effects fired from animation frames, Blender 2.79 to FBX pipeline); draft doc, unverified in game.

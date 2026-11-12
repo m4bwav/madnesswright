@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261112-2 · 2026-11-12 · Stage music pointer
+- because: user request (technique harvest); ai-docs/notes/2026-11-12b-madness-technique-harvest.md item 28
+- files: references/stages-and-campaigns.md (end)
+- Points stage music at the modtools sounds reference; unverified in game.
+
 ### C-20261112-1 · 2026-11-12 · Door parenting (S14), floor at the back wall, the bib, Squad_Spawner fields
 - because: user request (technique harvest); ai-docs/notes/2026-11-12-madness-technique-harvest.md items 23-26 (community video _xbtGGh6Rso)
 - files: SKILL.md (Step 2 geometry, Step 4 doors); references/scenetools-rules.md (PX_Door and Squad_Spawner rows, Hard rules S14, new sections "Squad_Spawner fields" and "Hiding the void"); mpn.py scene-lint S14

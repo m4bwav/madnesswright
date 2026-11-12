@@ -6,7 +6,7 @@ Source: the official Custom Animations Google Doc (parts 1 to 4), read 2026-11-1
 
 - Rig: the M:PN Blender Sample Project armature, made in Blender 2.79. Do not change the armature; the doc warns "problems will ensue".
 - Export `.fbx`, never `.blend`. Mind the Sync and Root nodes.
-- Scale 0.45 in Unity. The doc does not say whether this is the FBX import Scale Factor or the object's scale: unverified in game. Test one clip both ways before writing it down as a rule.
+- Scale 0.45 in Unity. Two community guides (2026-11-12b harvest, item 33) say this is the importer's Scale Factor for Blender 2.8+ exports with Convert Units OFF (Blender 2.79: Scale Factor 45, Convert Units ON); untick Import Visibility, Cameras, Lights and Preserve Hierarchy for clips. See [porting.md](porting.md). Unverified in game.
 - Events are added to the clip in the ModTools project (Unity 2019.2.6f), then built as in SKILL.md Step 3.
 - Clip types: Sync Anim (two characters, e.g. grapples and executions), Attack (Warmup, Swing, Hit, End, Sweep) and Entrance.
 - Part 3 of the doc (the Animations MadCard format for new attacks, grapples and executions) is a placeholder only: there is no documented way yet to register a new attack by card. Say so rather than guessing a format.
@@ -56,3 +56,9 @@ Boss entrances, suicide units and ground slams without Harmony code:
 - `CamShakeEvent` (FLOAT 0-25), `SlowMoEvent_PlayerSquad`, `ChatterEvent` (INT 0-9 chatter categories), `SpeakEvent` (STRING custom line).
 
 All unverified in game: test each effect once in a Playground before building a mod on it.
+
+## Exporting a clip from Blender (item 34 of the 2026-11-12b harvest; community, G2, unverified in game)
+
+- NLA editor: push the action to a named track on Armature_Main. Do not save the .blend in that state, or you will need a fresh rig file.
+- Export FBX with no object limit, Apply Scalings "FBX All", -Y forward, Z up, Add Leaf Bones off, Animation on with All Actions off.
+- G2 agrees with the doc on event kinds: Method Events use the Function field, Run Events the String field; Float and Int are the parameters.

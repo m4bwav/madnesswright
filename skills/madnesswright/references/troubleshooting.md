@@ -19,3 +19,7 @@ Log locations (Windows), all under `%USERPROFILE%\AppData\LocalLow\Gibbing Tree\
 - `Mods\mods.log` (the game's mod log, rewritten each time mods are applied; the official doc calls it `mods.txt`), `Mods\directories.log` (which folder each object came from) and `Mods\enabled.txt`.
 
 Noise on a clean launch, not a mod problem: `Shader is not supported on this GPU ... Hidden/Nature/Terrain/Utilities`, `TRANSITION SQUAD FAIL: NO ONE TRANSITIONING`, `Launch Parameters (0 found)` followed by `[FAILED] ...exe`.
+
+## Editing a subscribed mod (2026-11-12b harvest, item 41; community, single guide)
+
+Subscribed mods live in `<SteamLibrary>/steamapps/workshop/content/488860/<itemId>/`. To find one, unsubscribe, resubscribe and sort by date modified. Steam overwrites that folder whenever the item updates (inferred), so a lasting change belongs in the user's own mod as an overriding card.

@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261112-2 · 2026-11-12 · Sounds, fonts and porting references from community guides
+- because: user request (technique harvest); ai-docs/notes/2026-11-12b-madness-technique-harvest.md items 27-28, 31-40, 44 (Steam guides 2664043208, 3305980802; Workshop item 3698923195)
+- files: references/sounds-and-fonts.md (new); references/porting.md (new); references/animation-events.md (Pipeline scale line, new "Exporting a clip from Blender"); references/harmony.md (new "Config files"); SKILL.md (Step 2, item 2)
+- FMOD banks, music loops, fonts, effect map codes (magenta/pink conflict kept flagged), import scale, armor, AltParts, melee points, icons, AssetStudio and the ModConfigs convention; all unverified in game, single-source items labelled.
+
 ### C-20261112-1 · 2026-11-12 · Custom animation clips: pipeline and Animation Events
 - because: user request (technique harvest); ai-docs/notes/2026-11-12-madness-technique-harvest.md items 20-22 (official Custom Animations doc, draft)
 - files: references/animation-events.md (new); SKILL.md (Step 2, item 4)

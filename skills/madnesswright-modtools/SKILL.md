@@ -25,7 +25,7 @@ Setup first, as in madnesswright Step 2: `releasebeta` branch, `MPN backup`.
 ## Step 2: ModTools project
 
 1. Clone or download `https://github.com/MPN-Modders/MPN_ModTools` (no license file: do not redistribute its files). Install exactly Unity 2019.2.6f1 via Unity Hub (the user installs it) and open the project root.
-2. Drop source assets into `Assets` (suggested subfolders exist). Fonts, textures, animations and icons need no extra setup.
+2. Drop source assets into `Assets` (suggested subfolders exist). Textures, animations and icons need no extra setup. Fonts, custom sounds (FMOD banks) and music: [references/sounds-and-fonts.md](references/sounds-and-fonts.md). Effect maps, FBX import scale, armor weighting, AltParts, melee points, origin icons and AssetStudio: [references/porting.md](references/porting.md). Both are community guides, unverified in game.
 3. Models come from Blender or similar; for a model that does not exist yet, hand over to a 3D modelling skill if one is installed (polywright) and come back with an FBX or OBJ. Blender FBX
    settings (scale, leaf bones, one take per action, axis test, Rigify) are in [references/madobjects.md](references/madobjects.md), "From Blender".
 4. Custom animation clips (attacks, sync anims, entrances) and the effects they fire from a frame (explosions, slams, camera shake, spawned particles): read [references/animation-events.md](references/animation-events.md) first. It holds the rig and export rules and the Animation Events list; the doc is a draft and nothing there is verified in game yet.

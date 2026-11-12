@@ -77,3 +77,10 @@ One JSON object, required for a local mod, saved as `info.txt` or `info.json`. T
 ```
 
 `Dependencies` are Workshop ids that auto-enable with this mod if the user has them installed. Harmony keys (`AssemblyPath`, `HarmonyID`, `EntryType`, `PatchOrder`, `ManualPatch`) are covered by madnesswright-modtools.
+
+## Text, origins and card types (2026-11-12b harvest, items 29, 30, 42; community guides, unverified in game)
+
+- Rich text in any in-game text (chatter, descriptions): `<b>`, `<i>`, `<color=#RRGGBB>` (named colours such as `Yellow` work), `<size=NN>`. One guide (G1) says a size above about 60 crashes the game and 80 always does: stay at 60 or below. Name tokens: `[PLAYER]`, `[ENEMY]` (the speaker's current target), `[PSQUAD0..n]` (player squad by order), `[<serial>]` (the character with that serial). `\n` and `\t` work only typed into the raw .json; MadCard Maker doubles backslashes. Single source (G1).
+- Origin description like a stock one (G1, credited to Geesplei): a SpecialSkill on the Origin card shows in the description, one on the origin's Character card works but stays hidden. Put the skills on the Character and hand-write `"Description": "BLURB\n\n\t\t\t<color=Yellow>[SPECIAL]</color> <color=White>SKILL TEXT</color>"`.
+- MadCard Maker (G2): the left and right arrows set a card's load priority; a card whose Root is another card in the mod moves up one place by itself. AddonGroups = addons only certain weapons accept; Swatches = colour pairs sold at the Fence; Skins = Arena Loft; VisualStockpiles = unknown; Stage_Story is mostly deprecated (swaps Story levels and Arena stages only). Stage_Custom replaced the old `_PG` scene-name suffix. The Workshop always shows the uploader's Steam name as author, whatever the Author list says.
+- Custom fonts and sounds: madnesswright-modtools references/sounds-and-fonts.md.
