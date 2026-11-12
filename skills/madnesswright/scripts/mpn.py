@@ -727,6 +727,9 @@ def cmd_scene_lint(args):
     for s in sr:
         if s["parent"]:
             warnings.append("S07 SceneRules belongs in the scene root; it is under %s" % s["parent"])
+    for d in of("PX_Door"):
+        if not d["parent"]:
+            warnings.append("S14 %s is in the scene root; a PX_Door must sit inside a Room_Layout or it does not work" % d["name"])
 
     terrain = next((i for i, n in proj.layers.items() if n == "Terrain"), 8)
     floors = 0

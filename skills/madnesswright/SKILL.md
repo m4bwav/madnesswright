@@ -18,7 +18,7 @@ Read `evergreen.json` next to this file. If `contradiction` is set or today is o
 - MADNESS: Project Nexus (2021, Steam 488860, developer and publisher GIBBING TREE, LLC) is this skill. "Madness: Project Nexus (Classic)" is the older Flash game on Newgrounds with unrelated saves and mods; say so and stop if that is what the user means. The Steam install folder is still named `Madness Project Nexus 2` (pre-release title) and the data folder `Madness Project Nexus_Data`.
 - Pick the lowest rung that does the job and name it in one line:
   1. MadCards only (text): stats, names, blood colour, loadouts, waves, stage values, swapping one model for another (`"ObjRef": "*M_Pipewrench"`). This skill.
-  2. New art (models, textures, icons, animations, characters): ModTools project, `.mobj`. madnesswright-modtools.
+  2. New art (models, textures, icons, animations, characters): ModTools project, `.mobj`. madnesswright-modtools; custom attack clips and the explosions or effects they fire are in its references/animation-events.md.
   3. New rooms, Playground scenes, stages, campaigns, cutscenes, arena stages: SceneTools project, `.sobj`. madnesswright-scenes.
   4. New behaviour no card exposes: a Harmony assembly. madnesswright-modtools.
   5. Legacy routes (replacing `Assembly-CSharp.dll`, BepInEx builds of Not Enough Madness, UABE texture swaps in `sharedassets`): only for old release builds (1.08-era). They break on every update and are superseded; use them only if the user insists, after a backup of the whole `_Data` folder.

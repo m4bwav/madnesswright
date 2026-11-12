@@ -523,3 +523,5 @@ Transcript of the official SceneTools stages, campaigns and cutscenes video read
 - 2026-11-11 split Director and Nexus Prominence into m4bwav/mpn-director and m4bwav/nexus-prominence (owner request); pointers left; lab rebuild.sh repointed; plugin 0.1.23.
 
 - 2026-11-11 later: repos live with banners, wikis (via first page saved in Chrome), CI green; madnesswright PR #107 merged, v0.1.23 tagged, plugin updated; Director release v0.17.1. Leftover empty locked folder Ai/swap-unaware/src to delete when free.
+
+- 2026-11-12 built harvest items 20-26 into the skills: modtools references/animation-events.md, scenes door/floor/bib/spawner rules, scene-lint S14; plugin 0.1.24. In-game tests owed by the owner.

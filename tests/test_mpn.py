@@ -19,6 +19,7 @@ G_ROOM = "a" * 32
 G_PS = "b" * 32
 G_ZC = "c" * 32
 G_SR = "d" * 32
+G_DOOR = "f" * 32
 
 ROOM_PREFAB = """%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
@@ -104,7 +105,8 @@ GameObject:
 
 
 def make_project(tmp, scene_name="Test_PG", label="mymod", room_rot=0, ps_parent="chars",
-                 two_starts=False, floor_layer=8, floor_static=4294967295, zone_parent="wps"):
+                 two_starts=False, floor_layer=8, floor_static=4294967295, zone_parent="wps",
+                 door_parent=None):
     root = Path(tmp)
     (root / "ProjectSettings").mkdir(parents=True)
     (root / "ProjectSettings" / "TagManager.asset").write_text(
@@ -115,7 +117,8 @@ def make_project(tmp, scene_name="Test_PG", label="mymod", room_rot=0, ps_parent
     for name, guid, body in (("Room_Layout", G_ROOM, ROOM_PREFAB),
                              ("Player_Start", G_PS, SIMPLE_PREFAB.format(name="Player_Start")),
                              ("Zone_Camera", G_ZC, SIMPLE_PREFAB.format(name="Zone_Camera")),
-                             ("SceneRules", G_SR, SIMPLE_PREFAB.format(name="SceneRules"))):
+                             ("SceneRules", G_SR, SIMPLE_PREFAB.format(name="SceneRules")),
+                             ("PX_Door", G_DOOR, SIMPLE_PREFAB.format(name="PX_Door"))):
         (pf / (name + ".prefab")).write_text(body, encoding="utf-8")
         (pf / (name + ".prefab.meta")).write_text("fileFormatVersion: 2\nguid: %s\nPrefabImporter:\n" % guid, encoding="utf-8")
     scenes = root / "Assets" / "Scenes"
@@ -129,6 +132,8 @@ def make_project(tmp, scene_name="Test_PG", label="mymod", room_rot=0, ps_parent
         s += instance("610", G_PS, "11", parents["chars"], name="Player_Start (1)")
     s += instance("700", G_ZC, "11", parents[zone_parent])
     s += instance("800", G_SR, "11", "0")
+    if door_parent:
+        s += instance("850", G_DOOR, "11", {"room": "500", "root": "0"}.get(door_parent, door_parent))
     s += FLOOR.format(layer=floor_layer, static=floor_static)
     scene = scenes / (scene_name + ".unity")
     scene.write_text(s, encoding="utf-8")
@@ -166,6 +171,12 @@ class SceneLint(unittest.TestCase):
 
     def test_zone_camera_parent(self):
         self.assertTrue(any(e.startswith("S05") for e in self.lint(zone_parent="chars")["errors"]))
+
+    def test_door_in_room(self):
+        self.assertFalse(any(w.startswith("S14") for w in self.lint(door_parent="501")["warnings"]))
+
+    def test_door_at_scene_root(self):
+        self.assertTrue(any(w.startswith("S14") for w in self.lint(door_parent="root")["warnings"]))
 
     def test_floor_rules(self):
         errs = self.lint(floor_layer=0, floor_static=0)["errors"]

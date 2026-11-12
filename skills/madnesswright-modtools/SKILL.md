@@ -28,6 +28,7 @@ Setup first, as in madnesswright Step 2: `releasebeta` branch, `MPN backup`.
 2. Drop source assets into `Assets` (suggested subfolders exist). Fonts, textures, animations and icons need no extra setup.
 3. Models come from Blender or similar; for a model that does not exist yet, hand over to a 3D modelling skill if one is installed (polywright) and come back with an FBX or OBJ. Blender FBX
    settings (scale, leaf bones, one take per action, axis test, Rigify) are in [references/madobjects.md](references/madobjects.md), "From Blender".
+4. Custom animation clips (attacks, sync anims, entrances) and the effects they fire from a frame (explosions, slams, camera shake, spawned particles): read [references/animation-events.md](references/animation-events.md) first. It holds the rig and export rules and the Animation Events list; the doc is a draft and nothing there is verified in game yet.
 
 ## Step 3: MadObjects
 
