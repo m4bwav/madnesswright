@@ -488,3 +488,7 @@ Look proposal 3 from notes/2026-11-11-nexus-overlaps-and-look.md: lit accents in
 - build-ze played (mods.log 18:47) and uploaded (notes n, preview ze from shots-ze). wsup.exe `previews --clear N` added (SteamAPI_ISteamUGC_RemoveItemPreview, highest index first); gallery replaced, live check 6 shots + 1 movie.
 - Rappel team landed in room 4's PX_Cover_Pallet: SpawnDoor clears 3.5 units around each Rapel point. build-zf deployed 18:54, not played. Learning L-20261111-8.
 - 2026-11-11 harvest: PR #98 merged (0.1.21, tag v0.1.21): session lessons L-20261111-9..11, headless build verified, harvested SceneTools rules, harvest.json linked; scenes CHANGELOG entry C-20261111-7 un-nested from the entry-shape line.
+
+## 2026-11-11 19:25 zf released
+
+- build-zf played (mods.log 19:15, no problems); owner: release it. wsup.exe updated 3837705778 (notes o, preview zf from shots-zf via tools/make_preview.py): result OK, updated 19:24, public, 27 subscribers. `previews --clear 7` with six zf room JPEGs + film: result 1. Steam page fetch (curl) lacks the gallery strip, so the live count was not checked.
