@@ -41,7 +41,9 @@ Same file formats as MadCards (`.json` standard or `.txt` shorthand, can share a
   "Actions": [ { "Type": "HealSquad", "Bool1": true, "Bool2": false } ] }
 ```
 
-- Events live for one scene. Booleans (`SetBoolean`, `BooleanIs`) reset on leaving; WorldChanges (`SetWorldChange`, `CheckWorldChange`) persist in the career across stages; TimedEvents from `TimerStart` or Announcements; TrackedEvents count Task completions, compared with an Operator (Equals, NotEqual, Greater, Lesser, GEqual, LEqual).
+- Events live for one scene. Booleans (`BooleanSet`, `BooleanIs`) reset on leaving; WorldChanges (`SetWorldChange`, `CheckWorldChange`) persist in the career across stages; TimedEvents from `TimerStart` or Announcements; TrackedEvents count Task completions, compared with an Operator (Equals, NotEqual, Greater, Lesser, GEqual, LEqual).
+- Every Condition and Action with its fields, SUBZERO=ALL and NO-RECHECK, wave actions, `GoToScene` and `RunDynamicMethod`: [event-actions.md](event-actions.md) (official sheet, unverified in game).
+- Briefings, Announcements and `UnitSays` lines: write in the game's voice from the official STORY MODE transcripts ("All Mission Briefings" doc and the "(FORMAT)" doc: BRIEFING / OBJECTIVES / MISSION ENGAGED / MISSION COMPLETE) and ARENA MODE transcripts; links in madnesswright references/sources.md (2026-11-12f harvest, item 80; community-kept copies of official text).
 - `AmCheckpoint` stops later Conditions being checked until this one completes; `TrueForever` keeps a met Condition met (needed for NO-RECHECK ones like EnterRoom or a finished wave).
 - Registering: name the EventCard in the scene's SceneRules, or put its Filename in a Task's `TaskEvent` with `RunTaskEvent` on (Interactives, Event Zones, Destructibles; Conditions are skipped then). `Time_Goal` 0 means instant use; `AutoEvent` `Locker` makes a Locker or Vendor addon work.
 

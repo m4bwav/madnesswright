@@ -137,3 +137,7 @@ Source-code-confirmed, unverified in game.
 ## Loading extra files from every enabled mod (2026-11-12d harvest, item 58; NEMLegacy source, known stale)
 
 NEMLegacy (src/Patches/ApplyModsPatch.cs, src/Classes/AssetBundleLoader.cs) prefixed `Mod_Manager.CommitAllModsIfPending` (runs when mods are re-applied; unload your bundles there) and `Mod_Manager.CommitMods_MadObjs` (runs at start and after every re-apply), looped `Mod_Manager.ReturnAllMods(false)` and each `ModItem.Directory.GetFiles(...)`, and loaded its own extension (`.nem`) with `AssetBundle.LoadFromFile`. Scene bundles are told apart with `isStreamedSceneAssetBundle` and `GetAllScenePaths()`; a non-scene bundle whose prefab holds `UI_MissionMap_Arena` was treated as a mission map. The repo's own comment says a later game update broke it: method names may have changed, re-check in a fresh decompile. Unverified in game.
+
+## Calling your code from a scene Event (2026-11-12f harvest, item 76; official Event sheet, unverified in game)
+
+The Event action `RunDynamicMethod` runs a public method on a component of the objects with a given SerialNumber, or a static method when `Location` names the class. `String1` is the method name; `String2` the comma-separated arguments, which also select the overload: `true`, `'text'`, `5`, `3.14`, `(0.5 1.0 5.8)` for a Vector3, `Faction.AAHW` for an enum. Keep a level's custom behaviour in your mod's component and trigger it from a scene's EventCard. Field table: madnesswright-scenes references/event-actions.md. `RunLua` does nothing unless a Lua mod hooks it.

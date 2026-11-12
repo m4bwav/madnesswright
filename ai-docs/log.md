@@ -533,3 +533,5 @@ Transcript of the official SceneTools stages, campaigns and cutscenes video read
 - 2026-11-12 built harvest round d items 55-60: modtools madobjects (attachments, reskin materials, Asset Viewer), harmony (NEMLegacy file loading, stale), sounds-and-fonts (FMOD details); hub madcards (MCM reskins, bundle logs), troubleshooting (MCM colours), sources (SAV); fixed the three skill CHANGELOG entry-shape lines round c broke; plugin 0.1.27. In-game tests owed by the owner.
 
 - 2026-11-12 built harvest round e items 61-71 (beta SceneTools commit log): scenes scenetools-rules "Beta SceneTools additions", stages-and-campaigns blockers and movie player; hub madcards beta traits; plugin 0.1.28. Beta-only, in-game tests owed by the owner.
+
+- 2026-11-12 built harvest round f items 72-80: scenes event-actions.md (new, official sheet re-fetched as CSV for exact fields), BooleanSet fix, early SceneTools objects, briefing voice; hub madcards TetherTo and sources transcripts; modtools BuffEvent/DoTEvent and RunDynamicMethod bridge; plugin 0.1.29. In-game tests owed by the owner.

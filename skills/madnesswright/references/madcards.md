@@ -94,3 +94,7 @@ One JSON object, required for a local mod, saved as `info.txt` or `info.json`. T
 ## Character traits from the beta tools (2026-11-12e harvest, item 66; SceneTools_Testing commit messages, beta-only, unverified in game)
 
 `NoIncap` (player squadmates truly die), `NoDeadZoneDamage` (ignores dead zones; the S-3LF Eater has it), `BadBlock` (blocks without the skill), `NoRanged` (moved to the end of the trait list, so index-based trait data may shift). Confirm names in the tools before use.
+
+## AddonGroup TetherTo (2026-11-12f harvest, item 79; developer commit message 2025-02-13, unverified in game)
+
+`MadCard_AddonGroup` takes `TetherTo`, a list of other AddonGroup names whose Addons it merges into, so several mods can extend one AddonGroup without overriding it. Attachments themselves: madnesswright-modtools references/madobjects.md.

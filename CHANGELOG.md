@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.29 · 2026-11-12
+
+- madnesswright-scenes: new references/event-actions.md, every Event Condition and Action with its fields from the official sheet (wave actions, GoToScene, RunDynamicMethod, SUBZERO=ALL, NO-RECHECK); `SetBoolean` corrected to `BooleanSet`; early SceneTools objects; briefing style sources. madnesswright: AddonGroup TetherTo, dialogue transcript links. madnesswright-modtools: BuffEvent and DoTEvent, calling mod code from Events. Unverified in game.
+
 ## 0.1.28 · 2026-11-12
 
 - madnesswright-scenes: beta SceneTools additions from the SceneTools_Testing commit log (water zones and room fog, Lockers on Destructibles, Vessel and seat tuning, Uniforms on character markers, ExplosionGenerator, door StartPoints rename and lockdown, Camera Zones, unfinished Arena setup, progress blockers, movie player). madnesswright: four beta character traits. Beta-only, field names unconfirmed, unverified in game.
