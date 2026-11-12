@@ -530,8 +530,19 @@ public static class NexusProminenceBuilder
         {
             float x = side < 0 ? f.x0 + 0.06f : f.x1 - 0.06f;
             string s = side < 0 ? "L" : "R";
-            Box(f, "Band_" + s, x, f.y + bandLo + bandH / 2, f.Cz, 0.12f, bandH, f.D, "red");
-            Box(f, "Skirt_" + s, x, f.y + 0.14f, f.Cz, 0.12f, 0.28f, f.D, "red");
+            // band and skirting stop at each side door (they ran across the doorways)
+            var gaps = f.Doors.Where(d => (d.x < f.Cx) == (side < 0) && Mathf.Abs(d.x - x) < 3f).Select(d => d.z).OrderBy(z => z).ToList();
+            float z0 = f.zf;
+            foreach (var gz in gaps.Concat(new[] { f.zb + 1.5f }))
+            {
+                float z1 = Mathf.Min(gz - 1.5f, f.zb);
+                if (z1 - z0 > 0.2f)
+                {
+                    Box(f, "Band_" + s, x, f.y + bandLo + bandH / 2, (z0 + z1) / 2, 0.12f, bandH, z1 - z0, "red");
+                    Box(f, "Skirt_" + s, x, f.y + 0.14f, (z0 + z1) / 2, 0.12f, 0.28f, z1 - z0, "red");
+                }
+                z0 = gz + 1.5f;
+            }
             Box(f, "Seam_" + s, x + side * -0.35f, f.y + 0.01f, f.Cz, 0.18f, 0.02f, f.D, "red");
         }
         // back wall panels (pilasters) and the pipe along the top, as in the corridor shots
@@ -1043,6 +1054,7 @@ public static class NexusProminenceBuilder
     // no idea where a room puts its doors, posters or cases, so it ran across doorways (owner's room 2 shot,
     // 2026-11-11). After a room is dressed: filler that crosses a feature or a real door opening is removed,
     // and features that cross each other are logged as NX_OVERLAP for the build log (fix those by hand).
+    static readonly string[] Strips = { "Pipe_Back", "Skirt", "PanelRail", "SkyStripFrame" };
     static readonly string[] Filler = { "Pilaster", "PipeClamp", "Conduit", "BandStripe", "DiagStripe", "PanelSeam", "WallPanelStripes", "FloorSeam", "Grate", "Paper", "Stain", "OilStain" };
     static readonly string[] Features = { "Door", "Window", "LitWin", "Poster", "Case", "Sign", "Banner", "Board", "Slate", "Shutter", "Vending",
         "Notice", "Locker", "Menu", "Bill", "Vent", "Fridge", "Cabinet", "Rack", "Console", "Monitor", "Lamp", "Ledge", "Counter", "Hatch", "Crate", "Desk", "Table", "Bench", "Ladder" };
@@ -1065,6 +1077,32 @@ public static class NexusProminenceBuilder
         foreach (var d in f.Doors)
             feats.Add(new KeyValuePair<string, Bounds>("Door:opening", new Bounds(new Vector3(d.x, f.y + 2.2f, d.z), new Vector3(3.0f, 4.4f, 3.0f))));
         int removed = 0;
+        // long strips (pipes, rails, skirting) are cut around what they cross instead of removed
+        foreach (var r in rs.Where(r => Family(r.name, Strips) != null && r.transform.rotation == Quaternion.identity).ToList())
+        {
+            var b = r.bounds;
+            int ax = b.size.x >= b.size.z ? 0 : 2;
+            if (b.size[ax] < 4f) continue;
+            var cuts = feats.Where(k => { var c = b; c.Expand(-0.02f); return k.Value.Intersects(c); })
+                .Select(k => new Vector2(k.Value.min[ax] - 0.1f, k.Value.max[ax] + 0.1f)).OrderBy(c => c.x).ToList();
+            if (cuts.Count == 0) continue;
+            float a0 = b.min[ax];
+            foreach (var c in cuts.Concat(new[] { new Vector2(b.max[ax] + 1f, b.max[ax] + 1f) }))
+            {
+                float a1 = Mathf.Min(c.x, b.max[ax]);
+                if (a1 - a0 > 0.3f)
+                {
+                    var seg = Object.Instantiate(r.gameObject, r.transform.parent);
+                    seg.name = r.name;
+                    var p = r.transform.position; p[ax] = (a0 + a1) / 2; seg.transform.position = p;
+                    var sc = r.transform.localScale; sc[ax] = sc[ax] * (a1 - a0) / b.size[ax]; seg.transform.localScale = sc;
+                }
+                a0 = Mathf.Max(a0, c.y);
+            }
+            Debug.Log("NX_CUT " + room.name + ": " + r.name + " around " + cuts.Count + " pieces");
+            Object.DestroyImmediate(r.gameObject);
+        }
+        rs = f.Parent.GetComponentsInChildren<Renderer>(true).Where(r => r && r.name.StartsWith("NX_")).ToList();
         foreach (var r in rs)
         {
             if (Family(r.name, Filler) == null) continue;
