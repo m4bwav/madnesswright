@@ -467,3 +467,5 @@ State on 2026-11-11 (revert): the owner said builds n-q "fucked it up", the Play
 ## 2026-11-11 release build-r, narrower, left wall
 
 State on 2026-11-11 (left wall + narrower): on the owner's go-ahead, build-r was uploaded to Workshop item 3837705778 (wsup.exe, change-notes-2026-11-11j.txt plus a no-blood line, lab preview j; result OK). Then: every room's width x0.85 (`WidthScale`, width only; depth, zoom and camera follow untouched), and room 1's left wall matches the film at 0:19: plain charcoal facing (`FacingL`), vertical panel seams, a dark rail, red skirting; the counter, red band, diagonal stripe, banner and the three doors' hazard bars on that wall are gone (Shell pieces are named `NX_*`, so the strip matches that prefix). build-v, 40/40 corners OK, check-mod clean, deployed 17:21. **Not played, not uploaded.** Next: owner plays build-v; upload only on their OK.
+
+- 2026-11-11: continue session: merged polywright #55 (budget fix, v0.6.4 released), madnesswright #61; build-zd unplayed, waiting on owner.
