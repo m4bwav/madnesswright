@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261112-6 · 2026-11-12 · SceneTools component fields from the test repo tooltips
+- because: user request (technique harvest); ai-docs/notes/2026-11-12g-madness-technique-harvest.md items 81, 83-99
+- files: references/scenetools-fields.md (new); references/scenetools-rules.md (pointer before "Build output"); references/event-actions.md (RunDynamicMethod and RunLua: float and vector syntax)
+- Tooltip text from MPN_SceneTools_Testing, unverified in game; item 81's sub-fields were already in event-actions.md and matched the sheet; SKILL.md unchanged.
+
 ### C-20261112-5 · 2026-11-12 · Full Event Conditions and Actions, BooleanSet fix, early SceneTools objects
 - because: user request (technique harvest); ai-docs/notes/2026-11-12f-madness-technique-harvest.md items 72-80
 - files: references/event-actions.md (new); references/stages-and-campaigns.md (Events: BooleanSet, pointer, briefing voice); references/scenetools-rules.md (Beta SceneTools additions: earlier objects)
