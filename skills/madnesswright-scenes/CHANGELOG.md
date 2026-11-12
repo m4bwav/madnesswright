@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261112-1 · 2026-11-12 · Door parenting (S14), floor at the back wall, the bib, Squad_Spawner fields
+- because: user request (technique harvest); ai-docs/notes/2026-11-12-madness-technique-harvest.md items 23-26 (community video _xbtGGh6Rso)
+- files: SKILL.md (Step 2 geometry, Step 4 doors); references/scenetools-rules.md (PX_Door and Squad_Spawner rows, Hard rules S14, new sections "Squad_Spawner fields" and "Hiding the void"); mpn.py scene-lint S14
+- Confidence kept as the note gives it; the door rule, spawner placement, stockpile cap and bib shadow fix are unverified in game.
+
 ### C-20261111-9 · 2026-11-11 · Harvested SceneTools details: stockpiles, door states, platforms, cutscene cameras
 - because: user request (technique harvest); ai-docs/notes/2026-11-11-level-technique-harvest.md (official SceneTools and Event System docs via the pinned Master Doc)
 - files: references/scenetools-rules.md (new section "Spawns, doors and moving parts"); SKILL.md (Maintenance links harvest.json)

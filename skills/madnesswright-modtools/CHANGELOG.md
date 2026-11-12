@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261112-1 · 2026-11-12 · Custom animation clips: pipeline and Animation Events
+- because: user request (technique harvest); ai-docs/notes/2026-11-12-madness-technique-harvest.md items 20-22 (official Custom Animations doc, draft)
+- files: references/animation-events.md (new); SKILL.md (Step 2, item 4)
+- Events list, frame-fired effects and the Blender 2.79 to FBX pipeline, each marked with the doc's confidence; the 0.45 scale and every event are unverified in game.
+
 ### C-20261111-1 · 2026-11-11 · Worked-example links point at the Director repository
 - because: user request (mods moved to their own repositories)
 - files: SKILL.md (Step on Harmony mods, example link); references/harmony.md; references/game-recipes.md

@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261112-1 · 2026-11-12 · Pointer to custom animation clips
+- because: user request (technique harvest, items 20-21)
+- files: SKILL.md (routing list, new art)
+- The new-art route names madnesswright-modtools' references/animation-events.md for attack clips and frame-fired effects.
+
 ### C-20261111-1 · 2026-11-11 · Workshop updates replace the gallery
 - because: user request (owner, 2026-11-11: the item still showed the old levels)
 - files: SKILL.md (Workshop section)

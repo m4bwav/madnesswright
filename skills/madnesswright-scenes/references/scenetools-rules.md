@@ -1,6 +1,6 @@
 # SceneTools objects, layers and rules
 
-Source: the official SceneTools Overview Google Doc and the MPN_SceneTools repository (TagManager, AssetBundle_Builder_Editor.cs, sample scenes), read 2026-10-17. Ids S01 to S13 are the checks `mpn.py scene-lint` runs.
+Source: the official SceneTools Overview Google Doc and the MPN_SceneTools repository (TagManager, AssetBundle_Builder_Editor.cs, sample scenes), read 2026-10-17. Ids S01 to S14 are the checks `mpn.py scene-lint` runs.
 
 ## Terms
 
@@ -20,13 +20,13 @@ Source: the official SceneTools Overview Google Doc and the MPN_SceneTools repos
 | Sniperpoint | waypoint snipers prefer | |
 | Spawnpoint | off-screen spawns; Playground item spawner | place a few floating |
 | Item_Spawn | one specific weapon on the floor | |
-| PX_Door | doors, manholes, rappel lines; links rooms and scenes | every custom door needs a StartPoint |
+| PX_Door | doors, manholes, rappel lines; links rooms and scenes | every custom door needs a StartPoint; must be a child of its Room_Layout or it does not work (stated in a community video; unverified in game); S14 warns on a door in the scene root |
 | PX_Cover, PX_Locker, PX_Interact, PX_Togglable, PX_Seat | cover, weapon chests, switches and terminals, moving geometry, seats | interactives need a Task to do anything |
 | PX_Playground | the Playground control room window | ApplyWindowMask if the wall has no cut-out |
 | PX_SiegeRepair | wood for repairing Siege destructibles | Arena |
 | Zone_Event, Zone_Dead, Zone_OffLimits, Zone_Spawn(er), Zone_StagingGround | events, kill volumes, teleport-back, triggered spawns, arena squad conscription | |
 | Zone_Camera | camera override while the player is inside | never rotated (S04); under the room's Waypoints (S05) |
-| Squad_Spawner | waves through doors: Units (Count, GenerationScale), Squad and Max, Weapon Stockpiles, Bosses, Custom Squads | position does not matter |
+| Squad_Spawner | waves through doors: Units (Count, GenerationScale), Squad and Max, Weapon Stockpiles, Bosses, Custom Squads | position does not matter per the docs; one community author puts it under Characters ("I believe"; unverified in game). Fields: "Squad_Spawner fields" below |
 | Blocker_Progress / Blocker_Backtrack | lock the player in until spawners finish / after entering | point Z-forward toward where the player arrives |
 | Cutscene | marker + CutsceneCard; Actors by SerialNumber (`PSQUAD0`...), Marks, ViewCams | |
 | SceneRules | registers EventCards for the scene; arena start interactive, Siege targets, victory cutscenes | at most one (S06), in the scene root (S07) |
@@ -48,6 +48,7 @@ Tags: `Floor` (spawn and pathing surface), `Character`.
 - S10, S11 delete the default Main Camera and Directional Light (unused).
 - S12 at most 4 active lights (3 on low quality); lights outside rooms are ignored.
 - S13 the scene needs an Asset Label or `>> Build` skips it.
+- S14 (warning) a PX_Door in the scene root; doors belong inside a Room_Layout. The lint sees only the direct parent, so a door under some other root object is not caught.
 - Scenes and prefabs cannot share a bundle; a bundle with no scene is deleted by the builder.
 - The Background object is disabled for every room but the one last synced; in game it shows only for the focused room. Keep rooms from seeing each other.
 - Doors: one wall collider per door to make intangible; keep door parts off Terrain and Default (use TerrainObstacle).
@@ -67,6 +68,19 @@ Tags: `Floor` (spawn and pathing surface), `Character`.
 - Materials may use custom CG shaders (they are not compiled); C# scripts added in SceneTools never run in the game.
 - Mods need the load screen: it converts markers and proxies, so scenes cannot be joined without one.
 - Source and unread leads: [../../../ai-docs/notes/2026-11-11-level-technique-harvest.md](../../../ai-docs/notes/2026-11-11-level-technique-harvest.md).
+
+## Squad_Spawner fields (community video _xbtGGh6Rso, harvested 2026-11-12)
+
+- Wave Spawn Type "Mission Waves" takes a Start text, a subtext and an End text shown on screen (e.g. "You won"). Observed in the video.
+- Typing "Manual character" in a Units entry fills in a manual character; a Boss entry takes a typed weapon name. Observed.
+- Spawn doors are assigned by dragging each door into the spawner's door list. Observed.
+- A named Weapon Stockpile preset (e.g. Melee Tier 2, said to hold 17 weapons) caps its entry at that weapon count; to arm more units, add another entry. The author's "from what I understand": unverified in game.
+
+## Hiding the void (same video)
+
+- **The bib**: copies of the back-wall quad placed just under the front floor edge, above the walls and down the sides, with a Room_Cutaway material, so the Dev_Cam never sees the skybox or void. Observed in the video. The top bib can cast a shadow into the room; turning off its shadow casting (Mesh Renderer, Cast Shadows Off) is an inferred fix, unverified in game.
+- **The fourth wall**: a copy of the back-wall quad turned 180 degrees with its Mesh Renderer removed, so it blocks but is not drawn. Observed.
+- Source: [../../../ai-docs/notes/2026-11-12-madness-technique-harvest.md](../../../ai-docs/notes/2026-11-12-madness-technique-harvest.md), items 23 to 26.
 
 ## Build output
 

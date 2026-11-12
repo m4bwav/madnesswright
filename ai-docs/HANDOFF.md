@@ -1,5 +1,7 @@
 # Handoff
 
+State on 2026-11-12 (harvest items 20-26 built, plugin 0.1.24): custom animation clips (modtools references/animation-events.md) and the scenes rules for door parenting (lint S14), floor at the back wall, the bib and Squad_Spawner fields are in the skills, each with the note's confidence. **In-game tests are owed by the owner**: one custom swing with the four core events, the 0.45 scale, a door moved out of its Room_Layout, the stockpile cap, the bib shadow fix. Note: [notes/2026-11-12-madness-technique-harvest.md](notes/2026-11-12-madness-technique-harvest.md).
+
 State on 2026-11-11 (mods split out, owner's request): Director (was examples/SwapUnaware, with tests/DirectorFreezeChecks) is now m4bwav/mpn-director and Nexus Prominence (was examples/NexusProminence) is now m4bwav/nexus-prominence, each with its history (git subtree split), banner, wiki and agent docs; pointer READMEs stay at the old paths. **Nexus work continues from the nexus-prominence clone**: its own ai-docs/HANDOFF.md and continue prompt (`Execute ai-docs/plans/2026-11-10-nexus-prominence-continue-prompt.md` there). The lab rebuild.sh now writes into that clone. Older Nexus entries below are history.
 
 State on 2026-11-11 (idle check after 22:10): mods.log still 21:30, so build-zj (deployed 21:46) is **not played**. Nothing to build or upload. Next: as in the 21:46 entry.

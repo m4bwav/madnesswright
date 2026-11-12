@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.24 · 2026-11-12
+
+- madnesswright-modtools: new references/animation-events.md (Animation Events list, effects fired from animation frames, Blender 2.79 to FBX pipeline); draft doc, unverified in game.
+- madnesswright-scenes: PX_Door inside its Room_Layout (new `scene-lint` warning S14), the floor stops at the back wall, the bib and renderer-less fourth wall, Squad_Spawner fields and the stockpile preset cap.
+
 ## 0.1.23 · 2026-11-11
 
 - The two example mods moved to their own repositories with their history: Director ([m4bwav/mpn-director](https://github.com/m4bwav/mpn-director), with its regression checks) and Nexus Prominence ([m4bwav/nexus-prominence](https://github.com/m4bwav/nexus-prominence)). Pointer READMEs stay at examples/SwapUnaware and examples/NexusProminence; skill links point at the new repositories.
