@@ -10,7 +10,7 @@ Checked 2026-10-17. Primary sources first.
 - SceneTools Overview: https://docs.google.com/document/d/1-fchWz0-kYVMUwZcM1RIST8VmWlQ-SmjcuSe2qz9EJI
 - Event System Overview: https://docs.google.com/document/d/1aLz0hngXuPbw2UbXwU6yontyCwL7mzKk789GHfMTzJM
 - Modding Resources Master Doc (index of tools, tutorials, asset dumps; links live only in the doc): https://docs.google.com/document/d/1fgcDNarKoSe3I8CwaciqVxovZZJQlNQwTRUWRmvslN4
-- Official tool projects (Unity 2019.2.6f1, no license file, no releases): https://github.com/MPN-Modders (MPN_SceneTools, MPN_ModTools, and their _Testing twins)
+- Official tool projects (Unity 2019.2.6f1, no license file, no releases): https://github.com/MPN-Modders (MPN_SceneTools, MPN_ModTools, and their _Testing twins; MPN_ModTools last pushed 2026-04-07, MPN_SceneTools 2026-09-02 per the GitHub API on 2026-11-12, and community guide G2 moved its ModTools link here on 2025-09-23)
 
 ## Community
 

@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261112-2 · 2026-11-12 · Text tags, origin descriptions, MCM card types, subscribed mod folder
+- because: user request (technique harvest); ai-docs/notes/2026-11-12b-madness-technique-harvest.md items 29-30, 41-43
+- files: references/madcards.md (new "Text, origins and card types"); references/troubleshooting.md (new "Editing a subscribed mod"); references/sources.md (MPN-Modders line)
+- Community guide content, unverified in game; SKILL.md unchanged.
+
 ### C-20261112-1 · 2026-11-12 · Pointer to custom animation clips
 - because: user request (technique harvest, items 20-21)
 - files: SKILL.md (routing list, new art)

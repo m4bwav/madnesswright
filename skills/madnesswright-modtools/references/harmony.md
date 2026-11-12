@@ -107,3 +107,7 @@ Changing who controls a character, or what an NPC is fighting, goes through the 
 - ilspycmd (`dotnet tool install -g ilspycmd`) or ILSpy GUI; dnSpyEx for debugging.
 - Optional MCP: mcilspy (PyPI, MIT, 2026-10-12), `claude mcp add ilspy -- python -m mcilspy.server`, gives search_methods, decompile_method and similar tools. The user installs it.
 - universal-modder (github.com/rehan-remade/universal-modder) has a general game-modding workflow (read-only recon, reversible lab, verify in the running game) but nothing specific to this game.
+
+## Config files (item 44 of the 2026-11-12b harvest; single source)
+
+The NEM Menu Workshop item (3698923195), a BepInEx-style plugin, keeps its key bindings in `LocalLow/Gibbing Tree/Madness Project Nexus/ModConfigs/NEMMenu.cfg`. A code mod that needs user settings can follow the same `ModConfigs/<ModName>.cfg` convention. Seen in one item's description only; not a game rule.

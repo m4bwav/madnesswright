@@ -52,3 +52,5 @@ On the stage card. `Conditions_Start` (at least one) starts it; `Actions_Exists`
 ## Arena (SceneRules on the scene, 2026-08 tools, testing)
 
 Start interactive (the game adds the start-waves action), Siege Targets (Destructibles or Interactives), victory cutscenes, Staging Grounds zones, PX_SiegeRepair, and on each room's RoomObj: `ArenaSafeRoom`, `PatrolPaths` and `GuardPoints` (Infiltration), `ToysToResetOnReEnter`. A custom arena stage replaces an existing one; there is no free slot yet.
+
+Custom stage music (2026-11-12b harvest, item 28; community, unverified in game): a 2D FMOD event with a loop region shows in the Playground Radio and can be set as a Stage_Arena's music. Steps in madnesswright-modtools references/sounds-and-fonts.md.
