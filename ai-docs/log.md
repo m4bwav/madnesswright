@@ -152,7 +152,7 @@ Append-only, newest first.
 ## 2026-10-27 · Director 0.10.1 on the Workshop
 
 - The owner asked to publish the freeze fix before pushing the repository changes. `pack.ps1 -Version 0.10.1` built the mod against the installed game assemblies; `mpn.py --strict check-mod` reported no errors or warnings. The staged DLL matched the built DLL byte for byte and contained `0.10.1`. The F10 and F5 takeover/switch-away C# regressions, 31 Python tests, skills check and budget check passed.
-- Workshop item 3822329165 updated in place: `result OK`, no legal agreement needed. The public listing (visibility 0) reported the new F2 description and a 2026-10-27 22:22:19 UTC update; its public Change Notes tab contained `Director 0.10.1`. The change-notes text is in [the mod folder](../examples/SwapUnaware/change-notes-0.10.1.txt).
+- Workshop item 3822329165 updated in place: `result OK`, no legal agreement needed. The public listing (visibility 0) reported the new F2 description and a 2026-10-27 22:22:19 UTC update; its public Change Notes tab contained `Director 0.10.1`. The change-notes text is in [the mod folder](https://github.com/m4bwav/mpn-director/blob/main/change-notes-0.10.1.txt).
 - Not played in the game yet. Try F2, F10 (all three states), F5 onto a frozen character, F8 away and F2 to release it. The older F5-then-scene-load issue and arena co-op playtest are still owed.
 
 ## 2026-10-25 · Director 0.10.0 on the Workshop
@@ -517,3 +517,7 @@ Look proposal 3 from notes/2026-11-11-nexus-overlaps-and-look.md: lit accents in
 ## 2026-11-11 22:10 harvest round 3
 
 Transcript of the official SceneTools stages, campaigns and cutscenes video read through yt-dlp. Door links, room transforms, hubs, stage markers and cutscene fields added to the madnesswright-scenes references. Overview re-export has no 2025-26 features. Workshop tags are only `playground`. Plugin 0.1.22.
+
+- 2026-11-11 idle check: mods.log 21:30, build-zj not played yet; nothing done.
+
+- 2026-11-11 split Director and Nexus Prominence into m4bwav/mpn-director and m4bwav/nexus-prominence (owner request); pointers left; lab rebuild.sh repointed; plugin 0.1.23.

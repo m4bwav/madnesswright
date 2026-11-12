@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.23 · 2026-11-11
+
+- The two example mods moved to their own repositories with their history: Director ([m4bwav/mpn-director](https://github.com/m4bwav/mpn-director), with its regression checks) and Nexus Prominence ([m4bwav/nexus-prominence](https://github.com/m4bwav/nexus-prominence)). Pointer READMEs stay at examples/SwapUnaware and examples/NexusProminence; skill links point at the new repositories.
+
 ## 0.1.22 · 2026-11-11
 
 - madnesswright-scenes: rules from the official stages and cutscenes video (door links, room transforms, hubs, stage markers, cutscene fields).

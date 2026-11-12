@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261111-1 · 2026-11-11 · Worked-example links point at the Director repository
+- because: user request (mods moved to their own repositories)
+- files: SKILL.md (Step on Harmony mods, example link); references/harmony.md; references/game-recipes.md
+- The Director example moved from examples/SwapUnaware to github.com/m4bwav/mpn-director; links now go there. No behaviour change.
+
 ### C-20261023-1 · 2026-10-23 · Attack matrix and hit feedback before a new weapon
 - because: books track 9 (Rogers, *Level Up!* 3rd ed., Level 10); T-20261023-2
 - files: references/madobjects.md (new section "Before a new weapon: its niche"); SKILL.md (Step 3 intro); evals/evals.json (outcome-3)
