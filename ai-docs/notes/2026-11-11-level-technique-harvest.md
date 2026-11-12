@@ -37,3 +37,25 @@ The Master Doc lists these, but they were not fetched (video or not reached):
 - https://gamebanana.com/games/15564: the page shell only (an ad-block notice and navigation), with no submissions listed.
 - A web search for "madness project nexus scenetools custom level tutorial" found no dedicated tutorial, only the Tower of MADNESS mirror. Results for other games were ignored.
 - The Master Doc's plain `export?format=txt` drops its links; `export?format=html` keeps them. The linked Google Docs export fine as text without signing in.
+
+## Round 2 (2026-11-11 evening)
+
+The main new source was the commit history of github.com/MPN-Modders/MPN_SceneTools (https://github.com/MPN-Modders/MPN_SceneTools/commits/main). Its commit messages give only names and one line each. None of the terms below appear in the scenes skill. They are not in the skill yet: each one needs the Overview doc re-exported, or an in-game test, before it goes in.
+
+12. **Spawner update (2024-12-09).** Character spawners can add or remove Traits and Behavior. Squad Spawners can be turned on and off. Zone_Spawner accepts Squads. Map use: vary the units in each room without new MadCards, and keep a room's squad off until its trigger fires. Confidence: stated in the commit.
+13. **Traits NoIncap, NoDeadZoneDamage and BadBlock (2025-09-17).** NoRanged moved to the end of the trait list (2025-11-06), so any script that writes trait indices instead of names breaks. Map use: tune each room's difficulty through spawner traits. Confidence: stated.
+14. **"Big Update" (2025-05-14).** Adds Boss Marker, Get-Out Zone, Core and Splosive Hazards, Debris Generator, Effect_DebrisGen, Effect_MaterialScroller, AnimEvents_Sound, Obj_Toy and Obj_Disposable. Map use: a Boss Marker for room 10 and explosive hazards as set pieces. Confidence: the names are stated; what each one does is inferred.
+15. **Hazard_WaterZone, Effect_GlobalIntDisplay and Object_Randomizer (2026-04-07).** Effect_GlobalIntDisplay might show a wave or rooms-cleared counter on screen. Object_Randomizer could vary cover between runs. Confidence: inferred.
+16. **Explosion Generator (2025-10-17).** A scriptable blast. Confidence: only the name.
+17. **AssetBundle compression.** ChunkBasedCompression has been the recommended export since 2025-08-19 and replaces the slow old default, None. One commit, 08-12, recommended Uncompressed, but the later commit wins. Confidence: stated, and the commits contradict each other.
+18. **Uniforms on Marker_Character (2026-09-02).** Check whether the skill says this. Confidence: stated.
+19. **Workshop tags.** Custom stages are hard to find when the author leaves out the tags that appear in Steam's search menu. "Stage" and "Level" are not in that menu. Reference maps worth studying: Assault on Precinct, Madness Cellification: Interactive and Greenaders Rampage (custom Arenas). Source: https://steamcommunity.com/sharedfiles/filedetails/?id=3546293053. Confidence: stated.
+
+YouTube links mapped by title (oEmbed):
+- u7VV0N33Sx0: the official "SceneTools Tutorial: Custom Stages, Campaigns, and Cutscenes". This is the only video about scenes; get a transcript next.
+- _xbtGGh6Rso: "Quick Room Tutorial for Firing Range". Not watched.
+- The rest cover armor (GAeAC3uuCoc), weapon audio (N_SD_QYAMpw), projectiles (8rIUvsR_ekk), ranged weapons (AcD60wxGI2M), melee weapons (YfUqQw-ajYA) and importing animations (a0NtVJeUhHE, the "scuffed" one). None of them is about scenes.
+
+Read but empty for scenes: guide 2664043208 (weapons, armor and the asset pipeline), guide 3305980802 (MadCard Maker only; it says stages are "not yet" covered), the Steam guides list (5 guides) and the SceneTools READMEs (installation only; no wiki).
+
+Next leads: a transcript of u7VV0N33Sx0. Re-export the SceneTools Overview doc and diff it against RESEARCH.md for the 2025 and 2026 features (items 12 to 18). Check the Nexus Prominence Workshop tags against item 19.

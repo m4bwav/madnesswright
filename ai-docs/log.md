@@ -497,3 +497,13 @@ Look proposal 3 from notes/2026-11-11-nexus-overlaps-and-look.md: lit accents in
 
 - Owner's frame showed tapered red-banded pylons and a petrol generator set missing from the map. New builder helpers `Pylon` and `Generator`, both used in room 6; names added to Features for the overlap scan. zg: corners 40/40, no new clashes, deployed. Waits on a play.
 - Wrap-up: anonymous curl of the Workshop item page returns the Steam error page (not the gallery); the continue prompt now says to check the gallery in the browser.
+
+## 2026-11-11 19:50 look round (build-zh)
+
+- Owner asked for another round before testing. Applied look proposals 1 (front-third debris, `Debris`) and 2 (per-room band table `BandByRoom`, maroon tone, side banners off in rooms with their own centrepiece). zh: corners 40/40, overlaps unchanged, deployed. Change notes p cover zg and zh.
+
+- 2026-11-11: harvest round 2 (SceneTools commits, guides, YouTube mapping) into notes/2026-11-11-level-technique-harvest.md.
+
+- 2026-11-11 20:33: continue-prompt run; build-zh not yet played (mods.log 19:15), look proposals exhausted; stopped at the owner-play wait.
+
+- 2026-11-11 20:50: build-zh played (clean) and released to Workshop item 3837705778 with change-notes-2026-11-11p.txt, new preview and gallery from shots-zh; description garage row updated.

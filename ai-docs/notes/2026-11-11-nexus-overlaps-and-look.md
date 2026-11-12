@@ -28,3 +28,5 @@ A triage of the sheet, not a ranked verdict. Proposals, not applied (owner rejec
    (lit sign, window, lamp) as rooms 1, 7 and 10 already have.
 
 Applied 2026-11-11 (build-ze): proposal 3 only. Pale `lit` accents: a lightbox over each of room 2's back doors, a lamp bar under room 6's shutter box (reads thin), a strip light over room 8's lockers. Render Ai/madnesswright-lab/nexus/compare-ze.jpg. Proposals 1 and 2 wait for the owner's play of build-ze.
+
+Applied 2026-11-11 (build-zh): proposals 1 and 2 together, on the owner's ask for another round before the test. Render Ai/madnesswright-lab/nexus/compare-zh.jpg. All three proposals are now in; the next look ideas come from the owner's play.
