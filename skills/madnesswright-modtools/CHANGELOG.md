@@ -2,7 +2,12 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+Entry shape: `### C-20261112-3 · 2026-11-12 · Mod Configuration Module, NEM reference repo, Traverse and Prefix recipes
+- because: user request (technique harvest); ai-docs/notes/2026-11-12c-madness-technique-harvest.md items 45, 47-49
+- files: references/harmony.md ("Config files" replaced, new "Reference repo and Directory.Build.props", "Traverse"); references/game-recipes.md (new "Playground lists and difficulty")
+- Item 45 replaces the item 44 guess. Source-code-confirmed, unverified in game; SKILL.md unchanged.
+
+### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261112-2 · 2026-11-12 · Sounds, fonts and porting references from community guides
 - because: user request (technique harvest); ai-docs/notes/2026-11-12b-madness-technique-harvest.md items 27-28, 31-40, 44 (Steam guides 2664043208, 3305980802; Workshop item 3698923195)

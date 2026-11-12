@@ -63,3 +63,15 @@ Members of MADNESS: Project Nexus that mods change characters with, found in a d
 - Arena waves count squad rosters; a spawned unit joins the running wave with `WaveContainer.AddUnit(c)`. Pause is blocked between waves.
 - `Game_Manager.SaveCareer()` runs on every stage start (`Stage_Manager.StageSelectedFromMenu`) and wave start and end, not on death or restart. Starting a story stage by code writes the career; switching Playground stages with `GameTransitions.LoadScene` does not. Keep spawned characters out of the player's squad outside the Playground (their ids would go into `IDs_Squad`).
 - Every scene load clears all pause sources (`ClearPauseGame`) and every spawned character.
+
+## Playground lists and difficulty (2026-11-12c harvest, items 47-48; source code)
+
+- Show every character and weapon in Playground (NEMUnrestrictedPlayground, https://github.com/NotEnoughMadness/NEMUnrestrictedPlayground): Postfix on `InteractiveMode.Start`; build `StatCard_Base.ReturnAllCardsByType<StatCard_Character>().ToList()` (and `StatCard_Weapon`), sort with `.SortCards<T>()` as vanilla does, and write them into the private fields `allDudes_Spawn`, `allDudes_Morph` and `allWeapons` with `Traverse.Create(__instance).Field(name).SetValue(list)`. Game version not stated (repo pushed 2026-04-10); check the names with decomp.py first.
+- Force a bool method with a skipping Prefix (MadnessModeUnlocked, https://github.com/NotEnoughMadness/MadnessModeUnlocked, Workshop 3698921952): unlocks Madness difficulty without a Tough clear.
+
+```csharp
+[HarmonyPatch(typeof(UI_StageMenu), "CanPlayHighestDifficulty")]
+static class UnlockMadness { static bool Prefix(ref bool __result) { __result = true; return false; } }
+```
+
+Both source-code-confirmed, unverified in game.

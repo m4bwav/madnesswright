@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.26 · 2026-11-12
+
+- madnesswright-modtools: the Mod Configuration Module (ConfigFile/Bind, ModConfigs/<ModName>.cfg) replaces the round b ModConfigs guess; NEMCameraToggle as a reference repo, Directory.Build.props, Traverse on private fields, a skipping Prefix that forces a bool. Source-code-confirmed, unverified in game.
+- madnesswright: load order between Workshop mods, DLL-swap mods, careers broken by a removed mod, the game's debug mode, uploader icon rules, the community Master Document. madnesswright-scenes: debug mode for playtests. Unverified in game.
+
 ## 0.1.25 · 2026-11-12
 
 - madnesswright-modtools: new references/sounds-and-fonts.md (FMOD banks, music, fonts) and references/porting.md (effect map codes, FBX import scale, armor, AltParts, melee points, origin icons, AssetStudio); Blender clip export settings; ModConfigs convention. Community guides, unverified in game.

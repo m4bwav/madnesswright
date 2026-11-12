@@ -99,3 +99,7 @@ Fill this in for the specific level and hand it to the player. Ask them to play 
 10. For a player new to the level: set the questions before the session (can they find the exit, clear each fight, tell what to do next?), record the screen and their voice if they agree, and watch without helping. Act on a problem two players hit; treat one player's suggestion as a note.
 
 After the session: run `mpn.py log`, compare results with `LEVEL-PLAN.md`, change one thing at a time.
+
+## Debug mode for playtests (2026-11-12c harvest, item 50; single source)
+
+The game's developer debug mode (switched on by Workshop item 3698921103) shows hidden doors and objects; P logs the starting scene and entry name, F2 logs difficulty and stage, Slash + Left Ctrl resets the room's node paths, Left Shift + Y zooms. Useful to check scene and entry names and pathing. Details in the hub's troubleshooting.md, "The game's debug mode". Unverified in game.
