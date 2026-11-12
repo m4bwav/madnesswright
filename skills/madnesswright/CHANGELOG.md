@@ -2,12 +2,18 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-20261112-3 · 2026-11-12 · Load order, DLL-swap mods, broken careers, debug mode, uploader icon, Master Document
+Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+
+### C-20261112-4 · 2026-11-12 · MCM reskins, bundle logs, load-order colours, Asset Viewer link
+- because: user request (technique harvest); ai-docs/notes/2026-11-12d-madness-technique-harvest.md items 56, 57, 59
+- files: references/madcards.md (new "Reskins and asset logs in MCM"); references/troubleshooting.md (new "MCM load-order colours"); references/sources.md (SAV)
+- Single sources, unverified in game; SKILL.md unchanged. Also restores the entry-shape line.
+
+### C-20261112-3 · 2026-11-12 · Load order, DLL-swap mods, broken careers, debug mode, uploader icon, Master Document
 - because: user request (technique harvest); ai-docs/notes/2026-11-12c-madness-technique-harvest.md items 46, 50-54
 - files: references/troubleshooting.md (four new sections); references/sources.md (uploader icon rules, NotEnoughMadness org, Master Document)
 - Community sources, unverified in game; SKILL.md unchanged.
 
-### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261112-2 · 2026-11-12 · Text tags, origin descriptions, MCM card types, subscribed mod folder
 - because: user request (technique harvest); ai-docs/notes/2026-11-12b-madness-technique-harvest.md items 29-30, 41-43

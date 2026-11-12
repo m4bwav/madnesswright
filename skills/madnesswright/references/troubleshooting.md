@@ -39,3 +39,7 @@ A save that holds custom hirelings or a custom character fails to load once thei
 ## The game's debug mode (item 50; single source)
 
 The game ships a developer debug mode; Workshop item 3698921103 ("Debug Mode") only switches it on. It reveals hidden doors and objects and enables keys: P logs the current starting scene and entry name; F2 logs difficulty and stage and flies up; Slash + Left Ctrl resets all node paths in the room; Left Shift + Y zooms the camera; ScrollLock combos spawn or kill Creber clones and test JSON overwrites on a new statcard character. Which flag it sets is not public; grep the decompiled game for "debug" (decomp.py). From the item's description; unverified in game.
+
+## MCM load-order colours (2026-11-12d harvest, item 57; MCM v1.6c manual, unverified in game)
+
+Green clean; lime overrides a base statcard; yellow overrides a MadCard of another priority; red overrides one of the same priority (a real conflict). "Unlisted" cards accept non-statcard references and are flagged unsafe unless a plugin handles them. The current MCM version was not checked.

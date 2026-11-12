@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.27 · 2026-11-12
+
+- madnesswright-modtools: firearm attachments (MadObj_Addon), reskin materials, Slash's Asset Viewer, NEMLegacy's hooks for loading extra files (stale, re-check in a decompile), more FMOD details. madnesswright: MCM reskins, bundle logs and load-order colours. Unverified in game.
+
 ## 0.1.26 · 2026-11-12
 
 - madnesswright-modtools: the Mod Configuration Module (ConfigFile/Bind, ModConfigs/<ModName>.cfg) replaces the round b ModConfigs guess; NEMCameraToggle as a reference repo, Directory.Build.props, Traverse on private fields, a skipping Prefix that forces a bool. Source-code-confirmed, unverified in game.

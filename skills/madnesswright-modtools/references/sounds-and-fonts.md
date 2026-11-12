@@ -22,3 +22,10 @@ As above, but the event is **2D**, sits in a folder named after the artist, and 
 - Put it in the ModTools project's Fonts folder, add it to an AssetBundle, build.
 - MadCard Maker cannot set a font: add `"Font": "<font file name without extension>",` by hand in the Chatter card's raw .json (mind the comma). `"Style"`: 0 regular, 1 bold, 2 italic, 3 bold italic.
 - Rich-text tags and name tokens for the text itself: madnesswright references/madcards.md, "Text".
+
+## More FMOD details (2026-11-12d harvest, item 60; LoreRaider's guide, agrees with G2; unverified in game)
+
+- Built banks land in the sample project's `Build/Desktop`; always copy the Master bank too.
+- Stage music in MCM takes the FMOD event path (File > Export GUIDs); a stage can list more than one song.
+- A voice set needs one 3D event with a multi-instrument per VoiceSet slot (one folder per voice set).
+- "One bank per mod" fits the trap above only if each bank comes from its own project.
