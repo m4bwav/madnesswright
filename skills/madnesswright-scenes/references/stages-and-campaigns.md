@@ -15,6 +15,9 @@ The game checks stages and may drop invalid ones.
 - `BonusCharacters`: extra players (same rule).
 - `AmHub`: overworld stage with no start menu, no win or loss. List it in the Campaign's Hubs.
 - `Leave_Default_ToStage`: where to go after the stage; `Leave_Victory_ToStage`, `Leave_NeverWon_ToStage` and the other `Leave_` values make branches. No valid target: the campaign ends (back to the last Hub or the menu).
+- `Leave_Default_ToDoor`: the door SerialNumber to arrive at, so a repeat run can start somewhere else. A stage may name itself as its `Leave_Default_ToStage` to loop forever. A one-stage campaign with no target goes back to the main menu when the player wins.
+- `Hubs` on the Campaign does two things: the game autosaves the player there, and shows the hub's name across the top of the screen on entry. A stage that only plays the credits or a flashback is `AmHub` true but left out of Hubs, so the save never reopens it.
+- A Stage marker (Markers) in a hub launches a stage card by Filename. `Prerequisites` and `Forbidden` are WorldChanges that show or hide it; a stage whose prerequisite stages are not beaten shows red and locked; `QuestIfUnbeaten` puts the go-here arrow on it.
 - Missions live on the stage card (below).
 
 Existing stages can also be edited with MadCards alone (re-ordering Arena waves, swapping the Story squad) without SceneTools.
@@ -22,6 +25,11 @@ Existing stages can also be edited with MadCards alone (re-ordering Arena waves,
 ## Cutscenes
 
 A Cutscene marker in the room, linked to a CutsceneCard through `AttachCutsceneCard`. Actors are found by SerialNumber (player squad: `PSQUAD0`, `PSQUAD1`, ...). Marks are waypoints by index; ViewCams are cameras by index, driven through a `ToggleMe` trigger in their Animator. Each Step is one beat: a line, moves to Marks, actions, sounds; `ActorSerial` takes a comma list (dialog takes one).
+
+From the official video tutorial (https://youtu.be/u7VV0N33Sx0):
+- Marks and the ViewCam are children of the Cutscene, so moving the marker moves them too. A new Mark must also be added to the Marks list; `Mark` in a Step is its list index from 0.
+- A WorldChange set on the Cutscene makes it play once per career, until an event sets it false; meant for hubs, not replayable stages. A higher `CutscenePriority` interrupts a lower one (the author was not certain of the direction).
+- Start by zone (an Event zone in the same room, linked), room or existence. `PlayerOnlyActivation` with `AllActorsRequired` is the usual default; steps of a dead actor are skipped. Turn off controls for actors and player when the camera takes over. `Unskippable` covers the whole cutscene and can be overridden per Step; `DialogueAsNarration` shows lines at the top instead of over heads; `AllowOutsideActors` lets unlisted serials speak; `ForceNewPlayerSquad` replaces the squad with the listed character cards (existing ones are kept, new ones must be placed).
 
 ## EventCards
 

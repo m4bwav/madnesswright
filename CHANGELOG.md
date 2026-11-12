@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.22 · 2026-11-11
+
+- madnesswright-scenes: rules from the official stages and cutscenes video (door links, room transforms, hubs, stage markers, cutscene fields).
+
 ## 0.1.21 · 2026-11-11
 
 - madnesswright-scenes: headless SceneTools build marked verified with its reflection calls; rooms from video frames, weapon card names via UnityPy, decals on a clear wall, one size/camera change per play (L-20261111-9 to -11).

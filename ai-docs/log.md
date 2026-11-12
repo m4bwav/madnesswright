@@ -513,3 +513,7 @@ Look proposal 3 from notes/2026-11-11-nexus-overlaps-and-look.md: lit accents in
 ## 2026-11-11 21:46 pylons and generator remade (build-zj)
 
 - Owner played zh (clean) and asked for better generator and pylons. Tapered frustum-mesh pylons with sloped band, full generator set; zi had the hose over a banner and the exhaust over WallPanel, moved in zj (filler 0). Deployed, waits on a play.
+
+## 2026-11-11 22:10 harvest round 3
+
+Transcript of the official SceneTools stages, campaigns and cutscenes video read through yt-dlp. Door links, room transforms, hubs, stage markers and cutscene fields added to the madnesswright-scenes references. Overview re-export has no 2025-26 features. Workshop tags are only `playground`. Plugin 0.1.22.

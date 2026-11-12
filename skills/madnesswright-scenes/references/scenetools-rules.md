@@ -60,6 +60,12 @@ Tags: `Floor` (spawn and pathing surface), `Character`.
 - Leave Leeway Mouse at its default in most rooms: mouse-driven pan makes aiming harder.
 - A moving CO_ Togglable that characters stand on needs the Platform Addon, or they are flung off or fall through.
 - Cutscenes set every ViewCam animator Off at start and fire ToggleMe once per Step: custom camera animators need an Off state.
+- Room_Layout keeps rotation 0,0,0 and scale 1,1,1; position is free. A scaled room or a mesh imported at the wrong scale breaks most effects: fix the size with the FBX's Model > Scale Factor, never the Transform.
+- Duplicating a room leaves two lights on: press SYNCH VISUALS on one Room_Layout to reset it.
+- LinkedDoor is one-way (A to B does not give B to A), so set it on both doors. Story rules disable a room once you leave it; turn on the room's lockout-disable values (`DisableLockout...` on leaving, or on the next room for the previous one) when the player must walk back.
+- Every now and then select everything except the Room_Layouts: anything floating outside a room was parented to the wrong room.
+- Materials may use custom CG shaders (they are not compiled); C# scripts added in SceneTools never run in the game.
+- Mods need the load screen: it converts markers and proxies, so scenes cannot be joined without one.
 - Source and unread leads: [../../../ai-docs/notes/2026-11-11-level-technique-harvest.md](../../../ai-docs/notes/2026-11-11-level-technique-harvest.md).
 
 ## Build output

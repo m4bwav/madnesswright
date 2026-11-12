@@ -89,3 +89,10 @@ Newest first. One entry per material finding; a quiet refresh gets one entry say
 - Sources: https://github.com/MPN-Modders/MPN_SceneTools
 - Magnitude: n/a (initial)
 - Applied: C-20261017-1
+
+### R-20261111-3 · 2026-11-11 · Official video tutorial and Overview re-export
+- Summary: Transcript (YouTube auto-captions through yt-dlp) of the official "SceneTools Tutorial: Custom Stages, Campaigns, and Cutscenes" (https://youtu.be/u7VV0N33Sx0, 57 min, developers building a two-room stage live). New: room transform rules and Scale Factor, one-way LinkedDoor, lockout disables, stray-object check, custom CG shaders work and C# does not, the load screen does the proxy conversion, Leave_Default_ToDoor, self-looping stages, what Campaign Hubs does, Stage marker Prerequisites/Forbidden/QuestIfUnbeaten, cutscene fields. On camera, a MadCard edit saved while the game ran was not picked up by Apply; the game had to reload. The SceneTools Overview was exported again today: it still names none of the 2025-2026 features in the commit history (Boss Marker, Get-Out Zone, Object_Randomizer, GlobalIntDisplay, traits NoIncap/BadBlock), so those need an in-game test before they are written into the skill.
+- Track: subject
+- Sources: https://youtu.be/u7VV0N33Sx0, https://docs.google.com/document/d/1-fchWz0-kYVMUwZcM1RIST8VmWlQ-SmjcuSe2qz9EJI
+- Magnitude: minor
+- Applied: C-20261111-3
