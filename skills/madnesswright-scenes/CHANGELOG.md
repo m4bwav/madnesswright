@@ -2,7 +2,12 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+Entry shape: `### C-20261111-7 · 2026-11-11 · Community harvest targets for level design
+- because: user request (technique harvest and scout sources for MPN level design)
+- files: harvest.json (new)
+- Five targets, each URL checked on 2026-11-11 (HTTP 200): GameBanana MPN section, Steam discussions (pinned Modding/Workshop Resources Master Doc, topic 4328600953645693620), Steam guides (The Definitive M:PN Modding Guide, id 3305980802), r/madnesscombat (low; reddit.com is not fetched directly), a YouTube search for SceneTools level tutorials. The official Discord is a source to read by hand only: it cannot be scraped, so it has no target. A guide titled "Modder's Guide to Madness" was not found and is left out.
+
+### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261111-6 · 2026-11-11 · Game shader and solid props for generated geometry
 - because: L-20261111-6 (Workshop feedback on the Nexus Prominence map)

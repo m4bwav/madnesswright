@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "targets": [
+    {
+      "kind": "web",
+      "url": "https://gamebanana.com/games/15564",
+      "keep": "MPN maps, Playground scenes and level tutorials; skip skins and sound swaps"
+    },
+    {
+      "kind": "web",
+      "url": "https://steamcommunity.com/app/488860/discussions/",
+      "keep": "SceneTools and custom level threads; pinned Modding/Workshop Resources Master Doc: https://steamcommunity.com/app/488860/discussions/0/4328600953645693620/"
+    },
+    {
+      "kind": "web",
+      "url": "https://steamcommunity.com/app/488860/guides/",
+      "keep": "level and SceneTools guides, e.g. The Definitive M:PN Modding Guide https://steamcommunity.com/sharedfiles/filedetails/?id=3305980802"
+    },
+    {
+      "kind": "reddit",
+      "sub": "madnesscombat",
+      "weight": "low",
+      "keep": "MPN custom level and SceneTools posts only; reddit.com is not fetchable directly here, use the public RSS feed or read by hand"
+    },
+    {
+      "kind": "web",
+      "url": "https://www.youtube.com/results?search_query=madness+project+nexus+scenetools+custom+level+tutorial",
+      "keep": "search-based: SceneTools and custom level tutorials, newest first"
+    }
+  ]
+}
