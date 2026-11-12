@@ -473,3 +473,7 @@ State on 2026-11-11 (left wall + narrower): on the owner's go-ahead, build-r was
 
 - 2026-11-11 18:40: continue session; build-zd being played by the owner (game launched 18:35, map loaded, logs clean so far). Waiting on their verdict before upload.
 - 2026-11-11 18:41: owner played build-zd ("push it to steam"); wsup.exe updated 3837705778 with change-notes m, preview j: result OK; live public, updated 18:40, 27 subscribers.
+
+## 2026-11-11 18:42 Nexus accents (build-ze)
+
+Look proposal 3 from notes/2026-11-11-nexus-overlaps-and-look.md: lit accents in rooms 2, 6, 8. Built, 40/40 corners, check-mod clean, deployed. Waits on a play.

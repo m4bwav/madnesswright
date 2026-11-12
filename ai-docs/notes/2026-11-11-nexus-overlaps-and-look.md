@@ -26,3 +26,5 @@ A triage of the sheet, not a ranked verdict. Proposals, not applied (owner rejec
    per room (colour value, height) and drop the banners where a room has its own feature.
 3. `aw.py light` flags rooms 2, 6 and 8 `low_value_gap` (flat values). Add one bright accent per room
    (lit sign, window, lamp) as rooms 1, 7 and 10 already have.
+
+Applied 2026-11-11 (build-ze): proposal 3 only. Pale `lit` accents: a lightbox over each of room 2's back doors, a lamp bar under room 6's shutter box (reads thin), a strip light over room 8's lockers. Render Ai/madnesswright-lab/nexus/compare-ze.jpg. Proposals 1 and 2 wait for the owner's play of build-ze.
