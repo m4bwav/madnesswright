@@ -1,6 +1,7 @@
 Doors and walls pass.
 
 - Wall struts, pipe clamps and stripes no longer run across doorways, windows or posters.
+- The red wall band, skirting, pipes and rails stop at doors and screens instead of running across them.
 - No crates stand in a doorway.
 - Removed a painted door that sat inside the office window and a banner hidden behind a board.
 
