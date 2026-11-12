@@ -2,6 +2,12 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.19 · 2026-11-11
+
+- madnesswright-scenes: overlap pass for generated rooms, checked with polywright `pw.py overlaps`; artwright-judge for the look (L-20261111-7).
+- examples/NexusProminence: wall filler no longer crosses doors, windows or posters (62 pieces cleared); no crates in door openings; room 3's painted door and room 7's hidden banner removed; per-room box dumps for pw.py.
+- README: works with polywright (overlap check) and artwright (look review).
+
 ## 0.1.18 · 2026-11-11
 
 - madnesswright-scenes: generated geometry uses the game's Madness terrain shader and solid props collide (L-20261111-6).

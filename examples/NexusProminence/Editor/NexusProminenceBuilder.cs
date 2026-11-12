@@ -388,6 +388,7 @@ public static class NexusProminenceBuilder
             case 8: BreakRoom(f); break;
             case 9: ControlTower(f); break;
         }
+        ClearWallOverlaps(f, room);
         LightTheLamps(room, f);
         BoxFourthWall(room);
         Physics.SyncTransforms();
@@ -739,8 +740,8 @@ public static class NexusProminenceBuilder
         Box(f, "CounterStripe", f.Cx + 3f, f.y + 0.9f, f.zb - 2.72f, 12f, 0.2f, 0.02f, "red");
         Box(f, "NoticeA", f.x0 + 4f, f.y + 3.2f, f.zb - 0.1f, 1.6f, 1.1f, 0.06f, "panel");
         Box(f, "NoticeB", f.x0 + 6f, f.y + 3.0f, f.zb - 0.1f, 1.0f, 1.4f, 0.06f, "panel");
-        Box(f, "BackDoorHole", f.x0 + 9.5f, f.y + 1.9f, f.zb - 0.05f, 2.4f, 3.8f, 0.04f, "black");
-        Box(f, "BackDoorHeader", f.x0 + 9.5f, f.y + 4.0f, f.zb - 0.12f, 2.8f, 0.3f, 0.15f, "red");
+        if (FakeDoors) Box(f, "BackDoorHole", f.x0 + 9.5f, f.y + 1.9f, f.zb - 0.05f, 2.4f, 3.8f, 0.04f, "black");
+        if (FakeDoors) Box(f, "BackDoorHeader", f.x0 + 9.5f, f.y + 4.0f, f.zb - 0.12f, 2.8f, 0.3f, 0.15f, "red");
         // more of the office: a door marked by a hazard header on the left, a banner, filing cabinets, a wall clock
         BackDoorway(f, f.x0 + 2.6f);
         Banner(f, f.x1 - 2.6f, f.y + 3.4f, f.zb - 0.1f, false);
@@ -837,7 +838,7 @@ public static class NexusProminenceBuilder
         Box(f, "Shutter", f.x0 + 3f, f.y + 2.2f, f.zb - 0.12f, 2f, 4.4f, 0.06f, "steel");
         for (float yy = f.y + 0.3f; yy < f.y + 4.4f; yy += 0.35f) Box(f, "ShutterLine", f.x0 + 3f, yy, f.zb - 0.16f, 2f, 0.05f, 0.02f, "dark");
         // banners between the lamps and doorways at both ends of the long corridor
-        for (int i = 0; i < 3; i++) Banner(f, f.x0 + 4f + (i + 0.5f) * (f.W - 8f) / 3f, f.y + 3.4f, f.zb - 0.1f, false);
+        for (int i = 0; i < 3; i++) { float bx = f.x0 + 4f + (i + 0.5f) * (f.W - 8f) / 3f; if (Mathf.Abs(bx - (f.Cx + 1f)) > 4.2f) Banner(f, bx, f.y + 3.4f, f.zb - 0.1f, false); }
         BackDoorway(f, f.x0 + 1.9f);
         BackDoorway(f, f.x1 - 1.9f);
     }
@@ -958,6 +959,7 @@ public static class NexusProminenceBuilder
 
     static void Crate(Frame f, float x, float z, float size, float stackOn = 0f)
     {
+        if (f.Doors.Any(d => Mathf.Abs(d.x - x) < 1.5f + size / 2 && Mathf.Abs(d.z - z) < 1.5f + size / 2)) return;
         float cy = f.y + stackOn + size / 2;
         Box(f, "Crate", x, cy, z, size, size, size, "panel");
         Box(f, "CrateStrapA", x - size * 0.25f, cy, z, 0.18f, size + 0.02f, size + 0.02f, "red");
@@ -1035,6 +1037,68 @@ public static class NexusProminenceBuilder
         s.isStatic = true;
         Solidify(f, s, x, y - sy / 2, z, sx, sy, sz);
         return s;
+    }
+
+    // ---- overlap scan: wall filler (pilasters, conduits, clamps, stripes, seams) is laid on a fixed rhythm with
+    // no idea where a room puts its doors, posters or cases, so it ran across doorways (owner's room 2 shot,
+    // 2026-11-11). After a room is dressed: filler that crosses a feature or a real door opening is removed,
+    // and features that cross each other are logged as NX_OVERLAP for the build log (fix those by hand).
+    static readonly string[] Filler = { "Pilaster", "PipeClamp", "Conduit", "BandStripe", "DiagStripe", "PanelSeam", "WallPanelStripes", "FloorSeam", "Grate", "Paper", "Stain", "OilStain" };
+    static readonly string[] Features = { "Door", "Window", "LitWin", "Poster", "Case", "Sign", "Banner", "Board", "Slate", "Shutter", "Vending",
+        "Notice", "Locker", "Menu", "Bill", "Vent", "Fridge", "Cabinet", "Rack", "Console", "Monitor", "Lamp", "Ledge", "Counter", "Hatch", "Crate", "Desk", "Table", "Bench", "Ladder" };
+    static string Family(string name, string[] keys)
+    {
+        string n = name.StartsWith("NX_") ? name.Substring(3) : name;
+        foreach (var k in keys) if (n.StartsWith(k) || n.Contains(k)) return k;
+        return null;
+    }
+    static void ClearWallOverlaps(Frame f, RoomObj room)
+    {
+        var rs = f.Parent.GetComponentsInChildren<Renderer>(true).Where(r => r.name.StartsWith("NX_")).ToList();
+        var feats = new List<KeyValuePair<string, Bounds>>();
+        foreach (var r in rs)
+        {
+            string fam = Family(r.name, Filler) == null ? Family(r.name, Features) : null;
+            if (fam != null) feats.Add(new KeyValuePair<string, Bounds>(fam + ":" + r.name, r.bounds));
+        }
+        // the real door openings, as solid blocks, so filler never crosses an exit
+        foreach (var d in f.Doors)
+            feats.Add(new KeyValuePair<string, Bounds>("Door:opening", new Bounds(new Vector3(d.x, f.y + 2.2f, d.z), new Vector3(3.0f, 4.4f, 3.0f))));
+        int removed = 0;
+        foreach (var r in rs)
+        {
+            if (Family(r.name, Filler) == null) continue;
+            var b = r.bounds; b.Expand(-0.02f);
+            var hit = feats.FirstOrDefault(k => k.Value.Intersects(b));
+            // flat floor pieces only clash with what stands on the floor; wall filler with anything
+            if (hit.Key == null) continue;
+            if (b.size.y < 0.05f && hit.Value.min.y > f.y + 0.1f) continue;
+            Debug.Log("NX_CLEAR " + room.name + ": " + r.name + " crossed " + hit.Key);
+            Object.DestroyImmediate(r.gameObject);
+            removed++;
+        }
+        for (int i = 0; i < feats.Count; i++)
+            for (int j = i + 1; j < feats.Count; j++)
+            {
+                string fi = feats[i].Key.Split(':')[0], fj = feats[j].Key.Split(':')[0];
+                if (fi == fj) continue;
+                var a = feats[i].Value; a.Expand(-0.05f);
+                if (a.Intersects(feats[j].Value)) Debug.Log("NX_OVERLAP " + room.name + ": " + feats[i].Key + " x " + feats[j].Key);
+            }
+        Debug.Log("NexusProminence: " + room.name + " overlap scan removed " + removed + " filler pieces");
+        // dump what is left for polywright's checker: pw.py overlaps NexusBoxes/<room>.json
+        var ci = System.Globalization.CultureInfo.InvariantCulture;
+        System.Func<Vector3, string> v = p => "[" + p.x.ToString("0.###", ci) + "," + p.y.ToString("0.###", ci) + "," + p.z.ToString("0.###", ci) + "]";
+        var rows = f.Parent.GetComponentsInChildren<Renderer>(true).Where(r => r && r.name.StartsWith("NX_")).Select(r =>
+        {
+            string fil = Family(r.name, Filler), feat = Family(r.name, Features);
+            bool filler = fil != null || feat == null;
+            return "{\"name\":\"" + r.name + "\",\"group\":\"" + (fil ?? feat ?? r.name) + "\",\"filler\":" + (filler ? "true" : "false")
+                + ",\"min\":" + v(r.bounds.min) + ",\"max\":" + v(r.bounds.max) + "}";
+        });
+        string dir = System.IO.Path.Combine(Application.dataPath, "..", "NexusBoxes");
+        System.IO.Directory.CreateDirectory(dir);
+        System.IO.File.WriteAllText(System.IO.Path.Combine(dir, room.name + ".json"), "[" + string.Join(",", rows) + "]");
     }
 
     // ---- printed decals (textures from tools/make_decals.py in MatDir/Tex) ----

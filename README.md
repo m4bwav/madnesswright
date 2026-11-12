@@ -63,7 +63,8 @@ You install Unity 2019.2.6f1, the SceneTools and ModTools projects (from https:/
 
 ## Works with
 
-- **[polywright](https://github.com/m4bwav/polywright)**: a weapon, armor piece or character that does not exist yet comes from polywright as FBX or OBJ.
+- **[polywright](https://github.com/m4bwav/polywright)**: a weapon, armor piece or character that does not exist yet comes from polywright as FBX or OBJ, and `pw.py overlaps` checks a generated room's boxes for struts across doors and props in doorways.
+- **[artwright](https://github.com/m4bwav/artwright)**: artwright-judge scores room renders against the reference frames, so a map's look improves on evidence, not taste.
 - **[musicwright](https://github.com/m4bwav/musicwright)**: musicwright-game builds its cue list from the music row of a madnesswright campaign beat chart.
 - **[fetchwright](https://github.com/m4bwav/fetchwright)**: Steam returns 429 to fast fetches, so madnesswright reads Steam pages through fetchwright.
 - **[ludowright](https://github.com/m4bwav/ludowright)**: ludowright reviews the design; madnesswright makes the change in the game and holds the playtest templates.

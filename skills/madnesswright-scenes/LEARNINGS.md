@@ -81,3 +81,11 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: Workshop comments on item 3837705778 (2026-11-11); SceneTools sample materials Room_Cutaway_* use Terrain - General; examples/NexusProminence `Mat`, `Solidify`, `BoxFourthWall`; build-w (box 4th wall: all-black shots) and build-y (outlines visible, 40/40 corners)
 - Scope: skill
 - Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-11
+
+## L-20261111-7 `wall-filler-crosses-doors`
+
+- Trigger: generated wall dressing on a fixed rhythm (pilasters, conduits, pipe clamps, stripes, panel seams) in a room whose doors, windows, posters or cases are placed per room; owner's shot: "struts going over the doors"
+- Rule: after a room is dressed, run an overlap pass: any filler piece whose bounds cross a feature (door, window, sign, poster, case, banner, locker, crate) or a real door opening is removed, and feature-vs-feature overlaps are logged for a hand fix. Dump the room's boxes to JSON and check them with polywright `pw.py overlaps` so the check works outside Unity too. Props (crates) must test the real door positions before placing.
+- Evidence: examples/NexusProminence `ClearWallOverlaps` (build-z removed 62 filler pieces across 10 rooms and logged a painted door inside room 3's window, crates in a room 4 door opening and a slate over a room 7 banner, fixed in build-za); polywright 0.6.4 `overlaps`
+- Scope: skill
+- Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-11
