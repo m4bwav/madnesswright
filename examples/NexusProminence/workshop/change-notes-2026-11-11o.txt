@@ -1,0 +1,4 @@
+Nexus Prominence 2026-11-11o
+
+- Rappel teams no longer land inside furniture: the pallet stack in the cargo bay and a desk in the control tower moved aside from the rope lines.
+- Nothing to do: resubscribe or restart the game to get the update.

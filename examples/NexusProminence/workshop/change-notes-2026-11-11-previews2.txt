@@ -1,0 +1,4 @@
+Nexus Prominence 2026-11-11n (pictures)
+
+- Screenshots and preview retaken from the current build; the old ones showed earlier versions of the rooms.
+- No change to the map.

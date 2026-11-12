@@ -477,3 +477,13 @@ State on 2026-11-11 (left wall + narrower): on the owner's go-ahead, build-r was
 ## 2026-11-11 18:42 Nexus accents (build-ze)
 
 Look proposal 3 from notes/2026-11-11-nexus-overlaps-and-look.md: lit accents in rooms 2, 6, 8. Built, 40/40 corners, check-mod clean, deployed. Waits on a play.
+
+## 2026-11-11
+
+- Owner: the Workshop item still shows the old levels. New AGENTS.md rule: every mod update that changes what a player sees retakes the gallery screenshots and rebuilds a screenshot-based preview image. Continue prompt step 2 now says so for Nexus Prominence.
+- Owner: maybe move the two mods (SwapUnaware, NexusProminence) into their own public repos with pointers; added as step 4 of the continue prompt, proposal on an askwright page first.
+
+## 2026-11-11 18:55 ze released, rope landings
+
+- build-ze played (mods.log 18:47) and uploaded (notes n, preview ze from shots-ze). wsup.exe `previews --clear N` added (SteamAPI_ISteamUGC_RemoveItemPreview, highest index first); gallery replaced, live check 6 shots + 1 movie.
+- Rappel team landed in room 4's PX_Cover_Pallet: SpawnDoor clears 3.5 units around each Rapel point. build-zf deployed 18:54, not played. Learning L-20261111-8.
