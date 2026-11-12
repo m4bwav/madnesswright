@@ -97,3 +97,27 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: examples/NexusProminence `SpawnDoor` (build-zf moved room 4's pallet and room 10's desk off the rope lines, `NX_LANDING` in the build log)
 - Scope: skill
 - Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-11
+
+## L-20261111-9 `one-change-per-play`
+
+- Trigger: the owner's note asks for a different feel (tighter, narrower, closer camera) and several knobs could answer it
+- Rule: change one size, camera or zoom knob per build and get a play before the next; never stack them. Prefer small steps (a width scale of 0.9, not 0.6).
+- Evidence: builds n, o, p and q on 2026-11-11 stacked depth scale, zoom, width scale and a hidden walls mesh, all unplayed; the owner rejected the lot and the generator was reverted to build m (build-r). The narrower rooms then landed as one change in build-v.
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11
+
+## L-20261111-10 `rooms-from-frames`
+
+- Trigger: a map must recreate rooms from a video, and someone offers a written summary of the video
+- Rule: build the room table from contact sheets and full-size frames of the video itself; treat a summary as unverified. Keep the frames per room to judge renders against.
+- Evidence: 2026-11-10 the pasted summary of NEXUS: HANK RAID described C4 and field medicine that the video does not show; the 2026-11-11 rebuild matched to frames was the first the requester recognised.
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11
+
+## L-20261111-11 `decals-on-clear-wall`
+
+- Trigger: generated signs, bullet-hole bursts or scrawls on a back wall; owner: signs over doors and behind pillars
+- Rule: before placing a wall decal, collect what is on the wall (doors, pillars, posters, windows, cabinets); step along the wall, then up and down, then shrink the decal; if nothing fits, drop it and log it.
+- Evidence: examples/NexusProminence `WallDecal`, `CollectWallBusy` (2026-11-11 clean-up build, played and released)
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11

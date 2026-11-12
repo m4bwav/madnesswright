@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261111-1 · 2026-11-11 · Workshop updates replace the gallery
+- because: user request (owner, 2026-11-11: the item still showed the old levels)
+- files: SKILL.md (Workshop section)
+- Steam add-preview only adds; remove old previews (RemoveItemPreview, highest index first), re-add the video, check the live page.
+
 ### C-20261025-1 · 2026-10-25 · Workshop updates get real change notes
 - because: user request (three Director updates showed only "Update" on the Change Notes tab)
 - files: SKILL.md (Step 6: share it), examples/WorkshopUpload (change-notes file, refuses an update without one)

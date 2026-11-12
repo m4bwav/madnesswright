@@ -34,6 +34,8 @@ Card fields for stages, campaigns, cutscenes, events and missions: [references/s
 
 Follow [references/scenetools-rules.md](references/scenetools-rules.md) (objects, layers, hard rules). The order that avoids most rework:
 
+0. Recreating a map from a video: build the room table from frames, not from a written summary (a pasted summary of NEXUS: HANK RAID was mostly invented). Pull the video at 480 to 720p (`uvx yt-dlp -S res:720`), make contact sheets (`ffmpeg -vf fps=1/4,tile=4x6`) and keep full-size frames per room to check renders against (L-20261111-10 `rooms-from-frames`).
+
 1. New scene; delete Main Camera and Directional Light. Drag in `Room_Layout`; click SYNCH VISUALS (makes the Dev_Cam). Never rotate a room.
 2. Geometry from primitives first: floor (Tag Floor, Layer Terrain, Static), back walls Terrain, foreground pieces TerrainObstacle, the camera-side wall TerrainInvis or no renderer, an invisible ceiling collider. Materials on the game's `Madness/Terrain - General` shader, not Standard, and solid-looking props get colliders (L-20261111-6). Stairs need an invisible Interactive-layer ramp.
 3. Camera: Camera Point and Camera Target, the four Border markers, Leeway; SYNCH VISUALS after each change. The Dev_Cam's own camera values do not carry into the game.
@@ -44,6 +46,8 @@ Follow [references/scenetools-rules.md](references/scenetools-rules.md) (objects
 
 Doors (PX_Door, linked between rooms), cover (PX_Cover), lockers, interactives, enemies (Char_Start for placed characters, Squad Spawner for waves through doors), Item_Spawn, Spawnpoints (floating, for the Playground item spawner), zones, blockers, removers by difficulty. Plan encounters with [references/encounter-design.md](references/encounter-design.md) before placing enemies: write the encounter plan (per room: enemy types, count, entry doors, cover, the beat it plays) into the mod folder as `LEVEL-PLAN.md` from [references/level-plan-template.md](references/level-plan-template.md) (a role for each enemy card, the most attacking at once, waves, and a beat chart for a campaign), so the playtest has something to check against.
 
+Weapons: set them on the markers (`Held_R`/`Held_L`, clear the card's defaults). No list of weapon card names ships; read them from the game's `resources.assets` with UnityPy (`StatCard_Ranged`, `StatCard_Weapon`; props sit under `stats/weapon/none/`). Wall signs, holes and scrawls go on a clear patch: list what is on the wall (doors, pillars, posters, windows, cabinets), step along, then up and down, then shrink, else drop the decal and log it (L-20261111-11 `decals-on-clear-wall`).
+
 ## Step 5: lint, build, deploy
 
 1. Save the scene (Ctrl+S); Unity writes it as text YAML. Run `MPN scene-lint <path/to/Scene.unity>`. Its JSON lists rule ids (S01 to S13) with the fix; fix every error, read warnings to the user. It checks the scene file only: it cannot see in-game behaviour, pathing or event logic.
@@ -52,13 +56,13 @@ Doors (PX_Door, linked between rooms), cover (PX_Cover), lockers, interactives, 
 4. Before building a generated room, check overlaps: wall filler must not cross a door, window or sign, and no prop may stand in a door opening. Dump each room's renderer bounds to JSON and run polywright's `pw.py overlaps <room>.json` (L-20261111-7 `wall-filler-crosses-doors`). For the look, render the rooms and have artwright-judge score them against the reference frames.
 5. Copy the `.sobj` into the mod folder (with any Stage, Campaign, Event or Cutscene cards), then `MPN check-mod` and `MPN deploy`.
 
-Headless build (unverified, no 2019.2.6f1 editor was available to test): add an editor script with a public static method that calls `EditorApplication.ExecuteMenuItem("Madness/AssetBundle/ >> Build (Compressed) *RECOMMENDED*")`, then run `Unity.exe -batchmode -projectPath <SceneTools> -executeMethod <Class>.<Method> -quit -logFile -` and read both stdout and the log for errors. Say it is unverified when offering it.
+Headless build (verified 2026-11-10 in Unity 2019.2.6f1, used for every Nexus Prominence build since): an editor script's public static method opens the scene, runs SYNCH VISUALS by invoking the room inspector's private `ActivateRoomVisuals` through reflection, saves, then invokes `AssetBundle_Builder_Editor.Build_Compressed` (private static) the same way; run `Unity.exe -batchmode -projectPath <SceneTools> -executeMethod <Class>.<Method> -quit -logFile <file>` and read the log for errors (example: examples/NexusProminence/Editor/NexusBatch.cs).
 
 ## Step 6: playtest and iterate
 
 1. The user enables the mod (gear icon, ENABLED, Apply), opens the Playground terminal, and loads the scene (or starts the custom campaign from its menu entry).
 2. Give the user the checklist from [references/encounter-design.md](references/encounter-design.md#playtest-checklist) filled in for this level: spawn point, camera borders, each door, enemy pathing to every area, each encounter clearable, deaths and time per room.
-3. After the session, run `MPN log` and report problem lines; take the user's notes, change one thing at a time, lint, rebuild, redeploy.
+3. After the session, run `MPN log` and report problem lines; take the user's notes, change one thing at a time, lint, rebuild, redeploy. Never stack unplayed changes to room size, camera or zoom: four such builds in a row were all rejected and reverted (L-20261111-9 `one-change-per-play`).
 4. Dev Tools (god mode, AI pathing overlay) are on the developer's roadmap, not shipped: debug pathing by watching enemies and adding waypoints or ForceConnect.
 
 ## Rules that bite
