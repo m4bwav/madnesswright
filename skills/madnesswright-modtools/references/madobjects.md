@@ -70,3 +70,18 @@ Add an Animator to the weapon, assign it on the MadObj, and build a new controll
 ## Bundles
 
 AssetBundle name at the bottom of the Inspector; `Madness > AssetBundle > >> Build (Compressed) *RECOMMENDED*` or Uncompressed; output in `%USERPROFILE%\AppData\LocalLow\Gibbing Tree\Madness Project Nexus ModTools\MadObjs\`. Cards reference the asset name inside the bundle, never the bundle name.
+
+## Attachments: MadObj_Addon (2026-11-12d harvest, item 55; single community source, unverified in game)
+
+- Blender: a single-vertex mesh object where each attachment meets the gun (and where bullets leave a barrel, extension, compensator or silencer); snap each attachment's origin to its point with the 3D cursor; Shade Smooth; export FBX.
+- Unity: tool handle Pivot (not Center) so origins match Blender; untick Import Animations. Empty GameObject with the `MadObj_Addon` script, rotated so the green arrow points to the rear (scopes: down); scale the model to 12% if it was sized to game assets in Blender; parent and centre it; make a prefab.
+- Script: elements 1 and 2 replace Grip_Main and Grip_Off (keep the number of grip elements). `Point_Addon` is where bullets leave; it overrides the gun's `Point_Shoot` (barrel core) or the previous `Point_Addon` (extension or cap). The blue arrow is the bullet direction.
+- Bundle and MadCard as for a gun; list the attachment in each gun's `AllowedAddons`.
+
+## Material reskins without a model (item 56; single source, unverified in game)
+
+Texture plus its `_MAP` effect map in the ModTools Textures folder; a material with shader Madness > Character - Standard and the map in Effect Map; both in an AssetBundle, Madness > Build, bundle loose in the mod folder. The card side (MCM "Reskins") is in madnesswright references/madcards.md.
+
+## Checking a bundle before playtesting: Slash's Asset Viewer (item 59; single source)
+
+SAV (linked from the community Master Document, madnesswright references/sources.md) loads `.mobj` bundles without the game, sorts prefabs by component (Ranged/Melee, Armor, Bodypart, Addon, particles, materials), previews armor alt meshes, alt materials and swatch colours, snaps addons to a spawned gun's points (needs exactly one MadObj_Ranged in the scene) and plays exported animations on a preview grunt (left click single, right click the victim half of a double). Use the Preview Animations tab; animations in the asset list do not play. Not an MCM replacement. Unverified by us.

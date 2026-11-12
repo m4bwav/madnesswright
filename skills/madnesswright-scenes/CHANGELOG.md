@@ -2,12 +2,13 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-20261112-3 · 2026-11-12 · Debug mode for playtests
+Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+
+### C-20261112-3 · 2026-11-12 · Debug mode for playtests
 - because: user request (technique harvest); ai-docs/notes/2026-11-12c-madness-technique-harvest.md item 50
 - files: references/encounter-design.md (new "Debug mode for playtests")
 - Single source, unverified in game; SKILL.md unchanged.
 
-### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261112-2 · 2026-11-12 · Stage music pointer
 - because: user request (technique harvest); ai-docs/notes/2026-11-12b-madness-technique-harvest.md item 28

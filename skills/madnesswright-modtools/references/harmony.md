@@ -133,3 +133,7 @@ Source-code-confirmed, unverified in game.
 ## Traverse: write a private field (item 47; source code)
 
 `Traverse.Create(__instance).Field("fieldName").SetValue(value)` sets a private field from a Postfix without a publicizer. Example in game-recipes.md, "Playground lists and difficulty".
+
+## Loading extra files from every enabled mod (2026-11-12d harvest, item 58; NEMLegacy source, known stale)
+
+NEMLegacy (src/Patches/ApplyModsPatch.cs, src/Classes/AssetBundleLoader.cs) prefixed `Mod_Manager.CommitAllModsIfPending` (runs when mods are re-applied; unload your bundles there) and `Mod_Manager.CommitMods_MadObjs` (runs at start and after every re-apply), looped `Mod_Manager.ReturnAllMods(false)` and each `ModItem.Directory.GetFiles(...)`, and loaded its own extension (`.nem`) with `AssetBundle.LoadFromFile`. Scene bundles are told apart with `isStreamedSceneAssetBundle` and `GetAllScenePaths()`; a non-scene bundle whose prefab holds `UI_MissionMap_Arena` was treated as a mission map. The repo's own comment says a later game update broke it: method names may have changed, re-check in a fresh decompile. Unverified in game.
