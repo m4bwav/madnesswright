@@ -686,6 +686,7 @@ public static class NexusProminenceBuilder
         {
             Box(f, "BackDoorFrame", x, f.y + 2.4f, f.zb - 0.15f, 3.0f, 4.8f, 0.1f, "dark");
             Box(f, "BackDoor", x, f.y + 2.3f, f.zb - 0.2f, 2.5f, 4.6f, 0.04f, "black");
+            Box(f, "DoorLightbox", x, f.y + 5.15f, f.zb - 0.2f, 2.0f, 0.35f, 0.06f, "lit"); // bright accent (aw.py light: flat values)
         }
         for (int i = 0; i < 3; i++)
         {
@@ -807,6 +808,7 @@ public static class NexusProminenceBuilder
     {
         float sx = f.Cx - 2f, sw = 9f, sy0 = f.y + 1.8f, sh = 4.2f;
         Box(f, "ShutterBox", sx, sy0 + sh + 0.3f, f.zb - 0.35f, sw + 0.6f, 0.6f, 0.6f, "dark");
+        Box(f, "ShutterLampBar", sx, sy0 + sh - 0.05f, f.zb - 0.66f, sw, 0.14f, 0.04f, "lit"); // bright accent
         for (float yy = sy0; yy < sy0 + sh; yy += 0.3f)
             Box(f, "Slat", sx, yy + 0.13f, f.zb - 0.15f, sw, 0.24f, 0.08f, "steel");
         Box(f, "ShutterGuideA", sx - sw / 2 - 0.1f, sy0 + sh / 2, f.zb - 0.2f, 0.2f, sh + 0.4f, 0.25f, "dark");
@@ -865,6 +867,7 @@ public static class NexusProminenceBuilder
             for (int v = 0; v < 3; v++) Box(f, "Vent", x, f.y + 2.9f - v * 0.18f, f.zb - 1.12f, 0.6f, 0.06f, 0.02f, "dark");
             Box(f, "Handle", x + 0.35f, f.y + 1.8f, f.zb - 1.12f, 0.06f, 0.35f, 0.04f, "dark");
         }
+        Box(f, "LockerStripLight", lx + 2.9f, f.y + 3.75f, f.zb - 0.5f, 6.6f, 0.16f, 0.3f, "lit"); // bright accent
         Box(f, "Bench", lx + 3f, f.y + 0.5f, f.zb - 2.4f, 5f, 0.18f, 0.7f, "dark");
         Box(f, "BenchLegA", lx + 1f, f.y + 0.25f, f.zb - 2.4f, 0.15f, 0.5f, 0.5f, "dark");
         Box(f, "BenchLegB", lx + 5f, f.y + 0.25f, f.zb - 2.4f, 0.15f, 0.5f, 0.5f, "dark");
