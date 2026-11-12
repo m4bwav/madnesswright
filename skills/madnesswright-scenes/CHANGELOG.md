@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261111-9 · 2026-11-11 · Harvested SceneTools details: stockpiles, door states, platforms, cutscene cameras
+- because: user request (technique harvest); ai-docs/notes/2026-11-11-level-technique-harvest.md (official SceneTools and Event System docs via the pinned Master Doc)
+- files: references/scenetools-rules.md (new section "Spawns, doors and moving parts"); SKILL.md (Maintenance links harvest.json)
+- Five rules stated by the doc author; seats, AnimEvents_Interact and vendor currency left in the note.
+
 ### C-20261111-8 · 2026-11-11 · Session lessons distilled: frames, one change per play, clear wall, weapon names, headless build verified
 - because: user request (technique distillation); L-20261111-9, L-20261111-10, L-20261111-11; ai-docs Owed 7 (headless build done 2026-11-10)
 - files: SKILL.md (Step 3 item 0, Step 4 weapons and decals, Step 5 headless build, Step 6 item 3); LEARNINGS.md

@@ -76,4 +76,4 @@ Headless build (verified 2026-11-10 in Unity 2019.2.6f1, used for every Nexus Pr
 
 ## Maintenance
 
-This skill is evergreen: state in `evergreen.json`, research in [RESEARCH.md](RESEARCH.md), edits in [CHANGELOG.md](CHANGELOG.md), lessons in [LEARNINGS.md](LEARNINGS.md), tests in [TESTS.md](TESTS.md). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
+This skill is evergreen: state in `evergreen.json`, research in [RESEARCH.md](RESEARCH.md), edits in [CHANGELOG.md](CHANGELOG.md), lessons in [LEARNINGS.md](LEARNINGS.md), tests in [TESTS.md](TESTS.md). Protocol: [MAINTENANCE.md](MAINTENANCE.md). Community sources to harvest: [harvest.json](harvest.json).

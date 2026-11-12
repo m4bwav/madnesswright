@@ -53,6 +53,15 @@ Tags: `Floor` (spawn and pathing surface), `Character`.
 - Doors: one wall collider per door to make intangible; keep door parts off Terrain and Default (use TerrainObstacle).
 - Custom armature roots and platform holders at scale (1,1,1) where the doc says so.
 
+## Spawns, doors and moving parts (official docs, harvested 2026-11-11)
+
+- Weapon stockpiles deal from the end of the list: the last units spawned are armed first, each taking its preferred weapon type; leftovers spawn unarmed. Steer it with list order, RandomSeed and empty Unarmed loadouts, and check in game.
+- Doors have four states (Open, Closed, Opening, Closing); nobody spawns through an open or moving door, so spawn doors stay Closed or set NoClosingOrOpening. Custom animated doors run on the ToggleMe bool (template Door_Standard).
+- Leave Leeway Mouse at its default in most rooms: mouse-driven pan makes aiming harder.
+- A moving CO_ Togglable that characters stand on needs the Platform Addon, or they are flung off or fall through.
+- Cutscenes set every ViewCam animator Off at start and fire ToggleMe once per Step: custom camera animators need an Off state.
+- Source and unread leads: [../../../ai-docs/notes/2026-11-11-level-technique-harvest.md](../../../ai-docs/notes/2026-11-11-level-technique-harvest.md).
+
 ## Build output
 
 `>> Build (Compressed) *RECOMMENDED*` or `>> Build (Uncompressed)` writes to `Application.persistentDataPath/SceneObjs/`, which for this project (company Gibbing Tree, product "Madness Project Nexus SceneTools") is `%USERPROFILE%\AppData\LocalLow\Gibbing Tree\Madness Project Nexus SceneTools\SceneObjs\`. Target is StandaloneWindows64.

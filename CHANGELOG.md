@@ -5,6 +5,7 @@ Plugin versions. Skill-level changes and their reasons are in each skill's own C
 ## 0.1.21 · 2026-11-11
 
 - madnesswright-scenes: headless SceneTools build marked verified with its reflection calls; rooms from video frames, weapon card names via UnityPy, decals on a clear wall, one size/camera change per play (L-20261111-9 to -11).
+- madnesswright-scenes: harvested SceneTools rules (stockpile order, door states, Platform Addon, cutscene camera Off state).
 - madnesswright: Workshop updates replace the gallery (old previews removed, video re-added).
 
 ## 0.1.20 · 2026-11-11
