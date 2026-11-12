@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.30 · 2026-11-12
+
+- madnesswright-scenes: new references/scenetools-fields.md, SceneTools component fields from the test repo tooltips (Destructibles, room leave-lock rules, blockers, water, camera and event zones, vessels, seats, SceneRules arena and siege fields, staging grounds, squad waves, character, boss and dummy markers, Removers, randomizers, hazards, effects, lockers, vendors); Event action sub-fields re-checked against the sheet; RunDynamicMethod float and vector syntax. madnesswright-modtools: the same syntax note. Unverified in game.
+
 ## 0.1.29 · 2026-11-12
 
 - madnesswright-scenes: new references/event-actions.md, every Event Condition and Action with its fields from the official sheet (wave actions, GoToScene, RunDynamicMethod, SUBZERO=ALL, NO-RECHECK); `SetBoolean` corrected to `BooleanSet`; early SceneTools objects; briefing style sources. madnesswright: AddonGroup TetherTo, dialogue transcript links. madnesswright-modtools: BuffEvent and DoTEvent, calling mod code from Events. Unverified in game.

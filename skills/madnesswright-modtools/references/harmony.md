@@ -141,3 +141,5 @@ NEMLegacy (src/Patches/ApplyModsPatch.cs, src/Classes/AssetBundleLoader.cs) pref
 ## Calling your code from a scene Event (2026-11-12f harvest, item 76; official Event sheet, unverified in game)
 
 The Event action `RunDynamicMethod` runs a public method on a component of the objects with a given SerialNumber, or a static method when `Location` names the class. `String1` is the method name; `String2` the comma-separated arguments, which also select the overload: `true`, `'text'`, `5`, `3.14`, `(0.5 1.0 5.8)` for a Vector3, `Faction.AAHW` for an enum. Keep a level's custom behaviour in your mod's component and trigger it from a scene's EventCard. Field table: madnesswright-scenes references/event-actions.md. `RunLua` does nothing unless a Lua mod hooks it.
+
+A float argument needs its decimal point (`5.0`; a bare `5` is read as an int and may pick another overload), and a vector takes 2 to 4 floats (Vector2 to Vector4) separated by spaces (2026-11-12g harvest, item 82; official sheet, unverified in game).

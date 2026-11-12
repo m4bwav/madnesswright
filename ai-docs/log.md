@@ -535,3 +535,5 @@ Transcript of the official SceneTools stages, campaigns and cutscenes video read
 - 2026-11-12 built harvest round e items 61-71 (beta SceneTools commit log): scenes scenetools-rules "Beta SceneTools additions", stages-and-campaigns blockers and movie player; hub madcards beta traits; plugin 0.1.28. Beta-only, in-game tests owed by the owner.
 
 - 2026-11-12 built harvest round f items 72-80: scenes event-actions.md (new, official sheet re-fetched as CSV for exact fields), BooleanSet fix, early SceneTools objects, briefing voice; hub madcards TetherTo and sources transcripts; modtools BuffEvent/DoTEvent and RunDynamicMethod bridge; plugin 0.1.29. In-game tests owed by the owner.
+
+- 2026-11-12 built harvest round g items 81-99: scenes scenetools-fields.md (new, test repo tooltip field names), pointer in scenetools-rules, RunDynamicMethod float/vector syntax in event-actions and modtools harmony; item 81 already covered by round f; plugin 0.1.30. In-game tests owed by the owner.

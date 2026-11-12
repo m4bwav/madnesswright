@@ -97,6 +97,8 @@ From MPN_SceneTools_Testing commit messages only (testing repo, beta branch). Fi
 
 Earlier objects from the same log (2026-11-12f harvest, item 78; 2025 commits, single source, likely in the released tools now, unverified in game): `Hazard_Splosive`, `Marker_Boss` (2025-04-21); AutoShooter, Hazards, GetOut-Zones, Debris Generators (2025-04-18); `AnimEvents_Sound`, `CustomObj_Destructible` (sample `CO_Destructible`), `Obj_Debris`, `Obj_Disposable`, `Obj_Toy`, `Effect_MaterialScroller`, `Effect_RendererVanisher` (2025-04-04); `Marker_Dummy`, scenery characters driven by your own Mecanim controller (2025-02-13); Glow Effect ("80s Lights"); scene Sounds (only loops play on the first frame); Platforms and Automators for Custom Togglables; PatrolParameters and Paths on character spawners; Locker and Vendor addons on Custom Interactives (they take a SerialNumber); Removers (the author had not tested them); Cover Points; `AnimEvent_Interact` for custom interactive animators; Tasks on Lockers; an empty Door type. Events drive many of these by SerialNumber: [event-actions.md](event-actions.md).
 
+Per-component field names (Destructibles, rooms, blockers, zones, vessels, seats, staging grounds, squads, character and boss markers, Removers, hazards, effects, lockers, vendors) from the test repo tooltips: [scenetools-fields.md](scenetools-fields.md) (round g, unverified in game).
+
 ## Build output
 
 `>> Build (Compressed) *RECOMMENDED*` or `>> Build (Uncompressed)` writes to `Application.persistentDataPath/SceneObjs/`, which for this project (company Gibbing Tree, product "Madness Project Nexus SceneTools") is `%USERPROFILE%\AppData\LocalLow\Gibbing Tree\Madness Project Nexus SceneTools\SceneObjs\`. Target is StandaloneWindows64.
