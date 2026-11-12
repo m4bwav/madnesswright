@@ -840,41 +840,90 @@ public static class NexusProminenceBuilder
         // owner's film frame (2026-11-11): tapered concrete pylons with a red band, a generator set on the back wall
         Pylon(f, f.x0 + 0.22f * f.W, f.zf + 0.38f * f.D);
         Pylon(f, f.x0 + 0.46f * f.W, f.zf + 0.30f * f.D);
-        Generator(f, f.x1 - 4f, f.zb - 0.75f);
+        Generator(f, f.x1 - 4.4f, f.zb - 0.95f);
     }
 
-    // Tapered concrete pylon (the film's checkpoint blocks): four shrinking tiers, red band on the second.
+    // Tapered concrete pylon (the film's checkpoint blocks): one sloped body on a plinth, a red band and white stripe
+    // that follow the slope, a dark cap. Owner asked for real pylons (2026-11-11 play): the four stacked boxes read as crates.
     static void Pylon(Frame f, float x, float z)
     {
         if (f.Doors.Any(d => Mathf.Abs(d.x - x) < 2.5f && Mathf.Abs(d.z - z) < 2.5f)) return;
-        float[] w = { 1.9f, 1.6f, 1.35f, 1.1f }; float[] h = { 0.9f, 0.5f, 0.9f, 0.9f };
-        float y = f.y;
-        for (int i = 0; i < 4; i++)
-        {
-            Box(f, i == 0 ? "Pylon" : "PylonTier", x, y + h[i] / 2, z, w[i], h[i], w[i], i == 1 ? "red" : "panel");
-            y += h[i];
-        }
-        Box(f, "PylonCap", x, y + 0.04f, z, 1.15f, 0.08f, 1.15f, "dark");
+        Box(f, "Pylon", x, f.y + 0.12f, z, 1.9f, 0.24f, 1.9f, "dark");
+        float y0 = f.y + 0.24f, H = 2.6f, wb = 1.7f, wt = 0.8f;
+        Taper(f, "PylonTier", x, y0, z, wb, wt, H, "panel");
+        // bands sit a hair proud of the slope at their own height
+        Taper(f, "PylonTier", x, y0 + 0.55f, z, W(wb, wt, H, 0.55f) + 0.04f, W(wb, wt, H, 1.15f) + 0.04f, 0.6f, "red");
+        Taper(f, "PylonTier", x, y0 + 1.25f, z, W(wb, wt, H, 1.25f) + 0.04f, W(wb, wt, H, 1.4f) + 0.04f, 0.15f, "white");
+        Box(f, "PylonCap", x, y0 + H + 0.06f, z, wt + 0.1f, 0.12f, wt + 0.1f, "dark");
+        Box(f, "PylonTier", x, y0 + H + 0.2f, z, 0.25f, 0.16f, 0.25f, "steel");
     }
 
-    // Petrol generator on the back wall with a gasoline can, warning sign, hose, toolbox and wrench (film frame).
+    static float W(float wb, float wt, float H, float h) { return Mathf.Lerp(wb, wt, h / H); }
+
+    // A box whose mesh is swapped for a square frustum (bottom width wb, top width wt); the collider stays the
+    // bottom-sized box Solidify gives it, which is what a player bumps into anyway.
+    static GameObject Taper(Frame f, string name, float x, float y0, float z, float wb, float wt, float h, string mat)
+    {
+        var g = Box(f, name, x, y0 + h / 2, z, wb, h, wb, mat);
+        g.GetComponent<MeshFilter>().sharedMesh = FrustumMesh(Mathf.Round(wt / wb * 100f) / 100f);
+        return g;
+    }
+
+    static readonly Dictionary<float, Mesh> frustums = new Dictionary<float, Mesh>();
+    static Mesh FrustumMesh(float r)
+    {
+        if (frustums.TryGetValue(r, out var m) && m != null) return m;
+        string path = MatDir + "/NX_Frustum_" + Mathf.RoundToInt(r * 100) + ".asset";
+        m = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+        if (m == null)
+        {
+            // unit cube from -0.5..0.5, top face scaled by r; flat-shaded (own vertices per face)
+            float t = 0.5f * r;
+            var bot = new[] { new Vector3(-.5f, -.5f, -.5f), new Vector3(.5f, -.5f, -.5f), new Vector3(.5f, -.5f, .5f), new Vector3(-.5f, -.5f, .5f) };
+            var top = new[] { new Vector3(-t, .5f, -t), new Vector3(t, .5f, -t), new Vector3(t, .5f, t), new Vector3(-t, .5f, t) };
+            var v = new List<Vector3>(); var tri = new List<int>();
+            void Quad(Vector3 a, Vector3 b, Vector3 c, Vector3 d) { int i = v.Count; v.Add(a); v.Add(b); v.Add(c); v.Add(d); tri.AddRange(new[] { i, i + 1, i + 2, i, i + 2, i + 3 }); }
+            for (int i = 0; i < 4; i++) { int j = (i + 1) % 4; Quad(bot[i], top[i], top[j], bot[j]); }
+            Quad(top[0], top[3], top[2], top[1]);
+            Quad(bot[0], bot[1], bot[2], bot[3]);
+            m = new Mesh { name = "NX_Frustum_" + Mathf.RoundToInt(r * 100) };
+            m.SetVertices(v); m.SetTriangles(tri, 0);
+            m.uv = v.Select(p => new Vector2(p.x + .5f, p.y + .5f)).ToArray();
+            m.RecalculateNormals(); m.RecalculateBounds();
+            AssetDatabase.CreateAsset(m, path);
+        }
+        frustums[r] = m;
+        return m;
+    }
+
+    // Petrol generator set on the back wall (film frame): red body on a skid with a fuel tank on top, control face
+    // with dials, grille, exhaust stack up the wall, wheels; gasoline can, hazard sign, hose, toolbox and wrench.
     static void Generator(Frame f, float x, float z)
     {
-        Box(f, "Generator", x, f.y + 0.6f, z, 2.4f, 1.2f, 1.1f, "red");
-        Box(f, "GeneratorFrame", x, f.y + 1.25f, z, 2.5f, 0.1f, 1.2f, "dark");
-        Box(f, "GeneratorFace", x + 0.15f, f.y + 0.7f, z - 0.56f, 1.8f, 0.6f, 0.03f, "white");
-        Box(f, "GeneratorSwitch", x - 0.9f, f.y + 0.45f, z - 0.56f, 0.3f, 0.2f, 0.03f, "dark");
-        Box(f, "GeneratorFoot", x, f.y + 0.05f, z, 2.3f, 0.1f, 1.0f, "black");
-        Box(f, "GasCan", x + 1.65f, f.y + 0.45f, z - 0.1f, 0.5f, 0.9f, 0.35f, "white");
-        Box(f, "GasCanLabel", x + 1.65f, f.y + 0.45f, z - 0.28f, 0.36f, 0.4f, 0.02f, "red");
-        Box(f, "GasCanSpout", x + 1.75f, f.y + 1.0f, z - 0.1f, 0.06f, 0.25f, 0.06f, "steel");
-        Box(f, "HazardSign", x + 2.9f, f.y + 2.8f, f.zb - 0.08f, 1.0f, 1.0f, 0.04f, "dark");
-        Box(f, "HazardSignMark", x + 2.9f, f.y + 2.85f, f.zb - 0.11f, 0.55f, 0.55f, 0.02f, "screen");
-        Box(f, "HoseHook", x - 1.8f, f.y + 2.6f, f.zb - 0.12f, 0.12f, 0.12f, 0.15f, "steel");
-        Box(f, "HoseCoil", x - 1.8f, f.y + 2.0f, f.zb - 0.12f, 0.6f, 1.1f, 0.08f, "black");
-        Box(f, "Toolbox", x - 3.2f, f.y + 0.2f, f.zf + 0.35f * f.D, 0.9f, 0.4f, 0.45f, "red");
-        Box(f, "ToolboxHandle", x - 3.2f, f.y + 0.42f, f.zf + 0.35f * f.D, 0.4f, 0.04f, 0.06f, "white");
-        Box(f, "Wrench", x - 2.4f, f.y + 0.02f, f.zf + 0.33f * f.D, 1.0f, 0.04f, 0.12f, "steel");
+        float y = f.y;
+        Box(f, "GeneratorFoot", x, y + 0.1f, z, 3.2f, 0.2f, 1.4f, "black");
+        Box(f, "Generator", x, y + 0.95f, z, 3.0f, 1.5f, 1.25f, "red");
+        Box(f, "GeneratorFrame", x, y + 1.75f, z, 3.1f, 0.1f, 1.35f, "dark");
+        Box(f, "GeneratorTank", x - 0.3f, y + 2.05f, z, 1.8f, 0.5f, 0.95f, "red");
+        Box(f, "GeneratorTankCap", x - 0.9f, y + 2.36f, z, 0.25f, 0.12f, 0.25f, "steel");
+        foreach (var cx in new[] { -1.55f, 1.55f }) Box(f, "GeneratorFrame", x + cx, y + 1.3f, z - 0.6f, 0.1f, 2.2f, 0.1f, "dark");
+        Box(f, "GeneratorFace", x + 0.55f, y + 1.05f, z - 0.64f, 1.4f, 0.8f, 0.03f, "white");
+        for (int i = 0; i < 3; i++) Box(f, "GeneratorSwitch", x + 0.1f + i * 0.45f, y + 1.15f, z - 0.67f, 0.26f, 0.26f, 0.03f, i == 2 ? "screen" : "dark");
+        Box(f, "GeneratorSwitch", x + 0.55f, y + 0.8f, z - 0.67f, 1.1f, 0.12f, 0.03f, "dark");
+        for (int i = 0; i < 5; i++) Box(f, "GeneratorFace", x - 0.85f, y + 0.55f + i * 0.17f, z - 0.64f, 1.0f, 0.07f, 0.03f, "dark");
+        foreach (var cx in new[] { -1.2f, 1.2f }) Box(f, "GeneratorFoot", x + cx, y + 0.25f, z - 0.72f, 0.5f, 0.5f, 0.2f, "black");
+        Box(f, "GeneratorExhaust", x - 1.3f, y + 3.0f, f.zb - 0.2f, 0.22f, 2.6f, 0.22f, "steel");
+        Box(f, "GeneratorExhaust", x - 1.3f, y + 1.9f, z + 0.1f, 0.22f, 0.22f, f.zb - 0.2f - z, "steel");
+        Box(f, "GasCan", x + 2.1f, y + 0.5f, z - 0.1f, 0.6f, 1.0f, 0.4f, "white");
+        Box(f, "GasCanLabel", x + 2.1f, y + 0.5f, z - 0.31f, 0.42f, 0.45f, 0.02f, "red");
+        Box(f, "GasCanSpout", x + 2.22f, y + 1.1f, z - 0.1f, 0.07f, 0.25f, 0.07f, "steel");
+        Box(f, "HazardSign", x + 3.1f, y + 2.8f, f.zb - 0.08f, 1.0f, 1.0f, 0.04f, "dark");
+        Box(f, "HazardSignMark", x + 3.1f, y + 2.85f, f.zb - 0.11f, 0.55f, 0.55f, 0.02f, "screen");
+        Box(f, "HoseHook", x + 2.2f, y + 2.6f, f.zb - 0.12f, 0.12f, 0.12f, 0.15f, "steel");
+        Box(f, "HoseCoil", x + 2.2f, y + 2.05f, f.zb - 0.12f, 0.6f, 1.1f, 0.08f, "black");
+        Box(f, "Toolbox", x - 3.2f, y + 0.2f, f.zf + 0.35f * f.D, 0.9f, 0.4f, 0.45f, "red");
+        Box(f, "ToolboxHandle", x - 3.2f, y + 0.42f, f.zf + 0.35f * f.D, 0.4f, 0.04f, 0.06f, "white");
+        Box(f, "Wrench", x - 2.4f, y + 0.02f, f.zf + 0.33f * f.D, 1.0f, 0.04f, 0.12f, "steel");
     }
 
     // 7: corridor lit by ceiling lamps throwing red cones down the back wall; dark slate board.

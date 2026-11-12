@@ -507,3 +507,9 @@ Look proposal 3 from notes/2026-11-11-nexus-overlaps-and-look.md: lit accents in
 - 2026-11-11 20:33: continue-prompt run; build-zh not yet played (mods.log 19:15), look proposals exhausted; stopped at the owner-play wait.
 
 - 2026-11-11 20:50: build-zh played (clean) and released to Workshop item 3837705778 with change-notes-2026-11-11p.txt, new preview and gallery from shots-zh; description garage row updated.
+
+- 2026-11-11 21:10 Nexus: live Workshop gallery verified (6 shots + 1 movie); new comments hostile about AI use, no level faults; nothing built.
+
+## 2026-11-11 21:46 pylons and generator remade (build-zj)
+
+- Owner played zh (clean) and asked for better generator and pylons. Tapered frustum-mesh pylons with sloped band, full generator set; zi had the hose over a banner and the exhaust over WallPanel, moved in zj (filler 0). Deployed, waits on a play.
