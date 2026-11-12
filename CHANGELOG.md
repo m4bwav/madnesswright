@@ -2,6 +2,12 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.20 · 2026-11-11
+
+- madnesswright-scenes: spawn landings kept clear of cover (L-20261111-8).
+- examples/NexusProminence: rappel lines no longer drop agents into a crate (room 4 pallet, room 10 desk moved aside).
+- examples/WorkshopUpload: `previews --clear N` removes an item's old extra previews before adding new ones.
+
 ## 0.1.19 · 2026-11-11
 
 - madnesswright-scenes: overlap pass for generated rooms, checked with polywright `pw.py overlaps`; artwright-judge for the look (L-20261111-7).

@@ -17,12 +17,14 @@ static class Program
     [System.Runtime.InteropServices.DllImport(Api)] static extern ulong SteamAPI_ISteamUGC_StartItemUpdate(IntPtr s, uint app, ulong file);
     [System.Runtime.InteropServices.DllImport(Api)] static extern bool SteamAPI_ISteamUGC_AddItemPreviewFile(IntPtr s, ulong h, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPUTF8Str)] string path, int type);
     [System.Runtime.InteropServices.DllImport(Api)] static extern bool SteamAPI_ISteamUGC_AddItemPreviewVideo(IntPtr s, ulong h, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPUTF8Str)] string id);
+    [System.Runtime.InteropServices.DllImport(Api)] static extern bool SteamAPI_ISteamUGC_RemoveItemPreview(IntPtr s, ulong h, uint index);
     [System.Runtime.InteropServices.DllImport(Api)] static extern ulong SteamAPI_ISteamUGC_SubmitItemUpdate(IntPtr s, ulong h, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPUTF8Str)] string note);
     [System.Runtime.InteropServices.DllImport(Api)] static extern bool SteamAPI_ISteamUtils_IsAPICallCompleted(IntPtr s, ulong call, out bool failed);
     [System.Runtime.InteropServices.DllImport(Api)] static extern bool SteamAPI_ISteamUtils_GetAPICallResult(IntPtr s, ulong call, IntPtr buf, int size, int cb, out bool failed);
 
     // previews <item-id> <change-notes-file> <image|youtube:ID>... : adds extra images and YouTube videos to an
-    // item without touching its content, title or main preview.
+    // item without touching its content, title or main preview. "--clear N" right after the notes file first
+    // removes the item's N existing extra previews (highest index first), so new screenshots replace the old.
     static int Previews(string[] a)
     {
         string note = File.ReadAllText(a[2]).Trim();
@@ -32,7 +34,13 @@ static class Program
         {
             IntPtr ugc = SteamAPI_SteamUGC_v014(), utils = SteamAPI_SteamUtils_v009();
             ulong h = SteamAPI_ISteamUGC_StartItemUpdate(ugc, 488860, ulong.Parse(a[1]));
-            for (int i = 3; i < a.Length; i++)
+            int first = 3;
+            if (a.Length > 4 && a[3] == "--clear")
+            {
+                for (int k = int.Parse(a[4]) - 1; k >= 0; k--) Console.WriteLine("remove " + k + " " + SteamAPI_ISteamUGC_RemoveItemPreview(ugc, h, (uint)k));
+                first = 5;
+            }
+            for (int i = first; i < a.Length; i++)
             {
                 bool ok = a[i].StartsWith("youtube:") ? SteamAPI_ISteamUGC_AddItemPreviewVideo(ugc, h, a[i].Substring(8))
                                                       : SteamAPI_ISteamUGC_AddItemPreviewFile(ugc, h, Path.GetFullPath(a[i]), 0);

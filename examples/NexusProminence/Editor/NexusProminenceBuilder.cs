@@ -1486,7 +1486,25 @@ public static class NexusProminenceBuilder
         EditorUtility.SetDirty(d);
         // set dressing: a rope from the ceiling for a rappel point, a grille low on the back wall for a vent
         var p = go.transform.position;
-        if (type == ProxyObj_Door.ProxyType.Rapel) Box(f, "RappelRope", p.x, f.y + 4.4f, p.z, 0.06f, 4.0f, 0.06f, "dark");
+        if (type == ProxyObj_Door.ProxyType.Rapel)
+        {
+            Box(f, "RappelRope", p.x, f.y + 4.4f, p.z, 0.06f, 4.0f, 0.06f, "dark");
+            // owner 2026-11-11: the team slid down into a pallet stack. Keep the landing clear: push any cover
+            // within 3.5 units of the rope sideways, toward whichever wall is farther, until it is clear.
+            foreach (var c in room.GetComponentsInChildren<ProxyObj_Cover>(true))
+            {
+                var cp = c.transform.position;
+                float dir = cp.x >= p.x ? 1f : -1f;
+                if ((dir > 0 ? f.x1 - p.x : p.x - f.x0) < 4f) dir = -dir;
+                bool moved = false;
+                for (int guard = 0; guard < 20 && new Vector2(cp.x - p.x, cp.z - p.z).magnitude < 3.5f; guard++) { cp.x += dir * 0.5f; moved = true; }
+                if (!moved) continue;
+                cp.x = Mathf.Clamp(cp.x, f.x0 + 1.5f, f.x1 - 1.5f);
+                c.transform.position = cp;
+                EditorUtility.SetDirty(c);
+                Debug.Log("NexusProminence: NX_LANDING moved " + c.gameObject.name + " off " + name + " in " + room.name);
+            }
+        }
         else
         {
             Box(f, "VentFrame", p.x, f.y + 0.75f, f.zb - 0.2f, 1.7f, 1.3f, 0.06f, "steel"); // in front of the band and skirting

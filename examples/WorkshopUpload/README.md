@@ -1,6 +1,6 @@
 # Workshop upload without prompts
 
-Extra screenshots and YouTube videos (no content change): `wsup.exe previews <item-id> <change-notes-file> <image.jpg|youtube:VIDEO_ID>...`.
+Extra screenshots and YouTube videos (no content change): `wsup.exe previews <item-id> <change-notes-file> [--clear N] <image.jpg|youtube:VIDEO_ID>...`; `--clear N` first removes the item's N existing extra previews, so new shots replace the old ones (re-add the YouTube video).
 
 A 30-line program that publishes or updates a MADNESS: Project Nexus Workshop item (app 488860) through the Steam client you are logged into. The community MPN-Workshop-Uploader asks its questions on the console and fails when they are piped in; this one takes arguments, so an agent or a script can run it. No password is typed: Steam must be running and logged in.
 

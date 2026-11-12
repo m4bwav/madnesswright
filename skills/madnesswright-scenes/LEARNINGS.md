@@ -89,3 +89,11 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: examples/NexusProminence `ClearWallOverlaps` (build-z removed 62 filler pieces across 10 rooms and logged a painted door inside room 3's window, crates in a room 4 door opening and a slate over a room 7 banner, fixed in build-za); polywright 0.6.4 `overlaps`
 - Scope: skill
 - Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-11
+
+## L-20261111-8 `clear-spawn-landings`
+
+- Trigger: a rappel (or any drop-in) spawn point added after cover and props are placed; owner, after a play: the agents came down nicely on a rope but faded into the crate in the middle of the room
+- Rule: when a spawn door that lands characters on the floor (Rapel) is placed, clear its landing: push any cover within about 3.5 units sideways, toward the farther wall, and log each move. Place spawn points last and check them against cover, not only against walls and doors.
+- Evidence: examples/NexusProminence `SpawnDoor` (build-zf moved room 4's pallet and room 10's desk off the rope lines, `NX_LANDING` in the build log)
+- Scope: skill
+- Status: active · helpful 0 · harmful 0 · last_confirmed 2026-11-11
