@@ -108,6 +108,28 @@ Changing who controls a character, or what an NPC is fighting, goes through the 
 - Optional MCP: mcilspy (PyPI, MIT, 2026-10-12), `claude mcp add ilspy -- python -m mcilspy.server`, gives search_methods, decompile_method and similar tools. The user installs it.
 - universal-modder (github.com/rehan-remade/universal-modder) has a general game-modding workflow (read-only recon, reversible lab, verify in the running game) but nothing specific to this game.
 
-## Config files (item 44 of the 2026-11-12b harvest; single source)
+## Config files: the Mod Configuration Module (2026-11-12c harvest, item 45; source code plus the author's description)
 
-The NEM Menu Workshop item (3698923195), a BepInEx-style plugin, keeps its key bindings in `LocalLow/Gibbing Tree/Madness Project Nexus/ModConfigs/NEMMenu.cfg`. A code mod that needs user settings can follow the same `ModConfigs/<ModName>.cfg` convention. Seen in one item's description only; not a game rule.
+Workshop item 3698906123, "Mod Configuration Module", ports `BepInEx.Configuration` to the game's own loader. A code mod references its DLL (namespace `NotEnoughMadness.ModConfiguration`, `<Private>false</Private>` so it is not copied), then:
+
+```csharp
+var config = new ConfigFile("MyMod", true);
+ConfigEntry<KeyCode> key = config.Bind("Keys", "Toggle", KeyCode.F6, "Key that toggles the effect");
+ConfigEntry<bool> on = config.Bind("General", "Enabled", true, "Turn the mod on or off");
+```
+
+Types seen: bool, float, `KeyCode`. The file lands in `LocalLow/Gibbing Tree/Madness Project Nexus/ModConfigs/<ModName>.cfg`. List 3698906123 as a required item on the mod's Workshop page; on first install the player enables it and restarts, or the dependent mod errors. Load order between Workshop mods: the hub's troubleshooting.md, "Load order between mods". Reference code: https://github.com/NotEnoughMadness/NEMCameraToggle (Config.cs). This replaces the round b guess (item 44) that mods merely copy NEM Menu's `ModConfigs` convention. Source-code-confirmed, unverified in game.
+
+## Reference repo and Directory.Build.props (item 49; source code)
+
+https://github.com/NotEnoughMadness/NEMCameraToggle is a complete public example of the entry class above: `Main : IModEntrypoint` keeps a static `Harmony("NotEnoughMadness.CameraToggle")`, `Initialize()` calls `PatchAll(Assembly.GetExecutingAssembly())` and creates one `GameObject` with its MonoBehaviour under `DontDestroyOnLoad`; `Unload()` destroys that object and calls `harmony.UnpatchAll("NotEnoughMadness.CameraToggle")`. Its `Directory.Build.props` makes every reference private-false at once, so no game DLL is copied into the output:
+
+```xml
+<Project><ItemDefinitionGroup><Reference><Private>false</Private></Reference></ItemDefinitionGroup></Project>
+```
+
+Source-code-confirmed, unverified in game.
+
+## Traverse: write a private field (item 47; source code)
+
+`Traverse.Create(__instance).Field("fieldName").SetValue(value)` sets a private field from a Postfix without a publicizer. Example in game-recipes.md, "Playground lists and difficulty".

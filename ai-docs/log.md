@@ -527,3 +527,5 @@ Transcript of the official SceneTools stages, campaigns and cutscenes video read
 - 2026-11-12 built harvest items 20-26 into the skills: modtools references/animation-events.md, scenes door/floor/bib/spawner rules, scene-lint S14; plugin 0.1.24. In-game tests owed by the owner.
 
 - 2026-11-12 built harvest round b items 27-44: modtools references/sounds-and-fonts.md and porting.md, animation export, ModConfigs; hub madcards Text section, subscribed-mod folder; scenes stage music pointer; plugin 0.1.25. In-game tests owed by the owner.
+
+- 2026-11-12 built harvest round c items 45-54: modtools harmony.md Mod Configuration Module (replaces item 44 guess), NEM reference repo, Traverse and Prefix recipes; hub troubleshooting (load order, DLL swaps, broken careers, debug mode) and sources (uploader icon, Master Document); scenes debug-mode playtest note; plugin 0.1.26. In-game tests owed by the owner.

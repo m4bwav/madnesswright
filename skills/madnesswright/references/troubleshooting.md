@@ -23,3 +23,19 @@ Noise on a clean launch, not a mod problem: `Shader is not supported on this GPU
 ## Editing a subscribed mod (2026-11-12b harvest, item 41; community, single guide)
 
 Subscribed mods live in `<SteamLibrary>/steamapps/workshop/content/488860/<itemId>/`. To find one, unsubscribe, resubscribe and sort by date modified. Steam overwrites that folder whenever the item updates (inferred), so a lasting change belongs in the user's own mod as an overriding card.
+
+## Load order between mods (2026-11-12c harvest, item 46; single source)
+
+MadCard `Priority` orders cards inside one mod. Between Workshop mods, the Mod Configuration Module's author tells players to open the game's Steam Properties > Workshop tab and drag a library mod to the top so it loads before the mods that need it. A code mod with a required library should say so in its Workshop description. Unverified in game: test with two mods, swap the order, read `mods.log`.
+
+## A mod that swaps Assembly-CSharp.dll (item 51; community, two sources)
+
+Old mods (legacy Not Enough Madness, Wingidon's Miscellaneous Enhancements) ship a patched `Managed/Assembly-CSharp.dll`. They work on one game build only, exclude each other, and Steam's "Verify integrity of game files" removes them. To undo one, verify files. Prefer a Harmony port (NEM itself moved to Harmony Workshop plugins in 2026-04). Unverified in game.
+
+## A career will not load after removing a mod (item 52; single source)
+
+A save that holds custom hirelings or a custom character fails to load once their mod is gone. Reinstall the mod, fire the hirelings (or switch character), save, then remove it. Back up saves first (`mpn.py backup`). From the legacy NEM guide; unverified in game.
+
+## The game's debug mode (item 50; single source)
+
+The game ships a developer debug mode; Workshop item 3698921103 ("Debug Mode") only switches it on. It reveals hidden doors and objects and enables keys: P logs the current starting scene and entry name; F2 logs difficulty and stage and flies up; Slash + Left Ctrl resets all node paths in the room; Left Shift + Y zooms the camera; ScrollLock combos spawn or kill Creber clones and test JSON overwrites on a new statcard character. Which flag it sets is not public; grep the decompiled game for "debug" (decomp.py). From the item's description; unverified in game.
