@@ -470,3 +470,6 @@ State on 2026-11-11 (left wall + narrower): on the owner's go-ahead, build-r was
 
 - 2026-11-11: continue session: merged polywright #55 (budget fix, v0.6.4 released), madnesswright #61; build-zd unplayed, waiting on owner.
 - 2026-11-11: added skills/madnesswright-scenes/harvest.json (5 community targets for level design: GameBanana, Steam discussions + Master Doc, Steam guides, r/madnesscombat, YouTube search; Discord note only). No madnesswright everscout beat exists, so harvest.json is the only home.
+
+- 2026-11-11 18:40: continue session; build-zd being played by the owner (game launched 18:35, map loaded, logs clean so far). Waiting on their verdict before upload.
+- 2026-11-11 18:41: owner played build-zd ("push it to steam"); wsup.exe updated 3837705778 with change-notes m, preview j: result OK; live public, updated 18:40, 27 subscribers.
