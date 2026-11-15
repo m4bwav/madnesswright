@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
+### C-20261114-r6 · 2026-11-14 · scene-lint S19 enemy staging, S20 FixedInPlace freeze
+- because: Nexus Prominence ten rounds, round 6 (every room the same fight); decompiled Converter_Marker, Char_DataAssigner, AI_Modules.M_SniperCamp, Controller_NPC behaviour-to-module map
+- files: references/scenetools-rules.md (S19, S20); scripts/staging.py (madnesswright skill)
+- Editor-side; whether the behaviours read in play is unverified.
+
 Entry shape: `### C-20261114-r5 · 2026-11-14 · scene-lint S18 box share
 - because: Nexus Prominence ten rounds, round 5 (care and appeal); build zo log measured six code-made OBJ props imported 1:1
 - files: references/scenetools-rules.md (S18); scripts/mpn.py box_share_check (madnesswright skill)
