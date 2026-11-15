@@ -121,3 +121,20 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: examples/NexusProminence `WallDecal`, `CollectWallBusy` (2026-11-11 clean-up build, played and released)
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-11
+
+## L-20261114-12 `player-start-needs-floor`
+
+- Trigger: removing or moving the Playground booth (PX_Playground) or the sample room, or the player falls through the world on load
+- Rule: Player_Start must stand on a Floor of the first room. The sample scene's Player_Start sits inside the Playground booth, behind and above room 1; delete the booth and nothing is under it. Place it on room 1's floor in the build script and fail the build when a downward raycast hits no Floor. Editor renders and scene-lint never show what is under the player, so check it.
+- Also: if every door of that room has DisableSpawn on, the game's safe-fall rescue (SwainM.RandomElement over spawn doors) throws every frame instead of saving the player, so a bad start loops FallToDeath in Player.log.
+- Evidence: Nexus Prominence build zs fell through on load (Player.log FallToDeath each frame); build zt's PlacePlayerStart fixed it; zu played clean and was released 2026-11-14.
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-14
+
+## L-20261114-13 `door-headers-back-wall-only`
+
+- Trigger: a lit bar or header box over a doorway
+- Rule: put door header boxes only on doors in the back wall, flat on the wall. On a side-wall door the game camera looks along the wall, so a box placed at the door's x sticks out into the room and reads as a floating dash in front of the exit.
+- Evidence: Nexus Prominence build zu (requester report after playing zt); zu released 2026-11-14.
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-14

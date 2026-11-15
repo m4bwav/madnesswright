@@ -119,3 +119,7 @@ Entry shape: `### C-20261114-r5 · 2026-11-14 · scene-lint S18 box share
 - because: measured in Nexus Prominence round 3 (build zm): OBJ in metres imports 1:1 (bounds logged), tiling on Terrain - General needs metre UVs, pw.py --seamless ghosts grid patterns
 - files: references/textures-and-props.md (new), SKILL.md (one pointer sentence in step 2)
 - Triggers and decisions unchanged; evals not rerun.
+
+### C-20261114-4 · 2026-11-14 · Player start and door headers
+- because: L-20261114-12 `player-start-needs-floor` and L-20261114-13 `door-headers-back-wall-only`, both found playing Nexus Prominence after round 10 (builds zt, zu; zu released)
+- files: LEARNINGS.md only. Triggers and decisions unchanged; evals not rerun.
