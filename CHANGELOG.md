@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.2 · 2026-11-14
+
+- examples/WorkshopUpload: `wsup.exe description <item> <description.txt> <notes.txt>` replaces only an item's description (links, wording) without re-sending its content, preview or gallery. Used to point the Director page at m4bwav/mpn-director.
+
 ## 1.0.1 · 2026-11-14
 
 - madnesswright-scenes learnings from playing Nexus Prominence after the ten rounds: Player_Start must stand on a Floor of room 1 (removing the Playground booth left it in the air and the player fell through on load; a room whose doors all have DisableSpawn makes the safe-fall rescue throw), and door header boxes belong on back-wall doors only. Lessons only; a scene-lint check for the first one needs world positions and is not built yet.

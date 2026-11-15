@@ -62,9 +62,26 @@ static class Program
         finally { SteamClient.Shutdown(); }
     }
 
+    // description <item-id> <description-file> <change-notes-file> : replaces only the item's description
+    // (links, wording) and leaves its content, title, preview, gallery and tags as they are.
+    static async Task<int> DescriptionOnly(string[] a)
+    {
+        string note = File.ReadAllText(a[3]).Trim(), desc = File.ReadAllText(a[2]);
+        if (note.Length == 0 || desc.Trim().Length == 0) { Console.WriteLine("error empty description or change notes"); return 2; }
+        SteamClient.Init(488860, true);
+        try
+        {
+            var r = await new Ugc.Editor(new Steamworks.Data.PublishedFileId { Value = ulong.Parse(a[1]) }).WithDescription(desc).WithChangeLog(note).SubmitAsync(new P());
+            Console.WriteLine("result " + r.Result + " id " + r.FileId.Value);
+            return r.Result == Result.OK ? 0 : 1;
+        }
+        finally { SteamClient.Shutdown(); }
+    }
+
     static async Task<int> Main(string[] a)
     {
         if (a.Length > 3 && a[0] == "previews") return Previews(a);
+        if (a.Length == 4 && a[0] == "description") return await DescriptionOnly(a);
         if (a.Length == 6 || (a.Length > 6 && File.ReadAllText(a[6]).Trim().Length == 0))
         {
             Console.WriteLine("error an update needs a non-empty change-notes file (what changed for the player)");

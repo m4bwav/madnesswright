@@ -12,6 +12,7 @@ A 30-line program that publishes or updates a MADNESS: Project Nexus Workshop it
 ## Run
 
 ```
+out/wsup.exe description <item-id> <description.txt> <change-notes.txt>   # description only (links, wording); content, preview and gallery untouched
 out/wsup.exe <content-folder> <preview.jpg> "<title>" <description.txt> "<tags,comma,separated>" [item-id change-notes.txt]
 ```
 
