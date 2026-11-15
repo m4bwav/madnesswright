@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261114-2 · 2026-11-14 · Scene-lint S16 (the Playground control room proxy) and what PX_Playground becomes in game
+- because: user request (Nexus Prominence ten rounds, round 2: a player reported "a playground room for no reason"); decompiled game (Converter_Proxy, InteractiveMode, Stage_Manager)
+- files: references/scenetools-rules.md (proxy table PX_Playground row; Hard rules S16); mpn.py scene-lint S16
+- PX_Playground is the whole control room booth, not just a window, and a map loads without it. Unverified in play; SKILL.md unchanged.
+
 ### C-20261114-1 · 2026-11-14 · Scene-lint S15 (unused spawn doors) and how a Squad_Spawner fires
 - because: user request (Nexus Prominence ten rounds, round 1: a player reported enemy entrances that are never used); decompiled game build 25615196
 - files: references/scenetools-rules.md (Hard rules S15; new section "How a Squad_Spawner fires"); mpn.py scene-lint S15

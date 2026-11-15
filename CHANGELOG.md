@@ -2,6 +2,12 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.32 · 2026-11-14
+
+- `mpn.py scene-lint` S16 (warning): a `PX_Playground` proxy becomes the Playground control room in game (a booth about 4 x 9 x 15 m behind the wall, its window masked through it); says the map loads without it. One new test.
+- madnesswright-scenes: references/scenetools-rules.md corrects the PX_Playground row (the whole booth with the spawn, stage and difficulty terminals, optional) and adds S16 with the decompiled evidence. Unverified in play.
+- From Nexus Prominence's ten improvement rounds, round 2 (build zl), which removed the booth from the street checkpoint. Works with polywright (`pw.py inspect` measured the SceneTools ghost mesh) and artwright (artwright-judge compared the renders).
+
 ## 0.1.31 · 2026-11-14
 
 - `mpn.py scene-lint` S15 (warning): a door that can spawn enemies (not linked, DisableSpawn off) that no Squad_Spawner sends a wave through; works on cloned rooms (plain doors and squads found by script guid) as well as prefab instances, and reports door counts in `info.doors`. Three new tests.
