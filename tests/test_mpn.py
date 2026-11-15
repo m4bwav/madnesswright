@@ -424,6 +424,30 @@ class BoxShareCheck(unittest.TestCase):
         self.assertEqual(info["box_share"], 0.75)
 
 
+class SampleShellCheck(unittest.TestCase):
+    def docs(self, enabled):
+        d = {}
+        for i, (name, on) in enumerate(enabled):
+            d["g%d" % i] = {"cls": 1, "stripped": False, "body": "  m_Name: %s\n" % name}
+            d["r%d" % i] = {"cls": 23, "stripped": False, "body": "  m_GameObject: {fileID: g%d}\n  m_Enabled: %d\n" % (i, on)}
+        return d
+
+    def run_check(self, enabled):
+        w, info = [], {}
+        ref = lambda b, n: (b.split(n + ": {fileID: ")[1].split("}")[0], None)
+        mpn.sample_shell_check(self.docs(enabled), w, info, mpn.field, ref)
+        return w, info
+
+    def test_drawn_walls_warn(self):
+        w, info = self.run_check([("room_pg_room2_walls", 1), ("room_pg_room2_floor", 1)])
+        self.assertTrue(w and w[0].startswith("S21"))
+
+    def test_hidden_walls_quiet(self):
+        w, info = self.run_check([("room_pg_room2_walls", 0), ("room_pg_room2_floor", 1)])
+        self.assertEqual(w, [])
+        self.assertEqual(info["sample_shell"]["hidden"], {"room_pg_room2_walls": 1})
+
+
 class StagingCheck(unittest.TestCase):
     def inst(self, i, mods):
         body = "".join("  - target: {fileID: 1, guid: 0123456789abcdef0123456789abcdef, type: 3}\n"

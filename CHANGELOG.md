@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.39 · 2026-11-14
+
+- scene-lint S21: warns when the SceneTools sample room's wall mesh is still drawn (players read it as the Playground) and lists drawn and hidden sample meshes in `info.sample_shell`. Found in Nexus Prominence's ten improvement rounds, round 9, which replaced the sample walls with the map's own panels and kept the collider. Works with polywright (code-built panels, pw.py overlaps) and artwright-judge (blind before/after).
+
 ## 0.1.38 · 2026-11-14
 
 - madnesswright-modtools game-recipes: when a placed `SpawnFromDoor` character arrives (on room entry, no delay) and when a door squad arrives (after `SpawnRequirement`, then `SecondsInRoomTilSpawn`), from the decompiled game. Found in Nexus Prominence's ten improvement rounds, round 8 (whole-map coherence): round 6's hall walker would have entered on room entry, not mid-fight as in the film. Works with ludowright (encounter pacing) and cinewright (film timing).

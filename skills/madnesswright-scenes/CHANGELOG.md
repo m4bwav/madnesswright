@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
+### C-20261114-r9 · 2026-11-14 · scene-lint S21 sample wall mesh still drawn
+- because: Nexus Prominence ten rounds, round 9 (the Playground room, second pass); decompiled Room_Main.MakeChildrenVisible (lights, terrain, backgrounds only)
+- files: references/scenetools-rules.md (S21); scripts/staging.py (madnesswright skill)
+- Editor-side; a hidden room renderer in play is backed by the 4th wall, hidden the same way in played builds.
+
 ### C-20261114-r6 · 2026-11-14 · scene-lint S19 enemy staging, S20 FixedInPlace freeze
 - because: Nexus Prominence ten rounds, round 6 (every room the same fight); decompiled Converter_Marker, Char_DataAssigner, AI_Modules.M_SniperCamp, Controller_NPC behaviour-to-module map
 - files: references/scenetools-rules.md (S19, S20); scripts/staging.py (madnesswright skill)

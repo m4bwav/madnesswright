@@ -48,3 +48,27 @@ def staging_check(docs, instances, warnings, info, mod_refs):
                         "as the same fight. Stage them: facing (marker rotation), alertness, AddBehaviors (Camper, HoldCover, "
                         "Defensive, Hunter), SpawnFromDoor" % len(chars))
 
+
+
+def sample_shell_check(docs, warnings, info, field, ref):
+    """S21: the SceneTools sample room's wall mesh (room_pg_*walls*, not the hidden 4th wall) is still drawn.
+    Players who know the Playground read every room built from it as the Playground (Nexus Prominence round 9).
+    Keep its collider (room size, doors, camera and AI stay the same), switch the renderer off (the game never
+    re-enables room MeshRenderers) and draw the map's own walls where the collider is solid."""
+    drawn, hidden = {}, {}
+    for d in docs.values():
+        if d["cls"] != 23 or d["stripped"]:
+            continue
+        go = docs.get(ref(d["body"], "m_GameObject")[0])
+        name = field(go["body"], "m_Name") if go else None
+        if not name or not name.startswith("room_pg_"):
+            continue
+        bucket = hidden if field(d["body"], "m_Enabled") == "0" else drawn
+        bucket[name] = bucket.get(name, 0) + 1
+    if not drawn and not hidden:
+        return
+    info["sample_shell"] = {"drawn": drawn, "hidden": hidden}
+    walls = sum(n for k, n in drawn.items() if "walls" in k)
+    if walls:
+        warnings.append("S21 the sample room's wall mesh is drawn in %d rooms; players read it as the Playground. "
+                        "Keep its collider, turn its renderer off and draw your own walls where the collider is solid" % walls)
