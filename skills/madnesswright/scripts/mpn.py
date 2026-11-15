@@ -24,7 +24,7 @@ import re
 import shutil
 import sys
 import zipfile
-from staging import staging_check  # S19/S20, kept apart for the script budget
+from staging import staging_check, sample_shell_check  # S19-S21, kept apart for the script budget
 from pathlib import Path
 
 APP_ID = "488860"
@@ -869,6 +869,7 @@ def cmd_scene_lint(args):
     staging_check(docs, instances, warnings, info, mod_refs)
     ambient_check(docs, warnings, info)
     box_share_check(docs, warnings, info)
+    sample_shell_check(docs, warnings, info, field, ref)
 
     terrain = next((i for i, n in proj.layers.items() if n == "Terrain"), 8)
     floors = 0
