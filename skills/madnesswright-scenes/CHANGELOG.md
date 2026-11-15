@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261114-1 · 2026-11-14 · Scene-lint S15 (unused spawn doors) and how a Squad_Spawner fires
+- because: user request (Nexus Prominence ten rounds, round 1: a player reported enemy entrances that are never used); decompiled game build 25615196
+- files: references/scenetools-rules.md (Hard rules S15; new section "How a Squad_Spawner fires"); mpn.py scene-lint S15
+- The cap rule is read from the game's code, unverified in play; SKILL.md unchanged.
+
 ### C-20261112-6 · 2026-11-12 · SceneTools component fields from the test repo tooltips
 - because: user request (technique harvest); ai-docs/notes/2026-11-12g-madness-technique-harvest.md items 81, 83-99
 - files: references/scenetools-fields.md (new); references/scenetools-rules.md (pointer before "Build output"); references/event-actions.md (RunDynamicMethod and RunLua: float and vector syntax)

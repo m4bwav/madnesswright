@@ -46,7 +46,7 @@ Project Nexus (GIBBING TREE, LLC, Steam app 488860) has real mod support. There 
 | `check-mod <dir>` | Lints a mod folder: `info.txt`, curly quotes, strict `.json` against `.txt` shorthand, Filename and Type on every card, the assembly path, Workshop-id dependencies |
 | `deploy <dir> [--force]` | Checks the mod, then copies it into the game's Mods folder |
 | `log` | Reports the build, the enabled list, loaded mods and applied Harmony patches, and the problem lines and tail of `mods.log` and `Player.log` |
-| `scene-lint <Scene.unity>` | Checks a SceneTools scene against 13 rules from the official docs |
+| `scene-lint <Scene.unity>` | Checks a SceneTools scene against the official docs' rules (S01-S13) and the toolkit's own (S14 door parenting, S15 spawn-capable doors no squad uses) |
 
 ## Install
 

@@ -191,6 +191,43 @@ class SceneLint(unittest.TestCase):
         self.assertEqual(r["errors"], [])
         self.assertFalse(r["info"]["playground_listed"])
 
+    G_DOOR_CS, G_SQUAD_CS = "d" * 32, "f" * 32
+
+    def door_lint(self, squad_refs, linked=False, disable=0):
+        # plain (cloned) doors and a plain squad, found by their scripts' guids
+        with tempfile.TemporaryDirectory() as t:
+            scene = make_project(t)
+            code = Path(t) / "Assets" / "Code"
+            code.mkdir()
+            for name, g in (("ProxyObj_Door", self.G_DOOR_CS), ("Marker_Squad", self.G_SQUAD_CS)):
+                (code / (name + ".cs.meta")).write_text("fileFormatVersion: 2\nguid: %s\n" % g, encoding="utf-8")
+            s = scene.read_text(encoding="utf-8")
+            for fid, go, name in (("900", "901", "Door_Spare"), ("910", "911", "Door_Out")):
+                s += "--- !u!1 &%s\nGameObject:\n  m_Name: %s\n" % (go, name)
+                s += ("--- !u!114 &%s\nMonoBehaviour:\n  m_GameObject: {fileID: %s}\n  m_Script: {fileID: 11500000, guid: %s, type: 3}\n"
+                      "  DisableSpawn: %d\n  LinkedDoor: {fileID: %s}\n  LinkedScene: \n") % (
+                    fid, go, self.G_DOOR_CS, disable if name == "Door_Spare" else 0, "910" if linked or name == "Door_Out" else "0")
+            lst = "\n" + "".join("  - {fileID: %s}\n" % r for r in squad_refs) if squad_refs else " []\n"
+            s += ("--- !u!114 &950\nMonoBehaviour:\n  m_GameObject: {fileID: 0}\n  m_Script: {fileID: 11500000, guid: %s, type: 3}\n"
+                  "  SpawnFromDoors:%s  SpawnRequirement: 0\n") % (self.G_SQUAD_CS, lst)
+            scene.write_text(s, encoding="utf-8")
+            return run(["scene-lint", str(scene)])
+
+    def test_unused_spawn_door(self):
+        r = self.door_lint(["999"])
+        self.assertTrue(any(w.startswith("S15 door Door_Spare") for w in r["warnings"]), r)
+        self.assertFalse(any("Door_Out" in w for w in r["warnings"]))  # linked doors are ways through, not spawns
+
+    def test_used_disabled_or_linked_door_passes(self):
+        for kw in ({"squad_refs": ["900"]}, {"squad_refs": ["999"], "disable": 1}, {"squad_refs": ["999"], "linked": True}):
+            r = self.door_lint(**kw)
+            self.assertFalse(any(w.startswith("S15") for w in r["warnings"]), (kw, r))
+
+    def test_roomwide_squad_skips_s15(self):
+        r = self.door_lint([])
+        self.assertFalse(any(w.startswith("S15") for w in r["warnings"]))
+        self.assertEqual(r["info"]["doors"]["roomwide_squads"], 1)
+
 
 class CheckMod(unittest.TestCase):
     def mod(self, files):
