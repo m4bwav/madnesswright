@@ -28,6 +28,13 @@ Project Nexus (GIBBING TREE, LLC, Steam app 488860) has real mod support. There 
 
 [Director](https://github.com/m4bwav/mpn-director) (its own repository since 2026-11-11) (Director, for every game mode) is a complete Harmony mod built with `madnesswright-modtools`: take control of any character (F5 to F8), and since 0.4.0 clear the room (F1), freeze everyone (F2), patrol paths (F3), idle animations (F4), guards (F9), an alert cycle (F10), saved scenes in every mode (F11) and, since 0.6.0, a menu (INSERT) with clear corpses. It shows the net48 project against the player's own game files, an `IModEntrypoint`, one component per feature, two Harmony prefixes, IMGUI windows, a pack script that makes an install zip, and a table of the bugs each playtest found and their causes in the game's code. Needs the `releasebeta` branch.
 
+## Mods made with it
+
+| Mod | Repository | Steam Workshop |
+|---|---|---|
+| Director (Harmony mod, every game mode) | https://github.com/m4bwav/mpn-director | https://steamcommunity.com/sharedfiles/filedetails/?id=3822329165 |
+| Nexus Prominence (ten-room Playground map, SceneTools) | https://github.com/m4bwav/nexus-prominence | https://steamcommunity.com/sharedfiles/filedetails/?id=3837705778 |
+
 ## The helper
 
 `skills/madnesswright/scripts/mpn.py` uses only the Python standard library (3.9+). It runs on Windows, macOS and Linux; the game itself runs on Windows, or on Linux and Steam Deck through Proton. Each command prints one JSON object and exits 0; put `--strict` before the command name (`mpn.py --strict check-mod <dir>`) to exit 1 when the result has errors. `--data-dir` and `--steam` also go before the command.
