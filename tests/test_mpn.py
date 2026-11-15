@@ -403,5 +403,21 @@ class Backup(unittest.TestCase):
             self.assertTrue(Path(r["zip"]).is_file())
 
 
+class AmbientCheck(unittest.TestCase):
+    def docs(self, cols):
+        return {str(i): {"cls": 114, "stripped": False, "body": "  AmbientColor: {r: %s, g: %s, b: %s, a: 1}\n" % c} for i, c in enumerate(cols)}
+
+    def test_same_ambient_warns(self):
+        w, info = [], {}
+        mpn.ambient_check(self.docs([(0.3, 0.2, 0.2)] * 4), w, info)
+        self.assertTrue(w and w[0].startswith("S17"))
+        self.assertEqual(len(info["room_ambient_luma"]), 4)
+
+    def test_varied_ambient_quiet(self):
+        w, info = [], {}
+        mpn.ambient_check(self.docs([(0.3, 0.2, 0.2), (0.5, 0.1, 0.1), (0.2, 0.2, 0.2)]), w, info)
+        self.assertEqual(w, [])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)
