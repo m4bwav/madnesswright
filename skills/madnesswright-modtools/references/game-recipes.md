@@ -75,3 +75,8 @@ static class UnlockMadness { static bool Prefix(ref bool __result) { __result = 
 ```
 
 Both source-code-confirmed, unverified in game.
+
+## When a scene's enemies arrive: placed walker vs door squad
+
+Read in Nexus Prominence round 8 (decompiled build, 2026-11-14). `Converter_Marker` copies a placed `Marker_Character.SpawnFromDoor` into `Char_DataAssigner.SpawnToEntranceOrVehicle`. The character spawns as soon as its room becomes current (`CanSpawnOnSceneStart`, then `Update` while `SpawnEnabled` and nothing is created yet) and is handed straight to that door (`Person_Repository.GiveCharacterToMe`). It walks in on room entry: no delay, no alarm condition. For a walk-in in the middle of a fight, use a `Marker_Squad` with `SpawnFromDoors`. `Squad_DataAssigner.Update` resets its clock on every pulse tick while `SpawnRequirement` is false (`MyFactionAlerted` = the room's highest alert for the faction is not Unaware), then spawns `SecondsInRoomTilSpawn` after the requirement first holds. Neither runs while the focal character stands in an entrance. Source-code-confirmed, unverified in game.
+

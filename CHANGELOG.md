@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.38 · 2026-11-14
+
+- madnesswright-modtools game-recipes: when a placed `SpawnFromDoor` character arrives (on room entry, no delay) and when a door squad arrives (after `SpawnRequirement`, then `SecondsInRoomTilSpawn`), from the decompiled game. Found in Nexus Prominence's ten improvement rounds, round 8 (whole-map coherence): round 6's hall walker would have entered on room entry, not mid-fight as in the film. Works with ludowright (encounter pacing) and cinewright (film timing).
+
 ## 0.1.37 · 2026-11-14
 
 - `mpn.py scene-lint` `info.enemy_staging` now adds `squad_units`, `squads` (units per Squad_Spawner name, from `Wave.WaveUnits[].Total`) and `total_with_backup`, so a count table (a film's, a difficulty budget's) is checked against placed enemies plus every wave, not placed alone. One new test. Found in Nexus Prominence's round 7 (build zq): rooms with few placed enemies carried 11 to 17 with their waves, far above the film; the total there fell from 66 to 40.

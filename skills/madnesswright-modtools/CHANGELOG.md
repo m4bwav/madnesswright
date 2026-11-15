@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261114-1 · 2026-11-14 · SpawnFromDoor vs door-squad timing
+- because: user request (Nexus Prominence ten rounds, round 8 decompiled check)
+- files: references/game-recipes.md (When a scene's enemies arrive)
+A placed walker enters on room entry, and a squad waits for its requirement and then its timer. Recorded from the decompiled code.
+
 ### C-20261112-6 · 2026-11-12 · RunDynamicMethod float and vector arguments
 - because: user request (technique harvest); ai-docs/notes/2026-11-12g-madness-technique-harvest.md item 82
 - files: references/harmony.md ("Calling your code from a scene Event")
