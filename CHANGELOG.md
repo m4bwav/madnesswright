@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.36 · 2026-11-14
+
+- `mpn.py scene-lint` S19 (warning): six or more placed enemies that all face one way, share one alertness and have no added behaviour or door entry play as the same fight in every room. S20 (warning): `FixedInPlace` freezes a character (the game calls SetFrozen), so a "sniper" set that way never shoots; use AddBehaviors Camper with Sniper waypoints. `info.enemy_staging` counts alertness, facings, behaviours and door entries. The checks live in the new `scripts/staging.py` so mpn.py stays inside the script budget. Three new tests. scenetools-rules lists both and the staging fields the game reads (from the decompiled Converter_Marker and Char_DataAssigner).
+- From Nexus Prominence's ten improvement rounds, round 6 (build zp, distinct fights per room). Works with ludowright (levels-and-space rules 8, 14, 15 on cover, enemy mixes and fair spawns).
+
 ## 0.1.35 · 2026-11-14
 
 - `mpn.py scene-lint` S18 (warning): 90% or more of 50+ meshes are the built-in cube, so the set reads as placeholder boxes; `info.box_share` and `info.mesh_counts` report the share. Two new tests. scenetools-rules lists S18 with the measured 1:1 OBJ import path.

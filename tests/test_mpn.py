@@ -424,6 +424,39 @@ class BoxShareCheck(unittest.TestCase):
         self.assertEqual(info["box_share"], 0.75)
 
 
+class StagingCheck(unittest.TestCase):
+    def inst(self, i, mods):
+        body = "".join("  - target: {fileID: 1, guid: 0123456789abcdef0123456789abcdef, type: 3}\n"
+                       "    propertyPath: %s\n    value: %s\n    objectReference: {fileID: %s}\n" % (p, v, r) for p, v, r in mods)
+        return str(i), {"cls": 1001, "stripped": False, "body": body}
+
+    def run_check(self, modsets):
+        docs, inst = {}, []
+        for i, mods in enumerate(modsets):
+            fid, d = self.inst(i, mods)
+            docs[fid] = d
+            inst.append({"kind": "Char_Start", "name": "Char_%d" % i, "fid": fid})
+        w, info = [], {}
+        mpn.staging_check(docs, inst, w, info, mpn.mod_refs)
+        return w, info
+
+    def test_same_fight_warns(self):
+        w, info = self.run_check([[("Alertness", "2", "0")]] * 6)
+        self.assertTrue(w and w[0].startswith("S19"))
+        self.assertEqual(info["enemy_staging"]["facings"], 1)
+
+    def test_staged_quiet_and_counts(self):
+        w, info = self.run_check([[("Alertness", "0", "0"), ("m_LocalRotation.y", "-0.7071", "0"), ("m_LocalRotation.w", "0.7071", "0")],
+                                  [("AddBehaviors.Array.data[0]", "27", "0")], [("SpawnFromDoor", "", "55")]] + [[]] * 3)
+        self.assertEqual(w, [])
+        st = info["enemy_staging"]
+        self.assertEqual((st["behaviors"], st["spawn_from_door"], st["facings"]), ({"Camper": 1}, 1, 2))
+
+    def test_fixed_in_place_warns(self):
+        w, _ = self.run_check([[("FixedInPlace", "1", "0")]])
+        self.assertTrue(w and w[0].startswith("S20"))
+
+
 class AmbientCheck(unittest.TestCase):
     def docs(self, cols):
         return {str(i): {"cls": 114, "stripped": False, "body": "  AmbientColor: {r: %s, g: %s, b: %s, a: 1}\n" % c} for i, c in enumerate(cols)}

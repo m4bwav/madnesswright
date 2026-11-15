@@ -24,6 +24,7 @@ import re
 import shutil
 import sys
 import zipfile
+from staging import staging_check  # S19/S20, kept apart for the script budget
 from pathlib import Path
 
 APP_ID = "488860"
@@ -732,6 +733,7 @@ def box_share_check(docs, warnings, info):
                         % (cube, cube + other, 100 * info["box_share"]))
 
 
+
 def door_spawn_check(docs, instances, proj, go_name, warnings, info):
     """S15: a door that can spawn enemies (not linked to a door or scene, DisableSpawn off) that no squad
     spawner sends a wave through. Players read such a doorway as an enemy entrance nobody uses. Covers plain
@@ -864,6 +866,7 @@ def cmd_scene_lint(args):
             warnings.append("S14 %s is in the scene root; a PX_Door must sit inside a Room_Layout or it does not work" % d["name"])
 
     door_spawn_check(docs, instances, proj, go_name, warnings, info)
+    staging_check(docs, instances, warnings, info, mod_refs)
     ambient_check(docs, warnings, info)
     box_share_check(docs, warnings, info)
 
