@@ -20,6 +20,7 @@ G_PS = "b" * 32
 G_ZC = "c" * 32
 G_SR = "d" * 32
 G_DOOR = "f" * 32
+G_PG = "c" * 31 + "1"
 
 ROOM_PREFAB = """%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
@@ -58,8 +59,15 @@ Transform:
 """
 
 
-def instance(fid, guid, root_t, parent_fid, name=None, rot_y=0):
+def instance(fid, guid, root_t, parent_fid, name=None, rot_y=0, extra=None):
     mods = ""
+    if extra:
+        mods += """    - target: {fileID: 10, guid: %s,
+        type: 3}
+      propertyPath: %s
+      value: %s
+      objectReference: {fileID: 0}
+""" % (guid, extra[0], extra[1])
     if name:
         mods += """    - target: {fileID: 10, guid: %s,
         type: 3}
@@ -106,7 +114,7 @@ GameObject:
 
 def make_project(tmp, scene_name="Test_PG", label="mymod", room_rot=0, ps_parent="chars",
                  two_starts=False, floor_layer=8, floor_static=4294967295, zone_parent="wps",
-                 door_parent=None):
+                 door_parent=None, booth=None):
     root = Path(tmp)
     (root / "ProjectSettings").mkdir(parents=True)
     (root / "ProjectSettings" / "TagManager.asset").write_text(
@@ -118,7 +126,8 @@ def make_project(tmp, scene_name="Test_PG", label="mymod", room_rot=0, ps_parent
                              ("Player_Start", G_PS, SIMPLE_PREFAB.format(name="Player_Start")),
                              ("Zone_Camera", G_ZC, SIMPLE_PREFAB.format(name="Zone_Camera")),
                              ("SceneRules", G_SR, SIMPLE_PREFAB.format(name="SceneRules")),
-                             ("PX_Door", G_DOOR, SIMPLE_PREFAB.format(name="PX_Door"))):
+                             ("PX_Door", G_DOOR, SIMPLE_PREFAB.format(name="PX_Door")),
+                             ("PX_Playground", G_PG, SIMPLE_PREFAB.format(name="PX_Playground"))):
         (pf / (name + ".prefab")).write_text(body, encoding="utf-8")
         (pf / (name + ".prefab.meta")).write_text("fileFormatVersion: 2\nguid: %s\nPrefabImporter:\n" % guid, encoding="utf-8")
     scenes = root / "Assets" / "Scenes"
@@ -134,6 +143,8 @@ def make_project(tmp, scene_name="Test_PG", label="mymod", room_rot=0, ps_parent
     s += instance("800", G_SR, "11", "0")
     if door_parent:
         s += instance("850", G_DOOR, "11", {"room": "500", "root": "0"}.get(door_parent, door_parent))
+    if booth is not None:  # booth=True: ApplyWindowMask on, as the sample room ships it
+        s += instance("860", G_PG, "11", "500", extra=("ApplyWindowMask", "1") if booth else None)
     s += FLOOR.format(layer=floor_layer, static=floor_static)
     scene = scenes / (scene_name + ".unity")
     scene.write_text(s, encoding="utf-8")
@@ -212,6 +223,15 @@ class SceneLint(unittest.TestCase):
                   "  SpawnFromDoors:%s  SpawnRequirement: 0\n") % (self.G_SQUAD_CS, lst)
             scene.write_text(s, encoding="utf-8")
             return run(["scene-lint", str(scene)])
+
+    def test_playground_booth_warns(self):
+        r = self.lint(booth=True)
+        w = [x for x in r["warnings"] if x.startswith("S16")]
+        self.assertEqual(len(w), 1, r)
+        self.assertIn("masked", w[0])
+        self.assertEqual(r["errors"], [])
+        self.assertNotIn("masked", [x for x in self.lint(booth=False)["warnings"] if x.startswith("S16")][0])
+        self.assertFalse(any(x.startswith("S16") for x in self.lint()["warnings"]))
 
     def test_unused_spawn_door(self):
         r = self.door_lint(["999"])

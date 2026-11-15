@@ -795,6 +795,13 @@ def cmd_scene_lint(args):
             errors.append("S03 room %s is rotated; rooms must never be rotated" % r["name"])
     if not rooms:
         warnings.append("no Room_Layout prefab instance found; every playable area needs a room (unpacked rooms are not detected)")
+    for pg in of("PX_Playground"):
+        mods = {p: v for (_, g, p, v) in modifications(docs[pg["fid"]]["body"])}
+        masked = mods.get("ApplyWindowMask", "0") == "1"
+        warnings.append("S16 %s (under %s) becomes the Playground control room in game, a booth about 4 x 9 x 15 m behind the wall%s; "
+                        "on a themed map players read it as a stray sample room. Keep it only on purpose: the map loads without it "
+                        "(loaded from the Default Chamber's terminal; difficulty is global; the pause menu still leaves)"
+                        % (pg["name"], pg["parent"], ", its window masked through the wall" if masked else ""))
     for z in of("Zone_Camera"):
         if z["rotated"]:
             errors.append("S04 %s is rotated; Zone_Camera must not be rotated" % z["name"])
