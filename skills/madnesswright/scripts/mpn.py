@@ -686,6 +686,26 @@ def find_project(scene):
     return None
 
 
+def ambient_check(docs, warnings, info):
+    """S17: every room shares one AmbientColor. A route of rooms lit alike reads as one place repeated
+    (Nexus Prominence round 4: 'boring and incoherent'); vary light per room along the route's beats.
+    Reads RoomObj bodies (any MonoBehaviour with an AmbientColor field) in scene order."""
+    amb = []
+    for fid, d in docs.items():
+        if d["cls"] != 114 or d["stripped"]:
+            continue
+        m = re.search(r"AmbientColor: \{r: ([-\d.e]+), g: ([-\d.e]+), b: ([-\d.e]+)", d["body"])
+        if m:
+            amb.append(tuple(round(float(x), 3) for x in m.groups()))
+    if not amb:
+        return
+    info["room_ambient_luma"] = [round(0.299 * r + 0.587 * g + 0.114 * b, 3) for r, g, b in amb]
+    if len(amb) >= 3 and len(set(amb)) == 1:
+        warnings.append("S17 all %d rooms share one AmbientColor %s; rooms lit alike read as one place repeated. "
+                        "Give each room its own light level or tint along the route's beats (calm, alarm, siege, breather, finale)"
+                        % (len(amb), amb[0]))
+
+
 def door_spawn_check(docs, instances, proj, go_name, warnings, info):
     """S15: a door that can spawn enemies (not linked to a door or scene, DisableSpawn off) that no squad
     spawner sends a wave through. Players read such a doorway as an enemy entrance nobody uses. Covers plain
@@ -818,6 +838,7 @@ def cmd_scene_lint(args):
             warnings.append("S14 %s is in the scene root; a PX_Door must sit inside a Room_Layout or it does not work" % d["name"])
 
     door_spawn_check(docs, instances, proj, go_name, warnings, info)
+    ambient_check(docs, warnings, info)
 
     terrain = next((i for i, n in proj.layers.items() if n == "Terrain"), 8)
     floors = 0
