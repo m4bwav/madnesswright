@@ -2,6 +2,12 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.31 · 2026-11-14
+
+- `mpn.py scene-lint` S15 (warning): a door that can spawn enemies (not linked, DisableSpawn off) that no Squad_Spawner sends a wave through; works on cloned rooms (plain doors and squads found by script guid) as well as prefab instances, and reports door counts in `info.doors`. Three new tests.
+- madnesswright-scenes: references/scenetools-rules.md gains "How a Squad_Spawner fires", read from the decompiled game: the timer, MyFactionAlerted, the empty door list, and the cap rule that counts placed enemies (a cap of 3 with squads of 3 waits for an empty room). Unverified in play.
+- From Nexus Prominence's ten improvement rounds, round 1 (build zk). Works with ludowright (difficulty curve and wave plans, kb levels-and-space) for sizing the waves.
+
 ## 0.1.30 · 2026-11-12
 
 - madnesswright-scenes: new references/scenetools-fields.md, SceneTools component fields from the test repo tooltips (Destructibles, room leave-lock rules, blockers, water, camera and event zones, vessels, seats, SceneRules arena and siege fields, staging grounds, squad waves, character, boss and dummy markers, Removers, randomizers, hazards, effects, lockers, vendors); Event action sub-fields re-checked against the sheet; RunDynamicMethod float and vector syntax. madnesswright-modtools: the same syntax note. Unverified in game.

@@ -49,6 +49,7 @@ Tags: `Floor` (spawn and pathing surface), `Character`.
 - S12 at most 4 active lights (3 on low quality); lights outside rooms are ignored.
 - S13 the scene needs an Asset Label or `>> Build` skips it.
 - S14 (warning) a PX_Door in the scene root; doors belong inside a Room_Layout. The lint sees only the direct parent, so a door under some other root object is not caught.
+- S15 (warning) a door that can spawn enemies (no linked door or scene, DisableSpawn off) that no Squad_Spawner lists in SpawnFromDoors. Players read a framed doorway nobody comes through as a missing enemy entrance (a Workshop comment on Nexus Prominence, 2026-11-13). Fix: list it in a squad, link it, tick DisableSpawn or remove it. Skipped when any squad has an empty door list (that squad uses every spawn-capable door of its room). The Playground terminal's unit spawns also use such doors, so in a `_PG` scene it can be a deliberate choice. Covers plain (cloned or unpacked) doors and squads by script guid and prefab instances by their overrides.
 - Scenes and prefabs cannot share a bundle; a bundle with no scene is deleted by the builder.
 - The Background object is disabled for every room but the one last synced; in game it shows only for the focused room. Keep rooms from seeing each other.
 - Doors: one wall collider per door to make intangible; keep door parts off Terrain and Default (use TerrainObstacle).
@@ -75,6 +76,17 @@ Tags: `Floor` (spawn and pathing surface), `Character`.
 - Typing "Manual character" in a Units entry fills in a manual character; a Boss entry takes a typed weapon name. Observed.
 - Spawn doors are assigned by dragging each door into the spawner's door list. Observed.
 - A named Weapon Stockpile preset (e.g. Melee Tier 2, said to hold 17 weapons) caps its entry at that weapon count; to arm more units, add another entry. The author's "from what I understand": unverified in game.
+
+## How a Squad_Spawner fires (decompiled game, build 25615196, read 2026-11-14)
+
+From the game's own code (madnesswright-modtools `decomp.py`; the decompile stays outside every repository). Not yet confirmed in play beyond one sighting of a rappel team landing.
+
+- Load order: proxies are converted before markers (`CustomStageLoader`: `Converter_Proxy.RunConversion` then `Converter_Marker.RunConversion`), so `SpawnFromDoors` resolves to the created entrances.
+- The timer `SecondsInRoomTilSpawn` starts the first frame the spawner's room is the camera's current room and the player is not inside a door. With `SpawnRequirement` `MyFactionAlerted` the timer keeps restarting until that faction in the room is alerted, so the delay counts from the alarm.
+- An empty door list means every entrance of the room that is not `disableSpawn`.
+- **The cap:** a squad comes in only while max(living members of that faction in the room, wave units still alive) + the next squad's size <= `MaxUnitCount` (`Wave_Tandem.CanSpawnWithoutBreachingMax`), unless `IgnoreFactionAllyCount` is set. So placed enemies count against the cap: a cap of 3 with squads of 3 waits until the room is empty. To have backup arrive mid-fight, set the cap to (enemies you want still standing) + squad size.
+- Waves pause while the player is in another room. A door is picked at random among the listed ones that accept the unit (`EntranceCanReceiveCharacter`: active, vocation rules); if none does, any entrance of the room is used.
+- Worked example: Nexus Prominence build zk (round 1 of its ten rounds) raised its caps and fed every spare door this way.
 
 ## Hiding the void (same video)
 

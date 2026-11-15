@@ -605,13 +605,44 @@ def modifications(body):
     return mods
 
 
+def mod_refs(body):
+    """(propertyPath, value, objectReference fileID) for every modification of a prefab instance."""
+    flat = re.sub(r",\s*\n\s+type: (\d)", r", type: \1", body)
+    return [(m.group(1).strip(), m.group(2).strip(), m.group(3)) for m in re.finditer(
+        r"propertyPath: (.*)\n\s*value: (.*)\n\s*objectReference: \{fileID: (-?\d+)", flat)]
+
+
+def ref_list(body, name):
+    """fileIDs of a serialized list of object references (`name:` then `- {fileID: N}` lines)."""
+    m = re.search(r"^(\s*)%s:(.*)$" % re.escape(name), body, re.MULTILINE)
+    if not m or m.group(2).strip() == "[]":
+        return []
+    out = []
+    for line in body[m.end():].splitlines()[1:]:
+        r = re.match(r"\s*- \{fileID: (-?\d+)", line)
+        if not r:
+            break
+        out.append(r.group(1))
+    return out
+
+
+SCRIPTS = ("ProxyObj_Door", "Marker_Squad")
+
+
 class Project:
     def __init__(self, root):
         self.root = root
         self.guid_path = {}
         self.cache = {}
         self.layers = {8: "Terrain"}
+        self.script_guid = {}
         if root:
+            for meta in (root / "Assets").rglob("*.cs.meta"):
+                stem = meta.name[:-len(".cs.meta")]
+                if stem in SCRIPTS:
+                    g = re.search(r"^guid: ([0-9a-f]{32})", meta.read_text(encoding="utf-8", errors="replace"), re.MULTILINE)
+                    if g:
+                        self.script_guid[stem] = g.group(1)
             for meta in (root / "Assets").rglob("*.prefab.meta"):
                 g = re.search(r"^guid: ([0-9a-f]{32})", meta.read_text(encoding="utf-8", errors="replace"), re.MULTILINE)
                 if g:
@@ -655,6 +686,54 @@ def find_project(scene):
     return None
 
 
+def door_spawn_check(docs, instances, proj, go_name, warnings, info):
+    """S15: a door that can spawn enemies (not linked to a door or scene, DisableSpawn off) that no squad
+    spawner sends a wave through. Players read such a doorway as an enemy entrance nobody uses. Covers plain
+    (unpacked or cloned) doors and squads by script guid, and PX_Door / Squad_Spawner prefab instances."""
+    dg, sg = proj.script_guid.get("ProxyObj_Door"), proj.script_guid.get("Marker_Squad")
+    doors, used, roomwide = [], set(), 0
+    for fid, d in docs.items():
+        if d["cls"] != 114 or d["stripped"]:
+            continue
+        g = ref(d["body"], "m_Script")[1]
+        b = d["body"]
+        if g and g == dg:
+            doors.append({"ids": {fid}, "name": go_name(ref(b, "m_GameObject")[0]) or fid,
+                          "spawn": (field(b, "DisableSpawn") or "0") == "0",
+                          "linked": ref(b, "LinkedDoor")[0] not in (None, "0") or bool(field(b, "LinkedScene"))})
+        elif g and g == sg:
+            ids = ref_list(b, "SpawnFromDoors")
+            used.update(ids)
+            roomwide += not ids
+    stripped_of = {}
+    for fid, d in docs.items():
+        if d["cls"] == 114 and d["stripped"]:
+            stripped_of.setdefault(ref(d["body"], "m_PrefabInstance")[0], set()).add(fid)
+    for i in instances:
+        if i["kind"] not in ("PX_Door", "Squad_Spawner"):
+            continue
+        mods = {p: (v, r) for p, v, r in mod_refs(docs[i["fid"]]["body"])}
+        if i["kind"] == "PX_Door":
+            doors.append({"ids": stripped_of.get(i["fid"], set()), "name": i["name"],
+                          "spawn": mods.get("DisableSpawn", ("0", "0"))[0] in ("0", ""),
+                          "linked": mods.get("LinkedDoor", ("", "0"))[1] != "0" or bool(mods.get("LinkedScene", ("", "0"))[0])})
+        else:
+            ids = [r for p, (v, r) in mods.items() if p.startswith("SpawnFromDoors.Array.data[") and r != "0"]
+            used.update(ids)
+            roomwide += not ids
+    if not doors:
+        return
+    spawners = [d for d in doors if d["spawn"] and not d["linked"]]
+    unused = [d for d in spawners if not (d["ids"] & used)]
+    info["doors"] = {"total": len(doors), "can_spawn": len(spawners), "unused": len(unused), "roomwide_squads": roomwide}
+    if roomwide:
+        info["doors"]["note"] = "a squad with no SpawnFromDoors spawns through every spawn-capable door of its room; S15 is skipped"
+        return
+    for d in unused:
+        warnings.append("S15 door %s can spawn enemies (not linked, DisableSpawn off) but no Squad_Spawner sends a wave through it; "
+                        "players read it as an unused enemy entrance (Playground unit spawns from the terminal may still use it): list it in a squad's SpawnFromDoors, link it, tick DisableSpawn or remove it" % d["name"])
+
+
 def cmd_scene_lint(args):
     scene = Path(args.scene).expanduser()
     errors, warnings, info = [], [], {}
@@ -693,7 +772,7 @@ def cmd_scene_lint(args):
         rot = {p[-1]: v for (t, g, p, v) in mods if p.startswith("m_LocalRotation.") and (root_t is None or t == root_t)}
         rotated = any(abs(float(rot.get(a, 0) or 0)) > 1e-4 for a in "xyz")
         parent = transform_name(ref(d["body"], "m_TransformParent")[0])
-        instances.append({"kind": kind, "name": name or kind, "parent": parent, "rotated": rotated})
+        instances.append({"kind": kind, "name": name or kind, "parent": parent, "rotated": rotated, "fid": fid})
 
     def of(kind):
         return [i for i in instances if i["kind"] == kind]
@@ -730,6 +809,8 @@ def cmd_scene_lint(args):
     for d in of("PX_Door"):
         if not d["parent"]:
             warnings.append("S14 %s is in the scene root; a PX_Door must sit inside a Room_Layout or it does not work" % d["name"])
+
+    door_spawn_check(docs, instances, proj, go_name, warnings, info)
 
     terrain = next((i for i, n in proj.layers.items() if n == "Terrain"), 8)
     floors = 0
