@@ -15,7 +15,7 @@ def staging_check(docs, instances, warnings, info, mod_refs):
     or SpawnFromDoor (walks in through a door). S20: FixedInPlace freezes the character (Char_DataAssigner calls
     SetFrozen), so it never moves or fights; for a sniper that holds a post use AddBehaviors Camper instead."""
     chars = [i for i in instances if i["kind"] == "Char_Start"]
-    if not chars:
+    if not chars and not any(i["kind"] == "Squad_Spawner" for i in instances):
         return
     alerts, faces, beh, from_door = {}, set(), {}, 0
     for c in chars:
@@ -33,8 +33,16 @@ def staging_check(docs, instances, warnings, info, mod_refs):
         if mods.get("FixedInPlace", ("0", "0"))[0] == "1":
             warnings.append("S20 %s has FixedInPlace on: the game freezes it (SetFrozen), so it never moves or shoots; "
                             "for a sniper holding a post use AddBehaviors Camper with Sniper waypoints instead" % c["name"])
+    # Nexus Prominence round 7: placed enemies plus every squad's units, per squad, so a count table (a film's,
+    # a difficulty budget's) can be checked from the scene: placed + backup, not placed alone.
+    squads = {}
+    for q in (i for i in instances if i["kind"] == "Squad_Spawner"):
+        n = sum(int(v) for p, v, _ in mod_refs(docs[q["fid"]]["body"]) if p.startswith("Wave.WaveUnits.Array.data[") and p.endswith("].Total") and v.isdigit())
+        squads[q["name"]] = squads.get(q["name"], 0) + n
     info["enemy_staging"] = {"enemies": len(chars), "alertness": alerts, "facings": len(faces),
-                             "behaviors": dict(sorted(beh.items())), "spawn_from_door": from_door}
+                             "behaviors": dict(sorted(beh.items())), "spawn_from_door": from_door,
+                             "squad_units": sum(squads.values()), "squads": squads,
+                             "total_with_backup": len(chars) + sum(squads.values())}
     if len(chars) >= 6 and len(faces) == 1 and len(alerts) == 1 and not beh and not from_door:
         warnings.append("S19 all %d enemies face one way, share one alertness and have no added behaviour: every room plays "
                         "as the same fight. Stage them: facing (marker rotation), alertness, AddBehaviors (Camper, HoldCover, "

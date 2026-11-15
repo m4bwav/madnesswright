@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.37 · 2026-11-14
+
+- `mpn.py scene-lint` `info.enemy_staging` now adds `squad_units`, `squads` (units per Squad_Spawner name, from `Wave.WaveUnits[].Total`) and `total_with_backup`, so a count table (a film's, a difficulty budget's) is checked against placed enemies plus every wave, not placed alone. One new test. Found in Nexus Prominence's round 7 (build zq): rooms with few placed enemies carried 11 to 17 with their waves, far above the film; the total there fell from 66 to 40.
+- From Nexus Prominence's ten improvement rounds, round 7 (details and film counts). Works with cinewright (cinewright-analyze for reading counts off film frames) and polywright (code-route props).
+
 ## 0.1.36 · 2026-11-14
 
 - `mpn.py scene-lint` S19 (warning): six or more placed enemies that all face one way, share one alertness and have no added behaviour or door entry play as the same fight in every room. S20 (warning): `FixedInPlace` freezes a character (the game calls SetFrozen), so a "sniper" set that way never shoots; use AddBehaviors Camper with Sniper waypoints. `info.enemy_staging` counts alertness, facings, behaviours and door entries. The checks live in the new `scripts/staging.py` so mpn.py stays inside the script budget. Three new tests. scenetools-rules lists both and the staging fields the game reads (from the decompiled Converter_Marker and Char_DataAssigner).
