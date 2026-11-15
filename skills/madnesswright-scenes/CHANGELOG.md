@@ -99,3 +99,8 @@ Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (ID
 - because: R-20261111-3 (harvest, user request "do some more technique harvesting")
 - files: references/scenetools-rules.md (six lines under "Spawns, doors and moving parts"), references/stages-and-campaigns.md (stage card, Hubs, Stage marker, cutscene fields)
 - SKILL.md is unchanged, so triggers and decisions stay the same and the evals do not need a rerun.
+
+### C-20261114-3 · 2026-11-14 · Textures, prop import scale and film cameras
+- because: measured in Nexus Prominence round 3 (build zm): OBJ in metres imports 1:1 (bounds logged), tiling on Terrain - General needs metre UVs, pw.py --seamless ghosts grid patterns
+- files: references/textures-and-props.md (new), SKILL.md (one pointer sentence in step 2)
+- Triggers and decisions unchanged; evals not rerun.

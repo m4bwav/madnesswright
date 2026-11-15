@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.33 · 2026-11-14
+
+- madnesswright-scenes: new references/textures-and-props.md. Tiling textures on the `Madness/Terrain - General` shader (Repeat wrap, UVs in metres per mesh, tint to the map's colours), making the tile with comfyui-gen and cropping whole cells because polywright `pw.py texture --seamless` ghosts grid patterns, the measured OBJ import scale in SceneTools (1:1 in metres, a 1.0 x 1.2 x 1.0 m crate came in at exactly that), and per-room film-frame cameras with a 50% overlay. Editor-side; unverified in game.
+- From Nexus Prominence's ten improvement rounds, round 3 (build zm). Works with comfyui-gen (Z-Image texture renders), polywright (code-route prop, `pw.py inspect`, `texture`) and artwright (artwright-judge compared the renders).
+
 ## 0.1.32 · 2026-11-14
 
 - `mpn.py scene-lint` S16 (warning): a `PX_Playground` proxy becomes the Playground control room in game (a booth about 4 x 9 x 15 m behind the wall, its window masked through it); says the map loads without it. One new test.
