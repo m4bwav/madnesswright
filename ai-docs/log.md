@@ -537,3 +537,5 @@ Transcript of the official SceneTools stages, campaigns and cutscenes video read
 - 2026-11-12 built harvest round f items 72-80: scenes event-actions.md (new, official sheet re-fetched as CSV for exact fields), BooleanSet fix, early SceneTools objects, briefing voice; hub madcards TetherTo and sources transcripts; modtools BuffEvent/DoTEvent and RunDynamicMethod bridge; plugin 0.1.29. In-game tests owed by the owner.
 
 - 2026-11-12 built harvest round g items 81-99: scenes scenetools-fields.md (new, test repo tooltip field names), pointer in scenetools-rules, RunDynamicMethod float/vector syntax in event-actions and modtools harmony; item 81 already covered by round f; plugin 0.1.30. In-game tests owed by the owner.
+
+- 2026-11-14: HANDOFF.md was about 15,000 tokens per read; entries up to 2026-11-11 moved to ai-docs/archive/handoff-to-2026-11-11.md (links repointed). The Nexus Prominence ten-round improvement chain runs from the nexus-prominence repository (its ai-docs/plans/2026-11-14-ten-rounds-continue-prompt.md) and sends its toolkit improvements here.
