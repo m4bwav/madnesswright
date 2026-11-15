@@ -46,7 +46,7 @@ Project Nexus (GIBBING TREE, LLC, Steam app 488860) has real mod support. There 
 | `check-mod <dir>` | Lints a mod folder: `info.txt`, curly quotes, strict `.json` against `.txt` shorthand, Filename and Type on every card, the assembly path, Workshop-id dependencies |
 | `deploy <dir> [--force]` | Checks the mod, then copies it into the game's Mods folder |
 | `log` | Reports the build, the enabled list, loaded mods and applied Harmony patches, and the problem lines and tail of `mods.log` and `Player.log` |
-| `scene-lint <Scene.unity>` | Checks a SceneTools scene against the official docs' rules (S01-S13) and the toolkit's own (S14 door parenting, S15 spawn-capable doors no squad uses) |
+| `scene-lint <Scene.unity>` | Checks a SceneTools scene against the official docs' rules (S01-S13) and the toolkit's own (S14-S21: door parenting, unused spawn doors, shared ambient light, placeholder box share, same-fight staging, frozen snipers, the sample wall mesh still drawn); `info` reports light arc, enemy staging and totals with backup |
 
 ## Install
 
@@ -60,6 +60,10 @@ Claude Code:
 Other agents: copy the folders under `skills/` into the agent's skills folder (`.agents/skills/` or `.claude/skills/`).
 
 You install Unity 2019.2.6f1, the SceneTools and ModTools projects (from https://github.com/MPN-Modders), a decompiler, and any Workshop uploader yourself. The skills never install software, and they never handle Steam credentials.
+
+## What 1.0 means
+
+1.0.0 (2026-11-14) marks the toolkit as complete for its three jobs: mod folders and MadCards, SceneTools levels, and Harmony code. Proven in game: deploying and enabling mods, the mod log, Harmony loading (Director), and a SceneTools map built, uploaded and played (Nexus Prominence build zj). **Unverified in game** (proven only by the linters, editor renders and the decompiled game): scene-lint S17-S21 and what they claim the player sees; code-built OBJ props and hidden sample walls drawing in the game's asset bundle; door-squad and SpawnFromDoor arrival timing from game-recipes; the ambient colour grades as the game renders them. Each stays marked unverified in its skill until a playtest confirms it.
 
 ## Limits
 

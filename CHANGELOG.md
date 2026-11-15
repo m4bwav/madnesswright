@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.0 · 2026-11-14
+
+- First stable release. No behaviour change from 0.1.39; the version marks the three skills and `mpn.py` as complete for mods, SceneTools levels and Harmony code. README gains "What 1.0 means", which lists what is proven in game and what is still **unverified in game** (scene-lint S17-S21, code-built props and hidden sample walls in the asset bundle, door-squad timing, ambient grades). The root `plugin.json` version (left at 0.1.5) now matches. Closes Nexus Prominence's ten improvement rounds (round 10).
+
 ## 0.1.39 · 2026-11-14
 
 - scene-lint S21: warns when the SceneTools sample room's wall mesh is still drawn (players read it as the Playground) and lists drawn and hidden sample meshes in `info.sample_shell`. Found in Nexus Prominence's ten improvement rounds, round 9, which replaced the sample walls with the map's own panels and kept the collider. Works with polywright (code-built panels, pw.py overlaps) and artwright-judge (blind before/after).
