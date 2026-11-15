@@ -2,7 +2,12 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
-Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
+Entry shape: `### C-20261114-r5 · 2026-11-14 · scene-lint S18 box share
+- because: Nexus Prominence ten rounds, round 5 (care and appeal); build zo log measured six code-made OBJ props imported 1:1
+- files: references/scenetools-rules.md (S18); scripts/mpn.py box_share_check (madnesswright skill)
+- Editor-side measure; how players read it is unverified.
+
+### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
 ### C-20261114-2 · 2026-11-14 · Scene-lint S16 (the Playground control room proxy) and what PX_Playground becomes in game
 - because: user request (Nexus Prominence ten rounds, round 2: a player reported "a playground room for no reason"); decompiled game (Converter_Proxy, InteractiveMode, Stage_Manager)

@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 0.1.35 · 2026-11-14
+
+- `mpn.py scene-lint` S18 (warning): 90% or more of 50+ meshes are the built-in cube, so the set reads as placeholder boxes; `info.box_share` and `info.mesh_counts` report the share. Two new tests. scenetools-rules lists S18 with the measured 1:1 OBJ import path.
+- From Nexus Prominence's ten improvement rounds, round 5 (build zo, care and appeal). Works with polywright (code-route props) and artwright (artwright-judge, blind zn vs zo).
+
 ## 0.1.34 · 2026-11-14
 
 - `mpn.py scene-lint` S17 (warning): all rooms share one AmbientColor; `info.room_ambient_luma` lists each room's ambient brightness so a route's light arc can be read. Two new tests. scenetools-rules lists S17.
