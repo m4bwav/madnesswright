@@ -706,6 +706,32 @@ def ambient_check(docs, warnings, info):
                         % (len(amb), amb[0]))
 
 
+def box_share_check(docs, warnings, info):
+    """S18: nearly every mesh in the scene is Unity's built-in cube. A set made only of boxes reads as
+    placeholder art to players (Nexus Prominence round 5: 'no care or effort'). Model the most visible props
+    (an OBJ in metres imports 1:1 into SceneTools) and keep the box as the collider.
+    Counts MeshFilter bodies whose m_Mesh is the built-in cube (fileID 10202)."""
+    cube = other = 0
+    for d in docs.values():
+        if d["cls"] != 33 or d["stripped"]:
+            continue
+        m = re.search(r"m_Mesh: \{fileID: (-?\d+)(?:, guid: ([0-9a-f]+))?", d["body"])
+        if not m or m.group(1) == "0":
+            continue
+        if m.group(1) == "10202" and (m.group(2) or "").startswith("0000000000000000e"):
+            cube += 1
+        else:
+            other += 1
+    if cube + other == 0:
+        return
+    info["box_share"] = round(cube / (cube + other), 3)
+    info["mesh_counts"] = {"builtin_cube": cube, "other": other}
+    if cube >= 50 and info["box_share"] >= 0.9:
+        warnings.append("S18 %d of %d meshes are the built-in cube (%.0f%%); the set reads as placeholder boxes. "
+                        "Model the most visible props (OBJ in metres imports 1:1) and keep the box as collider"
+                        % (cube, cube + other, 100 * info["box_share"]))
+
+
 def door_spawn_check(docs, instances, proj, go_name, warnings, info):
     """S15: a door that can spawn enemies (not linked to a door or scene, DisableSpawn off) that no squad
     spawner sends a wave through. Players read such a doorway as an enemy entrance nobody uses. Covers plain
@@ -839,6 +865,7 @@ def cmd_scene_lint(args):
 
     door_spawn_check(docs, instances, proj, go_name, warnings, info)
     ambient_check(docs, warnings, info)
+    box_share_check(docs, warnings, info)
 
     terrain = next((i for i, n in proj.layers.items() if n == "Terrain"), 8)
     floors = 0

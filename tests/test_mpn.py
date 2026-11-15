@@ -403,6 +403,27 @@ class Backup(unittest.TestCase):
             self.assertTrue(Path(r["zip"]).is_file())
 
 
+class BoxShareCheck(unittest.TestCase):
+    CUBE = "  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}\n"
+    OBJ = "  m_Mesh: {fileID: 4300000, guid: 0123456789abcdef0123456789abcdef, type: 3}\n"
+
+    def docs(self, cubes, others):
+        bodies = [self.CUBE] * cubes + [self.OBJ] * others
+        return {str(i): {"cls": 33, "stripped": False, "body": b} for i, b in enumerate(bodies)}
+
+    def test_all_boxes_warns(self):
+        w, info = [], {}
+        mpn.box_share_check(self.docs(60, 2), w, info)
+        self.assertTrue(w and w[0].startswith("S18"))
+        self.assertEqual(info["mesh_counts"], {"builtin_cube": 60, "other": 2})
+
+    def test_modelled_props_quiet(self):
+        w, info = [], {}
+        mpn.box_share_check(self.docs(60, 20), w, info)
+        self.assertEqual(w, [])
+        self.assertEqual(info["box_share"], 0.75)
+
+
 class AmbientCheck(unittest.TestCase):
     def docs(self, cols):
         return {str(i): {"cls": 114, "stripped": False, "body": "  AmbientColor: {r: %s, g: %s, b: %s, a: 1}\n" % c} for i, c in enumerate(cols)}
