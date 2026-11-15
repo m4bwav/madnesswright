@@ -452,6 +452,15 @@ class StagingCheck(unittest.TestCase):
         st = info["enemy_staging"]
         self.assertEqual((st["behaviors"], st["spawn_from_door"], st["facings"]), ({"Camper": 1}, 1, 2))
 
+    def test_squad_units_counted(self):
+        fid, d = self.inst(9, [("Wave.WaveUnits.Array.data[0].Total", "2", "0"), ("Wave.WaveUnits.Array.data[1].Total", "1", "0")])
+        docs = {fid: d, "0": self.inst(0, [])[1]}
+        inst = [{"kind": "Char_Start", "name": "Char_0", "fid": "0"}, {"kind": "Squad_Spawner", "name": "Squad_DoorWave", "fid": fid}]
+        w, info = [], {}
+        mpn.staging_check(docs, inst, w, info, mpn.mod_refs)
+        st = info["enemy_staging"]
+        self.assertEqual((st["squad_units"], st["total_with_backup"]), (3, 4))
+
     def test_fixed_in_place_warns(self):
         w, _ = self.run_check([[("FixedInPlace", "1", "0")]])
         self.assertTrue(w and w[0].startswith("S20"))
