@@ -138,3 +138,11 @@ Write an entry the moment a real signal happens: a user correction, the same err
 - Evidence: Nexus Prominence build zu (requester report after playing zt); zu released 2026-11-14.
 - Scope: skill
 - Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-14
+
+## L-20261116-1 `film-structures-clear-side-doors`
+
+- Trigger: placing a film's structure at the back corners or ends of a room (wall blocks, counters, kerbs, plinths)
+- Rule: Nexus-style rooms put their side-wall doors about 3 to 4 units out from the back wall, so a piece at the film's corner position (u near 0 or 1, against the back wall) lands inside a 3.5 unit door clearance and blocks the exit. Start corner pieces at least 3.6 units in from each side wall, or end them that far short, and flag the shift from the film's position as a small call. Check door positions before placing (the generator's door list, or the PX_Door transforms), not after a failed gate.
+- Evidence: Nexus Prominence builds zze (counter and kerb, first pass failed), zzf (corridor end blocks at the corners, first pass failed), zzb (left wall block left out); zzd and zzg placed by u away from the corners passed first time. 2026-11-16, unplayed.
+- Scope: skill
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-11-16
