@@ -155,3 +155,25 @@ def relief_check(docs, warnings, info, field, ref, char_h=2.7, obstacle_layer="1
     if max(hs) < char_h:
         warnings.append("S23 every one of %d solid structures is under %.1f units (one character): the map reads flat; "
                         "pillars, pylons and tall blocks need a collider of their full height" % (len(hs), char_h))
+
+
+def raised_floor_check(docs, info, field, ref, min_y=1.0):
+    """S24 (info only): Floor-tagged objects with local Y above `min_y` (a walkable second height), with the scene's
+    Interactive-layer (12) pieces (invisible ramps; the game has no step-up) and PathBlock-layer (25) pieces (without
+    them the AI walks off open edges). From the decompiled game, unverified in play (scenes references/raised-floors.md)."""
+    y = {}
+    for d in (d for d in docs.values() if d["cls"] == 4):
+        m = re.search(r"m_LocalPosition: \{x: [-\d.e]+, y: ([-\d.e]+)", d["body"])
+        go = ref(d["body"], "m_GameObject")[0]
+        if m and go:
+            y[go] = float(m.group(1))
+    gos = {fid: d for fid, d in docs.items() if d["cls"] == 1}
+    raised = [f for f, d in gos.items() if field(d["body"], "m_TagString") == "Floor" and y.get(f, 0.0) > min_y]
+    if not raised:
+        return
+    layers = [field(d["body"], "m_Layer") for d in gos.values()]
+    r = {"count": len(raised), "interactive_ramps": layers.count("12"), "pathblocks": layers.count("25")}
+    if not r["interactive_ramps"] or not r["pathblocks"]:
+        r["note"] = ("S24 raised walkable floor without an Interactive-layer ramp or PathBlock on its open edges: no "
+                     "step-up exists and the AI walks off unfenced edges (madnesswright-scenes references/raised-floors.md)")
+    info["raised_floors"] = r

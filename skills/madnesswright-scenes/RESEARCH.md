@@ -96,3 +96,8 @@ Newest first. One entry per material finding; a quiet refresh gets one entry say
 - Sources: https://youtu.be/u7VV0N33Sx0, https://docs.google.com/document/d/1-fchWz0-kYVMUwZcM1RIST8VmWlQ-SmjcuSe2qz9EJI
 - Magnitude: minor
 - Applied: C-20261111-3
+
+### R-20261116-1 · 2026-11-16 · Walkable second height (raised floors)
+- sources: decompile (ilspycmd) of the game's Assembly-CSharp.dll: Combatant_Base (ReturnContactIsValidFloorLayer, AdjustStanding, FixedMove_*, DealFallingDamage), Cam_Main.walkableSurfacesList, Path_Node.FindSeenNodes, Pathfind_Main, Char_DataAssigner.SnapToFloor; the SceneTools project (Assets/Code/SceneObjs, SamplePlayground_PG, SampleSiegeArena); the official layer list in references/scenetools-rules.md
+- finding: standable slope normal.y > 0.7 (about 45 deg); no step-up; fall damage from landing speed 8; AI waypoint graph is 3D with downward drop links; waypoint snap 5.5 down onto Terrain/TerrainObstacle only. Neither sample has a raised walkable floor. Not built or played: unverified in game.
+- used in: references/raised-floors.md, mpn.py scene-lint S24
