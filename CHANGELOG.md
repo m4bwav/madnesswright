@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.8 · 2026-11-16
+
+- `mpn.py scene-lint` S25: `info.solid_slopes` lists pieces named like a slope, ramp, stair or step that are solid BoxColliders under one character high; a warning when the scene has no Interactive-layer ramp at all. From Nexus Prominence build zza, where a player could not get up a drawn slope whose collider was its base box. madnesswright-scenes `references/raised-floors.md` notes S25 and that a low deck needs no PathBlock.
+
 ## 1.0.7 · 2026-11-16
 
 - `mpn.py scene-lint` S23: `by_room` now names a room that is a prefab instance (its Transform is stripped; the name comes from the instance's m_Name modification) instead of filing its pieces under "?". From Nexus Prominence build zzb, where room 1 (the sample scene's room kept as a prefab instance) showed as "?".

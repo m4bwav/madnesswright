@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261116-1 · 2026-11-16 · scene-lint S25 solid slopes
+- because: user request (a player's report on Nexus Prominence build zza: "I couldn't get up the little ramp")
+- files: scripts/staging.py (solid_slope_check), scripts/mpn.py (scene-lint), tests/test_mpn.py (SolidSlopeCheck)
+- New info list and warning; SKILL.md unchanged.
+
 ### C-20261112-6 · 2026-11-12 · AddonGroup TetherTo, official transcripts and Event sheet links
 - because: user request (technique harvest); ai-docs/notes/2026-11-12f-madness-technique-harvest.md items 72-80
 - files: references/madcards.md (new "AddonGroup TetherTo"); references/sources.md (Community)
