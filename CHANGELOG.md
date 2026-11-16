@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.7 · 2026-11-16
+
+- `mpn.py scene-lint` S23: `by_room` now names a room that is a prefab instance (its Transform is stripped; the name comes from the instance's m_Name modification) instead of filing its pieces under "?". From Nexus Prominence build zzb, where room 1 (the sample scene's room kept as a prefab instance) showed as "?".
+
 ## 1.0.6 · 2026-11-16
 
 - madnesswright-scenes: new reference `references/raised-floors.md`, how the game treats a walkable second height (balcony, platform): 45 degree slope limit, no step-up so stairs need an invisible Interactive ramp, AI drop links off unfenced edges, waypoint snap. Read from the decompiled game, unverified in play. `mpn.py scene-lint` S24 (info): `info.raised_floors` notes a raised Floor with no Interactive ramp or no PathBlock in the scene.

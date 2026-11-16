@@ -519,6 +519,18 @@ class ReliefCheck(unittest.TestCase):
         self.assertEqual(rooms["Room_05"], {"count": 2, "tallest": 4.1, "taller_than_a_character": 1})
         self.assertEqual(rooms["Room_06"]["count"], 1)
 
+    def test_by_room_prefab_instance(self):
+        # room 1 kept as a prefab instance: its Transform is stripped and its name lives in the modifications
+        d = self.docs(["1.2", "4.1"])
+        d["700"] = {"cls": 4, "stripped": True, "body": "  m_PrefabInstance: {fileID: 600}\n"}
+        d["600"] = {"cls": 1001, "stripped": False, "body": "  m_Modification:\n    m_TransformParent: {fileID: 0}\n"
+                    "    - target: {fileID: 5, guid: abc, type: 3}\n      propertyPath: m_Name\n      value: Room_01\n"}
+        for i in range(2):
+            d["t%d" % i]["body"] += "  m_Father: {fileID: 700}\n"
+        w, info = [], {}
+        mpn.relief_check(d, w, info, mpn.field, mpn.ref)
+        self.assertEqual(info["solid_structures"]["by_room"], {"Room_01": {"count": 2, "tallest": 4.1, "taller_than_a_character": 1}})
+
     def test_tall_structure_quiet(self):
         w, info = [], {}
         mpn.relief_check(self.docs(["1.2", "4.1"]), w, info, mpn.field, mpn.ref)
