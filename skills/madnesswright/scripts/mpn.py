@@ -24,7 +24,7 @@ import re
 import shutil
 import sys
 import zipfile
-from staging import staging_check, sample_shell_check, squad_timing_check  # S19-S22, kept apart for the script budget
+from staging import staging_check, sample_shell_check, squad_timing_check, relief_check  # S19-S23, kept apart for the script budget
 from pathlib import Path
 
 APP_ID = "488860"
@@ -868,6 +868,7 @@ def cmd_scene_lint(args):
     door_spawn_check(docs, instances, proj, go_name, warnings, info)
     staging_check(docs, instances, warnings, info, mod_refs)
     squad_timing_check(docs, instances, errors, warnings, info, mod_refs, ref)
+    relief_check(docs, warnings, info, field, ref)
     ambient_check(docs, warnings, info)
     box_share_check(docs, warnings, info)
     sample_shell_check(docs, warnings, info, field, ref)

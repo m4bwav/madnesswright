@@ -490,6 +490,28 @@ class StagingCheck(unittest.TestCase):
         self.assertTrue(w and w[0].startswith("S20"))
 
 
+class ReliefCheck(unittest.TestCase):
+    def docs(self, ys):
+        d = {}
+        for i, y in enumerate(ys):
+            d["g%d" % i] = {"cls": 1, "stripped": False, "body": "  m_Layer: 13\n"}
+            d["t%d" % i] = {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: %d}\n  m_LocalScale: {x: 1, y: %s, z: 1}\n" % (i, y)}
+            d["c%d" % i] = {"cls": 65, "stripped": False, "body": "  m_GameObject: {fileID: %d}\n" % i}
+        return {k.replace("g", ""): v for k, v in d.items()}
+
+    def test_flat_map_warns(self):
+        w, info = [], {}
+        mpn.relief_check(self.docs(["1.2", "0.9"]), w, info, mpn.field, mpn.ref)
+        self.assertTrue(w and w[0].startswith("S23"))
+        self.assertEqual(info["solid_structures"]["count"], 2)
+
+    def test_tall_structure_quiet(self):
+        w, info = [], {}
+        mpn.relief_check(self.docs(["1.2", "4.1"]), w, info, mpn.field, mpn.ref)
+        self.assertEqual(w, [])
+        self.assertEqual(info["solid_structures"]["taller_than_a_character"], 1)
+
+
 class SquadTimingCheck(StagingCheck):
     def lint(self, squad_mods, placed=3):
         body = lambda m: self.inst(0, m)[1]["body"] + "  m_TransformParent: {fileID: 77}\n"
