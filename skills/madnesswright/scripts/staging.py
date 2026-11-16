@@ -133,20 +133,38 @@ def relief_check(docs, warnings, info, field, ref, char_h=2.7, obstacle_layer="1
     info["solid_structures"] = {"count": len(hs), "tallest": round(max(hs), 2), "taller_than_a_character": sum(h >= char_h for h in hs)}
     # per room (the root of each piece's Transform chain, by name), so a round that adds a room's structures shows
     # in that room's line and a room left flat stands out (Nexus Prominence build zx, 2026-11-16)
-    tf_of, up = {}, {}
+    tf_of, up, strip_pi = {}, {}, {}
     for fid, d in docs.items():
         if d["cls"] == 4:
+            if d.get("stripped"):
+                strip_pi[fid] = ref(d["body"], "m_PrefabInstance")[0]
+                continue
             go = ref(d["body"], "m_GameObject")[0]
             tf_of[go] = fid
             up[fid] = (go, ref(d["body"], "m_Father")[0])
     names = {fid: field(d["body"], "m_Name") for fid, d in docs.items() if d["cls"] == 1}
+    # a room that is a prefab instance (often the sample scene's first room) ends its chain at a stripped
+    # Transform; its name is the instance's m_Name modification (Nexus Prominence zzb: room 1 showed as "?")
+    pi_name, pi_up = {}, {}
+    for fid, d in docs.items():
+        if d["cls"] == 1001:
+            m = re.search(r"propertyPath: m_Name\s+value: ([^\r\n]+)", d["body"])
+            if m:
+                pi_name[fid] = m.group(1).strip()
+            pi_up[fid] = ref(d["body"], "m_TransformParent")[0]
     rooms = {}
     for go, h in zip(gos, hs):
-        t, root, seen = tf_of.get(go), go, set()
-        while t in up and t not in seen:
+        t, root, label, seen = tf_of.get(go), go, None, set()
+        while (t in up or t in strip_pi) and t not in seen:
             seen.add(t)
+            if t in strip_pi:
+                pi = strip_pi[t]
+                label = pi_name.get(pi) or label
+                t = pi_up.get(pi)
+                continue
             root, t = up[t][0], up[t][1]
-        r = rooms.setdefault(names.get(root) or "?", {"count": 0, "tallest": 0.0, "taller_than_a_character": 0})
+            label = None
+        r = rooms.setdefault(label or names.get(root) or "?", {"count": 0, "tallest": 0.0, "taller_than_a_character": 0})
         r["count"] += 1
         r["tallest"] = round(max(r["tallest"], h), 2)
         r["taller_than_a_character"] += h >= char_h
