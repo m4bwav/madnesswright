@@ -19,6 +19,8 @@ How the game treats a balcony, platform or upper floor in a SceneTools map. **Re
 5. Invisible ceiling collider with at least 2.5 units of head room over the balcony.
 6. Playtest: one Char_Start (Hunting) on the balcony, the player downstairs. Watch the AI use the ramp and the player walk up without sticking.
 
+A drawn slope or steps with a BoxCollider is a solid box: players read it as climbable and bump into it. `mpn.py scene-lint` S25 lists such pieces (`info.solid_slopes`) and warns when the scene has no Interactive ramp. A low deck (under 2 units) needs no PathBlock on its open edge: the drop is within the 2-unit link ground gap, so links over it are ordinary two-way links (built in Nexus Prominence build zzc, a 0.675-unit deck and a 10.6 degree ramp; unplayed).
+
 Untested: camera borders with a balcony, cover on a balcony, Squad Spawner entries and spawn floor checks at height. `Leap_Area` (NPC jumps) exists in the game but is not exposed in SceneTools.
 
 Sources: R-20261116-1 in [../RESEARCH.md](../RESEARCH.md); layer meanings in [scenetools-rules.md](scenetools-rules.md).

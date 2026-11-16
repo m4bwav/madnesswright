@@ -562,6 +562,34 @@ class RaisedFloorCheck(unittest.TestCase):
         self.assertEqual(info, {})
 
 
+class SolidSlopeCheck(unittest.TestCase):
+    def docs(self, layer="13", name="NX_DeckSlope", ramp=False):
+        d = {"1": {"cls": 1, "stripped": False, "body": "  m_Layer: %s\n  m_Name: %s\n" % (layer, name)},
+             "2": {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: 1}\n  m_LocalScale: {x: 3.6, y: 0.675, z: 3}\n"},
+             "3": {"cls": 65, "stripped": False, "body": "  m_GameObject: {fileID: 1}\n"}}
+        if ramp:
+            d["4"] = {"cls": 1, "stripped": False, "body": "  m_Layer: 12\n  m_Name: NX_DeckRampCollider\n"}
+        return d
+
+    def test_solid_slope_without_ramp_warns(self):
+        w, info = [], {}
+        mpn.solid_slope_check(self.docs(), w, info, mpn.field, mpn.ref)
+        self.assertEqual(info["solid_slopes"], ["NX_DeckSlope"])
+        self.assertTrue(w and w[0].startswith("S25"))
+
+    def test_scene_with_interactive_ramp_is_info_only(self):
+        w, info = [], {}
+        mpn.solid_slope_check(self.docs(ramp=True), w, info, mpn.field, mpn.ref)
+        self.assertEqual(w, [])
+        self.assertIn("solid_slopes", info)
+
+    def test_other_names_and_layers_ignored(self):
+        for kw in ({"name": "NX_FloorCrate"}, {"layer": "12"}):
+            w, info = [], {}
+            mpn.solid_slope_check(self.docs(**kw), w, info, mpn.field, mpn.ref)
+            self.assertEqual((w, info), ([], {}))
+
+
 class SquadTimingCheck(StagingCheck):
     def lint(self, squad_mods, placed=3):
         body = lambda m: self.inst(0, m)[1]["body"] + "  m_TransformParent: {fileID: 77}\n"

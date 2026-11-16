@@ -195,3 +195,34 @@ def raised_floor_check(docs, info, field, ref, min_y=1.0):
         r["note"] = ("S24 raised walkable floor without an Interactive-layer ramp or PathBlock on its open edges: no "
                      "step-up exists and the AI walks off unfenced edges (madnesswright-scenes references/raised-floors.md)")
     info["raised_floors"] = r
+
+
+RAMP_WORDS = re.compile(r"slope|ramp|stair|step|wedge", re.I)
+
+
+def solid_slope_check(docs, warnings, info, field, ref, char_h=2.7):
+    """S25: a piece named like a slope, ramp, stair or step that carries a BoxCollider on a body-blocking layer
+    (Obstacle 13, Terrain 8, TerrainObstacle 28) and stands under one character. A BoxCollider is a box whatever
+    mesh is drawn, and the game has no step-up, so players read it as climbable and bump into it (Nexus Prominence
+    build zza, the player's report 2026-11-16: "I couldn't get up the little ramp"). `info.solid_slopes` lists them;
+    a warning when the scene has no Interactive-layer (12) piece at all, i.e. no invisible ramp anywhere. Fix: drop
+    the drawn slope's collider and lay an invisible straight Box on layer Interactive under it (S24, raised-floors.md),
+    or keep it solid on purpose."""
+    scale = {}
+    for d in (d for d in docs.values() if d["cls"] == 4):
+        m = re.search(r"m_LocalScale: \{x: [-\d.e]+, y: ([-\d.e]+)", d["body"])
+        go = ref(d["body"], "m_GameObject")[0]
+        if m and go:
+            scale[go] = abs(float(m.group(1)))
+    gos = {fid: d for fid, d in docs.items() if d["cls"] == 1}
+    boxed = {ref(d["body"], "m_GameObject")[0] for d in docs.values() if d["cls"] == 65}
+    hits = sorted(field(gos[g]["body"], "m_Name") for g in boxed if g in gos
+                  and field(gos[g]["body"], "m_Layer") in ("8", "13", "28")
+                  and RAMP_WORDS.search(field(gos[g]["body"], "m_Name") or "") and scale.get(g, 1.0) < char_h)
+    if not hits:
+        return
+    info["solid_slopes"] = hits
+    if not any(field(d["body"], "m_Layer") == "12" for d in gos.values()):
+        warnings.append("S25 %d piece(s) named like a slope or steps are solid boxes and the scene has no Interactive "
+                        "ramp: nobody can walk up them (%s). Lay an invisible Interactive Box ramp, or keep them solid "
+                        "on purpose" % (len(hits), ", ".join(hits[:5])))
