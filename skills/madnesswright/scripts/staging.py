@@ -1,4 +1,5 @@
 """Enemy staging checks for mpn.py scene-lint (S19, S20). Standard library only."""
+import re
 # BehaviorList enum values used by staging_check (decompiled BehaviorList.cs, build 25615280)
 BEHAVIORS = ["Mindless", "Hunter", "Coward", "Personal", "Turtle", "Evasive", "Enraged", "ItchyFinger", "WhiteNinja",
              "GrenadeLover", "ChargeUpLover", "BadBlock", "FavorDual", "Runner", "Accurate", "SlowWitted", "Tactical",
@@ -110,3 +111,25 @@ def squad_timing_check(docs, instances, errors, warnings, info, mod_refs, ref):
                             "is thinned (cap counts placed enemies); set cap >= placed + squad size or one squad" % (q["name"], units, size, cap, here))
     if rows:
         info["squad_timing"] = rows
+
+
+def relief_check(docs, warnings, info, field, ref, char_h=2.7, obstacle_layer="13"):
+    """S23 (info, and a warning for a flat map): solid structures, BoxColliders on the Obstacle layer (13 in the
+    SceneTools project), counted with the tallest one's height from its Transform scale (a primitive cube is 1 unit).
+    A map whose solid pieces are all below one character (about 2.7 units) reads flat next to a film with pillars
+    and pylons. Nexus Prominence build zw, 2026-11-15: its earlier pylons had no collider at all."""
+    layer = {fid: field(d["body"], "m_Layer") for fid, d in docs.items() if d["cls"] == 1}
+    scale = {}
+    for d in (d for d in docs.values() if d["cls"] == 4):
+        m = re.search(r"m_LocalScale: \{x: [-\d.e]+, y: ([-\d.e]+)", d["body"])
+        go = ref(d["body"], "m_GameObject")[0]
+        if m and go:
+            scale[go] = abs(float(m.group(1)))
+    hs = [scale.get(go, 1.0) for go in (ref(d["body"], "m_GameObject")[0] for d in docs.values() if d["cls"] == 65)
+          if layer.get(go) == obstacle_layer]
+    if not hs:
+        return
+    info["solid_structures"] = {"count": len(hs), "tallest": round(max(hs), 2), "taller_than_a_character": sum(h >= char_h for h in hs)}
+    if max(hs) < char_h:
+        warnings.append("S23 every one of %d solid structures is under %.1f units (one character): the map reads flat; "
+                        "pillars, pylons and tall blocks need a collider of their full height" % (len(hs), char_h))

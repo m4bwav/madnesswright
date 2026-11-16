@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.4 · 2026-11-15
+
+- `mpn.py scene-lint` S23: `info.solid_structures` (solid pieces on the Obstacle layer, the tallest, how many stand taller than a character) and a warning when every solid piece is under one character, so a flat map shows. From Nexus Prominence build zw, whose earlier pylons turned out to have no collider.
+
 ## 1.0.3 · 2026-11-15
 
 - `mpn.py scene-lint` S22: a Squad_Spawner the player can outrun (no SpawnRequirement and a delay over 6 s is an error; a long alarm delay or a cap that holds later squads is a warning), with `info.squad_timing`. madnesswright-scenes: the cap does not hold back a spawner's first squad, and the squad timer only runs in its room and never resets (decompiled game).
