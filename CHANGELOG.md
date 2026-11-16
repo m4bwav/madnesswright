@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.9 · 2026-11-16
+
+- madnesswright-scenes learning L-20261116-1 `film-structures-clear-side-doors`: corner pieces of a film room start 3.6 units in from the side walls, since side-wall doors sit 3 to 4 units out from the back wall. From Nexus Prominence builds zze and zzf, whose corner counter, kerb and wall blocks failed the door gate on first pass.
+
 ## 1.0.8 · 2026-11-16
 
 - `mpn.py scene-lint` S25: `info.solid_slopes` lists pieces named like a slope, ramp, stair or step that are solid BoxColliders under one character high; a warning when the scene has no Interactive-layer ramp at all. From Nexus Prominence build zza, where a player could not get up a drawn slope whose collider was its base box. madnesswright-scenes `references/raised-floors.md` notes S25 and that a low deck needs no PathBlock.
