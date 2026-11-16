@@ -128,3 +128,7 @@ Entry shape: `### C-20261114-r5 · 2026-11-14 · scene-lint S18 box share
 ### C-20261114-4 · 2026-11-14 · Player start and door headers
 - because: L-20261114-12 `player-start-needs-floor` and L-20261114-13 `door-headers-back-wall-only`, both found playing Nexus Prominence after round 10 (builds zt, zu; zu released)
 - files: LEARNINGS.md only. Triggers and decisions unchanged; evals not rerun.
+
+### C-20261116-1 · 2026-11-16 · Raised floors reference
+- because: R-20261116-1 (user request: record how the game treats a floor at a second height)
+- files: references/raised-floors.md (new), SKILL.md (link in the geometry step); mpn.py scene-lint S24 info line. Triggers and decisions unchanged; evals not rerun.

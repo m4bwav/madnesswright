@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.6 · 2026-11-16
+
+- madnesswright-scenes: new reference `references/raised-floors.md`, how the game treats a walkable second height (balcony, platform): 45 degree slope limit, no step-up so stairs need an invisible Interactive ramp, AI drop links off unfenced edges, waypoint snap. Read from the decompiled game, unverified in play. `mpn.py scene-lint` S24 (info): `info.raised_floors` notes a raised Floor with no Interactive ramp or no PathBlock in the scene.
+
 ## 1.0.5 · 2026-11-16
 
 - `mpn.py scene-lint` S23: `info.solid_structures.by_room` gives each room (the root GameObject a solid piece sits under) its own count, tallest piece and pieces taller than a character, so a round that builds one room's structures shows in that room's line and a room still flat stands out. From Nexus Prominence build zx (room 5, the film's balcony room).

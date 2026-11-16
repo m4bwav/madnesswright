@@ -526,6 +526,30 @@ class ReliefCheck(unittest.TestCase):
         self.assertEqual(info["solid_structures"]["taller_than_a_character"], 1)
 
 
+class RaisedFloorCheck(unittest.TestCase):
+    def docs(self, y, extra_layers=()):
+        d = {"1": {"cls": 1, "stripped": False, "body": "  m_TagString: Floor\n  m_Layer: 9\n"},
+             "2": {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: 1}\n  m_LocalPosition: {x: 0, y: %s, z: 0}\n" % y}}
+        for i, layer in enumerate(extra_layers):
+            d["5%d" % i] = {"cls": 1, "stripped": False, "body": "  m_Layer: %s\n" % layer}
+        return d
+
+    def test_raised_floor_without_ramp_notes(self):
+        info = {}
+        mpn.raised_floor_check(self.docs("2.5"), info, mpn.field, mpn.ref)
+        self.assertTrue(info["raised_floors"]["note"].startswith("S24"))
+
+    def test_ramp_and_pathblock_quiet(self):
+        info = {}
+        mpn.raised_floor_check(self.docs("2.5", ("12", "25")), info, mpn.field, mpn.ref)
+        self.assertNotIn("note", info["raised_floors"])
+
+    def test_ground_floor_ignored(self):
+        info = {}
+        mpn.raised_floor_check(self.docs("0.09"), info, mpn.field, mpn.ref)
+        self.assertEqual(info, {})
+
+
 class SquadTimingCheck(StagingCheck):
     def lint(self, squad_mods, placed=3):
         body = lambda m: self.inst(0, m)[1]["body"] + "  m_TransformParent: {fileID: 77}\n"
