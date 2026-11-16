@@ -505,6 +505,20 @@ class ReliefCheck(unittest.TestCase):
         self.assertTrue(w and w[0].startswith("S23"))
         self.assertEqual(info["solid_structures"]["count"], 2)
 
+    def test_by_room(self):
+        d = self.docs(["1.2", "4.1", "3.0"])
+        d["90"] = {"cls": 1, "stripped": False, "body": "  m_Name: Room_05\n  m_Layer: 0\n"}
+        d["91"] = {"cls": 1, "stripped": False, "body": "  m_Name: Room_06\n  m_Layer: 0\n"}
+        d["800"] = {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: 90}\n  m_Father: {fileID: 0}\n"}
+        d["801"] = {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: 91}\n  m_Father: {fileID: 0}\n"}
+        for i, father in enumerate(["800", "800", "801"]):
+            d["t%d" % i]["body"] += "  m_Father: {fileID: %s}\n" % father
+        w, info = [], {}
+        mpn.relief_check(d, w, info, mpn.field, mpn.ref)
+        rooms = info["solid_structures"]["by_room"]
+        self.assertEqual(rooms["Room_05"], {"count": 2, "tallest": 4.1, "taller_than_a_character": 1})
+        self.assertEqual(rooms["Room_06"]["count"], 1)
+
     def test_tall_structure_quiet(self):
         w, info = [], {}
         mpn.relief_check(self.docs(["1.2", "4.1"]), w, info, mpn.field, mpn.ref)
