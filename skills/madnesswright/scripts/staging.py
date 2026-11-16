@@ -117,7 +117,8 @@ def relief_check(docs, warnings, info, field, ref, char_h=2.7, obstacle_layer="1
     """S23 (info, and a warning for a flat map): solid structures, BoxColliders on the Obstacle layer (13 in the
     SceneTools project), counted with the tallest one's height from its Transform scale (a primitive cube is 1 unit).
     A map whose solid pieces are all below one character (about 2.7 units) reads flat next to a film with pillars
-    and pylons. Nexus Prominence build zw, 2026-11-15: its earlier pylons had no collider at all."""
+    and pylons. Nexus Prominence build zw, 2026-11-15: its earlier pylons had no collider at all. `by_room` splits
+    the counts by the root GameObject each piece sits under (zx, 2026-11-16)."""
     layer = {fid: field(d["body"], "m_Layer") for fid, d in docs.items() if d["cls"] == 1}
     scale = {}
     for d in (d for d in docs.values() if d["cls"] == 4):
@@ -125,11 +126,32 @@ def relief_check(docs, warnings, info, field, ref, char_h=2.7, obstacle_layer="1
         go = ref(d["body"], "m_GameObject")[0]
         if m and go:
             scale[go] = abs(float(m.group(1)))
-    hs = [scale.get(go, 1.0) for go in (ref(d["body"], "m_GameObject")[0] for d in docs.values() if d["cls"] == 65)
-          if layer.get(go) == obstacle_layer]
+    gos = [go for go in (ref(d["body"], "m_GameObject")[0] for d in docs.values() if d["cls"] == 65) if layer.get(go) == obstacle_layer]
+    hs = [scale.get(go, 1.0) for go in gos]
     if not hs:
         return
     info["solid_structures"] = {"count": len(hs), "tallest": round(max(hs), 2), "taller_than_a_character": sum(h >= char_h for h in hs)}
+    # per room (the root of each piece's Transform chain, by name), so a round that adds a room's structures shows
+    # in that room's line and a room left flat stands out (Nexus Prominence build zx, 2026-11-16)
+    tf_of, up = {}, {}
+    for fid, d in docs.items():
+        if d["cls"] == 4:
+            go = ref(d["body"], "m_GameObject")[0]
+            tf_of[go] = fid
+            up[fid] = (go, ref(d["body"], "m_Father")[0])
+    names = {fid: field(d["body"], "m_Name") for fid, d in docs.items() if d["cls"] == 1}
+    rooms = {}
+    for go, h in zip(gos, hs):
+        t, root, seen = tf_of.get(go), go, set()
+        while t in up and t not in seen:
+            seen.add(t)
+            root, t = up[t][0], up[t][1]
+        r = rooms.setdefault(names.get(root) or "?", {"count": 0, "tallest": 0.0, "taller_than_a_character": 0})
+        r["count"] += 1
+        r["tallest"] = round(max(r["tallest"], h), 2)
+        r["taller_than_a_character"] += h >= char_h
+    if len(rooms) > 1 or "?" not in rooms:
+        info["solid_structures"]["by_room"] = dict(sorted(rooms.items()))
     if max(hs) < char_h:
         warnings.append("S23 every one of %d solid structures is under %.1f units (one character): the map reads flat; "
                         "pillars, pylons and tall blocks need a collider of their full height" % (len(hs), char_h))

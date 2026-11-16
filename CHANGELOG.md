@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.5 · 2026-11-16
+
+- `mpn.py scene-lint` S23: `info.solid_structures.by_room` gives each room (the root GameObject a solid piece sits under) its own count, tallest piece and pieces taller than a character, so a round that builds one room's structures shows in that room's line and a room still flat stands out. From Nexus Prominence build zx (room 5, the film's balcony room).
+
 ## 1.0.4 · 2026-11-15
 
 - `mpn.py scene-lint` S23: `info.solid_structures` (solid pieces on the Obstacle layer, the tallest, how many stand taller than a character) and a warning when every solid piece is under one character, so a flat map shows. From Nexus Prominence build zw, whose earlier pylons turned out to have no collider.
