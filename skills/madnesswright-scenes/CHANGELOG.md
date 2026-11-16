@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
+### C-20261115-a · 2026-11-15 · scene-lint S22 outrun squads; cap claim corrected
+- because: a player's report on Nexus Prominence build zu (backup met only on walking back); decompiled Squad_DataAssigner.Update, Wave_Manager.CheckReadyToSpawn, Wave_Tandem.CanSpawnWithoutBreachingMax
+- files: references/scenetools-rules.md (S22, the cap, the timer); scripts/staging.py and mpn.py (madnesswright skill); tests/test_mpn.py
+- Corrects the 2026-11-14 claim that placed enemies hold back a first squad. Editor-side; the fix is unverified in game.
+
 ### C-20261114-r9 · 2026-11-14 · scene-lint S21 sample wall mesh still drawn
 - because: Nexus Prominence ten rounds, round 9 (the Playground room, second pass); decompiled Room_Main.MakeChildrenVisible (lights, terrain, backgrounds only)
 - files: references/scenetools-rules.md (S21); scripts/staging.py (madnesswright skill)

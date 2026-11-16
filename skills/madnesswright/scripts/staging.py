@@ -72,3 +72,41 @@ def sample_shell_check(docs, warnings, info, field, ref):
     if walls:
         warnings.append("S21 the sample room's wall mesh is drawn in %d rooms; players read it as the Playground. "
                         "Keep its collider, turn its renderer off and draw your own walls where the collider is solid" % walls)
+
+
+def squad_timing_check(docs, instances, errors, warnings, info, mod_refs, ref):
+    """S22: a Squad_Spawner the player can outrun. Decompiled game (Squad_DataAssigner.Update): the timer is
+    stamped the first frame the room is current, only runs while it is current, is never reset on leaving, and
+    nothing holds the player in the room. A squad with no SpawnRequirement and a long SecondsInRoomTilSpawn misses
+    a fast clear and walks out when the player comes back (Nexus Prominence build zu, a player's report). Error:
+    no requirement and a delay over OUTRUN_S. Warning: MyFactionAlerted but still over OUTRUN_S, or a wave of
+    several squads whose MaxUnitCount is below the room's placed enemies + one squad (Wave_Tandem
+    .CanSpawnWithoutBreachingMax holds the later squads until the room is thinned; the first squad is never capped)."""
+    OUTRUN_S = 6.0
+    placed = {}
+    for c in (i for i in instances if i["kind"] == "Char_Start"):
+        p = ref(docs[c["fid"]]["body"], "m_TransformParent")[0]
+        placed[p] = placed.get(p, 0) + 1
+    rows = []
+    for q in (i for i in instances if i["kind"] == "Squad_Spawner"):
+        body = docs[q["fid"]]["body"]
+        m = {p: v for p, v, _ in mod_refs(body)}
+        units = sum(int(v) for p, v in m.items() if p.startswith("Wave.WaveUnits.Array.data[") and p.endswith("].Total") and v.isdigit())
+        delay = float(m.get("SecondsInRoomTilSpawn", "2") or 2)
+        req = m.get("SpawnRequirement", "0")
+        size = int(m.get("Wave.MaxSquadSize", "4") or 4)
+        cap = int(m.get("Wave.MaxUnitCount", "8") or 8)
+        here = placed.get(ref(body, "m_TransformParent")[0], 0)
+        rows.append({"squad": q["name"], "placed_with_it": here, "units": units, "squad_size": size, "cap": cap,
+                     "delay_s": delay, "on_alarm": req == "2"})
+        if delay > OUTRUN_S and req == "0":
+            errors.append("S22 %s waits %.0f s from room entry with no SpawnRequirement: a player who clears the room sooner "
+                          "walks on and meets it on coming back (the timer only runs in its room and never resets). Use "
+                          "SpawnRequirement MyFactionAlerted with a short delay" % (q["name"], delay))
+        elif delay > OUTRUN_S:
+            warnings.append("S22 %s comes %.0f s after the alarm; a fast player can empty the room first" % (q["name"], delay))
+        if units > size and cap < here + min(size, units):
+            warnings.append("S22 %s: %d units in squads of %d with cap %d and %d placed: its later squads wait until the room "
+                            "is thinned (cap counts placed enemies); set cap >= placed + squad size or one squad" % (q["name"], units, size, cap, here))
+    if rows:
+        info["squad_timing"] = rows
