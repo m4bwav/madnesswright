@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.3 · 2026-11-15
+
+- `mpn.py scene-lint` S22: a Squad_Spawner the player can outrun (no SpawnRequirement and a delay over 6 s is an error; a long alarm delay or a cap that holds later squads is a warning), with `info.squad_timing`. madnesswright-scenes: the cap does not hold back a spawner's first squad, and the squad timer only runs in its room and never resets (decompiled game).
+
 ## 1.0.2 · 2026-11-14
 
 - examples/WorkshopUpload: `wsup.exe description <item> <description.txt> <notes.txt>` replaces only an item's description (links, wording) without re-sending its content, preview or gallery. Used to point the Director page at m4bwav/mpn-director.

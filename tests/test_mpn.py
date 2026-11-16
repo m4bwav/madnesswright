@@ -490,6 +490,36 @@ class StagingCheck(unittest.TestCase):
         self.assertTrue(w and w[0].startswith("S20"))
 
 
+class SquadTimingCheck(StagingCheck):
+    def lint(self, squad_mods, placed=3):
+        body = lambda m: self.inst(0, m)[1]["body"] + "  m_TransformParent: {fileID: 77}\n"
+        docs, inst = {}, []
+        for i in range(placed):
+            docs[str(i)] = {"cls": 1001, "stripped": False, "body": body([])}
+            inst.append({"kind": "Char_Start", "name": "Char_%d" % i, "fid": str(i)})
+        docs["s"] = {"cls": 1001, "stripped": False, "body": body(squad_mods)}
+        inst.append({"kind": "Squad_Spawner", "name": "Squad_DoorWave", "fid": "s"})
+        e, w, info = [], [], {}
+        mpn.squad_timing_check(docs, inst, e, w, info, mpn.mod_refs, mpn.ref)
+        return e, w, info
+
+    def test_build_zu_squad_errors(self):
+        e, w, info = self.lint([("SecondsInRoomTilSpawn", "20", "0"), ("Wave.MaxSquadSize", "2", "0"),
+                                ("Wave.MaxUnitCount", "4", "0"), ("Wave.WaveUnits.Array.data[0].Total", "2", "0")], placed=5)
+        self.assertTrue(e and e[0].startswith("S22"))
+        self.assertEqual(info["squad_timing"][0]["placed_with_it"], 5)
+
+    def test_alarm_short_delay_quiet(self):
+        e, w, _ = self.lint([("SecondsInRoomTilSpawn", "3", "0"), ("SpawnRequirement", "2", "0"),
+                             ("Wave.MaxSquadSize", "2", "0"), ("Wave.MaxUnitCount", "5", "0"), ("Wave.WaveUnits.Array.data[0].Total", "2", "0")])
+        self.assertEqual((e, w), ([], []))
+
+    def test_capped_later_squads_warn(self):
+        e, w, _ = self.lint([("Wave.MaxSquadSize", "2", "0"), ("Wave.MaxUnitCount", "4", "0"), ("Wave.WaveUnits.Array.data[0].Total", "4", "0")])
+        self.assertEqual(e, [])
+        self.assertTrue(w and "cap" in w[0])
+
+
 class AmbientCheck(unittest.TestCase):
     def docs(self, cols):
         return {str(i): {"cls": 114, "stripped": False, "body": "  AmbientColor: {r: %s, g: %s, b: %s, a: 1}\n" % c} for i, c in enumerate(cols)}
