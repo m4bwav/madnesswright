@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.11 · 2026-11-16
+
+- `mpn.py scene-lint` S28 (error): stock spikes shown and hidden by a custom togglable with no Hazard_Core never hurt; S29 (error, `--expect-spawn TYPE`): a spawner door type the map must have is missing or unused. New module `scripts/hazards.py`. S27 now skips trigger colliders. madnesswright-scenes corrects its spike timing advice. Older modtools test runs moved to ai-docs/archive to keep the installed folder in budget. From Nexus Prominence: the requester's "the spikes never worked" and the rappel team missing since build zq.
+
 ## 1.0.10 · 2026-11-16
 
 - `mpn.py scene-lint` S26: same-facing coplanar faces that overlap (z-fighting), with flat decals on each other counted apart, and S27: two solids leaving a gap narrower than a character. New module `scripts/geometry.py` reads world poses of built-in cubes, quads and box colliders from the scene file. From the requester's glitch shots of Nexus Prominence build zzg (a stripe flickering on a band, papers flickering over each other, a skyline flush with the wall band).

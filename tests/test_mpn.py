@@ -714,5 +714,80 @@ class NarrowGapCheck(unittest.TestCase):
         self.assertEqual(w, [])
 
 
+import hazards  # noqa: E402
+
+
+def mods_body(mods):
+    return "  m_Modification:\n    m_Modifications:\n" + "".join(
+        "    - target: {fileID: 1, guid: %s, type: 3}\n      propertyPath: %s\n      value: %s\n      objectReference: {fileID: %s}\n"
+        % ("a" * 32, p, v, o) for p, v, o in mods)
+
+
+class SpikeHazardCheck(unittest.TestCase):
+    def docs(self, with_hazard):
+        d = {"10": {"cls": 1001, "stripped": False, "body": mods_body([("m_Name", "PX_Spikes_A", "0")])},
+             "11": {"cls": 1, "stripped": True, "body": "  m_PrefabInstance: {fileID: 10}\n"},
+             "20": {"cls": 1, "stripped": False, "body": "  m_Name: CO_Timer\n"},
+             "21": {"cls": 114, "stripped": False, "body": "  m_GameObject: {fileID: 20}\n  SerialNumber: T_A\n  UpObjs:\n  - {fileID: 11}\n"
+                    + ("  - {fileID: 30}\n" if with_hazard else "") + "  DownObjs: []\n"}}
+        if with_hazard:
+            d["30"] = {"cls": 1, "stripped": False, "body": "  m_Name: Blades\n"}
+            d["31"] = {"cls": 114, "stripped": False, "body": "  m_GameObject: {fileID: 30}\n  contactDmg: 35\n"}
+        return d, [{"kind": "PX_Togglable", "name": "PX_Spikes_A", "fid": "10"}]
+
+    def test_shown_hidden_strip_errors(self):
+        docs, inst = self.docs(False)
+        e, info = [], {}
+        hazards.spike_hazard_check(docs, inst, e, info, mpn.mod_refs, mpn.ref)
+        self.assertTrue(e and e[0].startswith("S28"))
+
+    def test_strip_with_hazard_quiet(self):
+        docs, inst = self.docs(True)
+        e, info = [], {}
+        hazards.spike_hazard_check(docs, inst, e, info, mpn.mod_refs, mpn.ref)
+        self.assertEqual(e, [])
+        self.assertTrue(info["spike_drivers"][0]["hazard"])
+
+
+class SpawnExpectCheck(unittest.TestCase):
+    def docs(self, rappel, listed):
+        d = {"40": {"cls": 1001, "stripped": False, "body": mods_body([("Type", "211" if rappel else "208", "0")])},
+             "41": {"cls": 114, "stripped": True, "body": "  m_PrefabInstance: {fileID: 40}\n"},
+             "50": {"cls": 1001, "stripped": False, "body": mods_body([("SpawnFromDoors.Array.data[0]", "", "41" if listed else "0")])}}
+        return d, [{"kind": "PX_Door", "name": "PX_Spawn_Rappel", "fid": "40"}, {"kind": "Squad_Spawner", "name": "Squad_R", "fid": "50"}]
+
+    def run_check(self, rappel, listed, expect=("Rapel",)):
+        docs, inst = self.docs(rappel, listed)
+        e, info = [], {}
+        hazards.spawn_expect_check(docs, inst, e, info, mpn.mod_refs, list(expect))
+        return e, info
+
+    def test_missing_rappel_errors(self):
+        e, _ = self.run_check(False, True)
+        self.assertTrue(e and e[0].startswith("S29") and "none" in e[0])
+
+    def test_unused_rappel_errors(self):
+        e, _ = self.run_check(True, False)
+        self.assertTrue(e and "no Squad_Spawner" in e[0])
+
+    def test_used_rappel_quiet(self):
+        e, info = self.run_check(True, True)
+        self.assertEqual(e, [])
+        self.assertEqual(info["expected_spawns"]["Rapel"], {"doors": 1, "used_by_squad": True})
+
+    def test_no_expectation_quiet(self):
+        e, info = self.run_check(False, False, expect=())
+        self.assertEqual((e, info), ([], {}))
+
+
+class NarrowGapTrigger(unittest.TestCase):
+    def test_trigger_not_a_wall(self):
+        docs = box_docs([("NX_PylonA", (0, 1.5, 0), (3, 3, 3), True), ("NX_Blades", (0, 1.5, 4.0), (3, 3, 3), True)])
+        docs["114"]["body"] += "  m_IsTrigger: 1\n"
+        w, info = [], {}
+        mpn.narrow_gap_check(docs, w, info, mpn.field, mpn.ref)
+        self.assertEqual(w, [])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)
