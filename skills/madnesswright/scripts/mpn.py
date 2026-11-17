@@ -25,6 +25,7 @@ import shutil
 import sys
 import zipfile
 from staging import staging_check, sample_shell_check, squad_timing_check, relief_check, raised_floor_check, solid_slope_check  # S19-S25, kept apart for the script budget
+from geometry import coplanar_check, narrow_gap_check  # S26-S27
 from pathlib import Path
 
 APP_ID = "488860"
@@ -874,6 +875,8 @@ def cmd_scene_lint(args):
     ambient_check(docs, warnings, info)
     box_share_check(docs, warnings, info)
     sample_shell_check(docs, warnings, info, field, ref)
+    coplanar_check(docs, warnings, info, field, ref, eps=args.coplanar_eps)
+    narrow_gap_check(docs, warnings, info, field, ref, player_w=args.player_width)
 
     terrain = next((i for i, n in proj.layers.items() if n == "Terrain"), 8)
     floors = 0
@@ -937,6 +940,8 @@ def main(argv=None):
     s = sub.add_parser("scene-lint")
     s.add_argument("scene")
     s.add_argument("--project")
+    s.add_argument("--coplanar-eps", type=float, default=0.002, help="S26: faces this close (units) count as one plane")
+    s.add_argument("--player-width", type=float, default=1.6, help="S27: narrowest gap a character passes (units)")
     args = ap.parse_args(argv)
     try:
         {"where": cmd_where, "backup": cmd_backup, "check-mod": cmd_check_mod, "deploy": cmd_deploy,

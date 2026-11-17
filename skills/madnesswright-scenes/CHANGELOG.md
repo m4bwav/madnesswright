@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
+### C-20261116-b · 2026-11-16 · scene-lint S26 coplanar faces, S27 narrow gaps
+- because: user request (the requester's glitch shots of Nexus Prominence build zzg)
+- files: references/scenetools-rules.md (S26, S27); scripts/geometry.py (madnesswright skill)
+- Editor-side checks; the fixes they led to in zzh are unplayed.
+
 ### C-20261116-a · 2026-11-16 · learning: film structures clear side doors
 - because: L-20261116-1 `film-structures-clear-side-doors` (Nexus Prominence builds zze and zzf failed the door gate on first pass with corner pieces)
 - files: LEARNINGS.md

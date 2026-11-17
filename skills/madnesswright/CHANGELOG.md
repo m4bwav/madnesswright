@@ -4,6 +4,11 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261116-2 · 2026-11-16 · scene-lint S26 coplanar faces, S27 narrow gaps
+- because: user request (the requester's seven glitch shots of Nexus Prominence build zzg: flickering stripes, papers and skyline, and two blocks with no way between them; "one of the plugins needs an intersection check")
+- files: scripts/geometry.py (new: coplanar_check, narrow_gap_check, world poses from the scene file), scripts/mpn.py (scene-lint, --coplanar-eps, --player-width), tests/test_mpn.py (CoplanarCheck, NarrowGapCheck)
+- New warnings and info; SKILL.md unchanged. Kept in its own module for the script budget.
+
 ### C-20261116-1 · 2026-11-16 · scene-lint S25 solid slopes
 - because: user request (a player's report on Nexus Prominence build zza: "I couldn't get up the little ramp")
 - files: scripts/staging.py (solid_slope_check), scripts/mpn.py (scene-lint), tests/test_mpn.py (SolidSlopeCheck)
