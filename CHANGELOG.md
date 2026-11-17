@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.13 · 2026-11-16
+
+- `mpn.py scene-lint` S30: a `Hazard_Core` with HitAvoid not -1 and damageEffect not IgnoreThreshold warns (an alert character's tac bar dodges every hit, no damage); one without a trigger collider, or a Rigidbody on it or a parent, is an error. madnesswright-scenes' spike advice now names HitAvoid -1, IgnoreThreshold and layer 12, as the game's CO_Vessel sample. From Nexus Prominence zzi, whose spikes still never hurt.
+
 ## 1.0.12 · 2026-11-16
 
 - `mpn.py scene-lint` S24 finds raised floors by world height per room (it read local Y > 1 and missed every deck built as a room child) and lists them in `info.raised_floors.floors`; it asks for PathBlock only when a top rises 2 units or more. madnesswright-scenes' raised-floors reference adds a ramp in any direction, lifting waypoints out of a new floor's footprint, and the fake-null trap with `??` on a Unity component. From Nexus Prominence build zzj (room 6 pylon deck, room 8 steps).

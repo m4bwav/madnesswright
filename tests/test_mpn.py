@@ -776,6 +776,46 @@ class SpikeHazardCheck(unittest.TestCase):
         self.assertTrue(info["spike_drivers"][0]["hazard"])
 
 
+class HazardDodgeCheck(unittest.TestCase):
+    def docs(self, avoid="-1", effect="2", trigger=True, rb_on_parent=True):
+        d = {"60": {"cls": 1, "stripped": False, "body": "  m_Name: Root\n"},
+             "61": {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: 60}\n  m_Father: {fileID: 0}\n"},
+             "70": {"cls": 1, "stripped": False, "body": "  m_Name: Blades\n"},
+             "71": {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: 70}\n  m_Father: {fileID: 61}\n"},
+             "72": {"cls": 65, "stripped": False, "body": "  m_GameObject: {fileID: 70}\n  m_IsTrigger: %d\n" % trigger},
+             "73": {"cls": 114, "stripped": False,
+                    "body": "  m_GameObject: {fileID: 70}\n  contactDmg: 35\n  damageEffect: %s\n  HitAvoid: %s\n" % (effect, avoid)}}
+        if rb_on_parent:
+            d["62"] = {"cls": 54, "stripped": False, "body": "  m_GameObject: {fileID: 60}\n"}
+        return d
+
+    def run_check(self, **kw):
+        e, w, info = [], [], {}
+        hazards.hazard_dodge_check(self.docs(**kw), e, w, info, mpn.ref)
+        return e, w, info
+
+    def test_undodgable_quiet(self):
+        e, w, info = self.run_check()
+        self.assertEqual((e, w), ([], []))
+        self.assertTrue(info["hazards"][0]["rigidbody"])
+
+    def test_dodgeable_warns(self):
+        e, w, _ = self.run_check(avoid="1", effect="1")
+        self.assertEqual(e, [])
+        self.assertTrue(w and w[0].startswith("S30") and "tac bar" in w[0])
+
+    def test_ignore_threshold_alone_quiet(self):
+        self.assertEqual(self.run_check(avoid="1", effect="2")[1], [])
+
+    def test_no_trigger_errors(self):
+        e, _, _ = self.run_check(trigger=False)
+        self.assertTrue(e and e[0].startswith("S30"))
+
+    def test_no_rigidbody_errors(self):
+        e, _, _ = self.run_check(rb_on_parent=False)
+        self.assertTrue(e and "Rigidbody" in e[0])
+
+
 class SpawnExpectCheck(unittest.TestCase):
     def docs(self, rappel, listed):
         d = {"40": {"cls": 1001, "stripped": False, "body": mods_body([("Type", "211" if rappel else "208", "0")])},
