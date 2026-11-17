@@ -109,10 +109,6 @@ Entry shape: `### C-20261114-r5 · 2026-11-14 · scene-lint S18 box share
 - because: R-20261116-1 (user request: record how the game treats a floor at a second height)
 - files: references/raised-floors.md (new), SKILL.md (link in the geometry step); mpn.py scene-lint S24 info line. Triggers and decisions unchanged; evals not rerun.
 
-### C-20261116-2 · 2026-11-16 · Spikes that never hurt
-- because: user request (the requester: "the spikes never worked" in Nexus Prominence zzh); decompiled Converter_Proxy.ReplaceProxy and Toggleable_Main.SetState show a CO_ Togglable only calls SetActive on its Up objects.
-- files: references/scenetools-rules.md (spike timing advice corrected; S28, S29 listed). Triggers and decisions unchanged; evals not rerun.
-
-### C-20261116-3 · 2026-11-16 · Spikes the tac bar dodges
-- because: user request (the requester: the spikes still do not hurt in Nexus Prominence zzi); decompiled Hazard_Core (hitRange = (int)HitAvoid), Hazard_Main (DamageSource.Terrain unless IgnoreThreshold/KillHit) and Combat_CharacterHit (dodge check skipped only for range -1); the game's Samples/CO_Vessel.prefab uses HitAvoid -1, damageEffect 2, layer 12.
-- files: references/scenetools-rules.md (spike advice now names HitAvoid -1, IgnoreThreshold, layer 12; S30 listed). Triggers and decisions unchanged; evals not rerun.
+### C-20261116-2 · 2026-11-16 · Spikes that never hurt, were dodged, never rose
+- because: user requests on Nexus Prominence zzh, zzi, zzk (spikes never hurt; still never hurt; hurt but never rise); decompiled Converter_Proxy, Toggleable_Main (Up/Down objects only SetActive'd; a re-enabled Animator resets), Hazard_Core/Hazard_Main/Combat_CharacterHit (tac bar dodges unless HitAvoid -1).
+- files: references/scenetools-rules.md (timed spikes via LinkedAnimator plus a Hazard_Core trigger, HitAvoid -1, IgnoreThreshold, layer 12; S28-S31 listed). Triggers and decisions unchanged; evals not rerun.

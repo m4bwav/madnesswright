@@ -26,7 +26,7 @@ import sys
 import zipfile
 from staging import staging_check, sample_shell_check, squad_timing_check, relief_check, raised_floor_check, solid_slope_check  # S19-S25, kept apart for the script budget
 from geometry import coplanar_check, narrow_gap_check  # S26-S27
-from hazards import spike_hazard_check, spawn_expect_check, hazard_dodge_check  # S28-S30
+from hazards import spike_hazard_check, spawn_expect_check, hazard_dodge_check, toggled_animator_check  # S28-S31
 from pathlib import Path
 
 APP_ID = "488860"
@@ -881,6 +881,7 @@ def cmd_scene_lint(args):
     spike_hazard_check(docs, instances, errors, info, mod_refs, ref)
     spawn_expect_check(docs, instances, errors, info, mod_refs, args.expect_spawn)
     hazard_dodge_check(docs, errors, warnings, info, ref)
+    toggled_animator_check(docs, instances, warnings, info, mod_refs, ref)
 
     terrain = next((i for i, n in proj.layers.items() if n == "Terrain"), 8)
     floors = 0

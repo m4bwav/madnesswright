@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.14 · 2026-11-16
+
+- `mpn.py scene-lint` S31 (warning): a togglable whose Up/Down list holds a stock spike strip or an object with an Animator never animates it (SetActive resets the Animator to its default pose); drive it through the custom togglable's `LinkedAnimator`. madnesswright-scenes' spike advice now builds timed spikes that way. From Nexus Prominence zzk, whose spikes hurt but never rose.
+
 ## 1.0.13 · 2026-11-16
 
 - `mpn.py scene-lint` S30: a `Hazard_Core` with HitAvoid not -1 and damageEffect not IgnoreThreshold warns (an alert character's tac bar dodges every hit, no damage); one without a trigger collider, or a Rigidbody on it or a parent, is an error. madnesswright-scenes' spike advice now names HitAvoid -1, IgnoreThreshold and layer 12, as the game's CO_Vessel sample. From Nexus Prominence zzi, whose spikes still never hurt.

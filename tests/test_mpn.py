@@ -776,6 +776,28 @@ class SpikeHazardCheck(unittest.TestCase):
         self.assertTrue(info["spike_drivers"][0]["hazard"])
 
 
+class ToggledAnimatorCheck(unittest.TestCase):
+    def test_listed_strip_warns(self):
+        docs, inst = SpikeHazardCheck().docs(True)
+        w, info = [], {}
+        hazards.toggled_animator_check(docs, inst, w, info, mpn.mod_refs, mpn.ref)
+        self.assertTrue(w and w[0].startswith("S31") and "LinkedAnimator" in w[0])
+
+    def test_listed_animator_warns_linked_quiet(self):
+        docs = {"20": {"cls": 1, "stripped": False, "body": "  m_Name: CO_Timer\n"},
+                "40": {"cls": 1, "stripped": False, "body": "  m_Name: Rig\n"},
+                "41": {"cls": 95, "stripped": False, "body": "  m_GameObject: {fileID: 40}\n"},
+                "21": {"cls": 114, "stripped": False, "body": "  m_GameObject: {fileID: 20}\n  LinkedAnimator: {fileID: 41}\n"
+                       "  UpObjs:\n  - {fileID: 40}\n  DownObjs: []\n"}}
+        w, info = [], {}
+        hazards.toggled_animator_check(docs, [], w, info, mpn.mod_refs, mpn.ref)
+        self.assertTrue(w and "Rig (Animator)" in info["toggled_animators"][0]["animated"])
+        docs["21"]["body"] = "  m_GameObject: {fileID: 20}\n  LinkedAnimator: {fileID: 41}\n  UpObjs: []\n  DownObjs: []\n"
+        w, info = [], {}
+        hazards.toggled_animator_check(docs, [], w, info, mpn.mod_refs, mpn.ref)
+        self.assertEqual(w, [])
+
+
 class HazardDodgeCheck(unittest.TestCase):
     def docs(self, avoid="-1", effect="2", trigger=True, rb_on_parent=True):
         d = {"60": {"cls": 1, "stripped": False, "body": "  m_Name: Root\n"},
