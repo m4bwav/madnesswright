@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.15 · 2026-11-17
+
+- madnesswright-scenes: timed spikes driven through a custom togglable's `LinkedAnimator` are now verified in play (Nexus Prominence zzl: blades rise, hold, sink, and hurt as they rise).
+
 ## 1.0.14 · 2026-11-16
 
 - `mpn.py scene-lint` S31 (warning): a togglable whose Up/Down list holds a stock spike strip or an object with an Animator never animates it (SetActive resets the Animator to its default pose); drive it through the custom togglable's `LinkedAnimator`. madnesswright-scenes' spike advice now builds timed spikes that way. From Nexus Prominence zzk, whose spikes hurt but never rose.
