@@ -260,8 +260,8 @@ def narrow_gap_check(docs, warnings, info, field, ref, player_w=1.6, min_gap=0.3
     world = World(docs, field, ref)
     solids = []
     for d in docs.values():
-        if d["cls"] != 65 or d["stripped"] or field(d["body"], "m_Enabled") == "0":
-            continue
+        if d["cls"] != 65 or d["stripped"] or field(d["body"], "m_Enabled") == "0" or field(d["body"], "m_IsTrigger") == "1":
+            continue  # a trigger (a hazard zone) stops no one (Nexus Prominence zzi: spike triggers counted as walls)
         go = ref(d["body"], "m_GameObject")[0]
         g = docs.get(go)
         if not g or go not in world.t_of_go or field(g["body"], "m_Layer") in ("8", "12") or field(g["body"], "m_TagString") == "Floor":

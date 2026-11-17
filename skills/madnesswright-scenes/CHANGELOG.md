@@ -141,3 +141,7 @@ Entry shape: `### C-20261114-r5 · 2026-11-14 · scene-lint S18 box share
 ### C-20261116-1 · 2026-11-16 · Raised floors reference
 - because: R-20261116-1 (user request: record how the game treats a floor at a second height)
 - files: references/raised-floors.md (new), SKILL.md (link in the geometry step); mpn.py scene-lint S24 info line. Triggers and decisions unchanged; evals not rerun.
+
+### C-20261116-2 · 2026-11-16 · Spikes that never hurt
+- because: user request (the requester: "the spikes never worked" in Nexus Prominence zzh); decompiled Converter_Proxy.ReplaceProxy and Toggleable_Main.SetState show a CO_ Togglable only calls SetActive on its Up objects.
+- files: references/scenetools-rules.md (spike timing advice corrected; S28, S29 listed). Triggers and decisions unchanged; evals not rerun.

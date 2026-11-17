@@ -26,6 +26,7 @@ import sys
 import zipfile
 from staging import staging_check, sample_shell_check, squad_timing_check, relief_check, raised_floor_check, solid_slope_check  # S19-S25, kept apart for the script budget
 from geometry import coplanar_check, narrow_gap_check  # S26-S27
+from hazards import spike_hazard_check, spawn_expect_check  # S28-S29
 from pathlib import Path
 
 APP_ID = "488860"
@@ -877,6 +878,8 @@ def cmd_scene_lint(args):
     sample_shell_check(docs, warnings, info, field, ref)
     coplanar_check(docs, warnings, info, field, ref, eps=args.coplanar_eps)
     narrow_gap_check(docs, warnings, info, field, ref, player_w=args.player_width)
+    spike_hazard_check(docs, instances, errors, info, mod_refs, ref)
+    spawn_expect_check(docs, instances, errors, info, mod_refs, args.expect_spawn)
 
     terrain = next((i for i, n in proj.layers.items() if n == "Terrain"), 8)
     floors = 0
@@ -942,6 +945,7 @@ def main(argv=None):
     s.add_argument("--project")
     s.add_argument("--coplanar-eps", type=float, default=0.002, help="S26: faces this close (units) count as one plane")
     s.add_argument("--player-width", type=float, default=1.6, help="S27: narrowest gap a character passes (units)")
+    s.add_argument("--expect-spawn", action="append", default=[], help="S29: a spawner door type the map must have and use (e.g. Rapel, VentSide); repeat")
     args = ap.parse_args(argv)
     try:
         {"where": cmd_where, "backup": cmd_backup, "check-mod": cmd_check_mod, "deploy": cmd_deploy,
