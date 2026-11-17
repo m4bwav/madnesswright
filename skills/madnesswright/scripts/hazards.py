@@ -1,7 +1,9 @@
 """scene-lint S28-S30 (stdlib). S28: a stock spike strip shown and hidden by a CO_ togglable with no Hazard_Core in
 its lists never hurts (the strip acts only on its own SetState). S29 (--expect-spawn): a spawner door type the map
 must have is missing or unused. S30: a Hazard_Core an alert character dodges (HitAvoid not -1, damageEffect not
-IgnoreThreshold) or with no trigger collider / Rigidbody. Sources: scenetools-rules.md, Nexus Prominence zzi, zzk."""
+IgnoreThreshold) or with no trigger collider / Rigidbody. S31: a stock spike strip or an object with an Animator in a
+togglable's Up/Down list never animates (SetActive resets its Animator); drive it through LinkedAnimator instead.
+Sources: scenetools-rules.md, Nexus Prominence zzi, zzk, zzl."""
 import re
 
 SPIKES = "20"  # ProxyObj_Togglable.ProxyType.Spikes, also the PX_Togglable prefab's default
@@ -146,3 +148,30 @@ def hazard_dodge_check(docs, errors, warnings, info, ref):
     if broken:
         errors.append("S30 %d Hazard_Core(s) without a trigger collider on the object or a Rigidbody on it or a parent: "
                       "OnTriggerEnter never fires, so it never hurts (info hazards)" % broken)
+
+
+def toggled_animator_check(docs, instances, warnings, info, mod_refs, ref, default_type=SPIKES):
+    """S31. Up/Down objects are only SetActive'd; re-enabling resets an Animator, so it never animates."""
+    animated = {}
+    for i in (i for i in instances if i["kind"] == "PX_Togglable"):
+        if {p: v for p, v, _ in mod_refs(docs[i["fid"]]["body"])}.get("Type", default_type) == SPIKES:
+            for go in _gos_of_instance(docs, i["fid"]):
+                animated[go] = i["name"] + " (stock spike strip)"
+    for d in docs.values():
+        if d["cls"] == 95 and not d["stripped"]:
+            g = ref(d["body"], "m_GameObject")
+            if g:
+                m = re.search(r"^\s*m_Name: (.*)$", docs.get(g[0], {}).get("body", ""), re.MULTILINE)
+                animated.setdefault(g[0], (m.group(1).strip() if m else g[0]) + " (Animator)")
+    rows = []
+    for d in docs.values():
+        if d["cls"] != 114 or d["stripped"] or not re.search(r"^\s*UpObjs:", d["body"], re.MULTILINE):
+            continue
+        hit = [animated[g] for g in _ref_list(d["body"], "UpObjs") + _ref_list(d["body"], "DownObjs") if g in animated]
+        if hit:
+            serial = re.search(r"^\s*SerialNumber: (.*)$", d["body"], re.MULTILINE)
+            rows.append({"driver": serial.group(1).strip() if serial else "?", "animated": hit})
+    info["toggled_animators"] = rows
+    if rows:
+        warnings.append("S31 %d togglable(s) SetActive an animated object, which resets its Animator: spikes never rise. "
+                        "Use the CO_ togglable's LinkedAnimator (info toggled_animators)" % len(rows))
