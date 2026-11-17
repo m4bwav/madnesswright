@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.12 · 2026-11-16
+
+- `mpn.py scene-lint` S24 finds raised floors by world height per room (it read local Y > 1 and missed every deck built as a room child) and lists them in `info.raised_floors.floors`; it asks for PathBlock only when a top rises 2 units or more. madnesswright-scenes' raised-floors reference adds a ramp in any direction, lifting waypoints out of a new floor's footprint, and the fake-null trap with `??` on a Unity component. From Nexus Prominence build zzj (room 6 pylon deck, room 8 steps).
+
 ## 1.0.11 · 2026-11-16
 
 - `mpn.py scene-lint` S28 (error): stock spikes shown and hidden by a custom togglable with no Hazard_Core never hurt; S29 (error, `--expect-spawn TYPE`): a spawner door type the map must have is missing or unused. New module `scripts/hazards.py`. S27 now skips trigger colliders. madnesswright-scenes corrects its spike timing advice. Older modtools test runs moved to ai-docs/archive to keep the installed folder in budget. From Nexus Prominence: the requester's "the spikes never worked" and the rappel team missing since build zq.

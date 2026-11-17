@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
+### C-20261116-c · 2026-11-16 · raised floors: any-direction ramp, waypoint lift, fake null
+- because: user request (Nexus Prominence build zzj, the requester's "no ramp up to the pylons, no steps next to a door")
+- files: references/raised-floors.md (Built so far)
+- Editor-side; the two new walkable pieces are unplayed.
+
 ### C-20261116-b · 2026-11-16 · scene-lint S26 coplanar faces, S27 narrow gaps
 - because: user request (the requester's glitch shots of Nexus Prominence build zzg)
 - files: references/scenetools-rules.md (S26, S27); scripts/geometry.py (madnesswright skill)

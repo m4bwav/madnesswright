@@ -175,25 +175,38 @@ def relief_check(docs, warnings, info, field, ref, char_h=2.7, obstacle_layer="1
                         "pillars, pylons and tall blocks need a collider of their full height" % (len(hs), char_h))
 
 
-def raised_floor_check(docs, info, field, ref, min_y=1.0):
-    """S24 (info only): Floor-tagged objects with local Y above `min_y` (a walkable second height), with the scene's
-    Interactive-layer (12) pieces (invisible ramps; the game has no step-up) and PathBlock-layer (25) pieces (without
-    them the AI walks off open edges). From the decompiled game, unverified in play (scenes references/raised-floors.md)."""
-    y = {}
-    for d in (d for d in docs.values() if d["cls"] == 4):
-        m = re.search(r"m_LocalPosition: \{x: [-\d.e]+, y: ([-\d.e]+)", d["body"])
-        go = ref(d["body"], "m_GameObject")[0]
-        if m and go:
-            y[go] = float(m.group(1))
+def raised_floor_check(docs, info, field, ref, min_rise=0.1, link_gap=2.0):
+    """S24 (info only): Floor-tagged objects standing above their room's floor (a walkable second height), with the
+    scene's Interactive-layer (12) pieces (invisible ramps; the game has no step-up) and PathBlock-layer (25) pieces
+    (without them the AI walks off open edges). Heights are world heights per room: an object's origin more than
+    `min_rise` over the lowest Floor-tagged origin in its room (until 1.0.12 this read local Y > 1, which missed every
+    deck built as a room child: Nexus Prominence zzc-zzj). PathBlock is only asked for when a top rises `link_gap`
+    units or more: a lower drop links like flat floor. From the decompiled game, unverified in play (scenes
+    references/raised-floors.md)."""
+    from geometry import World
+    world = World(docs, field, ref)
     gos = {fid: d for fid, d in docs.items() if d["cls"] == 1}
-    raised = [f for f, d in gos.items() if field(d["body"], "m_TagString") == "Floor" and y.get(f, 0.0) > min_y]
+    rooms = {}
+    for f, d in gos.items():
+        t = world.t_of_go.get(f)
+        if field(d["body"], "m_TagString") != "Floor" or not t:
+            continue
+        apply, room = world.pose(t)
+        rooms.setdefault(room or "?", []).append((field(d["body"], "m_Name"), apply((0, 0, 0))[1], apply((0, 0.5, 0))[1]))
+    raised = []
+    for room, fl in rooms.items():
+        base = min(y for _, y, _ in fl)
+        raised += [(room, n, round(top - base, 3)) for n, y, top in fl if y - base > min_rise]
     if not raised:
         return
     layers = [field(d["body"], "m_Layer") for d in gos.values()]
-    r = {"count": len(raised), "interactive_ramps": layers.count("12"), "pathblocks": layers.count("25")}
-    if not r["interactive_ramps"] or not r["pathblocks"]:
-        r["note"] = ("S24 raised walkable floor without an Interactive-layer ramp or PathBlock on its open edges: no "
-                     "step-up exists and the AI walks off unfenced edges (madnesswright-scenes references/raised-floors.md)")
+    r = {"count": len(raised), "interactive_ramps": layers.count("12"), "pathblocks": layers.count("25"),
+         "floors": ["%s %s rise %.2f" % q for q in raised]}
+    high = [q for q in raised if q[2] >= link_gap]
+    if not r["interactive_ramps"] or (high and not r["pathblocks"]):
+        r["note"] = ("S24 raised walkable floor without an Interactive-layer ramp, or %d over the %.0f-unit link gap "
+                     "without PathBlock on its open edges: no step-up exists and the AI walks off unfenced high edges "
+                     "(madnesswright-scenes references/raised-floors.md)" % (len(high), link_gap))
     info["raised_floors"] = r
 
 
