@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "skills" / "madnesswright" / "scripts"))
 import mpn  # noqa: E402
+import geometry  # noqa: E402
 
 G_ROOM = "a" * 32
 G_PS = "b" * 32
@@ -633,6 +634,83 @@ class AmbientCheck(unittest.TestCase):
     def test_varied_ambient_quiet(self):
         w, info = [], {}
         mpn.ambient_check(self.docs([(0.3, 0.2, 0.2), (0.5, 0.1, 0.1), (0.2, 0.2, 0.2)]), w, info)
+        self.assertEqual(w, [])
+
+
+CUBE_MESH = "  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}\n"
+
+
+def box_docs(boxes, room="Room_01"):
+    """Synthetic scene docs: a room root and one built-in cube per (name, (x, y, z), (sx, sy, sz)[, collider])."""
+    d = {"1": {"cls": 1, "stripped": False, "body": "  m_Name: %s\n" % room},
+         "2": {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: 1}\n  m_Father: {fileID: 0}\n"}}
+    for i, b in enumerate(boxes):
+        name, pos, scl = b[:3]
+        g = str(100 + 10 * i)
+        d[g] = {"cls": 1, "stripped": False, "body": "  m_Layer: 13\n  m_Name: %s\n  m_IsActive: 1\n" % name}
+        d[str(101 + 10 * i)] = {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: %s}\n  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}\n"
+                                "  m_LocalPosition: {x: %s, y: %s, z: %s}\n  m_LocalScale: {x: %s, y: %s, z: %s}\n  m_Father: {fileID: 2}\n" % ((g,) + pos + scl)}
+        d[str(102 + 10 * i)] = {"cls": 33, "stripped": False, "body": "  m_GameObject: {fileID: %s}\n" % g + CUBE_MESH}
+        d[str(103 + 10 * i)] = {"cls": 23, "stripped": False, "body": "  m_GameObject: {fileID: %s}\n  m_Enabled: 1\n" % g}
+        if len(b) > 3 and b[3]:
+            d[str(104 + 10 * i)] = {"cls": 65, "stripped": False, "body": "  m_GameObject: {fileID: %s}\n  m_Enabled: 1\n"
+                                    "  m_Size: {x: 1, y: 1, z: 1}\n  m_Center: {x: 0, y: 0, z: 0}\n" % g}
+    return d
+
+
+class CoplanarCheck(unittest.TestCase):
+    def run_check(self, boxes):
+        w, info = [], {}
+        mpn.coplanar_check(box_docs(boxes), w, info, mpn.field, mpn.ref)
+        return w, info
+
+    def floor(self):
+        return ("NX_Floor", (0, -0.5, 0), (20, 1, 20))
+
+    def test_papers_at_one_height_warn(self):
+        w, info = self.run_check([self.floor(), ("NX_Paper", (0, 0.012, 0), (0.5, 0.004, 0.6)), ("NX_Paper", (0.2, 0.012, 0.1), (0.5, 0.004, 0.6))])
+        self.assertTrue(w and w[0].startswith("S26"))
+        self.assertEqual(info["coplanar"]["decal_pairs"], 1)
+        self.assertEqual(info["coplanar"]["by_room"], {"Room_01": 1})
+
+    def test_lifted_paper_quiet(self):
+        w, info = self.run_check([self.floor(), ("NX_Paper", (0, 0.012, 0), (0.5, 0.004, 0.6)), ("NX_Paper", (0.2, 0.016, 0.1), (0.5, 0.004, 0.6))])
+        self.assertEqual(w, [])
+        self.assertEqual(info["coplanar"]["pairs"], 0)
+
+    def test_stripe_on_band_front_warns(self):
+        # an upright stripe whose front face lies in the band's front face (Nexus Prominence zzg, room 5)
+        w, info = self.run_check([self.floor(), ("NX_Band_Back", (0, 1.3, 9.94), (20, 0.55, 0.12)), ("NX_BandRise", (2, 2.5, 9.93), (0.75, 3, 0.1))])
+        self.assertEqual([sorted((p["a"], p["b"])) for p in info["coplanar"]["worst"]], [["NX_BandRise", "NX_Band_Back"]])
+
+    def test_touching_side_by_side_quiet(self):
+        w, info = self.run_check([self.floor(), ("NX_A", (0, 0.5, 0), (1, 1, 1)), ("NX_B", (1, 0.5, 0), (1, 1, 1))])
+        self.assertEqual(w, [])
+
+    def test_overlap_area(self):
+        sq = [(0, 0), (1, 0), (1, 1), (0, 1)]
+        self.assertAlmostEqual(geometry.overlap_area(sq, [(0.5, 0.5), (1.5, 0.5), (1.5, 1.5), (0.5, 1.5)]), 0.25)
+        self.assertAlmostEqual(geometry.overlap_area(sq, [(2, 2), (3, 2), (3, 3), (2, 3)]), 0.0)
+
+
+class NarrowGapCheck(unittest.TestCase):
+    def run_check(self, boxes):
+        w, info = [], {}
+        mpn.narrow_gap_check(box_docs(boxes), w, info, mpn.field, mpn.ref)
+        return w, info
+
+    def test_narrow_gap_warns(self):
+        w, info = self.run_check([("NX_PylonA", (0, 1.5, 0), (3, 3, 3), True), ("NX_PylonB", (0, 1.5, 4.0), (3, 3, 3), True)])
+        self.assertTrue(w and w[0].startswith("S27"))
+        self.assertEqual(info["narrow_gaps"]["worst"][0]["gap"], 1.0)
+
+    def test_wide_gap_quiet(self):
+        w, info = self.run_check([("NX_PylonA", (0, 1.5, 0), (3, 3, 3), True), ("NX_PylonB", (0, 1.5, 6.0), (3, 3, 3), True)])
+        self.assertEqual(w, [])
+
+    def test_gap_filled_by_third_solid_quiet(self):
+        w, info = self.run_check([("NX_BarricadeA", (-1.6, 0.6, 0), (2, 1.2, 0.8), True), ("NX_BarricadeB", (1.6, 0.6, 0), (2, 1.2, 0.8), True),
+                                  ("NX_PillarPlinth", (0, 0.5, 0), (1.15, 1.0, 1.15), True)])
         self.assertEqual(w, [])
 
 

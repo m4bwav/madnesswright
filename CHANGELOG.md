@@ -2,6 +2,10 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.10 · 2026-11-16
+
+- `mpn.py scene-lint` S26: same-facing coplanar faces that overlap (z-fighting), with flat decals on each other counted apart, and S27: two solids leaving a gap narrower than a character. New module `scripts/geometry.py` reads world poses of built-in cubes, quads and box colliders from the scene file. From the requester's glitch shots of Nexus Prominence build zzg (a stripe flickering on a band, papers flickering over each other, a skyline flush with the wall band).
+
 ## 1.0.9 · 2026-11-16
 
 - madnesswright-scenes learning L-20261116-1 `film-structures-clear-side-doors`: corner pieces of a film room start 3.6 units in from the side walls, since side-wall doors sit 3 to 4 units out from the back wall. From Nexus Prominence builds zze and zzf, whose corner counter, kerb and wall blocks failed the door gate on first pass.
