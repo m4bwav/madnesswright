@@ -540,12 +540,39 @@ class ReliefCheck(unittest.TestCase):
 
 
 class RaisedFloorCheck(unittest.TestCase):
-    def docs(self, y, extra_layers=()):
-        d = {"1": {"cls": 1, "stripped": False, "body": "  m_TagString: Floor\n  m_Layer: 9\n"},
-             "2": {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: 1}\n  m_LocalPosition: {x: 0, y: %s, z: 0}\n" % y}}
+    def docs(self, y, extra_layers=(), sy="1", room_y=None):
+        # a ground floor at 0 and a Floor-tagged box at local y (scale y = sy), optionally both under a room at room_y
+        d = {}
+        for g, t, py, sc in (("1", "2", y, sy), ("3", "4", "0", "1")):
+            d[g] = {"cls": 1, "stripped": False, "body": "  m_TagString: Floor\n  m_Layer: 8\n  m_Name: F%s\n" % g}
+            d[t] = {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: %s}\n  m_LocalPosition: {x: 0, y: %s, z: 0}\n"
+                    "  m_LocalScale: {x: 1, y: %s, z: 1}\n" % (g, py, sc)}
+            if room_y is not None:
+                d[t]["body"] += "  m_Father: {fileID: 90}\n"
+        if room_y is not None:
+            d["91"] = {"cls": 1, "stripped": False, "body": "  m_Name: Room_04\n"}
+            d["90"] = {"cls": 4, "stripped": False, "body": "  m_GameObject: {fileID: 91}\n  m_LocalPosition: {x: 900, y: %s, z: 0}\n" % room_y}
         for i, layer in enumerate(extra_layers):
             d["5%d" % i] = {"cls": 1, "stripped": False, "body": "  m_Layer: %s\n" % layer}
         return d
+
+    def test_high_floor_needs_pathblock(self):
+        info = {}
+        mpn.raised_floor_check(self.docs("2.5", ("12",)), info, mpn.field, mpn.ref)
+        self.assertIn("note", info["raised_floors"])
+
+    def test_low_deck_with_ramp_quiet(self):
+        # a 0.675 deck (centre 0.3375) under the 2-unit link gap needs a ramp, not PathBlock (Nexus Prominence zzc)
+        info = {}
+        mpn.raised_floor_check(self.docs("0.3375", ("12",), sy="0.675"), info, mpn.field, mpn.ref)
+        self.assertEqual(info["raised_floors"]["count"], 1)
+        self.assertNotIn("note", info["raised_floors"])
+
+    def test_room_child_deck_found_by_world_height(self):
+        # until 1.0.12 local Y > 1 missed a deck built as a child of its room
+        info = {}
+        mpn.raised_floor_check(self.docs("0.3375", ("12",), sy="0.675", room_y="6.44"), info, mpn.field, mpn.ref)
+        self.assertEqual(info["raised_floors"]["floors"], ["Room_04 F1 rise 0.68"])
 
     def test_raised_floor_without_ramp_notes(self):
         info = {}
