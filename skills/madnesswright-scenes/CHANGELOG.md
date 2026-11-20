@@ -2,6 +2,10 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason. Reasons cite findings in [RESEARCH.md](RESEARCH.md) (`R-`), lessons in [LEARNINGS.md](LEARNINGS.md) (`L-`), and test runs in [TESTS.md](TESTS.md) (`T-`). State in `evergreen.json`. Protocol: MAINTENANCE.md.
 
+### C-20261119-a · 2026-11-19 · encounter plan: timer, threat, treat; difficulty lever order
+- because: user request (book learnings round 6: ICRPG Core p. 85-87, Kobold Guide to Gamemastering p. 135-136)
+- files: references/encounter-design.md (Plan per room, Playtest checklist)
+
 ### C-20261117-a · 2026-11-17 · timed spikes verified in play
 - because: user request (played in Nexus Prominence zzl)
 - files: references/scenetools-rules.md

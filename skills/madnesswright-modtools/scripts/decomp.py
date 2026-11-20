@@ -122,6 +122,30 @@ def cmd_callers(args):
     return {"name": args.name, "callers": hits, "truncated": False}
 
 
+def cmd_text(args):
+    """Find a behaviour by purpose: string literals holding the text (a UI label, a log line),
+    each with the method it sits in, so the patch target comes from what the player sees."""
+    root = Path(args.dir)
+    if not root.is_dir():
+        return {"errors": ["no such folder: %s" % root]}
+    needle = args.text.lower()
+    lit = re.compile(r'"((?:[^"\\]|\\.)*)"')
+    method = re.compile(r"^\s*" + ACCESS + r"[\w\s<>\[\],.?]*?\s(\w+)\s*\(")
+    hits = []
+    for p, text in sources(root):
+        current = None
+        for n, line in enumerate(text.splitlines(), 1):
+            m = method.search(line)
+            if m:
+                current = m.group(1)
+            if any(needle in s.lower() for s in lit.findall(line)):
+                hits.append({"file": rel(p, root), "line": n, "method": current, "text": line.strip()[:240]})
+                if len(hits) >= args.max:
+                    return {"text": args.text, "hits": hits, "truncated": True}
+    return {"text": args.text, "hits": hits, "truncated": False,
+            "next": "callers <dir> <method> follows each hit back to what triggers it"}
+
+
 def find_ilspy():
     exe = shutil.which("ilspycmd")
     if exe:
@@ -161,14 +185,14 @@ def main(argv=None):
     k = sub.add_parser("keys")
     k.add_argument("dir")
     k.add_argument("--keys", help="comma-separated KeyCode names to check, e.g. F1,F2,U,Delete,CapsLock")
-    for name in ("find", "callers"):
+    for name in ("find", "callers", "text"):
         s = sub.add_parser(name)
         s.add_argument("dir")
-        s.add_argument("name")
+        s.add_argument("text" if name == "text" else "name")
         s.add_argument("--max", type=int, default=60)
     args = ap.parse_args(argv)
     try:
-        res = {"decompile": cmd_decompile, "keys": cmd_keys, "find": cmd_find, "callers": cmd_callers}[args.cmd](args)
+        res = {"decompile": cmd_decompile, "keys": cmd_keys, "find": cmd_find, "callers": cmd_callers, "text": cmd_text}[args.cmd](args)
     except Exception as e:  # fail soft: one JSON object, never a traceback
         res = {"errors": ["%s: %s" % (type(e).__name__, e)]}
     emit(res)

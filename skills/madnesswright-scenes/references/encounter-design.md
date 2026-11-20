@@ -17,6 +17,9 @@ Write one line per room in `LEVEL-PLAN.md`: purpose (introduce, combine, test, r
 - Cover follows the weapons: ranged enemies need cover the player can use against them; melee rooms need space to dodge.
 - Use the Difficulty Remover to add enemies on harder difficulties rather than building separate rooms.
 - Random spawn timing gives flat pacing; script the waves (Squad and Max, Zone_Spawner, Blockers) on purpose.
+- Name a Timer, a Threat and a Treat per room in the plan: the timer is what forces a move (waves through doors, a closing door, an event after N seconds), the treat rewards scouting (a locker, an Item_Spawn, an explosive barrel by a cover line). Leave one room per stage with no timer (Runehammer, *ICRPG Core*, p. 85-86).
+- Mix in an easy encounter among the hard ones so players learn to tell them apart, and never put a must-reach door or key behind one optional fight (Baur, *Kobold Guide to Gamemastering*, p. 135-136).
+- One wonder per stage: an oversized prop or vista in the Background object (ICRPG, p. 85).
 
 ## Enemy roles
 
@@ -98,7 +101,7 @@ Fill this in for the specific level and hand it to the player. Ask them to play 
 9. Before handing it over, play it badly yourself. Walk the level backwards through every door, run past enemies to see whether they follow, hug walls and corners, and jump at the camera borders. Set each knob to its extremes (Squad Max, GenerationScale) before settling on a value.
 10. For a player new to the level: set the questions before the session (can they find the exit, clear each fight, tell what to do next?), record the screen and their voice if they agree, and watch without helping. Act on a problem two players hit; treat one player's suggestion as a note.
 
-After the session: run `mpn.py log`, compare results with `LEVEL-PLAN.md`, change one thing at a time.
+After the session: run `mpn.py log`, compare results with `LEVEL-PLAN.md`, change one thing at a time. Too hard: fewer enemies, then a weaker card, then more cover, then an ally (Kobold Guide, p. 135-136). Too easy: raise enemy weapon damage or wave timing before enemy health (ICRPG, p. 87).
 
 ## Debug mode for playtests (2026-11-12c harvest, item 50; single source)
 
