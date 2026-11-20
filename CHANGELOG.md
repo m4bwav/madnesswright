@@ -2,6 +2,11 @@
 
 Plugin versions. Skill-level changes and their reasons are in each skill's own CHANGELOG.md.
 
+## 1.0.16 · 2026-11-19
+
+- madnesswright-modtools: `decomp.py text` finds string literals (a UI label, a log line) with their enclosing method, so a Harmony target can be found by what the player sees.
+- madnesswright-scenes: the encounter plan names a timer, threat and treat per room, mixes in an easy fight, and the playtest step gives a lever order for too hard and too easy.
+
 ## 1.0.15 · 2026-11-17
 
 - madnesswright-scenes: timed spikes driven through a custom togglable's `LinkedAnimator` are now verified in play (Nexus Prominence zzl: blades rise, hold, sink, and hurt as they rise).

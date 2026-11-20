@@ -58,6 +58,7 @@ FILES = {
 \t}
 \tpublic static bool SetTarget(Controller C, Target inTarget)
 \t{
+\t\tDebug.Log("Target Locked: " + C);
 \t\treturn true;
 \t}
 }
@@ -121,6 +122,14 @@ class DecompTests(unittest.TestCase):
         r = run("callers", str(self.dir), "Unclaim")
         self.assertEqual(sorted(h["file"] for h in r["callers"]), ["Player.cs", "Sub/Helpers.cs"])
         self.assertFalse(any("public static void" in h["text"] for h in r["callers"]))
+
+    def test_text_finds_literal_and_enclosing_method(self):
+        r = run("text", str(self.dir), "target locked")
+        self.assertEqual([(h["file"], h["method"]) for h in r["hits"]], [("Player.cs", "SetTarget")])
+
+    def test_text_ignores_code_outside_literals(self):
+        r = run("text", str(self.dir), "SetTarget")
+        self.assertEqual(r["hits"], [])
 
     def test_max_truncates(self):
         r = run("callers", str(self.dir), "Unclaim", "--max", "1")

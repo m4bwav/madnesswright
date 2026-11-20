@@ -1,6 +1,39 @@
-# madnesswright-modtools test runs, 2026-10-17 to 2026-10-21
+# madnesswright-modtools test runs, 2026-10-17 to 2026-10-22
 
 Moved out of skills/madnesswright-modtools/TESTS.md on 2026-11-16 to keep the installed skills folder under the size budget.
+
+Runs T-20261022-1 to -6 moved here on 2026-11-19 for the same reason.
+
+### T-20261022-6 · 2026-10-22 · live use by the owner · owner's PC, beta 2.20.a · 0/1 (thrown weapon on load)
+- live-f11-thrown · fail · Director 0.7.1 in The Boom Factory: saved "test alpha" holding R_Shot_ChopPump5, threw it, loaded twice: the shotgun disappeared. Log: `13 cleared, 12 of 12 put back, ammo reset in 2 of your 3 weapons`: the thrown shotgun (not career-registered) was cleared as a loose floor weapon, and `RefillAmmo` only touched weapons still in their slot.
+- Fix in 0.7.2: `RefillAmmo` picks the same weapon back up (`ClearItemFromSlot` on a dead owner, `Combatant_Base.PickupItem(item, hand, slot)`), or gives a fresh one if none is left, and runs before `RestoreFloor`. Built clean and deployed while the game was running (takes effect on restart); not yet played.
+- led to: none
+
+### T-20261022-5 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 0/1 (ammo reset)
+- live-f11-ammo · fail · Director 0.7.0 in The Industrial Sector and The Boom Factory: three saves and loads, no exception; floor weapons cleared and put back (5 of 5, 10 of 10, 10 of 10), but the player's shotgun ammo did not reset. Cause: the player's loadout was saved only in the Playground (`"playerItems": []` in the file) and Deimos's, though saved, was skipped as a career-weapon holder.
+- Fix in 0.7.1: player loadout saved everywhere; outside the Playground, and for career-weapon holders, `RefillAmmo` sets the saved ammo on the weapon in the same slot with the same card (`CancelReload`, `ResetAmmo`, `SetAmmo`, `SetMags`) without swapping it. Built clean, loads in game; not yet played.
+- led to: none
+
+### T-20261022-4 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 0/1 (F11 load resets weapons)
+- live-f11-weapons · fail · Director 0.6.1: the player reported that loading a scene "doesn't reset the weapons, just the people". Cause: scenes saved only the hands and grenade of living NPCs, matched characters kept whatever they held ("weapons stay"), loose weapons were never saved, and the Playground's Clear All despawned floor weapons without putting any back.
+- Fix in 0.7.0 (scene files version 3, `SceneItems.cs`): holsters, ammo, loose weapons and the Playground player's loadout saved and restored; career (`amRegistered`) and quest items skipped. Built clean, deployed, game loads it with no exception; not yet played.
+- led to: modtools game-recipes line on loose weapons and loadouts.
+
+### T-20261022-3 · 2026-10-22 · evergreen-tester subagents · dev-machine, game installed (build 25615196) · 1/1 (outcome-1 run 1, plus baseline)
+- New expectation in outcome-1: patches applied once (the loader runs `PatchAll()` under the HarmonyID unless `ManualPatch` is true, so `Initialize()` must not call it).
+- outcome-1 · pass · info.txt with AssemblyPath, HarmonyID, EntryType, `ManualPatch: false`; `ModEntry : IModEntrypoint` logs the HarmonyID and does not patch (comment cites the decompiled loader); csproj net48 with Private=false references from Managed, justified from 0Harmony's target; placeholder patch only; built clean first try; `mpn.py check-mod` clean.
+- outcome-1 baseline (no skill) · pass · decompiled the loader itself, no PatchAll in Initialize, net48 after a failed net472 build (MSB3274, CS0246). The new expectation did not separate this time; the skill's edge is one build instead of two and fewer steps.
+- led to: none
+
+### T-20261022-2 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 1/1 (F11 in a story level)
+- live-f11-story · pass · Playground Director 0.5.1 in The Industrial Sector: saved "new save" (14 characters) and "save2" (12); loads: 13 moved back + 1 respawned, 14 moved back, 12 + 2 respawned, 12 + 1 removed; files hold `chars`; Player.log has no problem line. The owner: "it vaguely seemed to work".
+- Not exercised: arenas, Playground scenes, F9 guard.
+- led to: L-005 confirmed (helpful +1)
+
+### T-20261022-1 · 2026-10-22 · live use by the owner's family · owner's PC, beta 2.20.a · 0/1 (F11 in a story level)
+- live-f11-story · bug · fail · Playground Director 0.5.0 in Warehouse Raid: saves logged 1, 2 and 4 characters, every load said the saved room `""` was closed; the files under PlaygroundDirector/Scenes held no `playerRoom` and no `chars`. One save threw `IndexOutOfRangeException` in `Health_Manager.ReturnCharacterDead` via `Game.Alive`.
+- Fixed in 0.5.1 (built, deployed, helper test 10/10 in the scratchpad); in-game recheck pending. F9 still never logged.
+- led to: L-005
 
 ### T-20261021-1 · 2026-10-21 · live use by the owner's family · owner's PC, beta 2.20.a · 6/6 exercised
 - Playground Director 0.4.0 (second mod built with this skill, recipes in references/game-recipes.md). The owner reports "everything worked". Player.log evidence: the 0.4.0 load line; `applied_harmony` lists the id (the new `RunControls_Attacks` prefix applied); F1 "7 characters removed"; F2 freeze and unfreeze three times; F3 squares shown and hidden 8 times; F4 listed 369 animations (8 own, 361 library) and played typing, mopping and talking loops; F10 search, attack, unaware; F5 to F8 swaps; no exception or problem line.

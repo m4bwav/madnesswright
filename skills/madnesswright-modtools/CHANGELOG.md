@@ -4,6 +4,10 @@ Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with
 
 Entry shape: `### C-YYYYMMDD-n · date · one-line summary`, then `because:` (IDs or "user request"), `files:` (file and section), and a sentence on what changed. Cite section headings, not line numbers.
 
+### C-20261119-1 · 2026-11-19 · decomp.py text: find a patch target by its label
+- because: user request (book learnings round 6: Cano, Game Hacking, ch. 5)
+- files: scripts/decomp.py, SKILL.md (Step 5), references/game-recipes.md (Look things up); TESTS.md runs T-20261022-1 to -6 moved to ai-docs/archive to stay under the size budget.
+
 ### C-20261114-1 · 2026-11-14 · SpawnFromDoor vs door-squad timing
 - because: user request (Nexus Prominence ten rounds, round 8 decompiled check)
 - files: references/game-recipes.md (When a scene's enemies arrive)

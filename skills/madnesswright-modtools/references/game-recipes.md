@@ -9,6 +9,7 @@ Members of MADNESS: Project Nexus that mods change characters with, found in a d
 - `decompile <Assembly-CSharp.dll> --out <scratch dir>`: runs ilspycmd. Keep the output in a scratch folder, never in a repo.
 - `keys <dir> --keys F1,U,Delete`: every key the game reads, rebindable defaults (`UI_Options.key_*`), and which files only run in debug builds or with `-devtools`. `clashes` lists keys read in normal code; open each file before moving a key: a menu that reads a key only while it is open (the profile window's F1 to F3 and P) is no clash in play.
 - `find <dir> <Name>`: declaration lines (file, line, signature). `callers <dir> <Name>`: call sites, for L-001's caller check.
+- `text <dir> "<words>"`: string literals holding a UI label or log line, each with its enclosing method. Find a target by what the player sees, then follow it with `callers`; names found this way survive updates better than remembered ones (Cano, *Game Hacking*, ch. 5). Write the build next to every member you record.
 
 ## Keys and pause
 
