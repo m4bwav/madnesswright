@@ -13,9 +13,9 @@
   "source": null,
   "topic": "MADNESS: Project Nexus ModTools MadObjects (.mobj) and Harmony 2.4.2 assemblies loaded from info.txt",
   "tier": "moderate",
-  "interval_days": 30,
-  "last_checked": "2026-10-17",
-  "next_due": "2026-11-16",
+  "interval_days": 30.0,
+  "last_checked": "2026-11-20",
+  "next_due": "2026-12-19",
   "verify_at_use": false,
   "volatile_claims": [],
   "contradiction": null,
@@ -32,12 +32,18 @@
       "m": null,
       "interval_after": 30,
       "note": "created"
+    },
+    {
+      "date": "2026-11-20",
+      "m": 0.15,
+      "interval_after": 30.0,
+      "note": "quiet: no MPN news or ModTools commits; unity-scope/UnityDevtools.Mcp noted; cost: searches 3 · fetches 2 · tool calls 7"
     }
   ],
   "counts": {
     "learnings": 0,
     "changes": 2,
-    "research": 0,
+    "research": 1,
     "tests": 4
   },
   "consolidate_every": 25,
