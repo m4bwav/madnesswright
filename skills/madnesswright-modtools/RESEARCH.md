@@ -54,6 +54,11 @@ Best sources (primary first): Steam News API; the official Google Docs; github.c
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
+### R-20261120-1 · 2026-11-20 · Quiet refresh
+- Subject: no Steam announcement since 2026-10-17 (newest is the 2026-10-09 plushie/Madness Day postmortem, no modding content); no MPN_ModTools commits since 2026-10-17. Tooling: Orinks/unity-scope (BepInEx + MCP runtime inspection, needs BepInEx so same limit as UnityInfoMCP) and UnityDevtools.Mcp 0.3.0 (Mono soft debugger, untested on a release build): note only. Practice: 7DTD kata and a Caves of Qud issue match the Harmony-failed log guard. Testing: nothing new. Search plan note: use "BepInEx" mcp / "soft debugger" mcp for tooling; diff the Google Docs export next time.
+- Sources: Steam News API appid 488860; https://api.github.com/repos/MPN-Modders/MPN_ModTools/commits?since=2026-10-17T00:00:00Z; https://github.com/Orinks/unity-scope; https://www.nuget.org/packages/UnityDevtools.Mcp
+- Magnitude: 0.15 · applied: none (note)
+
 ### R-20261018-1 · 2026-10-18 · Beta 2.20.a and a live Harmony mod
 - Summary: Beta build 25615196 (`GAME INITIALIZED: Beta v2.20.a`), still Unity 2019.2.6f1 with `0Harmony.dll` and no `netstandard.dll`: net48 built clean first try. `IModEntrypoint` unchanged (global namespace). A mod with one Prefix and a MonoBehaviour host loaded (`APPLIED HARMONY PATCH: <id>` in mods.log). Mod DLLs load from bytes (`Fallback handler could not load library ... data-<hex>.dll` in Player.log) and are not locked. `Combatant_Base.KillMe` and `Squad_Main.RemoveMember` call `Controller_Player.SwapControllersWithSquadmate(true)`, which dereferences `myData.mySquad`; Playground spawns can have none. `Combat_Manager.ReturnClosestTarget` rejects targets in another room. `CanBePlayerControlled` holds the core-roster gate; the `(Combatant_Base)` overload of the swap does not check it. F5 to F8 are read nowhere in the game code.
 - Track: subject

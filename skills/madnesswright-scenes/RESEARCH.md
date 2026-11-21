@@ -55,6 +55,11 @@ Best sources (primary first): Steam News API; the official Google Docs; github.c
 
 Newest first. One entry per material finding; a quiet refresh gets one entry saying so. `Track` is subject, tooling, practice, or testing.
 
+### R-20261120-1 · 2026-11-20 · Quiet refresh
+- Subject: no SceneTools commits since 2026-10-17 (newest 2026-09-02); no Steam announcement since; the 2026-10-09 postmortem promises more mod showcases and a modding resources doc, nothing on SceneTools, Arena HQ slots or Automatons. Tooling: nothing new (GitHub "Project Nexus" hits are Nexus Mods tools; search "MADNESS" "SceneTools" next time). Practice: nothing new. Testing: Unity 6.2+ malformed-YAML reporting and the IsValidUnityYAML fix do not reach 2019.2, confirming the own scene-lint.
+- Sources: Steam News API appid 488860; https://api.github.com/repos/MPN-Modders/MPN_SceneTools/commits?since=2026-10-17T00:00:00Z; https://discussions.unity.com/t/unity-6-2-catching-and-fixing-malformed-asset-prefab-or-unity-files-before-they-break-your-project/1684262/1
+- Magnitude: 0.1 · applied: none (note)
+
 ### R-20261017-5 · 2026-10-17 · Tooling and testing
 - Summary: No level tool for this game outside the official project; Unity MCP servers (CoderGamester/mcp-unity and others) target modern Editors and were not checked against 2019.2. No automated scene checker existed; mpn.py scene-lint was written and verified on the two official samples and a mutated copy.
 - Track: testing
